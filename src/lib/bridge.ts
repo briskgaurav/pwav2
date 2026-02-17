@@ -140,6 +140,54 @@ export function notifyError(code: string, message: string): void {
 }
 
 /**
+ * Read the initial language from all available sources (priority order):
+ * 1. Expo injected via `window.__APP_LANG__`
+ * 2. URL param `?lang=`
+ * 3. localStorage
+ * 4. Browser language
+ */
+export function getInitialLanguage(): string {
+  if (typeof window === 'undefined') return 'en';
+
+  const injected = (window as Window & { __APP_LANG__?: string }).__APP_LANG__;
+  if (injected) return injected;
+
+  const urlLang = new URLSearchParams(window.location.search).get('lang');
+  if (urlLang) return urlLang;
+
+  const saved = localStorage.getItem('lang');
+  if (saved) return saved;
+
+  return navigator.language?.split('-')[0] || 'en';
+}
+
+/**
+ * Start listening for SET_LANGUAGE messages from Expo.
+ * Returns a cleanup function to remove the listener.
+ */
+export function listenForLanguageChanges(
+  onLanguageChange: (lang: string) => void
+): () => void {
+  const handler = (event: MessageEvent) => {
+    try {
+      const data =
+        typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+
+      if (data?.type === 'SET_LANGUAGE' && typeof data.lang === 'string') {
+        console.log('[PWA] Language received from Expo:', data.lang);
+        localStorage.setItem('lang', data.lang);
+        onLanguageChange(data.lang);
+      }
+    } catch {
+      // ignore non-JSON messages
+    }
+  };
+
+  window.addEventListener('message', handler);
+  return () => window.removeEventListener('message', handler);
+}
+
+/**
  * Validate JWT token (basic client-side validation).
  * Full validation should happen server-side.
  */

@@ -46,6 +46,10 @@ export const routes = {
   limitSetting: '/limit-setting',
   limitSettingVerifyEmail: '/limit-setting/verify-email',
 
+  // Make online payments
+  makeOnlinePayments: '/make-online-payments',
+  transactionReceipt: (txnId: string) => `/make-online-payments/transaction/${txnId}`,
+
   // Physical card linking
   linkPhysicalCard: '/link-physical-card',
   sigmaCardsOptions: '/link-physical-card/sigma-cards-options',

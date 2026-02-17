@@ -1,19 +1,17 @@
 'use client'
 
-import FAQModal from '@/components/Modal/FAQModal'
-import RemoveCardModal from '@/components/Modal/RemoveCardModal'
-import ManageBtn from '@/components/ManageBtns/ManageBtn'
+import FAQModal from '@/components/modals/FAQModal'
+import RemoveCardModal from '@/components/modals/RemoveCardModal'
+import ManageBtn from './ManageBtn'
 import { SheetContainer } from '@/components/ui'
-import Image from 'next/image'
-import React, { useState } from 'react'
+import React from 'react'
 
-import { cardActions, getManageBtns } from '../constants'
 import { useManageCardStore } from '../store/useManageCardStore'
-import { useRouter } from 'next/navigation'
-import { haptic } from '@/lib/useHaptics'
 import { routes } from '@/lib/routes'
 import Link from 'next/link'
 import CardMockup from '@/components/ui/CardMockup'
+import CardActionTiles from './CardActionTiles'
+import { useManageCardActions } from '../hooks/useManageCardActions'
 
 const creditCardDetails = [
   { label: 'Approved Credit Limit', value: '₦ 1,000,000' },
@@ -25,23 +23,9 @@ const creditCardDetails = [
 ]
 
 export default function ManageCreditCardScreen() {
-  const { isFaqOpen, faqData, openFaq, closeFaq } = useManageCardStore()
-  const router = useRouter()
-  const [showRemoveModal, setShowRemoveModal] = useState(false)
-  const handleCardActionClick = (action: typeof cardActions[number]) => {
-    if (action.text === 'Remove Card') {
-      setShowRemoveModal(true)
-    } else {
-      router.push(action.route)
-      haptic('heavy')
-    }
-  }
+  const { isFaqOpen, faqData, closeFaq } = useManageCardStore()
+  const { showRemoveModal, setShowRemoveModal, handleCardActionClick, handleRemoveCard } = useManageCardActions()
 
-  const handleRemoveCard = () => {
-    // TODO: Implement card removal API call
-    console.log('Card removed')
-    setShowRemoveModal(false)
-  }
   return (
     <div className="h-screen flex flex-col">
       <SheetContainer>
@@ -79,36 +63,7 @@ export default function ManageCreditCardScreen() {
             ))}
           </div>
 
-          <div className="flex w-full gap-2">
-            {cardActions.map((action, index) => (
-              <div
-                key={index}
-                onClick={() => handleCardActionClick(action)}
-                className="w-full border flex items-start flex-col justify-between border-text-primary/20 gap-4 rounded-xl p-4 cursor-pointer"
-              >
-                <div className="flex h-[30%] items-center gap-2 w-full justify-between">
-                  <div>
-                    <div className="w-6 h-auto flex items-center justify-center aspect-square">
-                      <Image src={action.icon} alt="icon" className='h-full w-full object-contain' width={24} height={24} />
-                    </div>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      openFaq(action.faqData)
-                    }}
-                    className="h-6 font-semibold flex items-center justify-center text-white text-md w-6 bg-primary rounded-full cursor-pointer hover:opacity-80 transition-opacity"
-                    aria-label="Open FAQ"
-                    type="button"
-                  >
-                    ?
-                  </button>
-                </div>
-
-                <p className="text-[12px] w-full leading-[1.2]">{action.text}</p>
-              </div>
-            ))}
-          </div>
+          <CardActionTiles onActionClick={handleCardActionClick} />
         </div>
       </SheetContainer>
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, SheetContainer } from '../ui'
+import { Button, SheetContainer } from '@/components/ui'
 import Image from 'next/image'
 import Link from 'next/link'
 import { routes } from '@/lib/routes'

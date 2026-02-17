@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react'
 import { SheetContainer } from '@/components/ui'
-import { AddMoneyForm } from '@/components/AddMoney/AddMoneyForm'
-import FAQModal from '@/components/Modal/FAQModal'
+import { AddMoneyForm } from '@/features/add-money/components/AddMoneyForm'
+import FAQModal from '@/components/modals/FAQModal'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
 import { GiftCardHeader } from '@/features/gift/components/GiftCardHeader'

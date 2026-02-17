@@ -5,36 +5,20 @@ import Image from 'next/image'
 import { useState } from 'react'
 import CopyButton from '@/components/ui/CopyButton'
 import CardMockup from '@/components/ui/CardMockup'
-import { haptic } from '@/lib/useHaptics'
-import ManageBtn from '@/components/ManageBtns/ManageBtn'
-import { cardActions, getManageBtns } from '../constants'
+import ManageBtn from './ManageBtn'
+import { getManageBtns } from '../constants'
 import Balance from '@/components/ui/Balance'
-import FaqIconButton from '@/components/ui/FaqIconButton'
-import RemoveCardModal from '@/components/Modal/RemoveCardModal'
-import FAQModal from '@/components/Modal/FAQModal'
+import RemoveCardModal from '@/components/modals/RemoveCardModal'
+import FAQModal from '@/components/modals/FAQModal'
 import { useManageCardStore } from '../store/useManageCardStore'
-import { useRouter } from 'next/navigation'
 import EyeButton from '@/components/ui/EyeButton'
+import CardActionTiles from './CardActionTiles'
+import { useManageCardActions } from '../hooks/useManageCardActions'
 
 export default function ManageGiftCardScreen() {
   const [showActivationCode, setShowActivationCode] = useState(false)
-  const { isFaqOpen, faqData, openFaq, closeFaq } = useManageCardStore()
-  const router = useRouter()
-  const [showRemoveModal, setShowRemoveModal] = useState(false)
-
-  const handleCardActionClick = (action: typeof cardActions[number]) => {
-    if (action.text === 'Remove Card') {
-      setShowRemoveModal(true)
-    } else {
-      router.push(action.route)
-      haptic('heavy')
-    }
-  }
-
-  const handleRemoveCard = () => {
-    console.log('Card removed')
-    setShowRemoveModal(false)
-  }
+  const { isFaqOpen, faqData, closeFaq } = useManageCardStore()
+  const { showRemoveModal, setShowRemoveModal, handleCardActionClick, handleRemoveCard } = useManageCardActions()
 
   return (
     <div className="h-screen flex flex-col">
@@ -49,31 +33,7 @@ export default function ManageGiftCardScreen() {
             ))}
           </div>
 
-          <div className="flex w-full gap-2">
-            {cardActions.map((action, index) => (
-              <div
-                key={index}
-                onClick={() => handleCardActionClick(action)}
-                className="w-full border flex items-start flex-col justify-between border-text-primary/20 gap-4 rounded-xl p-4 cursor-pointer"
-              >
-                <div className="flex h-[30%] items-center gap-2 w-full justify-between">
-                  <div>
-                    <div className="w-6 h-auto flex items-center justify-center aspect-square">
-                      <Image src={action.icon} alt="icon" className='h-full w-full object-contain' width={24} height={24} />
-                    </div>
-                  </div>
-                  <FaqIconButton
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      openFaq(action.faqData)
-                    }}
-                  />
-                </div>
-
-                <p className="text-[12px] w-full leading-[1.2]">{action.text}</p>
-              </div>
-            ))}
-          </div>
+          <CardActionTiles onActionClick={handleCardActionClick} />
 
           <span className='w-full h-px block my-10 bg-border'></span>
 

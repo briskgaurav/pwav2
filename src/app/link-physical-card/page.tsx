@@ -1,4 +1,4 @@
-import LinkCardScreen from '@/components/LinkToPhyicalCard/LinkCardScreen'
+import LinkCardScreen from '@/features/link-physical-card/components/LinkCardScreen'
 import React from 'react'
 
 export default function page() {

@@ -18,7 +18,7 @@ export default function CardMockup({
 }: CardMockupProps) {
     return (
         <div className='relative'>
-            {isclickable ? <Link href={'/underdev'} className="flex relative items-center pt-5 justify-center">
+            {isclickable ? <Link href={'/make-online-payments'} className="flex relative items-center pt-5 justify-center">
                 <Image src={imageSrc} alt="Debit Card Front" width={340} height={215} className="w-full h-auto object-contain" />
                 <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-2xl w-full text-center select-none">
                     {maskedNumber}

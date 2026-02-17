@@ -1,4 +1,4 @@
-import type { FAQData } from '@/components/Modal/FAQModal'
+import type { FAQData } from '@/components/modals/FAQModal'
 import { create } from 'zustand'
 
 type ManageCardState = {

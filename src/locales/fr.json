@@ -1,0 +1,8 @@
+{
+  "cardPinAuth": {
+    "enterYourPin": "Entrez votre NIP",
+    "incorrectPin": "NIP incorrect. Veuillez réessayer.",
+    "continue": "Continuer",
+    "forgotPin": "NIP oublié ?"
+  }
+}

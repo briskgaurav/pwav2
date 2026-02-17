@@ -1,4 +1,4 @@
-import type { FAQData } from '@/components/Modal/FAQModal'
+import type { FAQData } from '@/components/modals/FAQModal'
 import type { CardType } from '@/lib/types'
 import { routes } from '@/lib/routes'
 

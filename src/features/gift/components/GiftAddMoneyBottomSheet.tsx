@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui';
-import BottomSheetModal from '@/components/Modal/BottomSheetModal';
-import AddMoneyToggle from '@/components/AddMoney/AddMoneyToggle';
-import { AddMoneyCardsSection, CardType } from '@/components/AddMoney/AddMoneyCardsSection';
-import { AddNewCardForm } from '@/components/AddMoney/AddNewCardForm';
+import BottomSheetModal from '@/components/modals/BottomSheetModal';
+import AddMoneyToggle from '@/features/add-money/components/AddMoneyToggle';
+import { AddMoneyCardsSection, CardType } from '@/features/add-money/components/AddMoneyCardsSection';
+import { AddNewCardForm } from '@/features/add-money/components/AddNewCardForm';
 import { ChevronDownIcon, CheckIcon, PlusIcon } from 'lucide-react';
 
 type ModalView = 'cards' | 'addCard';

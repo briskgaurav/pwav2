@@ -1,10 +1,12 @@
+'use client'
 import React, { useEffect, useRef, useState } from 'react'
 
 type OtpInputProps = {
-  length: 4 | 8
+  length: 4 | 8 | 6,
   onChange?: (value: string) => void
   onComplete?: (value: string) => void
   autoFocus?: boolean
+  boxSize?: string
 }
 
 const OtpInput: React.FC<OtpInputProps> = ({
@@ -12,6 +14,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
   onChange,
   onComplete,
   autoFocus = true,
+  boxSize = '35px',
 }) => {
   const [otp, setOtp] = useState<string[]>(Array(length).fill(''))
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
@@ -80,7 +83,8 @@ const OtpInput: React.FC<OtpInputProps> = ({
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               autoFocus={showAutoFocus && index === 0 && autoFocus}
-              className='w-[35px] h-[35px] rounded-lg border border-text-primary text-center text-md leading-none font-semibold text-text-primary bg-white focus:outline-none! focus:ring-0! focus:ring-primary'
+              style={{ width: boxSize, height: boxSize }}
+              className=' rounded-lg border border-text-primary text-center text-md leading-none font-semibold text-text-primary bg-white focus:outline-none! focus:ring-0! focus:ring-primary'
             />
           )
         })}

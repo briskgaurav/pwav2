@@ -1,0 +1,8 @@
+{
+  "cardPinAuth": {
+    "enterYourPin": "Enter Your PIN",
+    "incorrectPin": "Incorrect PIN. Please try again.",
+    "continue": "Continue",
+    "forgotPin": "Forgot PIN ?"
+  }
+}

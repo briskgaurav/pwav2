@@ -6,14 +6,16 @@ interface OTPInputProps {
   value: string;
   maxLength: number;
   onChange?: (value: string) => void;
+  useDots?: boolean;
+  resetKey?: string | number;
 }
 
-export function OTPInput({ value, maxLength, onChange }: OTPInputProps) {
+export function OTPInput({ value, maxLength, onChange , resetKey = 'default'}: OTPInputProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const digits = useMemo(() => {
     return Array.from({ length: maxLength }, (_, index) => value[index] || '');
-  }, [value, maxLength]);
+  }, [value, maxLength, resetKey]);
 
   const handleChange = (index: number, inputValue: string) => {
     if (!/^\d*$/.test(inputValue)) return;
@@ -37,6 +39,7 @@ export function OTPInput({ value, maxLength, onChange }: OTPInputProps) {
 
   return (
     <div
+      key={resetKey}
       style={{
         display: 'flex',
         gap: 10,
@@ -54,6 +57,7 @@ export function OTPInput({ value, maxLength, onChange }: OTPInputProps) {
           value={digit}
           onChange={(e) => handleChange(index, e.target.value)}
           onKeyDown={(e) => handleKeyDown(index, e)}
+          
           style={{
             width: 55,
             height: 55,

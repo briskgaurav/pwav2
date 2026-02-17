@@ -1,13 +1,23 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { parseSDKConfig, notifyReady, notifyError, SDKConfig, isValidToken } from './bridge';
+import {
+  parseSDKConfig,
+  notifyReady,
+  notifyError,
+  SDKConfig,
+  isValidToken,
+  getInitialLanguage,
+  listenForLanguageChanges,
+} from './bridge';
+import i18n from './i18n';
 
 interface AuthContextType {
   config: SDKConfig | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   error: string | null;
+  language: string;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -15,7 +25,16 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   isAuthenticated: false,
   error: null,
+  language: 'en',
 });
+
+function FallbackLoader() {
+  return (
+    <div className="flex items-center justify-center bg-white h-screen w-full">
+      <div className="w-6 h-6 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [{ config, error, notify }] = useState(() => {
@@ -52,13 +71,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   });
 
+  const [language, setLanguage] = useState(() => {
+    if (typeof window === 'undefined') return 'en';
+    const lang = getInitialLanguage();
+    localStorage.setItem('lang', lang);
+    console.log('[PWA] Initial language:', lang);
+    return lang;
+  });
+
+  const [isLanguageLoaded, setIsLanguageLoaded] = useState(false);
+
   useEffect(() => {
     if (notify.type === 'ready') {
       notifyReady();
-      return;
+    } else {
+      notifyError(notify.code, notify.message);
     }
-    notifyError(notify.code, notify.message);
   }, [notify]);
+
+  useEffect(() => {
+    if (i18n.isInitialized) {
+      setIsLanguageLoaded(true);
+    } else {
+      i18n.on('initialized', () => {
+        setIsLanguageLoaded(true);
+      });
+    }
+
+    return listenForLanguageChanges((lang) => {
+      i18n.changeLanguage(lang);
+      setLanguage(lang);
+    });
+  }, []);
+
+  if (!isLanguageLoaded) {
+    return <FallbackLoader />;
+  }
 
   return (
     <AuthContext.Provider
@@ -67,6 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading: false,
         isAuthenticated: !!config && !error,
         error,
+        language,
       }}
     >
       {children}

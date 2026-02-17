@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { SheetContainer, OTPInput, OTPKeypad, Button } from '@/components/ui';
+import { SheetContainer, Button } from '@/components/ui';
+import OtpInput from '@/components/ui/OtpInput';
 import { notifyNavigation } from '@/lib/bridge';
 import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
@@ -18,19 +19,6 @@ function OTPScreenContent() {
 
   useEffect(() => {
     notifyNavigation('otp-verification');
-  }, []);
-
-  const handleKeyPress = useCallback((key: string) => {
-    if (key === 'del') {
-      setCode((prev) => prev.slice(0, -1));
-      return;
-    }
-    setCode((prev) => {
-      if (prev.length >= MAX_CODE_LENGTH) {
-        return prev;
-      }
-      return `${prev}${key}`;
-    });
   }, []);
 
   const handleContinue = async () => {
@@ -58,7 +46,7 @@ function OTPScreenContent() {
       {/* <Header title="Verify Phone" showBackButton onBack={handleBack} /> */}
 
       <SheetContainer>
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex justify-between flex-col">
           <div className="p-6 py-14 px-5 text-center flex flex-col items-center justify-center gap-2">
             <h2 className="text-xl font-semibold text-text-primary m-0">
               Verify your Phone Number
@@ -73,9 +61,18 @@ function OTPScreenContent() {
               Please check your messages and enter it here
             </p>
 
-            <div className="mt-4 mb-5">
-              <OTPInput value={code} maxLength={MAX_CODE_LENGTH} />
-            </div>
+            <OtpInput
+              length={6}
+              onChange={setCode}
+              onComplete={setCode}
+              autoFocus
+              boxSize='55px'
+            />
+
+
+          </div>
+
+          <div className='p-6 pb-10 text-center'>
 
             <Button
               className="mt-8"
@@ -96,11 +93,8 @@ function OTPScreenContent() {
                 Resend
               </button>
             </p>
-            <div className="mt-auto w-full">
-              <OTPKeypad onKeyPress={handleKeyPress} />
-            </div>
-          </div>
 
+          </div>
 
         </div>
       </SheetContainer>

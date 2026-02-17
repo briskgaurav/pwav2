@@ -5,7 +5,7 @@ import { PlusIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import AddSigmaCardModal from '@/components/LinkToPhyicalCard/AddSigmaCardModal'
+import AddSigmaCardModal from '@/features/link-physical-card/components/AddSigmaCardModal'
 import { routes } from '@/lib/routes'
 
 const CARD_OPTIONS = [

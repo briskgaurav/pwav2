@@ -90,21 +90,7 @@ export default function SuccessScreen({
           </Button>
         </div>
 
-        <style jsx>{`
-          @keyframes scaleIn {
-            from {
-              transform: scale(0);
-              opacity: 0;
-            }
-            to {
-              transform: scale(1);
-              opacity: 1;
-            }
-          }
-          .animate-scale-in {
-            animation: scaleIn 0.5s ease-out;
-          }
-        `}</style>
+        {/* animate-scale-in is defined in globals.css */}
       </SheetContainer>
     </div>
   );
