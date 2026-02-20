@@ -85,6 +85,7 @@ export default function AddGiftCardPage() {
           </h2>
           <div className='relative'>
             <input
+              autoComplete="one-time-code"
               ref={inputRef}
               type='text'
               value={activationCode}

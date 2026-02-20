@@ -4,24 +4,30 @@ import Image from 'next/image'
 
 import { Copy } from 'lucide-react'
 import CardMockup from '@/components/ui/CardMockup'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { routes } from '@/lib/routes'
-
-const giftCardDetails = [
-    { label: 'Name', value: 'Nirdesh Malik' },
-    { label: 'Email', value: 'nirdeshmalik@gmail.com' },
-    { label: 'Message', value: 'Gift card for you' },
-]
 
 export default function page() {
     const router = useRouter()
+    const searchParams = useSearchParams()
+
+    const recipientName = searchParams.get('name') || 'Gift Recipient'
+    const recipientEmail = searchParams.get('email') || 'recipient@example.com'
+    const recipientMessage = searchParams.get('message') || '🎉 Congratulations! Wishing you joy and happiness on this special occasion. Enjoy your gift!'
+
+    const giftCardDetails = [
+        { label: 'Name', value: recipientName },
+        { label: 'Email', value: recipientEmail },
+        { label: 'Message', value: recipientMessage },
+    ]
+
     return (
         <div className="h-screen flex flex-col">
             <SheetContainer>
                 <div className="flex-1 overflow-auto h-fit pb-10 p-4 space-y-4">
-                    <CardMockup />
+                    {/* <CardMockup /> */}
 
-                    <div className='w-full rounded-2xl space-y-2'>
+                    <div className='w-full rounded-2xl mt-5 space-y-2'>
                         {giftCardDetails.map((detail, index) => (
                             <div key={index} className='p-4 border border-border rounded-2xl'>
                                 <p className='text-text-primary text-sm'>{detail.label}</p>

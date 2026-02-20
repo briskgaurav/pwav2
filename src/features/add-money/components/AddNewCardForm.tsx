@@ -54,6 +54,7 @@ export function AddNewCardForm({ initialValues, onChange }: AddNewCardFormProps)
                 <p className='text-text-primary text-sm'>Enter card number</p>
                 <div className='border border-border rounded-2xl px-4 py-3 flex items-center justify-between gap-3'>
                     <input
+                        autoComplete="one-time-code"
                         type='text'
                         inputMode='numeric'
                         value={values.cardNumber}
@@ -73,6 +74,7 @@ export function AddNewCardForm({ initialValues, onChange }: AddNewCardFormProps)
                     <div className='flex gap-3'>
                         <div className='flex-1 border border-border rounded-2xl px-4 py-3'>
                             <input
+                                autoComplete="one-time-code"
                                 type='text'
                                 inputMode='numeric'
                                 maxLength={2}
@@ -84,6 +86,7 @@ export function AddNewCardForm({ initialValues, onChange }: AddNewCardFormProps)
                         </div>
                         <div className='flex-1 border border-border rounded-2xl px-4 py-3'>
                             <input
+                                autoComplete="one-time-code"
                                 type='text'
                                 inputMode='numeric'
                                 maxLength={2}
@@ -99,10 +102,11 @@ export function AddNewCardForm({ initialValues, onChange }: AddNewCardFormProps)
                 <div className='space-y-2'>
                     <div className='flex items-center justify-between'>
                         <p className='text-text-primary ml-1 text-sm'>CVV</p>
-                     
+
                     </div>
                     <div className='flex items-center gap-3'>
                         <input
+                            autoComplete="one-time-code"
                             type='password'
                             inputMode='numeric'
                             maxLength={3}
@@ -111,7 +115,7 @@ export function AddNewCardForm({ initialValues, onChange }: AddNewCardFormProps)
                             placeholder='CVV'
                             className='w-full bg-transparent border border-border rounded-2xl px-4 py-3 text-text-primary text-sm text-center !outline-none! focus:outline-none! focus:ring-none!'
                         />
-                           <button type='button' className='w-8 h-8 flex items-center justify-center' aria-label='CVV info'>
+                        <button type='button' className='w-8 h-8 flex items-center justify-center' aria-label='CVV info'>
                             <Info size={18} className='text-text-primary' />
                         </button>
                     </div>

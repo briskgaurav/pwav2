@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { useOnlinePaymentStore } from '../store/useOnlinePaymentStore'
 import { useCvvTimer } from '../hooks/useCvvTimer'
@@ -35,7 +35,7 @@ export default function VirtualCardDetails() {
     return `${mins}:${String(secs).padStart(2, '0')}`
   }
 
-  const startTimer = () => {
+  const startTimer = useCallback(() => {
     setTimeLeft(TIMER_DURATION)
 
     if (timerIntervalRef.current) {
@@ -68,17 +68,14 @@ export default function VirtualCardDetails() {
           if (timerIntervalRef.current) {
             clearInterval(timerIntervalRef.current)
           }
-          setTimeout(() => {
-            flipCard(false)
-          }, 100)
           return 0
         }
         return prev - 1
       })
     }, 1000)
-  }
+  }, [CIRCLE_CIRCUMFERENCE])
 
-  const stopTimer = () => {
+  const stopTimer = useCallback(() => {
     if (timerIntervalRef.current) {
       clearInterval(timerIntervalRef.current)
       timerIntervalRef.current = null
@@ -86,9 +83,9 @@ export default function VirtualCardDetails() {
     if (progressRef.current) {
       gsap.killTweensOf(progressRef.current)
     }
-  }
+  }, [])
 
-  const flipCard = (toFlipped: boolean) => {
+  const flipCard = useCallback((toFlipped: boolean) => {
     if (!cardRef.current) return
 
     if (toFlipped) {
@@ -148,12 +145,12 @@ export default function VirtualCardDetails() {
     } else {
       stopTimer()
     }
-  }
+  }, [startTimer, stopTimer])
 
-  const handleFlip = () => {
+  const handleFlip = useCallback(() => {
     haptic('medium')
     flipCard(!isFlipped)
-  }
+  }, [flipCard, isFlipped])
 
   const handleEyeClick = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -178,13 +175,21 @@ export default function VirtualCardDetails() {
     }
   }, [])
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      flipCard(true)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [flipCard])
+
+
   return (
     <div className="flex flex-col gap-3">
       {/* Card flip container */}
       <div
         className="w-full cursor-pointer"
         style={{ perspective: '1000px' }}
-        onClick={handleFlip}
+        // onClick={handleFlip}
       >
         <div
           ref={cardRef}
@@ -245,14 +250,17 @@ export default function VirtualCardDetails() {
                   <p className="text-xl text-white text-center tracking-[3px]">
                     {cardDetails.pan}
                   </p>
-                  <CopyButton value={cardDetails.pan.replace(/\s/g, '')} className="text-white ml-2" />
+                  <CopyButton  value={cardDetails.pan.replace(/\s/g, '')} className="text-white invert ml-2" />
                 </div>
 
                 {/* Bottom — Valid Till & Timer */}
                 <div className="flex items-end justify-between">
-                  <div className="text-white">
-                    <p className="text-xs font-semibold mb-1">VALID TILL</p>
-                    <p className="text-sm font-semibold">{cardDetails.expiry}</p>
+                  <div className="text-white flex items-center gap-1">
+                    <div>
+                      <p className="text-xs font-semibold mb-1">VALID TILL</p>
+                      <p className="text-sm font-semibold">{cardDetails.expiry}</p>
+                    </div>
+                    <CopyButton value={cardDetails.expiry} className="text-white" size="sm" />
                   </div>
 
                   {/* Timer ring */}
@@ -281,8 +289,9 @@ export default function VirtualCardDetails() {
                   </div>
 
                   {/* CVV */}
-                  <div className="absolute bottom-[35px] right-[85px] z-10 text-text-primary">
+                  <div className="absolute bottom-[35px] right-[85px] z-10 text-text-primary flex items-center gap-1">
                     <p className="text-sm font-semibold">{cardDetails.cvv}</p>
+                    <CopyButton value={cardDetails.cvv} className="text-white" size="sm" />
                   </div>
                 </div>
               </div>
@@ -310,7 +319,7 @@ export default function VirtualCardDetails() {
           onClick={(e) => {
             e.stopPropagation()
             handleRefresh()
-            handleFlip()
+            // handleFlip()
           }}
           disabled={isRefreshing}
           className="bg-background2 rounded-xl px-4 py-2.5 flex items-center gap-2 btn-press disabled:opacity-50"

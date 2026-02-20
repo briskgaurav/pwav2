@@ -58,6 +58,7 @@ export default function InputField({ value, onChange, placeholder = 'Enter Amoun
     >
       <input
         ref={inputRef}
+     autoComplete="one-time-code"
         type='text'
         inputMode='decimal'
         value={value ?? ''}

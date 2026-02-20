@@ -30,37 +30,37 @@ export default function MakeRepayment() {
 
     const animateFields = (option: PaymentOption) => {
         const allOptions: PaymentOption[] = ['full', 'minimum', 'other']
-        
+
         allOptions.forEach((opt) => {
             const ref = getFieldsRef(opt)
             if (!ref.current) return
-            
+
             const isSelected = opt === option
             const children = ref.current.querySelectorAll('.field-item')
-            
+
             if (isSelected) {
                 // Show animation
                 gsap.set(ref.current, { display: 'block', overflow: 'hidden' })
-                
+
                 const tl = gsap.timeline()
-                
+
                 tl.fromTo(ref.current,
                     { height: 0, opacity: 0 },
-                    { 
-                        height: 'auto', 
-                        opacity: 1, 
-                        duration: 0.4, 
+                    {
+                        height: 'auto',
+                        opacity: 1,
+                        duration: 0.4,
                         ease: 'power3.out'
                     }
                 )
-                
+
                 tl.fromTo(children,
                     { y: -20, opacity: 0, scale: 0.95 },
-                    { 
-                        y: 0, 
-                        opacity: 1, 
+                    {
+                        y: 0,
+                        opacity: 1,
                         scale: 1,
-                        duration: 0.35, 
+                        duration: 0.35,
                         stagger: 0.08,
                         ease: 'back.out(1.2)'
                     },
@@ -75,7 +75,7 @@ export default function MakeRepayment() {
                         }
                     }
                 })
-                
+
                 tl.to(children, {
                     y: -10,
                     opacity: 0,
@@ -84,7 +84,7 @@ export default function MakeRepayment() {
                     stagger: 0.03,
                     ease: 'power2.in'
                 })
-                
+
                 tl.to(ref.current, {
                     height: 0,
                     opacity: 0,
@@ -140,6 +140,7 @@ export default function MakeRepayment() {
                 </div>
                 <input
                     type='text'
+                    autoComplete="one-time-code"
                     placeholder='Enter Amount'
                     value={amounts[option]}
                     onChange={(e) => handleAmountChange(option, e.target.value)}
@@ -152,15 +153,15 @@ export default function MakeRepayment() {
     return (
         <div className='p-5 border border-border rounded-2xl space-y-4'>
             <div className='flex items-center gap-4'>
-               <div className='w-5 h-5 flex items-center justify-center shrink-0'>
-                  <Image
-                    src='/svg/addcard.svg'
-                    alt='bank'
-                    width={20}
-                    height={20}
-                    className='object-contain size-full'
-                  />
-               </div>
+                <div className='w-5 h-5 flex items-center justify-center shrink-0'>
+                    <Image
+                        src='/svg/addcard.svg'
+                        alt='bank'
+                        width={20}
+                        height={20}
+                        className='object-contain size-full'
+                    />
+                </div>
                 <p className='text-text-primary text-md font-medium'>Make Repayment</p>
             </div>
 
@@ -201,9 +202,9 @@ export default function MakeRepayment() {
             </div>
 
             {/* Pay Now Button */}
-          <Button variant='primary' size='lg' fullWidth>
-            Pay Now
-          </Button>
+            <Button variant='primary' size='lg' fullWidth>
+                Pay Now
+            </Button>
         </div>
     )
 }

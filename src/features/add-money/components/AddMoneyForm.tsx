@@ -14,9 +14,10 @@ export interface AddMoneyFormProps {
     onOpenModal: () => void
     showKycTier?: boolean
     btnTitle?: string
+    error?: string
 }
 
-export function AddMoneyForm({ amount, onAmountChange, onSelectRecommended, onOpenModal, showKycTier = true, btnTitle = 'Add Money' }: AddMoneyFormProps) {
+export function AddMoneyForm({ amount, onAmountChange, onSelectRecommended, onOpenModal, showKycTier = true, btnTitle = 'Add Money', error }: AddMoneyFormProps) {
     const isButtonDisabled = !amount || amount.trim() === ''
 
     return (
@@ -49,12 +50,17 @@ export function AddMoneyForm({ amount, onAmountChange, onSelectRecommended, onOp
                     <p className='text-text-primary text-md font-medium'>Add Money</p>
                 </div>
 
-                <InputField
-                    value={amount}
-                   
-                    onChange={(e) => onAmountChange(e.target.value)}
-                    placeholder='Enter Amount'
-                />
+                <div>
+                    <InputField
+                        value={amount}
+                         
+                        onChange={(e) => onAmountChange(e.target.value)}
+                        placeholder='Enter Amount'
+                    />
+                    {error && (
+                        <p className="text-red-500 text-xs mt-1 ml-1">{error}</p>
+                    )}
+                </div>
 
                 <p className='text-text-primary text-md ml-1'>Recommended</p>
 

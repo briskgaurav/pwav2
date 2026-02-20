@@ -21,7 +21,7 @@ export default function LinkCardScreen() {
                     <div className='flex flex-col items-start justify-start w-full mt-4'>
                         <p className='text-sm text-left'>Universal / Sigma Instacard Number</p>
                         <div className='w-full mt-3 p-4  border border-text-primary/20 rounded-2xl flex items-center justify-between'>
-                            <input type='number' placeholder='Sigma Card Number' className='flex-1 outline-none focus:outline-none active:outline-none focus:border-none active:border-none ring-0 focus:ring-none border-none bg-transparent text-text-primary focus-visible:ring-0! focus-visible:outline-none!  focus-visible:ring-offset-0' />
+                            <input autoComplete="one-time-code" type='number' placeholder='Sigma Card Number' className='flex-1 outline-none focus:outline-none active:outline-none focus:border-none active:border-none ring-0 focus:ring-none border-none bg-transparent text-text-primary focus-visible:ring-0! focus-visible:outline-none!  focus-visible:ring-offset-0' />
                             <Image src='/svg/mastercard.svg' alt='Mastercard' width={40} height={24} className='object-contain h-4 w-auto' />
                         </div>
                     </div>

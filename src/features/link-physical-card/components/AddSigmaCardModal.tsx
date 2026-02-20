@@ -181,6 +181,7 @@ export default function AddSigmaCardModal({ visible, onClose, onSubmit }: AddSig
                     {/* Card Number Input */}
                     <div className="relative">
                         <input
+                            autoComplete="one-time-code"
                             type="text"
                             value={cardNumber}
                             onChange={handleCardNumberChange}

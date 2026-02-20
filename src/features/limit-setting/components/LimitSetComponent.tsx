@@ -112,6 +112,7 @@ export default function LimitSetComponent({
           <div className="flex items-center gap-1">
             <span className={`text-md font-medium line-through ${error ? 'text-red-500' : 'text-text-primary'}`}>N</span>
             <input
+              autoComplete="one-time-code"
               type="text"
               value={isEditing ? dailyLimit.toString() : formatCurrency(dailyLimit)}
               onChange={handleLimitChange}

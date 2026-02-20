@@ -47,7 +47,7 @@ function OTPScreenContent() {
 
       <SheetContainer>
         <div className="flex-1 flex justify-between flex-col">
-          <div className="p-6 py-14 px-5 text-center flex flex-col items-center justify-center gap-2">
+          <div className="p-6 py-14 px-5  text-center flex flex-col items-center justify-center gap-2">
             <h2 className="text-xl font-semibold text-text-primary m-0">
               Verify your Phone Number
             </h2>

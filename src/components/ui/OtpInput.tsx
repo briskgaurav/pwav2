@@ -72,6 +72,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
           const index = start + i
           return (
             <input
+              autoComplete="one-time-code"
               key={index}
               ref={(el) => {
                 inputRefs.current[index] = el
@@ -84,7 +85,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
               onKeyDown={(e) => handleKeyDown(index, e)}
               autoFocus={showAutoFocus && index === 0 && autoFocus}
               style={{ width: boxSize, height: boxSize }}
-              className=' rounded-lg border border-text-primary text-center text-md leading-none font-semibold text-text-primary bg-white focus:outline-none! focus:ring-0! focus:ring-primary'
+              className='rounded-lg border border-text-primary text-center text-md leading-none font-semibold text-text-primary bg-white focus:outline-none! focus:ring-0! focus:ring-primary'
             />
           )
         })}

@@ -5,29 +5,47 @@ import Image from 'next/image'
 
 import { Copy } from 'lucide-react'
 import CardMockup from '@/components/ui/CardMockup'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { routes } from '@/lib/routes'
-
-const giftCardDetails = [
-    { label: 'Name', value: 'Nirdesh Malik' },
-    { label: 'Email', value: 'nirdeshmalik@gmail.com' },
-    { label: 'Message', value: 'Gift card for you' },
-]
 
 export default function page() {
     const [showBalance, setShowBalance] = useState(false)
     const router = useRouter()
+    const searchParams = useSearchParams()
+
+    const recipientName = searchParams.get('name') || 'Gift Recipient'
+    const recipientEmail = searchParams.get('email') || 'recipient@example.com'
+    const recipientMessage = searchParams.get('message') || 'Congratulations! Wishing you joy and happiness on this special occasion. Enjoy your gift!'
+    const amount = searchParams.get('amount') || '50,000.00'
+
+    const giftCardDetails = [
+        { label: 'Name', value: recipientName },
+        { label: 'Email', value: recipientEmail },
+        { label: 'Message', value: recipientMessage },
+    ]
+
     const toggleBalance = () => {
         setShowBalance(!showBalance)
+    }
+
+    const handleProceed = () => {
+        const params = new URLSearchParams({
+            name: recipientName,
+            email: recipientEmail,
+            message: recipientMessage,
+            amount,
+        })
+
+        router.push(`${routes.shareGiftCard}?${params.toString()}`)
     }
 
     return (
         <div className="h-screen flex flex-col">
             <SheetContainer>
                 <div className="flex-1 overflow-auto h-fit pb-10 p-4 space-y-4">
-                    <CardMockup />
+                    {/* <CardMockup /> */}
 
-                    <div className='w-full rounded-2xl space-y-2'>
+                    <div className='w-full rounded-2xl mt-5 space-y-2'>
                         {giftCardDetails.map((detail, index) => (
                             <div key={index} className='p-4 border border-border rounded-2xl'>
                                 <p className='text-text-primary text-sm'>{detail.label}</p>
@@ -46,7 +64,7 @@ export default function page() {
                             <div className='flex items-center justify-between gap-2'>
                                 <p className='text-text-primary font-medium'>
                                     <span className='line-through mr-2'>N </span>
-                                    {showBalance ? '50,000.00' : '********'}
+                                    {showBalance ? amount : '********'}
                                 </p>
                                 <button className='w-6 h-6 flex items-center justify-center' type='button' aria-label='Toggle balance visibility' onClick={toggleBalance}>
                                     <Image className='h-full w-full object-contain' src={showBalance ? '/svg/eyeopen.svg' : '/svg/eyeclose.svg'} alt={showBalance ? 'Show' : 'Hide'} width={16} height={16} />
@@ -62,7 +80,7 @@ export default function page() {
                     </div>
                     <div className='mt-2 w-full'>
 
-                        <Button onClick={() => router.push(routes.shareGiftCard)} fullWidth variant='primary' size='md'>
+                        <Button onClick={handleProceed} fullWidth variant='primary' size='md'>
                             Proceed to Gift this Card
                         </Button>
                     </div>
