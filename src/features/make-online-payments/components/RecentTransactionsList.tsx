@@ -16,19 +16,23 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
     router.push(routes.transactionReceipt(transaction.id))
   }
 
+  const status = transaction.status
+
   const statusColor =
-    transaction.status === 'success'
+    status === 'success'
       ? 'text-success'
-      : transaction.status === 'failed'
+      : status === 'failed'
         ? 'text-error'
         : 'text-orange'
 
   const statusDot =
-    transaction.status === 'success'
+    status === 'success'
       ? 'bg-success'
-      : transaction.status === 'failed'
+      : status === 'failed'
         ? 'bg-error'
         : 'bg-orange'
+
+  const isDebit = transaction.isDebit
 
   return (
     <button
@@ -39,23 +43,36 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
       <div
         className={`w-10 h-10 ${transaction.color} rounded-xl flex items-center justify-center shrink-0`}
       >
-        <span className="text-white font-semibold text-base">{transaction.initial}</span>
+        <span className="text-white font-semibold text-base">
+          {transaction.initial}
+        </span>
       </div>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm font-medium text-text-primary truncate">{transaction.merchantName}</p>
-          <p className={`text-sm font-semibold shrink-0 ${transaction.isDebit ? 'text-error' : 'text-success'}`}>
-            {transaction.isDebit ? '-' : '+'} <span className="line-through">N</span> {transaction.amount}
+          <p className="text-sm font-medium text-text-primary truncate">
+            {transaction.merchantName}
+          </p>
+
+          <p
+            className={`text-sm font-semibold shrink-0 ${
+              isDebit ? 'text-error' : 'text-success'
+            }`}
+          >
+            {isDebit ? '-' : '+'} <span className="line-through">N</span> {transaction.amount}
           </p>
         </div>
+
         <div className="flex items-center justify-between gap-2 mt-0.5">
           <p className="text-xs text-text-secondary">
             {transaction.date} | {transaction.time}
           </p>
+
           <div className="flex items-center gap-1">
             <div className={`w-1.5 h-1.5 rounded-full ${statusDot}`} />
-            <span className={`text-[10px] capitalize ${statusColor}`}>{transaction.status}</span>
+            <span className={`text-[10px] capitalize ${statusColor}`}>
+              {status}
+            </span>
           </div>
         </div>
       </div>

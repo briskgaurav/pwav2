@@ -9,10 +9,11 @@ import { AddMoneyCardsSection, CardType } from '@/features/add-money/components/
 import { AddNewCardForm } from '@/features/add-money/components/AddNewCardForm'
 import Image from 'next/image'
 import React, { useCallback, useState } from 'react'
-import { PlusIcon, ChevronDownIcon, CheckIcon } from 'lucide-react'
+import { PlusIcon } from 'lucide-react'
 import Balance from '@/components/ui/Balance'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
+import { Dropdown } from '@/components/ui/Dropdown'
 
 type ModalView = 'cards' | 'addCard'
 
@@ -38,7 +39,6 @@ export default function AddMoneyPage() {
     const [modalView, setModalView] = useState<ModalView>('cards')
     const [activeTab, setActiveTab] = useState<'cards' | 'account'>('cards')
     const [selectedBank, setSelectedBank] = useState<BankAccount>(bankAccounts[0])
-    const [dropdownOpen, setDropdownOpen] = useState(false)
 
 
     const toggleBalance = useCallback(() => setShowBalance((p) => !p), [])
@@ -68,11 +68,6 @@ export default function AddMoneyPage() {
 
     const backToCards = useCallback(() => {
         setModalView('cards')
-    }, [])
-
-    const handleSelectBank = useCallback((bank: BankAccount) => {
-        setSelectedBank(bank)
-        setDropdownOpen(false)
     }, [])
 
     const handleAddMoney = useCallback(() => {
@@ -113,41 +108,16 @@ export default function AddMoneyPage() {
     const renderAccountContent = () => {
         return (
             <div className='space-y-4'>
-                <div className='space-y-3'>
-                    <p className='text-text-primary text-sm font-medium'>Select Bank Account</p>
-                    <div className='relative'>
-                        <button
-                            type='button'
-                            onClick={() => setDropdownOpen(!dropdownOpen)}
-                            className='w-full border border-border rounded-2xl px-4 py-4 text-text-primary text-sm bg-transparent focus:outline-none focus:border-primary flex items-center justify-between transition-colors hover:border-primary/50'
-                        >
-                            <span className='font-medium'>{selectedBank.accountNumber}</span>
-                            <ChevronDownIcon 
-                                className={`w-5 h-5 text-text-primary/60 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} 
-                            />
-                        </button>
-                        
-                        {dropdownOpen && (
-                            <div className='absolute -top-full left-0 right-0 mt-2 bg-background border border-border rounded-2xl overflow-hidden shadow-lg z-10'>
-                                {bankAccounts.map((bank) => (
-                                    <button
-                                        key={bank.id}
-                                        type='button'
-                                        onClick={() => handleSelectBank(bank)}
-                                        className={`w-full px-4 py-4 text-left flex items-center justify-between hover:bg-primary/5 transition-colors ${
-                                            selectedBank.id === bank.id ? 'bg-primary/10' : ''
-                                        }`}
-                                    >
-                                        <span className='text-text-primary text-sm font-medium'>{bank.accountNumber}</span>
-                                        {selectedBank.id === bank.id && (
-                                            <CheckIcon className='w-5 h-5 text-primary' />
-                                        )}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
+                <Dropdown<BankAccount>
+                    
+                    label="Select Bank Account"
+                    placeholder="Select bank..."
+                    value={selectedBank}
+                    options={bankAccounts}
+                    onChange={setSelectedBank}
+                    getOptionLabel={(bank) => bank.accountNumber}
+                    marginTop='top-[-100%]'
+                />
                
                 <p className='text-text-primary/70 text-xs'>
                     Transfer to the account above and your wallet will be credited automatically.
@@ -168,6 +138,7 @@ export default function AddMoneyPage() {
                         onAmountChange={handleAmountChange}
                         onSelectRecommended={handleSelectAmount}
                         onOpenModal={openModal}
+                        
                     />
 
                 </div>

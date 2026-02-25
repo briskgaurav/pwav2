@@ -36,6 +36,7 @@ export default function CreatePinPage() {
       pinLabel="Enter New PIN"
       confirmPinLabel="Confirm New PIN"
       titleWeight="medium"
+      
       onSubmit={handleSubmit}
     />
   )

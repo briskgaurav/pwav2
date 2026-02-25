@@ -10,7 +10,7 @@ interface SheetContainerProps {
 export function SheetContainer({ children }: SheetContainerProps) {
   return (
     <div
-      className="sheet-container  keyboard-safe"
+      className="sheet-container  "
       style={{
         flex: 1,
         backgroundColor: InstacardColors.white,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 
 interface OTPInputProps {
   value: string;
@@ -10,7 +10,7 @@ interface OTPInputProps {
   resetKey?: string | number;
 }
 
-export function OTPInput({ value, maxLength, onChange , resetKey = 'default'}: OTPInputProps) {
+export function OTPInput({ value, maxLength, onChange, useDots = false, resetKey = 'default' }: OTPInputProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const digits = useMemo(() => {
@@ -61,6 +61,7 @@ export function OTPInput({ value, maxLength, onChange , resetKey = 'default'}: O
       inputRefs.current[nextIndex]?.focus();
     }
   };
+ 
 
   return (
     <div
@@ -78,8 +79,10 @@ export function OTPInput({ value, maxLength, onChange , resetKey = 'default'}: O
           autoComplete="one-time-code"
           key={index}
           ref={(el) => { inputRefs.current[index] = el; }}
-          type="tel"
-          inputMode="numeric"
+          type={useDots ? 'password' : 'tel'}
+          inputMode="none"
+          // readOnly={true}
+          
           maxLength={1}
           value={digit}
           onChange={(e) => handleChange(index, e.target.value)}

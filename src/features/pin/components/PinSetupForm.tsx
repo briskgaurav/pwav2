@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { SheetContainer, OTPInput, Button } from '@/components/ui'
+import { SheetContainer, OTPInput, OTPKeypad, Button } from '@/components/ui'
 import { notifyNavigation } from '@/lib/bridge'
 import EyeButton from '@/components/ui/EyeButton'
 import { PIN_LENGTH } from '@/lib/types'
@@ -75,6 +75,27 @@ function PinSetupFormContent({
 
   const titleWeightClass = titleWeight === 'medium' ? 'font-medium' : 'font-semibold'
 
+  const handleKeypadKey = (key: string) => {
+    setError(null)
+
+    if (key === 'del') {
+      if (confirmPin.length > 0) {
+        setConfirmPin((prev) => prev.slice(0, -1))
+      } else if (pin.length > 0) {
+        setPin((prev) => prev.slice(0, -1))
+      }
+      return
+    }
+
+    if (!/^\d$/.test(key)) return
+
+    if (pin.length < PIN_LENGTH) {
+      setPin((prev) => (prev.length < PIN_LENGTH ? prev + key : prev))
+    } else if (confirmPin.length < PIN_LENGTH) {
+      setConfirmPin((prev) => (prev.length < PIN_LENGTH ? prev + key : prev))
+    }
+  }
+
   return (
     <div className="h-dvh flex flex-col">
       <SheetContainer>
@@ -96,6 +117,7 @@ function PinSetupFormContent({
                   value={pin}
                   maxLength={PIN_LENGTH}
                   onChange={setPin}
+                  useDots={!isPinVisible}
                 />
                 <EyeButton
                   isVisible={isPinVisible}
@@ -114,6 +136,7 @@ function PinSetupFormContent({
                   value={confirmPin}
                   maxLength={PIN_LENGTH}
                   onChange={setConfirmPin}
+                  useDots={!isConfirmPinVisible}
                 />
                 <EyeButton
                   isVisible={isConfirmPinVisible}
@@ -128,17 +151,19 @@ function PinSetupFormContent({
               )}
             </div>
 
-          </div>
-          <div className="w-full flex flex-col items-center gap-3 pb-10 px-6">
 
-            <Button
-              fullWidth
-              onClick={handleContinue}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? submittingText : buttonText}
-            </Button>
+            <div className="w-full flex flex-col items-center gap-3 pb-10 px-6">
+
+              <Button
+                fullWidth
+                onClick={handleContinue}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? submittingText : buttonText}
+              </Button>
+            </div>
           </div>
+          <OTPKeypad onKeyPress={handleKeypadKey} />
         </div>
       </SheetContainer>
     </div>

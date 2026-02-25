@@ -41,6 +41,8 @@ export const routes = {
   // Statements
   emailStatements: (type: CardType) => `/email-statements/${type}`,
   makeRepayments: '/make-repayments',
+  makeRepaymentsVerifyOtp: '/make-repayments/verify-otp',
+  makeRepaymentsVerifyOtpSuccess: '/make-repayments/verify-otp/success',
 
   // Limit setting
   limitSetting: '/limit-setting',

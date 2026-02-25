@@ -84,16 +84,33 @@ export default function TransactionReceipt({ transactionId }: TransactionReceipt
     )
   }
 
-  const handleShare = () => {
+  const handleShare = async () => {
     haptic('medium')
-    if (navigator.share) {
-      navigator.share({
-        title: 'Transaction Receipt',
-        text: `${transaction.merchantName} - ${transaction.isDebit ? '-' : '+'}N ${transaction.amount} (${transaction.status})`,
-      })
+
+    const shareData = {
+      title: 'Transaction Receipt',
+      text: `${transaction.merchantName} - ${transaction.isDebit ? '-' : '+'}N ${transaction.amount} (${transaction.status})`,
+      url: window.location.href,
+    }
+
+    try {
+      if (navigator.share && navigator.canShare?.(shareData)) {
+        await navigator.share(shareData)
+      } else {
+        // Fallback: copy to clipboard
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          await navigator.clipboard.writeText(
+            `${shareData.title}\n${shareData.text}\n${shareData.url}`
+          )
+          alert('Receipt copied to clipboard')
+        } else {
+          alert('Sharing is not supported on this device')
+        }
+      }
+    } catch (err) {
+      console.error('Share failed:', err)
     }
   }
-
   const handleDownload = () => {
     haptic('medium')
     // Placeholder for receipt download

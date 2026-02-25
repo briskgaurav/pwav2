@@ -1,3 +1,4 @@
+
 'use client'
 import Image from 'next/image'
 import React, { useState } from 'react'
@@ -23,10 +24,14 @@ export default function EmailStatements() {
   const [toDate, setToDate] = useState<string>('')
   const [showPopup, setShowPopup] = useState(false)
   const [datePickerOpen, setDatePickerOpen] = useState<'from' | 'to' | null>(null)
+  const [successMessage, setSuccessMessage] = useState(false)
+  const [dateError, setDateError] = useState<string>('')
 
   const handleSelect = (option: 'mini' | 'custom') => {
     haptic('light')
     setSelectedOption(option)
+    setSuccessMessage(false)
+    setDateError('')
   }
 
   const formatDateDisplay = (dateString: string) => {
@@ -44,17 +49,57 @@ export default function EmailStatements() {
 
   const handleDateSelect = (date: Date, field: 'from' | 'to') => {
     const iso = date.toISOString().split('T')[0]
+    const today = new Date().toISOString().split('T')[0]
+    
+    // Validate date is not in the future
+    if (iso > today) {
+      setDateError('Date cannot be in the future')
+      setDatePickerOpen(null)
+      return
+    }
+    
+    setDateError('')
+    
     if (field === 'from') {
       setFromDate(iso)
-      if (toDate && iso > toDate) setToDate(iso)
+      // If toDate exists and fromDate is after toDate, reset toDate
+      if (toDate && iso > toDate) {
+        setToDate('')
+      }
     } else {
+      // Validate toDate is not before fromDate
+      if (fromDate && iso < fromDate) {
+        setDateError('To date cannot be before From date')
+        setDatePickerOpen(null)
+        return
+      }
       setToDate(iso)
     }
     setDatePickerOpen(null)
   }
 
+  const validateDates = (): boolean => {
+    if (selectedOption === 'custom') {
+      if (!fromDate || !toDate) {
+        setDateError('Please select both From and To dates')
+        return false
+      }
+      if (fromDate > toDate) {
+        setDateError('From date cannot be after To date')
+        return false
+      }
+    }
+    setDateError('')
+    return true
+  }
+
   const handleSendEmail = () => {
+    if (!validateDates()) {
+      haptic('light')
+      return
+    }
     haptic('light')
+    setSuccessMessage(true)
     setShowPopup(true)
   }
 
@@ -123,13 +168,17 @@ export default function EmailStatements() {
             </button>
           </div>
 
+          {dateError && (
+            <p className='text-red-500 text-sm text-center'>{dateError}</p>
+          )}
+
           <DatePickerModal
             visible={datePickerOpen === 'from'}
             onClose={() => setDatePickerOpen(null)}
             onSelect={(date) => handleDateSelect(date, 'from')}
             title='Select From Date'
             selectedDate={fromDate ? new Date(fromDate + 'T12:00:00') : undefined}
-            maxDate={toDate ? new Date(toDate + 'T12:00:00') : undefined}
+            maxDate={new Date()}
           />
           <DatePickerModal
             visible={datePickerOpen === 'to'}
@@ -138,7 +187,12 @@ export default function EmailStatements() {
             title='Select To Date'
             selectedDate={toDate ? new Date(toDate + 'T12:00:00') : undefined}
             minDate={fromDate ? new Date(fromDate + 'T12:00:00') : undefined}
+            maxDate={new Date()}
           />
+
+          {/* {successMessage && (
+            <p className='text-green-600 text-sm text-center'>Statements sent on your registered mail address</p>
+          )} */}
 
           <Button variant='primary' size='lg' fullWidth onClick={handleSendEmail}>
             Send to Registered Email

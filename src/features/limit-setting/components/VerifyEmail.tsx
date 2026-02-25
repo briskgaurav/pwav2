@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { SheetContainer, Button } from '@/components/ui';
+import { SheetContainer, Button, OTPKeypad, OtpInput } from '@/components/ui';
 import { notifyNavigation, notifyUserCancelled } from '@/lib/bridge';
 import gsap from 'gsap';
-import OtpInput from '@/components/ui/OtpInput';
 
 const MAX_CODE_LENGTH = 6;
 
@@ -50,6 +49,16 @@ export default function VerifyEmailScreen() {
         // TODO: Implement resend OTP API call
     };
 
+    const handleKeypadKey = (key: string) => {
+        if (key === 'del') {
+            setCode((prev) => prev.slice(0, -1));
+            return;
+        }
+
+        if (!/^\d$/.test(key)) return;
+        setCode((prev) => (prev.length < MAX_CODE_LENGTH ? prev + key : prev));
+    };
+
     const handlePopupOk = () => {
         // Animate out
         gsap.to(popupContentRef.current, {
@@ -78,9 +87,9 @@ export default function VerifyEmailScreen() {
 
             <SheetContainer>
                 <div className="flex-1 flex flex-col">
-                    <div className='flex flex-col flex-1 items-center justify-center h-full'>
+                    <div className='flex flex-col h-1/2 py-10 overflow-y-auto items-center justify-center '>
 
-                        <div className="p-6 flex-1 py-10 px-5 text-center flex flex-col items-center gap-2">
+                        <div className="p-6 flex-1  px-5 text-center flex flex-col items-center gap-2">
                             <h2 className="text-xl font-semibold text-text-primary m-0">
                                 Verify your Registered Email
                             </h2>
@@ -97,32 +106,38 @@ export default function VerifyEmailScreen() {
                             <OtpInput
                                 length={6}
                                 boxSize='55px'
+                                value={code}
                                 onChange={setCode}
                             />
+
+                        </div>
+                        <div className='p-6 pb-10 w-full text-center'>
+                            <Button
+                                className="mt-8"
+                                fullWidth
+                                onClick={handleContinue}
+                                disabled={!isCodeComplete || isVerifying}
+                            >
+                                {isVerifying ? 'Verifying...' : 'Continue'}
+                            </Button>
+
+                            <p className="mt-3 text-sm ">
+                                Didn&apos;t receive the Code?{' '}
+                                <button
+                                    onClick={handleResend}
+                                    className="bg-transparent border-none text-primary font-semibold cursor-pointer p-0 text-sm"
+                                    type="button"
+                                >
+                                    Resend
+                                </button>
+                            </p>
                         </div>
 
                     </div>
 
-                    <div className='p-6 pb-10 text-center'>
-                        <Button
-                            className="mt-8"
-                            fullWidth
-                            onClick={handleContinue}
-                            disabled={!isCodeComplete || isVerifying}
-                        >
-                            {isVerifying ? 'Verifying...' : 'Continue'}
-                        </Button>
 
-                        <p className="mt-3 text-sm ">
-                            Didn&apos;t receive the Code?{' '}
-                            <button
-                                onClick={handleResend}
-                                className="bg-transparent border-none text-primary font-semibold cursor-pointer p-0 text-sm"
-                                type="button"
-                            >
-                                Resend
-                            </button>
-                        </p>
+                    <div className="h-fit t-10 w-full">
+                        <OTPKeypad onKeyPress={handleKeypadKey} />
                     </div>
                 </div>
             </SheetContainer>

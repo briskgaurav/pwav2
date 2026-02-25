@@ -17,6 +17,8 @@ export type SuccessScreenProps = {
   buttonText?: string;
   /** Custom button action; when set, card preview and default "Activate Now" are hidden */
   onButtonClick?: () => void;
+  /** Show card preview */
+  showCardPreview?: boolean;
 };
 
 export default function SuccessScreen({
@@ -24,6 +26,7 @@ export default function SuccessScreen({
   description,
   buttonText,
   onButtonClick,
+  showCardPreview = true,
 }: SuccessScreenProps = {}) {
   const isCustom = Boolean(onButtonClick);
 
@@ -67,7 +70,7 @@ export default function SuccessScreen({
           </div>
 
           {/* Card preview - only for default card issuance flow */}
-          {!isCustom && (
+          {!isCustom && showCardPreview && (
             <div>
               <p className="text-[15px] pl-4 text-text-primary w-full text-left leading-normal m-0">
                 Your Instacard is Ready for Activation.

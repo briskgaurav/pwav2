@@ -7,6 +7,7 @@ export { OTPKeypad } from './otp-keypad'
 export { RadioOption } from './radio-option'
 export { RadioOption2 } from './RadioButton2'
 export { SheetContainer } from './sheet-container'
+export { Dropdown } from './Dropdown'
 
 // Default-exported UI components
 export { default as Balance } from './Balance'

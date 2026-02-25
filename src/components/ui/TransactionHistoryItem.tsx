@@ -1,120 +1,34 @@
+
+import { TRANSACTION_HISTORY_DATA } from '@/store/TransactionHistory'
 import React from 'react'
 
-interface Transaction {
-  id: string
-  name: string
-  date: string
-  amount: string
-  initial: string
-  color: string
+// Helper function to group transactions by month
+function groupTransactionsByMonth(transactions: typeof TRANSACTION_HISTORY_DATA) {
+  const groups: { [key: string]: typeof TRANSACTION_HISTORY_DATA } = {}
+  
+  transactions.forEach((transaction) => {
+    // Extract month and year from date string (e.g., "Jan 01 , 2025 | 8:00 PM")
+    const datePart = transaction.date.split('|')[0].trim()
+    const monthYear = datePart.replace(/\d+\s*,?\s*/, '').trim() // Gets "Jan 2025" format
+    
+    if (!groups[monthYear]) {
+      groups[monthYear] = []
+    }
+    groups[monthYear].push(transaction)
+  })
+  
+  return Object.entries(groups).map(([label, transactions]) => ({
+    label,
+    transactions
+  }))
 }
-
-interface TransactionGroup {
-  label: string
-  transactions: Transaction[]
-}
-
-const transactionData: TransactionGroup[] = [
-  {
-    label: 'Yesterday',
-    transactions: [
-      {
-        id: '1',
-        name: 'Google Cloud',
-        date: 'Jan 01 , 2025 | 8:00 PM',
-        amount: '- N 23,670',
-        initial: 'G',
-        color: 'bg-orange'
-      }
-    ]
-  },
-  {
-    label: 'Nov 2025',
-    transactions: [
-      {
-        id: '2',
-        name: 'Amazon',
-        date: 'Nov 30, 2024 | 8:45 PM',
-        amount: '- N 72,107',
-        initial: 'A',
-        color: 'bg-gray-400'
-      },
-      {
-        id: '3',
-        name: 'Chatgpt',
-        date: 'Nov 24, 2024 | 9:45 PM',
-        amount: '- N 55,000',
-        initial: 'C',
-        color: 'bg-black'
-      }
-    ]
-  },
-  {
-    label: 'October 2025',
-    transactions: [
-      {
-        id: '4',
-        name: 'Amazon Prime',
-        date: 'Oct 15, 2024 | 10:00 AM',
-        amount: '- N 12,107',
-        initial: 'A',
-        color: 'bg-red-500'
-      }
-    ]
-  },
-  {
-    label: 'Yesterday',
-    transactions: [
-      {
-        id: '5',
-        name: 'Google Cloud',
-        date: 'Jan 01 , 2025 | 8:00 PM',
-        amount: '- N 23,670',
-        initial: 'G',
-        color: 'bg-orange'
-      }
-    ]
-  },
-  {
-    label: 'Nov 2025',
-    transactions: [
-      {
-        id: '6',
-        name: 'Amazon',
-        date: 'Nov 30, 2024 | 8:45 PM',
-        amount: '- N 72,107',
-        initial: 'A',
-        color: 'bg-gray-400'
-      },
-      {
-        id: '7',
-        name: 'Chatgpt',
-        date: 'Nov 24, 2024 | 9:45 PM',
-        amount: '- N 55,000',
-        initial: 'C',
-        color: 'bg-black'
-      }
-    ]
-  },
-  {
-    label: 'October 2025',
-    transactions: [
-      {
-        id: '8',
-        name: 'Amazon Prime',
-        date: 'Oct 15, 2024 | 10:00 AM',
-        amount: '- N 12,107',
-        initial: 'A',
-        color: 'bg-red-500'
-      }
-    ]
-  }
-]
 
 export default function TransactionHistoryItem() {
+  const groupedTransactions = groupTransactionsByMonth(TRANSACTION_HISTORY_DATA)
+  
   return (
     <>
-      {transactionData.map((group, groupIndex) => (
+      {groupedTransactions.map((group, groupIndex) => (
         <div key={`${group.label}-${groupIndex}`} className='pt-3  pb-3 border-b border-text-primary/10'>
           <p className='text-xs text-text-secondary'>{group.label}</p>
           
@@ -129,7 +43,7 @@ export default function TransactionHistoryItem() {
                   <p className='text-xs text-text-secondary'>{transaction.date}</p>
                 </div>
               </div>
-              <p className='text-sm text-error font-semibold'>{transaction.amount}</p>
+              <p className={`text-sm font-semibold ${transaction.type === 'credit' ? 'text-green-500' : 'text-error'}`}>{transaction.amount}</p>
             </div>
           ))}
         </div>

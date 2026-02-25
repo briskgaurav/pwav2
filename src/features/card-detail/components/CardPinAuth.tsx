@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { SheetContainer, OTPInput, Button } from '@/components/ui'
+import { SheetContainer, OTPInput, OTPKeypad, Button } from '@/components/ui'
 import Image from 'next/image'
 import { useCardStore } from '@/store/useCardStore'
 import { PIN_LENGTH } from '@/lib/types'
@@ -41,6 +41,18 @@ export default function CardPinAuth({
     }
   }
 
+  const handleKeypadKey = (key: string) => {
+    setError('')
+
+    if (key === 'del') {
+      setPin((prev) => prev.slice(0, -1))
+      return
+    }
+
+    if (!/^\d$/.test(key)) return
+    setPin((prev) => (prev.length < PIN_LENGTH ? prev + key : prev))
+  }
+
   const isComplete = pin.length === PIN_LENGTH
   useEffect(() => {
     if (pin.length === PIN_LENGTH) {
@@ -50,8 +62,8 @@ export default function CardPinAuth({
 
   return (
     <SheetContainer>
-      <div className="flex-1 flex flex-col h-full overflow-y-auto" dir={isRtl ? 'rtl' : 'ltr'}>
-        <div className="flex flex-col items-center gap-4 py-8 flex-1">
+      <div className=" flex flex-col h-fit overflow-y-auto" dir={isRtl ? 'rtl' : 'ltr'}>
+        <div className="flex flex-col h-1/2 overflow-y-auto items-center gap-4 py-8 flex-1">
           <p className="text-md text-center text-text-primary">
             {title}
           </p>
@@ -74,31 +86,39 @@ export default function CardPinAuth({
             <p className="text-md text-center text-text-primary">
               {t('cardPinAuth.enterYourPin')}
             </p>
-            <OTPInput resetKey={resetKey} value={pin} maxLength={PIN_LENGTH} onChange={setPin} />
+            <OTPInput
+              useDots
+              resetKey={resetKey}
+              value={pin}
+              maxLength={PIN_LENGTH}
+              onChange={setPin}
+            />
             <div className="h-4">
               {error && (
                 <p className="text-xs text-red-500 text-center">{error}</p>
               )}
             </div>
           </div>
+          <div className="w-full flex flex-col items-center py-6 gap-3 px-6 shrink-0">
+            <Button
+              fullWidth
+              onClick={handleContinue}
+              disabled={!isComplete}
+            >
+              {t('cardPinAuth.continue')}
+            </Button>
+            <button
+              type="button"
+              onClick={() => router.push('/forget-pin')}
+              className="text-xs text-primary bg-transparent border-none cursor-pointer"
+            >
+              {t('cardPinAuth.forgotPin')}
+            </button>
+          </div>
 
         </div>
-        <div className="w-full flex flex-col items-center py-6 gap-3 px-6 shrink-0">
-          <Button
-            fullWidth
-            onClick={handleContinue}
-            disabled={!isComplete}
-          >
-            {t('cardPinAuth.continue')}
-          </Button>
-          <button
-            type="button"
-            onClick={() => router.push('/forget-pin')}
-            className="text-xs text-primary bg-transparent border-none cursor-pointer"
-          >
-            {t('cardPinAuth.forgotPin')}
-          </button>
-        </div>
+
+        <OTPKeypad onKeyPress={handleKeypadKey} />
 
 
       </div>

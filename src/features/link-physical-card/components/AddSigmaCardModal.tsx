@@ -190,7 +190,7 @@ export default function AddSigmaCardModal({ visible, onClose, onSubmit }: AddSig
                             style={{ color: InstacardColors.textPrimary }}
                             inputMode="numeric"
                         />
-                        <div className="absolute right-4 p-3 top-1/2 -translate-y-1/2">
+                        <div className="absolute right-4 flex items-center gap-4 p-3 top-1/2 -translate-y-1/2">
                             <Image
                                 src="/svg/mastercard.svg"
                                 alt="Mastercard"
@@ -198,6 +198,7 @@ export default function AddSigmaCardModal({ visible, onClose, onSubmit }: AddSig
                                 height={30}
                                 className="object-contain h-full w-auto"
                             />
+                              <Image onClick={() => router.push(routes.faceVerification)} src='/svg/scan.svg' alt='scan' width={40} height={24} className='object-contain invert h-5 w-auto' />
                         </div>
                     </div>
 

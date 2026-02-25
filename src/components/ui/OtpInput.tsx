@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 type OtpInputProps = {
   length: 4 | 8 | 6,
+  value?: string
   onChange?: (value: string) => void
   onComplete?: (value: string) => void
   autoFocus?: boolean
@@ -11,6 +12,7 @@ type OtpInputProps = {
 
 const OtpInput: React.FC<OtpInputProps> = ({
   length,
+  value,
   onChange,
   onComplete,
   autoFocus = true,
@@ -24,6 +26,20 @@ const OtpInput: React.FC<OtpInputProps> = ({
       inputRefs.current[0]?.focus()
     }
   }, [autoFocus])
+
+  // Sync external value (e.g. keypad input) into internal OTP boxes
+  useEffect(() => {
+    if (value == null) return
+    if (value.length > length) return
+
+    const current = otp.join('')
+    if (current === value) return
+
+    const next = Array(length)
+      .fill('')
+      .map((_, i) => value[i] ?? '')
+    setOtp(next)
+  }, [value, length, otp])
 
   const updateOtp = (newOtp: string[]) => {
     setOtp(newOtp)
@@ -78,7 +94,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
                 inputRefs.current[index] = el
               }}
               type='text'
-              inputMode='numeric'
+              inputMode='none'
               maxLength={1}
               value={otp[index] ?? ''}
               onChange={(e) => handleChange(index, e.target.value)}

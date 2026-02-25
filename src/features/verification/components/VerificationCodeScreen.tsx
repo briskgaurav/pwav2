@@ -24,7 +24,7 @@ export default function VerificationCodeScreen({
   subtitle,
   maskedValue,
   successRoute,
-  showKeypad = false,
+  showKeypad = true,
 }: VerificationCodeScreenProps) {
   const router = useRouter()
   const [code, setCode] = useState('')
@@ -103,11 +103,11 @@ export default function VerificationCodeScreen({
                     Resend
                   </button>
                 </p>
-                <div className="w-full mt-auto">
-                  <OTPKeypad onKeyPress={handleKeyPress} />
-                </div>
               </div>
             </div>
+          </div>
+          <div className="w-full mt-auto">
+            <OTPKeypad onKeyPress={handleKeyPress} />
           </div>
         </SheetContainer>
       </div>
