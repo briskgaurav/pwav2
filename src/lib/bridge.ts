@@ -188,6 +188,52 @@ export function listenForLanguageChanges(
 }
 
 /**
+ * Read the initial theme from all available sources (priority order):
+ * 1. URL param `?theme=`
+ * 2. localStorage
+ * 3. Default to 'light'
+ */
+export function getInitialTheme(): 'light' | 'dark' {
+  if (typeof window === 'undefined') return 'light';
+
+  const urlTheme = new URLSearchParams(window.location.search).get('theme');
+  if (urlTheme === 'light' || urlTheme === 'dark') return urlTheme;
+
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light' || saved === 'dark') return saved;
+
+  return 'light';
+}
+
+/**
+ * Start listening for SET_THEME messages from Expo.
+ * Returns a cleanup function to remove the listener.
+ */
+export function listenForThemeChanges(
+  onThemeChange: (theme: 'light' | 'dark', isDarkMode: boolean) => void
+): () => void {
+  const handler = (event: MessageEvent) => {
+    try {
+      const data =
+        typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+
+      if (data?.type === 'SET_THEME') {
+        const theme = data.theme === 'dark' ? 'dark' : 'light';
+        const isDarkMode = data.isDarkMode ?? theme === 'dark';
+        console.log('[PWA] Theme received from Expo:', theme, 'isDarkMode:', isDarkMode);
+        localStorage.setItem('theme', theme);
+        onThemeChange(theme, isDarkMode);
+      }
+    } catch {
+      // ignore non-JSON messages
+    }
+  };
+
+  window.addEventListener('message', handler);
+  return () => window.removeEventListener('message', handler);
+}
+
+/**
  * Validate JWT token (basic client-side validation).
  * Full validation should happen server-side.
  */

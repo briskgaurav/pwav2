@@ -64,9 +64,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body className={helveticaNeue.className}>
+      <body className={helveticaNeue.className} >
         <AuthProvider>
-          <main>{children}</main>
+          <main className=''>{children}</main>
         </AuthProvider>
       </body>
     </html>

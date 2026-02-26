@@ -9,6 +9,8 @@ import {
   isValidToken,
   getInitialLanguage,
   listenForLanguageChanges,
+  getInitialTheme,
+  listenForThemeChanges,
 } from './bridge';
 import i18n from './i18n';
 
@@ -18,6 +20,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   error: string | null;
   language: string;
+  theme: 'light' | 'dark';
+  isDarkMode: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -26,6 +30,8 @@ const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   error: null,
   language: 'en',
+  theme: 'light',
+  isDarkMode: false,
 });
 
 function FallbackLoader() {
@@ -79,7 +85,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return lang;
   });
 
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window === 'undefined') return 'light';
+    return getInitialTheme();
+  });
+
   const [isLanguageLoaded, setIsLanguageLoaded] = useState(false);
+
+  const isDarkMode = theme === 'dark';
 
   useEffect(() => {
     if (notify.type === 'ready') {
@@ -104,6 +117,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  useEffect(() => {
+    return listenForThemeChanges((newTheme) => {
+      setTheme(newTheme);
+    });
+  }, []);
+
+  // Apply Tailwind dark mode class based on current theme
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
   if (!isLanguageLoaded) {
     return <FallbackLoader />;
   }
@@ -116,6 +145,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!config && !error,
         error,
         language,
+        theme,
+        isDarkMode,
       }}
     >
       {children}

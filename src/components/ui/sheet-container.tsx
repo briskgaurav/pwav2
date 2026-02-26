@@ -10,10 +10,10 @@ interface SheetContainerProps {
 export function SheetContainer({ children }: SheetContainerProps) {
   return (
     <div
-      className="sheet-container  "
+      className="sheet-container bg-white "
+      
       style={{
         flex: 1,
-        backgroundColor: InstacardColors.white,
         borderTopLeftRadius: 24,
         borderTopRightRadius: 24,
         marginTop: -16,

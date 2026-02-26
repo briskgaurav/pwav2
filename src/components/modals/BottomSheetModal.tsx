@@ -124,9 +124,8 @@ export default function BottomSheetModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? 'bottom-sheet-modal-title' : undefined}
-        className="relative w-full bg-white  rounded-t-[28px] border-border border overflow-hidden"
+        className="relative w-full bg-white bg-white rounded-t-[28px] border-border border overflow-hidden"
         style={{
-          backgroundColor: InstacardColors.white,
           maxHeight: `${maxHeightVh}vh`,
         }}
       >
@@ -146,8 +145,7 @@ export default function BottomSheetModal({
               <div className="flex items-center px-5 justify-between">
                 <h2
                   id="bottom-sheet-modal-title"
-                  className="text-sm font-normal flex-1 leading-5"
-                  style={{ color: InstacardColors.textPrimary }}
+                  className="text-sm font-normal flex-1 text-text-primary leading-5"
                 >
                   {title}
                 </h2>
