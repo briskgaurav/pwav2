@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { Button, RadioOption, SheetContainer } from '@/components/ui'
+import { ICONS } from '@/constants/icons'
 import { RadioOption2 } from '@/components/ui/RadioButton2'
 import { routes } from '@/lib/routes'
 import { useRouter } from 'next/navigation'
@@ -32,7 +33,7 @@ export default function page() {
                             selected={selectedOption === 'phone'}
                             onSelect={() => setSelectedOption('phone')}
                             accessibilityLabel="Verify with phone number"
-                            icon="/svg/chats.svg"
+                            icon={ICONS.chat}
                         />
 
                         <RadioOption
@@ -40,7 +41,7 @@ export default function page() {
                             selected={selectedOption === 'email'}
                             onSelect={() => setSelectedOption('email')}
                             accessibilityLabel="Verify with email"
-                            icon="/svg/mail.svg"
+                            icon={ICONS.mail}
                         />
                     </div>
                 </div>

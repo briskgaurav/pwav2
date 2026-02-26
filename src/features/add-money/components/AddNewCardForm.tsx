@@ -3,6 +3,7 @@
 import { Checkbox } from '@/components/ui'
 import Image from 'next/image'
 import React, { useMemo, useState } from 'react'
+import { ICONS } from '@/constants/icons'
 import { Info } from 'lucide-react'
 
 export interface AddNewCardFormValues {
@@ -29,7 +30,7 @@ export function AddNewCardForm({ initialValues, onChange }: AddNewCardFormProps)
         saveCard: initialValues?.saveCard ?? true,
     })
 
-    const visaIcon = useMemo(() => '/svg/visa.svg', [])
+    const visaIcon = useMemo(() => ICONS.visa, [])
 
     const update = (patch: Partial<AddNewCardFormValues>) => {
         setValues((prev) => {

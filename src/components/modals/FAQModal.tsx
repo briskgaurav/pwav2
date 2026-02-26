@@ -1,6 +1,5 @@
 'use client'
 
-import { InstacardColors } from '@/constants/colors'
 import { X, CreditCard } from 'lucide-react'
 import React, { useCallback, useEffect, useRef } from 'react'
 import gsap from 'gsap'
@@ -127,12 +126,11 @@ export default function FAQModal({ visible, onClose, data = DEFAULT_FAQ_DATA }: 
             {/* Modal */}
             <div
                 ref={modalRef}
-                className="relative w-full max-h-[75vh] bg-white border border-gray-200 rounded-t-[28px] overflow-hidden"
-                style={{ backgroundColor: InstacardColors.white }}
+                className="relative w-full max-h-[75vh] bg-white border border-border rounded-t-[28px] overflow-hidden"
             >
                 {/* Handle Indicator (Draggable trigger) */}
                 <div ref={handleRef} className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing">
-                    <div className="w-[42px] h-[5px] rounded-full bg-gray-300" />
+                    <div className="w-[42px] h-[5px] rounded-full bg-border" />
                 </div>
 
                 {/* Scrollable Content */}
@@ -141,9 +139,9 @@ export default function FAQModal({ visible, onClose, data = DEFAULT_FAQ_DATA }: 
                     <div className="flex items-center justify-between py-3">
                         <div className="flex items-center flex-1 gap-3">
                             <div className="w-9 h-9 flex items-center justify-center">
-                                <CreditCard size={30} color={InstacardColors.textPrimary} />
+                                <CreditCard size={30} className="text-text-primary" />
                             </div>
-                            <p className="text-sm font-normal flex-1 leading-5" style={{ color: InstacardColors.textPrimary }}>
+                            <p className="text-sm font-normal flex-1 leading-5 text-text-primary">
                                 {data.heading}
                             </p>
                         </div>
@@ -152,19 +150,19 @@ export default function FAQModal({ visible, onClose, data = DEFAULT_FAQ_DATA }: 
                             className="w-8 h-8 flex items-center justify-center font-semibold"
                             aria-label="Close"
                         >
-                            <X size={20} color={InstacardColors.textSecondary} />
+                            <X size={20} className="text-text-secondary" />
                         </button>
                     </div>
 
                     {/* Divider */}
-                    <div className="h-px bg-gray-200 my-4" />
+                    <div className="h-px bg-border my-4" />
 
                     {/* Bullet Points */}
                     <div className="space-y-5">
                         {data.bulletPoints.map((point: string, index: number) => (
                             <div key={index} className="flex items-start gap-2">
-                                <span className="text-[22px] -translate-y-2" style={{ color: InstacardColors.textPrimary }}>•</span>
-                                <p className="text-sm leading-4 flex-1" style={{ color: InstacardColors.textPrimary }}>{point}</p>
+                                <span className="text-[22px] -translate-y-2 text-text-primary">•</span>
+                                <p className="text-sm leading-4 flex-1 text-text-primary">{point}</p>
                             </div>
                         ))}
                     </div>

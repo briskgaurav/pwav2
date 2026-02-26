@@ -1,6 +1,8 @@
+import { useAuth } from '@/lib/auth-context'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import { BlockUnblockIcon, ICONS, LimitationsIcon, PinIcon } from '@/constants/icons'
 
 type CardMockupProps = {
     isclickable?: boolean
@@ -16,6 +18,7 @@ export default function CardMockup({
     showActions = false,
 
 }: CardMockupProps) {
+    const {isDarkMode} = useAuth()
     return (
         <div className='relative'>
             {isclickable ? <Link href={'/make-online-payments'} className="flex relative items-center pt-5 justify-center">
@@ -35,13 +38,13 @@ export default function CardMockup({
                     <div className='w-full  flex items-start justify-between pt-6 px-5  h-fit '>
 
                         {[
-                            { icon: '/svg/limitations.svg', title: 'Limit Setting', href: '/limit-setting' },
-                            { icon: '/svg/pin.svg', title: 'PIN Change', href: '/pin-change' },
-                            { icon: '/svg/block-unblock.svg', title: 'Block/Unblock Card', href: '/card-status' },
+                            { icon: <LimitationsIcon />, title: 'Limit Setting', href: '/limit-setting' },
+                            { icon: <PinIcon />, title: 'PIN Change', href: '/pin-change' },
+                            { icon: <BlockUnblockIcon />, title: 'Block/Unblock Card', href: '/card-status' },
                         ].map((item, index) => (
                             <Link href={item.href} key={index} className='aspect-square shrink-0 flex flex-col gap-2 items-center justify-center  '>
-                                <div className='w-16 h-16 p-4.5 flex items-center rounded-full justify-center aspect-square bg-background2'>
-                                    <Image src={item.icon} alt={item.title} className='h-full w-full object-contain' width={20} height={20} />
+                                <div className='w-16 h-16 p-4.5 flex items-center rounded-full text-text-primary justify-center aspect-square bg-background2'>
+                                    {item.icon}
                                 </div>
                                 <p className='text-text-primary max-w-[70px] leading-[1.2] text-[12px]  w-full text-center '>{item.title}</p>
                             </Link>

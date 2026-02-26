@@ -1,5 +1,6 @@
 'use client'
 import { SheetContainer, Button } from '@/components/ui'
+import { ICONS } from '@/constants/icons'
 import { RadioOption2 } from '@/components/ui/RadioButton2'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -7,8 +8,8 @@ import { routes } from '@/lib/routes'
 import React, { useState } from 'react'
 
 const VERIFICATION_OPTIONS = [
-  { id: 'phone', label: '+234802**** 0955', icon: '/svg/chats.svg' },
-  { id: 'email', label: 'nird***malik@gmail.com', icon: '/svg/msg.svg' },
+  { id: 'phone', label: '+234802**** 0955', icon: ICONS.chat },
+  { id: 'email', label: 'nird***malik@gmail.com', icon: ICONS.message },
 ] as const
 
 type VerificationOption = (typeof VERIFICATION_OPTIONS)[number]['id']
@@ -50,7 +51,7 @@ export default function page() {
             <div className='border flex gap-10 items-center justify-center border-text-primary/20 rounded-2xl p-4'>
 
               <div className='h-auto w-22 rounded-lg overflow-hidden aspect-[1.58] '>
-                <Image src='/svg/debitcard.svg' alt='Mastercard' width={1000} height={1000} className='h-full w-full object-cover' />
+                <Image src={ICONS.debitCard} alt='Mastercard' width={1000} height={1000} className='h-full w-full object-cover' />
               </div>
               <p className='text-text-primary text-xs'>**** **** ****  1234 (Universal card)</p>
             </div>

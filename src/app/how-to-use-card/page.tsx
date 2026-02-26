@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo, Suspense } from 'react';
 import Image from 'next/image';
 import { SheetContainer, Button } from '@/components/ui';
+import { ICONS } from '@/constants/icons';
 import { notifyNavigation, notifyCardAdded } from '@/lib/bridge';
 import { ChevronDown } from 'lucide-react';
 import FAQModal from '@/components/modals/FAQModal';
@@ -191,7 +192,7 @@ const getCardActions = (cardType: CardType): Array<{
     route: string;
 }> => [
         {
-            icon: '/svg/managecard.svg',
+            icon: ICONS.manageCard,
             text: 'Manage Card',
             route: routes.manageCard(cardType),
             faqData: {
@@ -206,7 +207,7 @@ const getCardActions = (cardType: CardType): Array<{
             },
         },
         {
-            icon: '/svg/phone.svg',
+            icon: ICONS.phone,
             text: 'Link to a Physical Card',
             route: routes.linkPhysicalCard,
             faqData: {

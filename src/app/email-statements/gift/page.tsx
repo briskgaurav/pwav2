@@ -1,3 +1,4 @@
+'use client'
 import { SheetContainer } from '@/components/ui'
 import Balance from '@/components/ui/Balance'
 import CardMockup from '@/components/ui/CardMockup'

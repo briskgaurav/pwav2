@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { SheetContainer, RadioOption, Button } from '@/components/ui';
-import { InstacardColors } from '@/constants/colors';
 import { notifyNavigation } from '@/lib/bridge';
 import { haptic } from '@/lib/useHaptics';
 import { routes } from '@/lib/routes';
@@ -38,8 +37,7 @@ export default function SelectCardTypeScreen() {
       <SheetContainer>
         <div className="flex-1 overflow-auto p-6 py-10">
           <p
-            className="text-[4vw] leading-[1.4] mb-[5vw]"
-            style={{ color: InstacardColors.textPrimary }}
+            className="text-[4vw] text-text-primary leading-[1.4] mb-[5vw]"
           >
             Select the type of Instacard you would like to be issued
           </p>

@@ -1,5 +1,6 @@
 'use client'
 import { Button, SheetContainer } from '@/components/ui'
+import { ICONS } from '@/constants/icons'
 import Image from 'next/image'
 
 import { Copy } from 'lucide-react'
@@ -42,19 +43,19 @@ export default function page() {
 
                         <div className='flex items-center flex-col z-10 justify-center gap-5 py-6 w-full'>
                             <div className='flex items-center gap-2'>
-                                <p className='text-white text-2xl font-bold'>DS73488QDJ738</p>
+                                <p className='text-text-primary text-2xl font-bold'>DS73488QDJ738</p>
                             </div>
 
                             <div className='flex items-center justify-center gap-4'>
-                                <div className='h-fit py-2 px-4 flex items-center gap-2 border border-white rounded-full'>
+                                <div className='h-fit py-2 px-4 flex items-center gap-2 border border-text-primary rounded-full'>
                                     <span className='w-5 brightness-0 invert h-5 block'>
-                                        <Image className='object-contain h-full w-full' src="/svg/share.svg" alt="Share" width={20} height={20} />
+                                        <Image className='object-contain h-full w-full' src={ICONS.share} alt="Share" width={20} height={20} />
                                     </span>
                                     <p className='text-white text-xs font-medium'>Share Gift Card</p>
                                 </div>
-                                <div className='h-fit py-2 px-4 flex items-center gap-2 border border-white rounded-full'>
+                                <div className='h-fit py-2 px-4 flex items-center gap-2 border border-text-primary rounded-full'>
                                     <span className='w-5 brightness-0 invert h-5 block'>
-                                        <Image className='object-contain h-full w-full' src="/svg/mail.svg" alt="Download" width={20} height={20} />
+                                        <Image className='object-contain h-full w-full' src={ICONS.mail} alt="Download" width={20} height={20} />
                                     </span>
                                     <p className='text-white text-xs font-medium'>Download Card</p>
                                 </div>

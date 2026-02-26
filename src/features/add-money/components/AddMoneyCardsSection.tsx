@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import React from 'react'
+import { ICONS } from '@/constants/icons'
 
 export type CardType = 'sigma' | 'universal-1' | 'universal-2' | 'verve'
 
@@ -13,25 +14,25 @@ const CARD_OPTIONS: {
 }[] = [
     {
         id: 'sigma',
-        brandIcon: '/svg/visa.svg',
+    brandIcon: ICONS.visa,
         maskedNumber: '*** *** *** 7872',
         description: 'Sigma Card',
     },
     {
         id: 'universal-1',
-        brandIcon: '/svg/mastercard.svg',
+    brandIcon: ICONS.mastercard,
         maskedNumber: '*** *** *** 837',
         description: 'Universal Card',
     },
     {
         id: 'universal-2',
-        brandIcon: '/svg/visa.svg',
+    brandIcon: ICONS.visa,
         maskedNumber: '*** *** *** 9040',
         description: 'Universal Card',
     },
     {
         id: 'verve',
-        brandIcon: '/svg/verve.svg',
+    brandIcon: ICONS.verve,
         maskedNumber: '*** *** *** 837',
         description: 'Universal Card',
     },

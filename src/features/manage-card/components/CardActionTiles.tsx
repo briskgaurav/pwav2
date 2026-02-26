@@ -4,6 +4,7 @@ import Image from 'next/image'
 import FaqIconButton from '@/components/ui/FaqIconButton'
 import { cardActions } from '../constants'
 import { useManageCardStore } from '../store/useManageCardStore'
+import { useAuth } from '@/lib/auth-context'
 
 type CardActionTilesProps = {
   onActionClick: (action: typeof cardActions[number]) => void
@@ -11,7 +12,7 @@ type CardActionTilesProps = {
 
 export default function CardActionTiles({ onActionClick }: CardActionTilesProps) {
   const { openFaq } = useManageCardStore()
-
+  const {isDarkMode} = useAuth()
   return (
     <div className="flex w-full gap-2">
       {cardActions.map((action, index) => (
@@ -23,7 +24,7 @@ export default function CardActionTiles({ onActionClick }: CardActionTilesProps)
           <div className="flex h-[30%] items-center gap-2 w-full justify-between">
             <div>
               <div className="w-6 h-auto flex items-center justify-center aspect-square">
-                <Image src={action.icon} alt="icon" className='h-full w-full object-contain' width={24} height={24} />
+                <Image src={action.icon} alt="icon" className={`h-full w-full object-contain ${isDarkMode ? 'invert' : ''}`} width={24} height={24} />
               </div>
             </div>
             <FaqIconButton

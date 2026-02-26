@@ -90,10 +90,12 @@ const OtpInput: React.FC<OtpInputProps> = ({
             <input
               autoComplete="one-time-code"
               key={index}
+
               ref={(el) => {
                 inputRefs.current[index] = el
               }}
               type='text'
+              readOnly={true}
               inputMode='none'
               maxLength={1}
               value={otp[index] ?? ''}

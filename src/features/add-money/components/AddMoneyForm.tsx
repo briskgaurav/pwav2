@@ -2,6 +2,8 @@
 
 import { Button } from '@/components/ui'
 import InputField from '@/components/ui/InputField'
+import { AddCardIcon, ICONS } from '@/constants/icons'
+import { useAuth } from '@/lib/auth-context'
 import Image from 'next/image'
 import React from 'react'
 
@@ -19,6 +21,7 @@ export interface AddMoneyFormProps {
 
 export function AddMoneyForm({ amount, onAmountChange, onSelectRecommended, onOpenModal, showKycTier = true, btnTitle = 'Add Money', error }: AddMoneyFormProps) {
     const isButtonDisabled = !amount || amount.trim() === ''
+    const {isDarkMode} = useAuth()
 
     return (
         <div className='space-y-5 '>
@@ -38,14 +41,15 @@ export function AddMoneyForm({ amount, onAmountChange, onSelectRecommended, onOp
 
             <div className='border border-border rounded-2xl space-y-5 px-4 py-5'>
                 <div className='flex items-center gap-2'>
-                    <span className='w-6 h-6 block'>
-                        <Image
-                            src='/svg/addcard.svg'
+                    <span className={`w-6 h-6 block `}>
+                        {/* <Image
+                            src={ICONS.addCard}
                             alt='Wallet'
                             width={20}
                             height={20}
-                            className='size-full object-contain'
-                        />
+                            className='size-full text-text-primary object-contain'
+                        /> */}
+                        <AddCardIcon />
                     </span>
                     <p className='text-text-primary text-md font-medium'>Add Money</p>
                 </div>

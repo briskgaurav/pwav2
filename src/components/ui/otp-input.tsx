@@ -29,7 +29,7 @@ export function OTPInput({ value, maxLength, onChange, useDots = false, resetKey
       }
       const updatedValue = newValue.join('').slice(0, maxLength);
       onChange?.(updatedValue);
-      
+
       const nextIndex = Math.min(index + pastedDigits.length, maxLength - 1);
       inputRefs.current[nextIndex]?.focus();
       return;
@@ -38,7 +38,7 @@ export function OTPInput({ value, maxLength, onChange, useDots = false, resetKey
     const newValue = value.split('');
     newValue[index] = inputValue.slice(-1);
     const updatedValue = newValue.join('').slice(0, maxLength);
-    
+
     onChange?.(updatedValue);
 
     if (inputValue && index < maxLength - 1) {
@@ -61,7 +61,7 @@ export function OTPInput({ value, maxLength, onChange, useDots = false, resetKey
       inputRefs.current[nextIndex]?.focus();
     }
   };
- 
+
 
   return (
     <div
@@ -69,10 +69,12 @@ export function OTPInput({ value, maxLength, onChange, useDots = false, resetKey
       style={{
         display: 'flex',
         gap: 10,
+        width: '100%',          // ⭐ important
+        paddingLeft: 20,        // same as px-5 (optional)
+        paddingRight: 20,       // same as px-5 (optional)
+        boxSizing: 'border-box',
         justifyContent: 'center',
       }}
-      aria-label={`Verification code: ${value.length} of ${maxLength} digits entered`}
-      onPaste={handlePaste}
     >
       {digits.map((digit, index) => (
         <input
@@ -81,29 +83,16 @@ export function OTPInput({ value, maxLength, onChange, useDots = false, resetKey
           ref={(el) => { inputRefs.current[index] = el; }}
           type={useDots ? 'password' : 'tel'}
           inputMode="none"
-          // readOnly={true}
+          readOnly={true}
           
           maxLength={1}
           value={digit}
           onChange={(e) => handleChange(index, e.target.value)}
           onKeyDown={(e) => handleKeyDown(index, e)}
-          
+
           onPaste={handlePaste}
-          
-          style={{
-            width: 55,
-            height: 55,
-            borderRadius: 10,
-            border: '1px solid var(--text-primary, #111)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 16,
-            fontWeight: 600,
-            color: 'var(--text-primary, #333)',
-            textAlign: 'center',
-            outline: 'none',
-          }}
+
+          className="w-12 h-12 rounded-[10px] border border-text-primary flex items-center justify-center text-base font-semibold text-text-primary text-center outline-none"
         />
       ))}
     </div>

@@ -89,7 +89,7 @@ export default function SigmaCardOptionsScreen() {
                     </Link>
                     <button
                         onClick={() => setShowAddCardModal(true)}
-                        className={`border-primary border  p-4  gap-2 text-center text-black flex items-center justify-center rounded-full w-full `}
+                        className={`border-primary border  p-4  gap-2 text-center text-text-primary flex items-center justify-center rounded-full w-full `}
                     >
                         <PlusIcon /> <p>
                             Add New Universal Instacard

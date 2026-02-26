@@ -1,10 +1,10 @@
 'use client';
 
-import { InstacardColors } from '@/constants/colors';
 import { X } from 'lucide-react';
 import React, { useCallback, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import Draggable from 'gsap/dist/Draggable';
+import { useAuth } from '@/lib/auth-context';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(Draggable);
@@ -31,6 +31,7 @@ export default function BottomSheetModal({
   const backdropRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<Draggable[]>([]);
+  const { isDarkMode } = useAuth();
 
   const handleClose = useCallback(() => {
     if (modalRef.current && backdropRef.current) {
@@ -124,7 +125,7 @@ export default function BottomSheetModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? 'bottom-sheet-modal-title' : undefined}
-        className="relative w-full bg-white bg-white rounded-t-[28px] border-border border overflow-hidden"
+        className="relative w-full bg-white  rounded-t-[28px] border border-border overflow-hidden"
         style={{
           maxHeight: `${maxHeightVh}vh`,
         }}
@@ -163,11 +164,11 @@ export default function BottomSheetModal({
                   className="w-8 h-8 flex items-center justify-center"
                   aria-label="Close"
                   >
-                  <X size={20} color={InstacardColors.textSecondary} />
+                  <X size={20} color={isDarkMode ? 'white' : 'text-text-secondary'} />
                 </button>
                   </div>
               </div>
-              <div className="h-px bg-gray-200 my-4" />
+              <div className="h-px bg-border my-4" />
             </>
           )}
           <div className='px-5 space-y-2'>

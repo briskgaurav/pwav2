@@ -2,6 +2,7 @@
 
 import React, { useRef, useState } from 'react'
 import Image from 'next/image'
+import { ICONS } from '@/constants/icons'
 import gsap from 'gsap'
 import { haptic } from '@/lib/useHaptics'
 
@@ -78,7 +79,7 @@ export default function EyeButton({ isVisible, onToggle, size = 'md', className 
       <div ref={iconRef} className={sizeClasses}>
         <Image
           className='h-full w-full object-contain'
-          src={displayVisible ? '/svg/eyeopen.svg' : '/svg/eyeclose.svg'}
+          src={displayVisible ? ICONS.eyeOpen : ICONS.eyeClose}
           alt={displayVisible ? 'Hide' : 'Show'}
           width={imageSize}
           height={imageSize}

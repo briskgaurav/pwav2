@@ -1,7 +1,6 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { InstacardColors } from '@/constants/colors';
 
 interface SheetContainerProps {
   children: ReactNode;

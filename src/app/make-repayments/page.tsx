@@ -1,3 +1,4 @@
+'use client'
 import CardMockup from '@/components/ui/CardMockup'
 import MakeRepayment from '@/components/ui/MakeRepayment'
 import { SheetContainer } from '@/components/ui/sheet-container'

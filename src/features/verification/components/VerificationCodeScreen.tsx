@@ -62,48 +62,39 @@ export default function VerificationCodeScreen({
 
   if (showKeypad) {
     return (
-      <div className="h-screen flex flex-col">
+      <div className="h-screen  flex flex-col">
         <SheetContainer>
+
+          {/* NEED PADDING MY INPUT BOXES NOT TAKING PADDING */}
           <div className="flex-1 flex flex-col">
-            <div className="flex flex-col flex-1 items-center justify-center h-full">
-              <div className="p-6 flex-1 py-10 px-5 text-center flex flex-col items-center justify-between gap-2">
-                <h2 className="text-xl font-semibold text-text-primary m-0">
-                  {title}
-                </h2>
-                <p className="text-sm text-text-primary m-0">
-                  {subtitle}
-                </p>
-                <p className="text-sm leading-none font-semibold text-text-primary m-0">
-                  {maskedValue}
-                </p>
-                <p className="text-sm text-text-primary m-0">
-                  Please check your messages and enter it here
-                </p>
+            <div className="flex flex-col justify-center px-5 py-10 text-center gap-3">
+              <h2 className="text-xl font-semibold text-text-primary">
+                {title}
+              </h2>
 
-                <div className="mt-4 mb-5">
-                  <OTPInput value={code} maxLength={MAX_CODE_LENGTH} />
-                </div>
+              <p className="text-sm text-text-primary">
+                {subtitle}
+              </p>
 
-                <Button
-                  className="mt-8"
-                  fullWidth
-                  onClick={handleContinue}
-                  disabled={!isCodeComplete || isVerifying}
-                >
-                  {isVerifying ? 'Verifying...' : 'Continue'}
-                </Button>
+              <p className="text-sm font-semibold text-text-primary">
+                {maskedValue}
+              </p>
 
-                <p className="mt-3 text-sm">
-                  Didn&apos;t receive the Code?{' '}
-                  <button
-                    onClick={handleResend}
-                    className="bg-transparent border-none text-primary font-semibold cursor-pointer p-0 text-sm"
-                    type="button"
-                  >
-                    Resend
-                  </button>
-                </p>
+              <p className="text-sm text-text-primary">
+                Please check your messages and enter it here
+              </p>
+
+              <div className="mt-6 mb-6 w-full">
+                <OTPInput value={code} maxLength={MAX_CODE_LENGTH} />
               </div>
+
+              <Button
+                fullWidth
+                onClick={handleContinue}
+                disabled={!isCodeComplete || isVerifying}
+              >
+                {isVerifying ? 'Verifying...' : 'Continue'}
+              </Button>
             </div>
           </div>
           <div className="w-full mt-auto">

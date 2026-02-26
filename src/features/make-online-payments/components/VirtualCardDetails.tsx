@@ -246,21 +246,21 @@ export default function VirtualCardDetails() {
             <div ref={backContentRef} className="absolute inset-0 z-10">
               <div className="flex flex-col h-full w-full p-[27px]">
                 {/* Card Number */}
-                <div className="flex-1 pt-5 flex items-center justify-center">
-                  <p className="text-xl text-white text-center tracking-[3px]">
+                <div className="flex-1 -mt-23 flex items-center justify-center">
+                  <p className="text-xl text-[#ffffff] text-center tracking-[3px]">
                     {cardDetails.pan}
                   </p>
-                  <CopyButton  value={cardDetails.pan.replace(/\s/g, '')} className="text-white invert ml-2" />
+                  <CopyButton  value={cardDetails.pan.replace(/\s/g, '')} className="text-[#ffffff] invert ml-2" />
                 </div>
 
                 {/* Bottom — Valid Till & Timer */}
                 <div className="flex items-end justify-between">
-                  <div className="text-white flex items-center gap-1">
+                  <div className="text-[#ffffff] flex items-center gap-1">
                     <div>
                       <p className="text-xs font-semibold mb-1">VALID TILL</p>
                       <p className="text-sm font-semibold">{cardDetails.expiry}</p>
                     </div>
-                    <CopyButton value={cardDetails.expiry} className="text-white" size="sm" />
+                    <CopyButton value={cardDetails.expiry} className="text-[#ffffff]" size="sm" />
                   </div>
 
                   {/* Timer ring */}
@@ -283,14 +283,14 @@ export default function VirtualCardDetails() {
                         strokeDashoffset={0}
                       />
                     </svg>
-                    <span className="absolute text-white text-[8px] font-semibold">
+                    <span className="absolute text-[#ffffff] text-[8px] font-semibold">
                       {formatTime(timeLeft)}
                     </span>
                   </div>
 
                   {/* CVV */}
                   <div className="absolute bottom-[35px] right-[85px] z-10 text-text-primary flex items-center gap-1">
-                    <p className="text-sm font-semibold">{cardDetails.cvv}</p>
+                    <p className="text-sm text-black font-semibold">{cardDetails.cvv}</p>
                     <CopyButton value={cardDetails.cvv} className="text-white" size="sm" />
                   </div>
                 </div>

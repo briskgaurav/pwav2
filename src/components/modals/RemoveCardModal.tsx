@@ -1,6 +1,5 @@
 'use client'
 
-import { InstacardColors } from '@/constants/colors'
 import { haptic } from '@/lib/useHaptics'
 import { notifyUserCancelled } from '@/lib/bridge'
 import React, { useCallback, useEffect, useRef } from 'react'
@@ -78,12 +77,12 @@ export default function RemoveCardModal({ visible, onClose, onConfirm }: RemoveC
             {/* Modal */}
             <div
                 ref={modalRef}
-                className="relative w-full max-w-sm bg-white/60 backdrop-blur-xl border border-gray-200 rounded-3xl overflow-hidden shadow-xl"
+                className="relative w-full max-w-sm bg-white/60 dark:bg-card-background/60 backdrop-blur-xl border border-border rounded-3xl overflow-hidden shadow-xl"
             >
                 {/* Content */}
                 <div className="px-10 py-8">
                     {/* Warning Message */}
-                    <p className="text-sm text-center leading-[1.2] mb-8" style={{ color: InstacardColors.textPrimary }}>
+                    <p className="text-sm text-center leading-[1.2] mb-8 text-text-primary">
                         This will permanently Delete this Card.{' '}
                         Are you sure you want to permanently remove his Card
                     </p>
@@ -91,7 +90,7 @@ export default function RemoveCardModal({ visible, onClose, onConfirm }: RemoveC
                     {/* Remove Button */}
                     <button
                         onClick={handleRemove}
-                        className="w-full px-4 py-3 rounded-full text-white text-sm  bg-red-500 hover:bg-red-600 transition-colors"
+                        className="w-full px-4 py-3 rounded-full text-white text-sm bg-error hover:bg-error/90 transition-colors"
                     >
                         Remove Card Permanently
                     </button>
@@ -102,8 +101,7 @@ export default function RemoveCardModal({ visible, onClose, onConfirm }: RemoveC
                             haptic('light')
                             handleClose()
                         }}
-                        className="w-full mt-2 px-4 py-3 rounded-full text-sm  border border-text-primary/40 transition-colors"
-                        style={{ color: InstacardColors.textPrimary }}
+                        className="w-full mt-2 px-4 py-3 rounded-full text-sm border border-text-primary/40 text-text-primary transition-colors"
                     >
                         Cancel
                     </button>

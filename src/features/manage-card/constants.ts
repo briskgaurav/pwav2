@@ -1,12 +1,13 @@
 import type { FAQData } from '@/components/modals/FAQModal'
 import type { CardType } from '@/lib/types'
 import { routes } from '@/lib/routes'
+import { ICONS } from '@/constants/icons'
 
 export const getManageBtns = (cardType: CardType) => {
   const baseBtns = [
-    { icon: '/svg/limitations.svg', title: 'Limit Setting', href: routes.limitSetting },
-    { icon: '/svg/pin.svg', title: 'PIN Change', href: routes.pinChange },
-    { icon: '/svg/block-unblock.svg', title: 'Block/Unblock Card', href: routes.cardStatus },
+    { icon: ICONS.limitations, title: 'Limit Setting', href: routes.limitSetting },
+    { icon: ICONS.pin, title: 'PIN Change', href: routes.pinChange },
+    { icon: ICONS.blockUnblock, title: 'Block/Unblock Card', href: routes.cardStatus },
   ] as const
 
   if (cardType === 'debit') {
@@ -16,21 +17,21 @@ export const getManageBtns = (cardType: CardType) => {
   if (cardType === 'prepaid') {
     return [
       ...baseBtns,
-      { icon: '/svg/addmoney.svg', title: 'Add Money', href: routes.addMoney },
-      { icon: '/svg/viewstatements.svg', title: 'View Statements', href: routes.emailStatements(cardType) },
+      { icon: ICONS.addMoney, title: 'Add Money', href: routes.addMoney },
+      { icon: ICONS.viewStatements, title: 'View Statements', href: routes.emailStatements(cardType) },
     ] as const
   }
 
   if (cardType === 'credit') {
     return [
-      { icon: '/svg/viewstatements.svg', title: 'View Statements', href: routes.emailStatements(cardType) },
-      { icon: '/svg/addmoney.svg', title: 'Make Repayments', href: routes.makeRepayments },
+      { icon: ICONS.viewStatements, title: 'View Statements', href: routes.emailStatements(cardType) },
+      { icon: ICONS.repayment, title: 'Make Repayments', href: routes.makeRepayments },
     ] as const
   }
   if (cardType === 'gift') {
     return [
       ...baseBtns,
-      { icon: '/svg/viewstatements.svg', title: 'View Statements', href: routes.emailStatements(cardType) },
+      { icon: ICONS.viewStatements, title: 'View Statements', href: routes.emailStatements(cardType) },
     ] as const
   }
 
@@ -44,7 +45,7 @@ export const cardActions: Array<{
   faqData: FAQData
 }> = [
   {
-    icon: '/svg/phone.svg', 
+    icon: ICONS.phone, 
     text: 'Link to a Physical Card',
     route: routes.linkPhysicalCard,
     faqData: {
@@ -59,7 +60,7 @@ export const cardActions: Array<{
     },
   },
   {
-    icon: '/svg/del.svg',
+    icon: ICONS.delete,
     text: 'Remove Card',
     route: '#',
     faqData: {

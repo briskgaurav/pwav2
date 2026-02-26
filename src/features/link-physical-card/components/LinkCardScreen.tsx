@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
 import { Button, SheetContainer } from '@/components/ui'
+import { ICONS } from '@/constants/icons'
 import Image from 'next/image'
 import Link from 'next/link'
 import { routes } from '@/lib/routes'
@@ -54,8 +55,8 @@ export default function LinkCardScreen() {
                                 />
                                 <div className='flex items-center gap-4'>
 
-                                    <Image src='/svg/mastercard.svg' alt='Mastercard' width={40} height={24} className='object-contain h-4 w-auto' />
-                                    <Image onClick={() => router.push(routes.faceVerification)} src='/svg/scan.svg' alt='scan' width={40} height={24} className='object-contain invert h-5 w-auto' />
+                                <Image src={ICONS.mastercard} alt='Mastercard' width={40} height={24} className='object-contain h-4 w-auto' />
+                                <Image onClick={() => router.push(routes.faceVerification)} src={ICONS.scan} alt='scan' width={40} height={24} className='object-contain invert h-5 w-auto' />
                                 </div>
                             </div>
                         </div>

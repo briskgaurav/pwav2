@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { haptic } from '@/lib/useHaptics'
+import { ICONS } from '@/constants/icons'
 
 type FaqIconButtonProps = {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
@@ -39,7 +40,7 @@ export default function FaqIconButton({
       className={`${baseStyles} ${sizeStyles} ${className}`}
     >
       <Image
-        src="/svg/ques.svg"
+        src={ICONS.question}
         alt="FAQ"
         width={iconSize}
         height={iconSize}

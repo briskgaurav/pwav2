@@ -1,12 +1,12 @@
 'use client'
 
-import { InstacardColors } from '@/constants/colors'
 import { haptic } from '@/lib/useHaptics'
 import { X } from 'lucide-react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import Draggable from 'gsap/dist/Draggable'
 import Image from 'next/image'
+import { ICONS } from '@/constants/icons'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
 
@@ -141,17 +141,16 @@ export default function AddSigmaCardModal({ visible, onClose, onSubmit }: AddSig
     return (
         <div className="fixed inset-0 z-50 flex items-end justify-center">
             {/* Backdrop */}
-            <div ref={backdropRef} className="absolute inset-0 bg-black/20" onClick={handleClose} />
+            <div ref={backdropRef} className="absolute inset-0 bg-text-primary/20" onClick={handleClose} />
 
             {/* Modal */}
             <div
                 ref={modalRef}
-                className="relative w-full bg-white border border-gray-200 rounded-t-[28px] overflow-hidden"
-                style={{ backgroundColor: InstacardColors.white }}
+                className="relative w-full bg-white border border-border rounded-t-[28px] overflow-hidden"
             >
                 {/* Handle Indicator (Draggable trigger) */}
                 <div ref={handleRef} className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing">
-                    <div className="w-[42px] h-[5px] rounded-full bg-gray-300" />
+                    <div className="w-[42px] h-[5px] rounded-full bg-border" />
                 </div>
 
                 {/* Close Button */}
@@ -163,18 +162,18 @@ export default function AddSigmaCardModal({ visible, onClose, onSubmit }: AddSig
                     className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center"
                     aria-label="Close"
                 >
-                    <X size={24} color={InstacardColors.textPrimary} />
+                    <X size={24} className='text-text-primary' />
                 </button>
 
                 {/* Content */}
                 <div className="px-5 pb-6 pt-4">
                     {/* Title */}
-                    <p className="text-sm font-medium leading-6 pr-8" style={{ color: InstacardColors.textPrimary }}>
+                    <p className="text-sm font-medium leading-6 pr-8 text-text-primary">
                         Enter the Physical Card number that you want to link to this Virtual Instacard
                     </p>
 
                     {/* Label */}
-                    <p className="text-sm my-4" style={{ color: InstacardColors.textPrimary }}>
+                    <p className="text-sm my-4 text-text-primary">
                         Universal / Sigma Instacard Number
                     </p>
 
@@ -186,19 +185,18 @@ export default function AddSigmaCardModal({ visible, onClose, onSubmit }: AddSig
                             value={cardNumber}
                             onChange={handleCardNumberChange}
                             placeholder="0000 0000 0000 0000"
-                            className="w-full p-4 text-lg border border-text-primary/20 rounded-2xl !outline-none! focus:outline-none! focus:ring-none!  focus:ring-primary/30"
-                            style={{ color: InstacardColors.textPrimary }}
+                            className="w-full p-4 text-lg border border-text-primary/20 rounded-2xl !outline-none! focus:outline-none! focus:ring-none! text-text-primary focus:ring-primary/30"
                             inputMode="numeric"
                         />
                         <div className="absolute right-4 flex items-center gap-4 p-3 top-1/2 -translate-y-1/2">
                             <Image
-                                src="/svg/mastercard.svg"
+                                src={ICONS.mastercard}
                                 alt="Mastercard"
                                 width={40}
                                 height={30}
                                 className="object-contain h-full w-auto"
                             />
-                              <Image onClick={() => router.push(routes.faceVerification)} src='/svg/scan.svg' alt='scan' width={40} height={24} className='object-contain invert h-5 w-auto' />
+                              <Image onClick={() => router.push(routes.faceVerification)} src={ICONS.scan} alt='scan' width={40} height={24} className='object-contain invert h-5 w-auto' />
                         </div>
                     </div>
 

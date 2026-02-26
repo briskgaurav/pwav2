@@ -3,14 +3,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { SheetContainer, RadioOption, Checkbox, Button } from '@/components/ui';
-import { InstacardColors } from '@/constants/colors';
+import { ICONS } from '@/constants/icons';
 import { notifyNavigation } from '@/lib/bridge';
 import { routes } from '@/lib/routes';
 
 const ACCOUNT_OPTIONS = [
-  { label: '0123456789 / NGN / Savings', icon: '/svg/fcmb.svg' },
-  { label: '0987654321 / USD / Current', icon: '/svg/access.svg' },
-  { label: '0918273645 / NGN / Current', icon: '/svg/uba.svg' },
+  { label: '0123456789 / NGN / Savings', icon: ICONS.fcmb },
+  { label: '0987654321 / USD / Current', icon: ICONS.accessBank },
+  { label: '0918273645 / NGN / Current', icon: ICONS.uba },
 ];
 
 const TERMS = [
@@ -49,10 +49,10 @@ export default function AddDebitScreen() {
           <p
             style={{
               fontSize: 16,
-              color: InstacardColors.textPrimary,
               lineHeight: 1.4,
               marginBottom: 16,
             }}
+            className='text-text-primary'
           >
             Select the Bank Account you want to link with this Debit Instacard
           </p>
@@ -82,8 +82,8 @@ export default function AddDebitScreen() {
             <p
               style={{
                 fontSize: 14,
-                color: InstacardColors.textPrimary,
               }}
+              className='text-text-primary'
             >
               Please agree to Terms & Conditions for getting this Instacard issued
             </p>

@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { Button, SheetContainer } from '@/components/ui'
+import { ICONS } from '@/constants/icons'
 import Image from 'next/image'
 
 import { Copy } from 'lucide-react'
@@ -67,7 +68,7 @@ export default function page() {
                                     {showBalance ? amount : '********'}
                                 </p>
                                 <button className='w-6 h-6 flex items-center justify-center' type='button' aria-label='Toggle balance visibility' onClick={toggleBalance}>
-                                    <Image className='h-full w-full object-contain' src={showBalance ? '/svg/eyeopen.svg' : '/svg/eyeclose.svg'} alt={showBalance ? 'Show' : 'Hide'} width={16} height={16} />
+                                    <Image className='h-full w-full object-contain' src={showBalance ? ICONS.eyeOpen : ICONS.eyeClose} alt={showBalance ? 'Show' : 'Hide'} width={16} height={16} />
                                 </button>
                             </div>
                         </div>

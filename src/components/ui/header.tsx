@@ -1,6 +1,5 @@
 'use client';
 
-import { InstacardColors } from '@/constants/colors';
 import { notifyUserCancelled } from '@/lib/bridge';
 import { ChevronLeft, CircleQuestionMark, Search } from 'lucide-react';
 import Image from 'next/image';
@@ -28,7 +27,7 @@ export function Header({ title = 'Instacard', showBackButton = false, onBack, sh
   return (
     <header
       className="flex flex-col items-start justify-between px-4  py-[calc(env(safe-area-inset-top,12px)+12px)]"
-      style={{ backgroundColor: InstacardColors.primary }}
+      style={{ backgroundColor: 'var(--color-primary)' }}
     >
       {/* {showBackButton && (
         <button
@@ -45,7 +44,6 @@ export function Header({ title = 'Instacard', showBackButton = false, onBack, sh
           >
             <path
               d="M15 18L9 12L15 6"
-              stroke={InstacardColors.textOnPrimary}
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -122,7 +120,6 @@ export function Header({ title = 'Instacard', showBackButton = false, onBack, sh
           >
             <path
               d="M18 6L6 18M6 6L18 18"
-              stroke={InstacardColors.textOnPrimary}
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"

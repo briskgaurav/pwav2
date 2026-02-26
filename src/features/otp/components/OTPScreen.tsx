@@ -108,7 +108,7 @@ export default function OTPScreen() {
     title="Verify your Phone Number"
     subtitle="We have sent you a 6-digit code to your Registered Phone Number"
     maskedValue="+234802**** 0955"
-    successRoute={cardType === 'gift' ? routes.giftACard : routes.linkedSuccess}
+    successRoute={cardType === 'gift' ? routes.giftACard : routes.success(cardType)}
     showKeypad
   />
    

@@ -1,6 +1,7 @@
 'use client'
 import { SheetContainer } from '@/components/ui'
 import Image from 'next/image'
+import { ICONS } from '@/constants/icons'
 
 import { useState } from 'react'
 import CopyButton from '@/components/ui/CopyButton'
@@ -51,13 +52,13 @@ export default function ManageGiftCardScreen() {
               <div className='flex items-center gap-4'>
                 <div className='h-fit py-4 px-4 flex items-center gap-2 border border-primary rounded-full'>
                   <span className='w-5 h-5 block'>
-                    <Image className='object-contain h-full w-full' src="/svg/share.svg" alt="Share" width={20} height={20} />
+                            <Image className='object-contain h-full w-full' src={ICONS.share} alt="Share" width={20} height={20} />
                   </span>
                   <p className='text-text-primary text-xs font-medium'>Share Gift Card</p>
                 </div>
                 <div className='h-fit py-4 px-4 flex items-center gap-2 border border-primary rounded-full'>
                   <span className='w-5 h-5 block'>
-                    <Image className='object-contain h-full w-full' src="/svg/mail.svg" alt="Download" width={20} height={20} />
+                            <Image className='object-contain h-full w-full' src={ICONS.mail} alt="Download" width={20} height={20} />
                   </span>
                   <p className='text-text-primary text-xs font-medium'>Download Card</p>
                 </div>
