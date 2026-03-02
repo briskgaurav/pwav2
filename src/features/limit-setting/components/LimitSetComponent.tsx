@@ -6,7 +6,7 @@ import Image from 'next/image'
 interface LimitSetComponentProps {
   title: string
   description: string
-  icon: string
+  icon: React.ComponentType<{ className?: string }> | string
   dailyLimit: number
   maxLimit: number
   isEnabled: boolean
@@ -81,7 +81,11 @@ export default function LimitSetComponent({
         <div className="flex items-start gap-3 flex-1 min-w-0">
           {/* Icon */}
           <div className="w-10 h-10 aspect-square border p-2.5 border-text-primary/20 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Image className='h-full w-full object-contain' src={icon} alt={title} width={20} height={20} />
+            {typeof icon === 'string' ? (
+              <Image src={icon} alt={title} width={40} height={40} className="h-full w-full object-contain" />
+            ) : (
+              React.createElement(icon, { className: 'h-full w-full object-contain' })
+            )}
           </div>
           {/* Text */}
           <div className="flex flex-col min-w-0">

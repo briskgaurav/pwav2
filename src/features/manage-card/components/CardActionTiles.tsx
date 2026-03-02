@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import Image from 'next/image'
 import FaqIconButton from '@/components/ui/FaqIconButton'
 import { cardActions } from '../constants'
@@ -7,12 +8,13 @@ import { useManageCardStore } from '../store/useManageCardStore'
 import { useAuth } from '@/lib/auth-context'
 
 type CardActionTilesProps = {
-  onActionClick: (action: typeof cardActions[number]) => void
+  onActionClick: (action: (typeof cardActions)[number]) => void
 }
 
 export default function CardActionTiles({ onActionClick }: CardActionTilesProps) {
   const { openFaq } = useManageCardStore()
-  const {isDarkMode} = useAuth()
+  const { isDarkMode } = useAuth()
+  const iconClassName = `h-full w-full object-contain ${isDarkMode ? 'invert' : ''}`
   return (
     <div className="flex w-full gap-2">
       {cardActions.map((action, index) => (
@@ -24,7 +26,11 @@ export default function CardActionTiles({ onActionClick }: CardActionTilesProps)
           <div className="flex h-[30%] items-center gap-2 w-full justify-between">
             <div>
               <div className="w-6 h-auto flex items-center justify-center aspect-square">
-                <Image src={action.icon} alt="icon" className={`h-full w-full object-contain ${isDarkMode ? 'invert' : ''}`} width={24} height={24} />
+                {typeof action.icon === 'string' ? (
+                  <Image src={action.icon} alt="icon" className={iconClassName} width={24} height={24} />
+                ) : (
+                  React.createElement(action.icon, { className: iconClassName })
+                )}
               </div>
             </div>
             <FaqIconButton

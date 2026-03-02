@@ -12,6 +12,7 @@ import Link from 'next/link'
 import CardMockup from '@/components/ui/CardMockup'
 import CardActionTiles from './CardActionTiles'
 import { useManageCardActions } from '../hooks/useManageCardActions'
+import { RepaymentIcon, StatementsIcon } from '@/constants/icons'
 
 const creditCardDetails = [
   { label: 'Approved Credit Limit', value: '₦ 1,000,000' },
@@ -53,11 +54,10 @@ export default function ManageCreditCardScreen() {
             </div>
           </div>
 
-          <div className="flex gap-4 w-full  ">
+          <div className="flex gap-4 w-full">
             {[
-              { icon: '/svg/viewstatements.svg', title: 'View Statements', href: routes.emailStatements('credit') },
-            
-              { icon: '/svg/repayment.svg', title: 'Make Repayments', href: routes.makeRepayments },
+              { icon: StatementsIcon, title: 'View Statements', href: routes.emailStatements('credit') },
+              { icon: RepaymentIcon, title: 'Make Repayments', href: routes.makeRepayments },
             ].map((btn, index) => (
               <ManageBtn fullWidth href={btn.href} key={index} icon={btn.icon} title={btn.title} />
             ))}

@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react'
 import { Button, RadioOption, SheetContainer } from '@/components/ui'
-import { ICONS } from '@/constants/icons'
+import { ChatIcon, ICONS, MessageIcon } from '@/constants/icons'
 import { RadioOption2 } from '@/components/ui/RadioButton2'
 import { routes } from '@/lib/routes'
 import { useRouter } from 'next/navigation'
+import { LucideIcon } from 'lucide-react'
 
 export default function page() {
     const router = useRouter()
@@ -33,7 +34,7 @@ export default function page() {
                             selected={selectedOption === 'phone'}
                             onSelect={() => setSelectedOption('phone')}
                             accessibilityLabel="Verify with phone number"
-                            icon={ICONS.chat}
+                            IconComponent={ChatIcon as LucideIcon}
                         />
 
                         <RadioOption
@@ -41,7 +42,8 @@ export default function page() {
                             selected={selectedOption === 'email'}
                             onSelect={() => setSelectedOption('email')}
                             accessibilityLabel="Verify with email"
-                            icon={ICONS.mail}
+                            
+                            IconComponent={MessageIcon as LucideIcon}
                         />
                     </div>
                 </div>

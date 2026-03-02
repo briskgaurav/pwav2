@@ -157,7 +157,7 @@ export default function TransactionReceipt({ transactionId }: TransactionReceipt
           {/* Actions */}
           <div className="flex items-center gap-3 px-5 pt-6">
             <Button
-              variant="secondary"
+              variant="primary"
               fullWidth
               onClick={handleShare}
             >
@@ -167,7 +167,7 @@ export default function TransactionReceipt({ transactionId }: TransactionReceipt
               </span>
             </Button>
             <Button
-              variant="secondary"
+              variant="primary"
               fullWidth
               onClick={handleDownload}
             >

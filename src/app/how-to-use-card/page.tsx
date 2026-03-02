@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo, Suspense } from 'react';
 import Image from 'next/image';
 import { SheetContainer, Button } from '@/components/ui';
-import { ICONS } from '@/constants/icons';
+import { ICONS, ManageCard, PhoneIcon } from '@/constants/icons';
 import { notifyNavigation, notifyCardAdded } from '@/lib/bridge';
 import { ChevronDown } from 'lucide-react';
 import FAQModal from '@/components/modals/FAQModal';
@@ -186,13 +186,13 @@ const CARD_TYPE_CONFIG: Record<CardType, {
 };
 
 const getCardActions = (cardType: CardType): Array<{
-    icon: string;
+    icon: React.ReactNode;
     text: string;
     faqData: FAQData;
     route: string;
 }> => [
         {
-            icon: ICONS.manageCard,
+            icon: <ManageCard />,
             text: 'Manage Card',
             route: routes.manageCard(cardType),
             faqData: {
@@ -207,7 +207,7 @@ const getCardActions = (cardType: CardType): Array<{
             },
         },
         {
-            icon: ICONS.phone,
+            icon: <PhoneIcon />,
             text: 'Link to a Physical Card',
             route: routes.linkPhysicalCard,
             faqData: {
@@ -310,7 +310,7 @@ function HowToUseCardContent() {
                                 <div className="flex h-[30%] items-center gap-2 w-full justify-between">
                                     <div>
                                         <div className="w-7 h-auto flex items-center justify-center aspect-square">
-                                            <Image src={action.icon} alt="icon" className='h-full w-full object-contain' width={24} height={24} />
+                                            {action.icon}
                                         </div>
                                     </div>
                                     <FaqIconButton

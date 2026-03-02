@@ -17,6 +17,8 @@ type VerificationCodeScreenProps = {
   successRoute: string
   /** Whether to show the on-screen keypad */
   showKeypad?: boolean
+  /** Optional callback instead of navigation on success */
+  onSuccess?: () => void
 }
 
 export default function VerificationCodeScreen({
@@ -25,6 +27,7 @@ export default function VerificationCodeScreen({
   maskedValue,
   successRoute,
   showKeypad = true,
+  onSuccess,
 }: VerificationCodeScreenProps) {
   const router = useRouter()
   const [code, setCode] = useState('')
@@ -50,7 +53,11 @@ export default function VerificationCodeScreen({
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
     setIsVerifying(false)
-    router.push(successRoute)
+    if (onSuccess) {
+      onSuccess()
+    } else {
+      router.push(successRoute)
+    }
   }
 
   const handleResend = () => {

@@ -1,15 +1,16 @@
 'use client'
 import { SheetContainer, Button } from '@/components/ui'
-import { ICONS } from '@/constants/icons'
+import { ICONS, MessageIcon, PhoneIcon } from '@/constants/icons'
 import { RadioOption2 } from '@/components/ui/RadioButton2'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
-import React, { useState } from 'react'
+import React, { ComponentType, useState } from 'react'
+import { LucideIcon } from 'lucide-react'
 
 const VERIFICATION_OPTIONS = [
-  { id: 'phone', label: '+234802**** 0955', icon: ICONS.chat },
-  { id: 'email', label: 'nird***malik@gmail.com', icon: ICONS.message },
+  { id: 'phone', label: '+234802**** 0955', Icon:PhoneIcon },
+  { id: 'email', label: 'nird***malik@gmail.com', Icon: MessageIcon },
 ] as const
 
 type VerificationOption = (typeof VERIFICATION_OPTIONS)[number]['id']
@@ -41,7 +42,7 @@ export default function page() {
                   key={option.id}
                   label={option.label}
                   selected={selectedOption === option.id}
-                  icon={option.icon}
+                  IconComponent={option.Icon as LucideIcon}
                   onSelect={() => setSelectedOption(option.id)}
                 />
               ))}
@@ -53,7 +54,7 @@ export default function page() {
               <div className='h-auto w-22 rounded-lg overflow-hidden aspect-[1.58] '>
                 <Image src={ICONS.debitCard} alt='Mastercard' width={1000} height={1000} className='h-full w-full object-cover' />
               </div>
-              <p className='text-text-primary text-xs'>**** **** ****  1234 (Universal card)</p>
+              <p className='text-text-primary text-xs'>**** **** ****  1234 (Universal card)</p>
             </div>
           </div>
         </div>

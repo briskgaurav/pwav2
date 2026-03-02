@@ -8,6 +8,7 @@ import { Copy } from 'lucide-react'
 import CardMockup from '@/components/ui/CardMockup'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { routes } from '@/lib/routes'
+import { useAuth } from '@/lib/auth-context'
 
 export default function page() {
     const [showBalance, setShowBalance] = useState(false)
@@ -18,6 +19,7 @@ export default function page() {
     const recipientEmail = searchParams.get('email') || 'recipient@example.com'
     const recipientMessage = searchParams.get('message') || 'Congratulations! Wishing you joy and happiness on this special occasion. Enjoy your gift!'
     const amount = searchParams.get('amount') || '50,000.00'
+
 
     const giftCardDetails = [
         { label: 'Name', value: recipientName },
@@ -40,6 +42,7 @@ export default function page() {
         router.push(`${routes.shareGiftCard}?${params.toString()}`)
     }
 
+    const {isDarkMode } = useAuth()
     return (
         <div className="h-screen flex flex-col">
             <SheetContainer>
@@ -68,7 +71,7 @@ export default function page() {
                                     {showBalance ? amount : '********'}
                                 </p>
                                 <button className='w-6 h-6 flex items-center justify-center' type='button' aria-label='Toggle balance visibility' onClick={toggleBalance}>
-                                    <Image className='h-full w-full object-contain' src={showBalance ? ICONS.eyeOpen : ICONS.eyeClose} alt={showBalance ? 'Show' : 'Hide'} width={16} height={16} />
+                                    <Image className={`h-full w-full ${isDarkMode ? 'invert' : ''} object-contain`} src={showBalance ? ICONS.eyeOpen : ICONS.eyeClose} alt={showBalance ? 'Show' : 'Hide'} width={16} height={16} />
                                 </button>
                             </div>
                         </div>

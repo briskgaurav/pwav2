@@ -25,7 +25,7 @@ export function Checkbox({ label, checked, onChange, accessibilityLabel }: Check
       className="btn-press flex items-start gap-[10px] bg-transparent border-none p-0 cursor-pointer text-left"
     >
       <span
-        className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-[2px] transition-all duration-200 ease-in-out ${
+        className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 mt-[2px] transition-all duration-200 ease-in-out ${
           checked ? 'border-primary bg-primary scale-100' : 'border-border bg-transparent scale-100'
         } active:scale-90`}
       >
@@ -48,7 +48,7 @@ export function Checkbox({ label, checked, onChange, accessibilityLabel }: Check
           />
         </svg>
       </span>
-      <span className="text-[13px] text-text-secondary leading-[1.4]">
+      <span className="text-[14px] text-text-secondary leading-[1.4]">
         {label}
       </span>
     </button>

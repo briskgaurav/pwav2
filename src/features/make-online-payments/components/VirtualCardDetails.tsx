@@ -208,8 +208,8 @@ export default function VirtualCardDetails() {
               <div className="absolute bottom-[32px] right-[34px] z-10 text-white">
                 <p className="text-sm">{cardDetails.cardholderName}</p>
               </div>
-              <div className="absolute inset-0 z-10 flex items-center justify-center gap-3 text-white">
-                <p className="text-2xl font-semibold">
+              <div className="absolute inset-0 z-10 flex items-center justify-center gap-3 ">
+                <p className="text-2xl text-text-primary font-semibold">
                   {isBalanceVisible ? cardDetails.pan : '**** **** **** ****'}
                 </p>
                 <button

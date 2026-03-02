@@ -77,7 +77,7 @@ export default function CardPinAuth({
               className="h-full w-full object-contain"
               priority
             />
-            <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-2xl w-full text-center select-none">
+            <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-text-primary text-2xl w-full text-center select-none">
               {maskedNumber}
             </p>
           </div>

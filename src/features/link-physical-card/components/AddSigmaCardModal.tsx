@@ -9,6 +9,7 @@ import Image from 'next/image'
 import { ICONS } from '@/constants/icons'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
+import { useAuth } from '@/lib/auth-context'
 
 // Register GSAP plugin
 if (typeof window !== 'undefined') {
@@ -138,6 +139,8 @@ export default function AddSigmaCardModal({ visible, onClose, onSubmit }: AddSig
 
     const isValidCardNumber = cardNumber.replace(/\s/g, '').length === 16
 
+    const {isDarkMode } = useAuth()
+
     return (
         <div className="fixed inset-0 z-50 flex items-end justify-center">
             {/* Backdrop */}
@@ -196,7 +199,7 @@ export default function AddSigmaCardModal({ visible, onClose, onSubmit }: AddSig
                                 height={30}
                                 className="object-contain h-full w-auto"
                             />
-                              <Image onClick={() => router.push(routes.faceVerification)} src={ICONS.scan} alt='scan' width={40} height={24} className='object-contain invert h-5 w-auto' />
+                              <Image onClick={() => router.push(routes.faceVerification)} src={ICONS.scan} alt='scan' width={40} height={24} className={`object-contain h-5 w-auto ${isDarkMode ? '' : 'invert'}`} />
                         </div>
                     </div>
 

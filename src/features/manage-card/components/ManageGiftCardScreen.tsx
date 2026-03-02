@@ -15,11 +15,14 @@ import { useManageCardStore } from '../store/useManageCardStore'
 import EyeButton from '@/components/ui/EyeButton'
 import CardActionTiles from './CardActionTiles'
 import { useManageCardActions } from '../hooks/useManageCardActions'
+import { useAuth } from '@/lib/auth-context'
 
 export default function ManageGiftCardScreen() {
   const [showActivationCode, setShowActivationCode] = useState(false)
   const { isFaqOpen, faqData, closeFaq } = useManageCardStore()
   const { showRemoveModal, setShowRemoveModal, handleCardActionClick, handleRemoveCard } = useManageCardActions()
+
+  const { isDarkMode } = useAuth()
 
   return (
     <div className="h-screen flex flex-col">
@@ -39,7 +42,7 @@ export default function ManageGiftCardScreen() {
           <span className='w-full h-px block my-10 bg-border'></span>
 
           <div className='w-full flex  items-center relative justify-center overflow-hidden rounded-2xl min-h-[180px]'>
-            <div className='absolute inset-0'>
+            <div className={`absolute ${isDarkMode ? 'brightness-200' : ''} inset-0`}>
               <Image src="/img/giftcardbg.png" alt="Gift Card background" width={340} height={215} className="w-full h-full object-cover rounded-2xl" />
             </div>
 
@@ -54,13 +57,13 @@ export default function ManageGiftCardScreen() {
                   <span className='w-5 h-5 block'>
                             <Image className='object-contain h-full w-full' src={ICONS.share} alt="Share" width={20} height={20} />
                   </span>
-                  <p className='text-text-primary text-xs font-medium'>Share Gift Card</p>
+                  <p className={` text-xs font-medium ${isDarkMode ? 'text-white' : 'text-text-primary'}`}>Share Gift Card</p>
                 </div>
                 <div className='h-fit py-4 px-4 flex items-center gap-2 border border-primary rounded-full'>
                   <span className='w-5 h-5 block'>
-                            <Image className='object-contain h-full w-full' src={ICONS.mail} alt="Download" width={20} height={20} />
+                            <Image className={`object-contain h-full ${isDarkMode ? 'brightness-0' : ''} w-full`} src={ICONS.mail} alt="Download" width={20} height={20} />
                   </span>
-                  <p className='text-text-primary text-xs font-medium'>Download Card</p>
+                  <p className={` text-xs font-medium ${isDarkMode ? 'text-white' : 'text-text-primary'}`}>Download Card</p>
                 </div>
               </div>
             </div>

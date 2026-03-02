@@ -38,7 +38,7 @@ export default function CardStatusScreen() {
           </div>
 
           <div className="flex items-center justify-between p-4 border border-gray-300 rounded-xl bg-white">
-            <span className="text-gray-800 font-medium">Card Status</span>
+            <span className="text-text-primary font-medium">Card Status</span>
             <div className="flex items-center gap-2">
               <span className={`text-sm block font-medium `}>
                 {isUnblocked ? 'Unblocked' : 'Blocked'}

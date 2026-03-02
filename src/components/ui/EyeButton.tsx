@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { ICONS } from '@/constants/icons'
 import gsap from 'gsap'
 import { haptic } from '@/lib/useHaptics'
+import { useAuth } from '@/lib/auth-context'
 
 type EyeButtonProps = {
   isVisible: boolean
@@ -66,6 +67,8 @@ export default function EyeButton({ isVisible, onToggle, size = 'md', className 
     }
   }, [isVisible, isAnimating])
 
+  const {isDarkMode } = useAuth()
+
   const sizeClasses = size === 'sm' ? 'w-4 h-4' : 'w-5 h-5'
   const imageSize = size === 'sm' ? 16 : 20
 
@@ -78,7 +81,7 @@ export default function EyeButton({ isVisible, onToggle, size = 'md', className 
     >
       <div ref={iconRef} className={sizeClasses}>
         <Image
-          className='h-full w-full object-contain'
+          className={`h-full w-full object-contain ${isDarkMode ? 'invert' : ''}`}
           src={displayVisible ? ICONS.eyeOpen : ICONS.eyeClose}
           alt={displayVisible ? 'Hide' : 'Show'}
           width={imageSize}

@@ -2,17 +2,18 @@
 
 import Image from "next/image";
 import { haptic } from "@/lib/useHaptics";
-import { useEffect } from "react";
+import { LucideIcon } from "lucide-react";
+
 interface RadioOptionProps {
   label: string;
   selected: boolean;
   onSelect: () => void;
   accessibilityLabel?: string;
   icon?: string;
-  
+  IconComponent?: LucideIcon;
 }
 
-export function RadioOption({ label, selected, onSelect, accessibilityLabel, icon }: RadioOptionProps) {
+export function RadioOption({ label, selected, onSelect, accessibilityLabel, icon, IconComponent }: RadioOptionProps) {
 
   return (
     <button
@@ -32,6 +33,11 @@ export function RadioOption({ label, selected, onSelect, accessibilityLabel, ico
           <div className="h-fit w-fit">
             <Image src={icon} alt={icon} width={1000} height={1000} className='h-full w-full object-contain' />
 
+          </div>
+        )}
+        {IconComponent && (
+          <div className="h-fit w-fit">
+            <IconComponent className="w-5 h-5 text-text-primary" />
           </div>
         )}
         <span className="text-[14px] text-text-primary">

@@ -1,14 +1,28 @@
+import React from 'react'
 import type { FAQData } from '@/components/modals/FAQModal'
 import type { CardType } from '@/lib/types'
 import { routes } from '@/lib/routes'
+import {
+  AddMoneyIcon,
+  BlockUnblockIcon,
+  DeleteIcon,
+  LimitationsIcon,
+  PhoneIcon,
+  PinIcon,
+  RepaymentIcon,
+  StatementsIcon,
+} from '@/constants/icons'
 import { ICONS } from '@/constants/icons'
 
-export const getManageBtns = (cardType: CardType) => {
+type IconComponent = React.ComponentType<{ className?: string }>
+type ManageBtnIcon = IconComponent | string
+
+export const getManageBtns = (cardType: CardType): Array<{ icon: ManageBtnIcon; title: string; href: string }> => {
   const baseBtns = [
-    { icon: ICONS.limitations, title: 'Limit Setting', href: routes.limitSetting },
-    { icon: ICONS.pin, title: 'PIN Change', href: routes.pinChange },
-    { icon: ICONS.blockUnblock, title: 'Block/Unblock Card', href: routes.cardStatus },
-  ] as const
+    { icon: LimitationsIcon, title: 'Limit Setting', href: routes.limitSetting },
+    { icon: PinIcon, title: 'PIN Change', href: routes.pinChange },
+    { icon: BlockUnblockIcon, title: 'Block/Unblock Card', href: routes.cardStatus },
+  ]
 
   if (cardType === 'debit') {
     return baseBtns
@@ -17,35 +31,35 @@ export const getManageBtns = (cardType: CardType) => {
   if (cardType === 'prepaid') {
     return [
       ...baseBtns,
-      { icon: ICONS.addMoney, title: 'Add Money', href: routes.addMoney },
-      { icon: ICONS.viewStatements, title: 'View Statements', href: routes.emailStatements(cardType) },
-    ] as const
+      { icon: AddMoneyIcon, title: 'Add Money', href: routes.addMoney },
+      { icon: StatementsIcon , title: 'View Statements', href: routes.emailStatements(cardType) },
+    ]
   }
 
   if (cardType === 'credit') {
     return [
-      { icon: ICONS.viewStatements, title: 'View Statements', href: routes.emailStatements(cardType) },
-      { icon: ICONS.repayment, title: 'Make Repayments', href: routes.makeRepayments },
-    ] as const
+      { icon: StatementsIcon , title: 'View Statements', href: routes.emailStatements(cardType) },
+      { icon: RepaymentIcon, title: 'Make Repayments', href: routes.makeRepayments },
+    ]
   }
   if (cardType === 'gift') {
     return [
       ...baseBtns,
-      { icon: ICONS.viewStatements, title: 'View Statements', href: routes.emailStatements(cardType) },
-    ] as const
+      { icon: StatementsIcon, title: 'View Statements', href: routes.emailStatements(cardType) },
+    ]
   }
 
   return baseBtns
 }
 
 export const cardActions: Array<{
-  icon: string
+  icon: IconComponent | string
   text: string
   route: string
   faqData: FAQData
 }> = [
   {
-    icon: ICONS.phone, 
+    icon: PhoneIcon,
     text: 'Link to a Physical Card',
     route: routes.linkPhysicalCard,
     faqData: {
@@ -60,7 +74,7 @@ export const cardActions: Array<{
     },
   },
   {
-    icon: ICONS.delete,
+    icon: DeleteIcon,
     text: 'Remove Card',
     route: '#',
     faqData: {

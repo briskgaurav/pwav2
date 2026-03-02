@@ -111,7 +111,7 @@ function PinSetupFormContent({
             <div className="mt-4 w-full">
               <p className="text-sm text-text-primary mb-2">{pinLabel}</p>
               <div
-                className={`cursor-pointer flex items-center justify-center gap-3`}
+                className={`cursor-pointer flex items-center justify-center gap-3 relative`}
               >
                 <OTPInput
                   value={pin}
@@ -119,18 +119,21 @@ function PinSetupFormContent({
                   onChange={setPin}
                   useDots={!isPinVisible}
                 />
-                <EyeButton
-                  isVisible={isPinVisible}
-                  onToggle={setIsPinVisible}
-                  size="md"
-                />
+                <div className='absolute right-[3vw] top-[50%] -translate-y-1/2'>
+
+                  <EyeButton
+                    isVisible={isPinVisible}
+                    onToggle={setIsPinVisible}
+                    size="md"
+                  />
+                </div>
               </div>
             </div>
 
             <div className="mt-3 w-full">
               <p className="text-sm text-text-primary mb-2">{confirmPinLabel}</p>
               <div
-                className={`cursor-pointer flex items-center justify-center gap-3`}
+                className={`cursor-pointer flex items-center justify-center relative`}
               >
                 <OTPInput
                   value={confirmPin}
@@ -138,11 +141,14 @@ function PinSetupFormContent({
                   onChange={setConfirmPin}
                   useDots={!isConfirmPinVisible}
                 />
-                <EyeButton
-                  isVisible={isConfirmPinVisible}
-                  onToggle={setIsConfirmPinVisible}
-                  size="md"
-                />
+                <div className='absolute right-[3vw] top-[50%] -translate-y-1/2'>
+
+                  <EyeButton
+                    isVisible={isConfirmPinVisible}
+                    onToggle={setIsConfirmPinVisible}
+                    size="md"
+                  />
+                </div>
               </div>
             </div>
             <div className="my-1 min-h-[24px]">

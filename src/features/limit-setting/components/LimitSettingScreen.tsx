@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, Header, SheetContainer } from '@/components/ui'
-import { ICONS } from '@/constants/icons'
+import { LimitationsIcon, MerchantIcon, PhoneIcon } from '@/constants/icons'
 import React from 'react'
 
 import LimitToggle from './LimitToggle'
@@ -16,7 +16,7 @@ const domesticLimitItems = [
   {
     title: 'Merchant Outlet',
     description: 'Spending Limit for Point of Sale (POS) at merchant outlets',
-    iconSrc: ICONS.merchant,
+    icon: MerchantIcon,
     dailyLimit: 275000,
     maxLimit: 375000,
     isEnabled: true,
@@ -24,7 +24,7 @@ const domesticLimitItems = [
   {
     title: 'Online Spends',
     description: 'Online spending limit',
-    iconSrc: ICONS.phone,
+    icon: PhoneIcon,
     dailyLimit: 275000,
     maxLimit: 275000,
     isEnabled: true,
@@ -32,15 +32,15 @@ const domesticLimitItems = [
   {
     title: 'Tap & Pay',
     description: 'Tap & Pay (without PIN) Max ₦ 5000 limit per transaction',
-    iconSrc: ICONS.merchant,
+    icon: LimitationsIcon,
     dailyLimit: 20000,
     maxLimit: 20000,
     isEnabled: false,
   },
   {
     title: 'ATM Withdrawal',
-    description: 'Online spending limit',
-    iconSrc: ICONS.merchant,
+    description: 'Daily ATM withdrawal limit',
+    icon: LimitationsIcon,
     dailyLimit: 100000,
     maxLimit: 375000,
     isEnabled: true,
@@ -51,7 +51,7 @@ const internationalLimitItems = [
   {
     title: 'Merchant Outlet',
     description: 'International spending limit for Point of Sale (POS)',
-    iconSrc: ICONS.merchant,
+    icon: MerchantIcon,
     dailyLimit: 500000,
     maxLimit: 750000,
     isEnabled: true,
@@ -59,7 +59,7 @@ const internationalLimitItems = [
   {
     title: 'Online Spends',
     description: 'International online spending limit',
-    iconSrc: ICONS.phone,
+    icon: PhoneIcon,
     dailyLimit: 500000,
     maxLimit: 500000,
     isEnabled: true,
@@ -67,7 +67,7 @@ const internationalLimitItems = [
   {
     title: 'Tap & Pay',
     description: 'Tap & Pay (without PIN) Max $50 limit per transaction',
-    iconSrc: ICONS.merchant,
+    icon: LimitationsIcon,
     dailyLimit: 50000,
     maxLimit: 50000,
     isEnabled: false,
@@ -75,7 +75,7 @@ const internationalLimitItems = [
   {
     title: 'ATM Withdrawal',
     description: 'International ATM withdrawal limit',
-    iconSrc: ICONS.merchant,
+    icon: LimitationsIcon,
     dailyLimit: 200000,
     maxLimit: 500000,
     isEnabled: true,
@@ -99,7 +99,7 @@ export default function LimitSettingScreen() {
               key={index}
               title={item.title}
               description={item.description}
-              icon={item.iconSrc}
+              icon={item.icon}
               dailyLimit={item.dailyLimit}
               maxLimit={item.maxLimit}
               isEnabled={item.isEnabled}

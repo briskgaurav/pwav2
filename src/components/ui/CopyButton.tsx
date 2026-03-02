@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react'
 import { Copy, Check } from 'lucide-react'
 import gsap from 'gsap'
 import { haptic } from '@/lib/useHaptics'
+import { useAuth } from '@/lib/auth-context'
 
 type CopyButtonProps = {
   value: string
@@ -14,6 +15,8 @@ type CopyButtonProps = {
 export default function CopyButton({ value, size = 'md', className = '' }: CopyButtonProps) {
   const [copied, setCopied] = useState(false)
   const iconRef = useRef<HTMLDivElement>(null)
+
+  const {isDarkMode } = useAuth()
 
   const handleClick = async (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault()
@@ -99,9 +102,9 @@ export default function CopyButton({ value, size = 'md', className = '' }: CopyB
     >
       <div ref={iconRef} className={sizeClasses}>
         {copied ? (
-          <Check className={`w-full h-full text-text-primary`} />
+          <Check className={`w-full h-full text-text-primary ${isDarkMode ? 'invert' : ''}`} />
         ) : (
-          <Copy className={`w-full h-full text-text-primary`} />
+          <Copy className={`w-full h-full text-text-primary ${isDarkMode ? 'invert' : ''}`} />
         )}
       </div>
     </button>

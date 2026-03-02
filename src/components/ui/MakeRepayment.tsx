@@ -6,6 +6,7 @@ import { Button } from './button'
 import { Dropdown } from './Dropdown'
 import { routes } from '@/lib/routes'
 import { useRouter } from 'next/navigation'
+import { AddCardIcon } from '@/constants/icons'
 
 type PaymentOption = 'full' | 'minimum' | 'other'
 
@@ -91,13 +92,7 @@ export default function MakeRepayment() {
     <div className='p-5 border border-border rounded-2xl space-y-4'>
       <div className='flex items-center gap-4'>
         <div className='w-5 h-5 flex items-center justify-center shrink-0'>
-          <Image
-            src='/svg/addcard.svg'
-            alt='bank'
-            width={20}
-            height={20}
-            className='object-contain size-full'
-          />
+        <AddCardIcon />
         </div>
         <p className='text-text-primary text-md font-medium'>
           Make Repayment
