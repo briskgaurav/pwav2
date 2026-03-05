@@ -22,7 +22,7 @@ export default function LinkedSuccessPage() {
     <div className='h-[100dvh] w-full flex flex-col overflow-hidden'>
       <SheetContainer>
         <div className='flex-1 w-full flex flex-col justify-between items-center overflow-auto pt-10 space-y-4 p-6'>
-          <p className='text-sm text-text-secondary'>This Instacard has been successfully linked to your Physical Card</p>
+          <p className='text-sm text-text-secondary'>This Instacard has been successfully linked to your Universal Card</p>
           <div className='h-auto w-full relative'>
             <Image 
               src='/img/creditcard.png' 
@@ -46,7 +46,7 @@ export default function LinkedSuccessPage() {
             />
             <div className="w-full bg-white/60 flex items-center justify-center gap-2 flex-col border-text-secondary/20 space-y-4 py-6 z-5 relative border rounded-2xl p-4 backdrop-blur-sm text-center mt-4">
               <p className="text-lg font-medium leading-[1.2] text-text-primary">
-                This Instacard has been successfully linked to your Physical Card
+                This Instacard has been successfully linked to your Universal Card
               </p>
               <div className='h-auto w-[100px] flex items-center justify-center rounded-lg overflow-hidden'>
                 <Image 

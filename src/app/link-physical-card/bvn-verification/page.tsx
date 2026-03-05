@@ -48,7 +48,7 @@ export default function page() {
               ))}
             </div>
 
-            <p className='text-text-primary mt-10 text-sm'>This Instacard has been successfully linked to your Physical Card</p>
+            <p className='text-text-primary mt-10 text-sm'>This Instacard has been successfully linked to your Universal Card</p>
             <div className='border flex gap-10 items-center justify-center border-text-primary/20 rounded-2xl p-4'>
 
               <div className='h-auto w-22 rounded-lg overflow-hidden aspect-[1.58] '>

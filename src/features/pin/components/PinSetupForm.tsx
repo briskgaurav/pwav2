@@ -153,7 +153,7 @@ function PinSetupFormContent({
             </div>
             <div className="my-1 min-h-[24px]">
               {error && (
-                <p className="text-sm text-red-500">{error}</p>
+                <p className="text-sm text-error">{error}</p>
               )}
             </div>
 

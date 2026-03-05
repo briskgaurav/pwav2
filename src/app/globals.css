@@ -40,7 +40,7 @@
 }
 
 /* Dark mode colors */
-.dark {
+/* .dark {
   --color-primary: #C77DFF;
   --color-primary-dark: #5A189A;
   --color-primary-light: #9D4EDD;
@@ -66,7 +66,7 @@
   --color-error: #FF3B30;
   --color-orange: #FF8303;
   --color-blue: #004EC4;
-}
+} */
 
 @theme inline {
   /* Instacard Brand Colors */

@@ -172,7 +172,7 @@ export default function AddSigmaCardModal({ visible, onClose, onSubmit }: AddSig
                 <div className="px-5 pb-6 pt-4">
                     {/* Title */}
                     <p className="text-sm font-medium leading-6 pr-8 text-text-primary">
-                        Enter the Physical Card number that you want to link to this Virtual Instacard
+                        Enter the Universal Card number that you want to link to this Virtual Instacard
                     </p>
 
                     {/* Label */}

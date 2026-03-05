@@ -27,13 +27,13 @@ export default function LinkCardScreen() {
             <div className='h-screen flex flex-col'>
                 <SheetContainer>
                     <div className="flex-1 flex-col flex justify-start items-center overflow-auto py-10 space-y-4  p-6">
-                        <p className="font-medium text-sm">Link this Virtual Instacard to a Physical Instacard</p>
+                        <p className="font-medium text-sm">Link this Virtual Instacard to a Universal Instacard</p>
                         <div className='h-auto w-full relative '>
                             <Image src='/img/creditcard.png' alt='Credit Card' width={1000} height={1000} className='h-full w-full object-contain' />
                             <p className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-2xl w-full text-center'>0000 0000 0000 0000</p>
                         </div>
 
-                        <p className='mt-4 text-sm'>You do not have any Physical Instacard available for linking to a Virtual Card issued by <strong>FCMB.</strong></p>
+                        <p className='mt-4 text-sm'>You do not have any Universal Instacard available for linking to a Virtual Card issued by <strong>FCMB.</strong></p>
                         <p className='text-sm'> Enter the card number of a Universal or Sigma card that you have with you</p>
 
                         <div className='flex flex-col items-start justify-start w-full mt-4'>

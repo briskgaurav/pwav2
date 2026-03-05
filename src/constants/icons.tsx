@@ -36,6 +36,7 @@ export const ICONS = {
   prepaidCard: '/svg/prepaidcard.svg',
   giftCard: '/svg/giftcard.svg',
   scan: '/svg/scan.svg',
+  linkToUniversal: '/svg/sigma.svg',
 } as const;
 
 

@@ -29,7 +29,7 @@ export function Header({ title = 'Instacard', showBackButton = false, onBack, sh
       className="flex flex-col items-start justify-between px-4  py-[calc(env(safe-area-inset-top,12px)+12px)]"
       style={{ backgroundColor: 'var(--color-primary)' }}
     >
-      {/* {showBackButton && (
+      {showBackButton && (
         <button
           onClick={handleBack}
           aria-label="Go back"
@@ -50,7 +50,7 @@ export function Header({ title = 'Instacard', showBackButton = false, onBack, sh
             />
           </svg>
         </button>
-      )} */}
+      )}
 
       {/* <div className='w-full py-[1vw] pt-[5vw] items-center justify-between flex h-fit'>
         <div className='flex items-center gap-2'>

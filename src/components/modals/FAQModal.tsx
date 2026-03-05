@@ -20,9 +20,9 @@ export const DEFAULT_FAQ_DATA: FAQData = {
     bulletPoints: [
         'You can purchase a Universal Card or a Sigma card from your Bank or any Agent, Marketplace or order online.',
         'Universal Card or Sigma Card offer unified card experience such that you can link any Virtual Instacard to them to start using the virtual Instacard on any POS/ATM through the linked Universal or Sigma Instacard.',
-        'Sigma Card is a physical card variant of Instacard that is issued by a Bank/ FinTech to allow users to link any Virtual Instacard issued by them for making Domestic as well as International payments.',
-        'Universal Card is another physical card variant of Instacard that users can link any virtual Instacard issued by any Bank/ FinTech in your country for making Domestic Payments through a single Physical Card.',
-        'You can simply link any one Virtual Instacard to a Universal or Sigma Cards to start using the linked Virtual Instacard from the physical card. When you link a new Virtual Instacard to a Universal or Sigma card, previously linked Virtual Instacard is de-linked and you can start using the newly linked Virtual Card from the physical Universal / Sigma card.',
+        'Sigma Card is a Universal card variant of Instacard that is issued by a Bank/ FinTech to allow users to link any Virtual Instacard issued by them for making Domestic as well as International payments.',
+        'Universal Card is another Universal card variant of Instacard that users can link any virtual Instacard issued by any Bank/ FinTech in your country for making Domestic Payments through a single Universal Card.',
+        'You can simply link any one Virtual Instacard to a Universal or Sigma Cards to start using the linked Virtual Instacard from the Universal card. When you link a new Virtual Instacard to a Universal or Sigma card, previously linked Virtual Instacard is de-linked and you can start using the newly linked Virtual Card from the Universal / Sigma card.',
     ],
 }
 
@@ -161,7 +161,7 @@ export default function FAQModal({ visible, onClose, data = DEFAULT_FAQ_DATA }: 
                     <div className="space-y-5">
                         {data.bulletPoints.map((point: string, index: number) => (
                             <div key={index} className="flex items-start gap-2">
-                                <span className="text-[22px] -translate-y-2 text-text-primary">•</span>
+                                <span className="text-sm block text-text-primary">•</span>
                                 <p className="text-sm leading-4 flex-1 text-text-primary">{point}</p>
                             </div>
                         ))}

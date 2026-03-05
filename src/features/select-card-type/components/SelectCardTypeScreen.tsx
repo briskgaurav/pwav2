@@ -8,6 +8,7 @@ import { haptic } from '@/lib/useHaptics';
 import { routes } from '@/lib/routes';
 import { CARD_TYPES as CARD_TYPE_VALUES } from '@/lib/types';
 import type { CardType } from '@/lib/types';
+import PWAHeader from '@/components/PWAHeader';
 
 const CARD_TYPE_OPTIONS = [
   { id: 'debit' as const, label: 'Debit Card', icon: '/svg/debitcard.svg' },
@@ -32,8 +33,8 @@ export default function SelectCardTypeScreen() {
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* <Header showCross={false}  title="Add Instacard" />  */}
 
+      <PWAHeader title="Add Instacard" /> 
       <SheetContainer>
         <div className="flex-1 overflow-auto p-6 py-10">
           <p
