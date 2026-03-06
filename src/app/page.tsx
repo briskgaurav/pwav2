@@ -99,7 +99,7 @@ export default function CardsScreen() {
         <GreetingBar
           userName="Nirdesh Malik"
           onSearchPress={() => { }}
-          onHelpPress={() => { }}
+        
           onAvatarPress={() => setProfileDrawerVisible(true)}
           isDarkMode={isDarkMode}
         />

@@ -120,12 +120,12 @@ export const CardStack = forwardRef<CardStackRef, CardStackProps>(
         const focusLift = interpolate(
           focusProgress,
           [0, 1],
-          [0, -150 * selectionStrength]
+          [0, -110 * selectionStrength]
         );
         const focusScale = interpolate(
           focusProgress,
           [0, 1],
-          [1, 1 - 0.3 * selectionStrength]
+          [1, 1 - 0.2 * selectionStrength]
         );
 
         if (stackPosition < 0 || stackPosition >= STACK_CONFIG.VISIBLE_CARDS) {
@@ -358,7 +358,7 @@ export const CardStack = forwardRef<CardStackRef, CardStackProps>(
       gsap.to(anim.current, {
         selectedIndex: idx,
         duration: 0.24,
-        ease: 'power2.out',
+        // ease: 'power2.out',
         onUpdate: applyCardTransforms,
       });
     }, [selectedCardId, cards, applyCardTransforms]);

@@ -2,11 +2,11 @@
 
 import { useAuth } from '@/lib/auth-context';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface GreetingBarProps {
   userName: string;
   onSearchPress?: () => void;
-  onHelpPress?: () => void;
   onAvatarPress?: () => void;
   isDarkMode?: boolean;
 }
@@ -14,7 +14,6 @@ interface GreetingBarProps {
 export function GreetingBar({
   userName,
   onSearchPress,
-  onHelpPress,
   isDarkMode,
   onAvatarPress,
 }: GreetingBarProps) {
@@ -45,9 +44,9 @@ export function GreetingBar({
             />
         </button>
 
-        <button
-          type="button"
-          onClick={onHelpPress}
+        <Link
+          type="link"
+          href="/help-and-support"
           aria-label="Help"
           className="h-9 w-9 flex items-center justify-center rounded-full  transition"
         >
@@ -69,7 +68,7 @@ export function GreetingBar({
                 </filter>
               </defs>
             </svg>
-        </button>
+        </Link>
 
         <button
           type="button"

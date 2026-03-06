@@ -74,13 +74,12 @@ export default function CardStatusScreen() {
               >
                 OK
               </Button>
-              <Button
+              <button
                 onClick={() => setShowBlockModal(false)}
-                variant="secondary"
-                className="w-full border border-black text-gray-800 rounded-full py-3"
+                className="w-full border  border-border text-text-primary rounded-full py-3"
               >
                 Cancel
-              </Button>
+              </button>
             </div>
           </div>
         </div>

@@ -10,7 +10,7 @@ import type { CardData, CardImageId } from './cardData'
 import type { CardType } from '@/lib/types'
 import { routes } from '@/lib/routes'
 import FAQModal from '../modals/FAQModal'
-import { ICONS } from '@/constants/icons'
+import { AddCardIcon, LinkToUniversalIcon, ManageCard, PhoneIcon } from '@/constants/icons'
 
 // Register GSAP plugin
 if (typeof window !== 'undefined') {
@@ -38,7 +38,7 @@ export const ACTIONS: ActionItem[] = [
     {
         id: 'manage',
         title: 'Manage Card',
-        icon: <Image src={ICONS.manageCard} alt="Manage Card" width={24} height={24} />,
+        icon: <ManageCard />,
         faqData: {
             heading: 'Manage Card',
             bulletPoints: [
@@ -53,7 +53,7 @@ export const ACTIONS: ActionItem[] = [
     {
         id: 'card-details',
         title: 'View Card Details',
-        icon: <Image src={ICONS.manageCard} alt="Card Details" width={24} height={24} className='h-full w-full object-contain' />,
+        icon: <AddCardIcon />,
         faqData: {
             heading: 'View Card Details',
             bulletPoints: [
@@ -67,7 +67,7 @@ export const ACTIONS: ActionItem[] = [
     {
         id: 'make-online-payments',
         title: 'Make Online Payment',
-        icon: <Image src={ICONS.phone} alt="Add Money" width={24} height={24} className='h-full w-full object-contain' />,
+        icon: <PhoneIcon />,
         faqData: {
             heading: 'Make Online Payment',
             bulletPoints: [
@@ -78,24 +78,24 @@ export const ACTIONS: ActionItem[] = [
             ],
         },
     },
-    {
-        id: 'contactless-default',
-        title: 'Make default for Contactless Payments',
-        icon: <Image src={ICONS.addCard} alt="Contactless" width={24} height={24} className='h-full w-full object-contain' />,
-        faqData: {
-            heading: 'Make Default for Contactless Payments',
-            bulletPoints: [
-                'Set this card as your default for tap-to-pay transactions.',
-                'Use your phone or smartwatch for contactless payments.',
-                'Enjoy faster checkout at supported terminals.',
-                'Change your default card anytime from settings.',
-            ],
-        },
-    },
+    // {
+    //     id: 'contactless-default',
+    //     title: 'Make default for Contactless Payments',
+    //     icon: <Image src={ICONS.addCard} alt="Contactless" width={24} height={24} className='h-full w-full object-contain' />,
+    //     faqData: {
+    //         heading: 'Make Default for Contactless Payments',
+    //         bulletPoints: [
+    //             'Set this card as your default for tap-to-pay transactions.',
+    //             'Use your phone or smartwatch for contactless payments.',
+    //             'Enjoy faster checkout at supported terminals.',
+    //             'Change your default card anytime from settings.',
+    //         ],
+    //     },
+    // },
     {
         id: 'link-physical',
         title: 'Link Virtual / Physical Card',
-        icon: <Image src={ICONS.linkToUniversal} alt="Link Card" width={24} height={24} className='h-full w-full object-contain' />,
+        icon: <LinkToUniversalIcon />,
         faqData: {
             heading: 'Link Virtual Instacard with Physical Universal or Sigma Instacard',
             bulletPoints: [
@@ -181,7 +181,7 @@ export default function ActionDrawer({
 
     const initDraggable = useCallback(() => {
         if (modalRef.current && handleRef.current) {
-            const modalHeight = modalRef.current.offsetHeight
+            const modalHeight = modalRef.current.offsetHeight 
             const threshold = modalHeight * 0.3
 
             draggableRef.current = Draggable.create(modalRef.current, {
@@ -290,7 +290,7 @@ export default function ActionDrawer({
                     </div>
 
                     {/* Scrollable Content */}
-                    <div className="overflow-y-auto max-h-[calc(50vh-40px)] px-4 pb-6">
+                    <div className="overflow-y-auto max-h-[calc(50vh-40px)] pb-6">
                         {/* Card Carousel */}
                         <div className="pb-4">
                             <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-hide">
@@ -301,7 +301,7 @@ export default function ActionDrawer({
                                             key={card.id}
                                             type="button"
                                             onClick={() => handleCardSelect(card, index)}
-                                            className={`relative shrink-0 w-[100px] h-[63px] rounded-lg overflow-hidden ${isSelected ? 'border-2 border-white' : ''
+                                            className={`relative shrink-0 w-[100px] h-[63px] rounded-lg overflow-hidden ${isSelected ? 'border-2 border-[#fff]' : ''
                                                 }`}
                                         >
                                             <Image
@@ -318,7 +318,7 @@ export default function ActionDrawer({
                         </div>
 
                         {/* Actions Grid */}
-                        <div className="grid grid-cols-2 gap-2.5">
+                        <div className="grid grid-cols-2 px-4  gap-2.5">
                             {ACTIONS.map((action, index) => {
                                 const displayTitle =
                                     action.id === 'link-physical'
@@ -330,9 +330,8 @@ export default function ActionDrawer({
                                     index === ACTIONS.length - 1 && ACTIONS.length % 2 !== 0
 
                                 return (
-                                    <button
+                                    <div
                                         key={action.id}
-                                        type="button"
                                         onClick={() => handleActionOpen(action.id)}
                                         className={`bg-white border border-border rounded-2xl p-3 min-h-[80px] flex flex-col justify-between items-start text-left ${isLastOdd ? 'col-span-2' : ''
                                             }`}
@@ -356,7 +355,7 @@ export default function ActionDrawer({
                                         <span className="text-xs leading-[1.1] text-text-primary">
                                             {displayTitle}
                                         </span>
-                                    </button>
+                                    </div>
                                 )
                             })}
                         </div>

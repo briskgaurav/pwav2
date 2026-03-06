@@ -9,8 +9,7 @@ import Link from 'next/link'
 
 interface PWAHeaderProps {
     title?: string
-    exitIcon?: boolean
-    onExitPress?: () => void
+
 }
 
 interface ConfirmDialogProps {
@@ -122,14 +121,36 @@ function ConfirmDialog({ visible, message, onCancel, onConfirm }: ConfirmDialogP
     )
 }
 
-export default function PWAHeader({ title: titleProp, exitIcon: exitIconProp, onExitPress }: PWAHeaderProps) {
+export default function PWAHeader({ title: titleProp, }: PWAHeaderProps) {
     const [showDialog, setShowDialog] = useState(false)
     const isWebView = useIsWebView()
     const router = useRouter()
     const pathname = usePathname()
     const { title: contextTitle, exitIcon: contextExitIcon } = usePWAHeader()
     const title = titleProp ?? contextTitle
-    const exitIcon = pathname === '/' ? false : (exitIconProp ?? contextExitIcon)
+    const exitIcon = pathname === '/' ? false : true
+    const titleRef = useRef<HTMLParagraphElement>(null)
+    const [displayedTitle, setDisplayedTitle] = useState(pathname === '/' ? 'Instacard' : (pathname.split('/').pop() || '').replace(/-/g, ' '))
+
+    const currentTitle = pathname === '/' ? 'Instacard' : (pathname.split('/').pop() || '').replace(/-/g, ' ')
+
+    useEffect(() => {
+        if (titleRef.current && displayedTitle !== currentTitle) {
+            gsap.to(titleRef.current, {
+                opacity: 0,
+                duration: 0.3,
+                ease: 'power2.in',
+                onComplete: () => {
+                    setDisplayedTitle(currentTitle)
+                    gsap.to(titleRef.current, {
+                        opacity: 1,
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    })
+                }
+            })
+        }
+    }, [currentTitle, displayedTitle])
 
     const handleLogoutClick = () => {
         setShowDialog(true)
@@ -164,11 +185,11 @@ export default function PWAHeader({ title: titleProp, exitIcon: exitIconProp, on
                     />
                 </button>
 
-                <p className='text-md absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-[#ffffff] capitalize'>{pathname === '/' ? 'Instacard' : (pathname.split('/').pop() || '').replace(/-/g, ' ')}</p>
+                <p ref={titleRef} className='text-md absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-[#ffffff] capitalize'>{displayedTitle}</p>
 
-                <button 
-                    onClick={handleLogoutClick} 
-                    aria-label="Go home" 
+                <button
+                    onClick={handleLogoutClick}
+                    aria-label="Go home"
                     className={`h-6 duration-300 transition-all w-6 ${exitIcon ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                 >
                     <LogOut width={24} height={24} color='white' />
