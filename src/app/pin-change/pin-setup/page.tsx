@@ -4,12 +4,15 @@ import { useState } from 'react'
 import { notifyUserCancelled } from '@/lib/bridge'
 import PinSetupForm from '@/features/pin/components/PinSetupForm'
 import PinSuccessPopup from '@/features/pin/components/PinSuccessPopup'
+import { useManagingCard } from '@/hooks/useManagingCard'
 
 export default function PinChangeSetupPage() {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
+  const { changePin } = useManagingCard()
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (pin: string) => {
     await new Promise((resolve) => setTimeout(resolve, 1500))
+    changePin(pin)
     setShowSuccessPopup(true)
   }
 

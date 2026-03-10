@@ -13,6 +13,7 @@ import { useSearchParams } from 'next/navigation'
 import CardMockup from '@/components/ui/CardMockup'
 import CardActionTiles from './CardActionTiles'
 import { useManageCardActions } from '../hooks/useManageCardActions'
+import { useManagingCard } from '@/hooks/useManagingCard'
 
 export default function ManagePrepaidCardScreen() {
   const searchParams = useSearchParams()
@@ -20,12 +21,13 @@ export default function ManagePrepaidCardScreen() {
   const { isFaqOpen, faqData, closeFaq } = useManageCardStore()
   const [showBalance, setShowBalance] = useState(false)
   const { showRemoveModal, setShowRemoveModal, handleCardActionClick, handleRemoveCard } = useManageCardActions()
+  const { mockupImageSrc, maskedNumber } = useManagingCard()
 
   return (
     <div className="h-screen flex flex-col">
       <SheetContainer>
         <div className="flex-1 overflow-auto pb-10 p-4 space-y-4">
-         <CardMockup imageSrc='/img/prepaid.png' />
+         <CardMockup imageSrc={mockupImageSrc ?? '/img/prepaid.png'} maskedNumber={maskedNumber} />
           <div className='w-full flex rounded-xl mt-4 gap-2 '>
             <div className='flex-1 p-4 py-6  border border-text-primary/20 rounded-2xl  flex flex-col gap-4'>
               <p className='text-text-primary text-sm'>Wallet Account</p>

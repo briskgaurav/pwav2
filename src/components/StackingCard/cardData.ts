@@ -19,6 +19,13 @@
 
     export type CardImageId = 1 | 2 | 3 | 4;
 
+    export const CARD_IMAGE_PATHS: Record<CardImageId, string> = {
+      1: '/img/cards/debit.png',
+      2: '/img/cards/credit.png',
+      3: '/img/cards/prepaid.png',
+      4: '/img/cards/gift.png',
+    };
+
     /** All supported card types */
     export type CardType = "debit" | "credit" | "prepaid" | "gift";
 
@@ -31,6 +38,7 @@
       name: string;
       cardHolder: string;
       cardNumber: string;
+      pin: string;
       expiry: string;
       balance: number;
       cardType: CardType;
@@ -49,6 +57,7 @@
         name: "FCMB Debit",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "12/26",
         balance: 15000.50,
         cardType: "debit",
@@ -64,6 +73,7 @@
         name: "GTB Credit",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "08/27",
         balance: 250000.00,
         cardType: "credit",
@@ -79,6 +89,7 @@
         name: "Access Debit",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "03/28",
         balance: 8500.75,
         cardType: "debit",
@@ -94,6 +105,7 @@
         name: "Prepaid Card",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "06/25",
         balance: 5000.00,
         cardType: "prepaid",
@@ -109,6 +121,7 @@
         name: "Gift Card",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "12/25",
         balance: 2500.00,
         cardType: "gift",
@@ -124,6 +137,7 @@
         name: "FCMB Magic",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "11/26",
         balance: 175000.00,
         cardType: "credit",
@@ -139,6 +153,7 @@
         name: "GTB Debit",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "10/25",
         balance: 3200.00,
         cardType: "debit",
@@ -154,6 +169,7 @@
         name: "Access Credit",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "09/27",
         balance: 120000.00,
         cardType: "credit",
@@ -169,6 +185,7 @@
         name: "Travel Card",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "04/28",
         balance: 10000.00,
         cardType: "prepaid",
@@ -184,6 +201,7 @@
         name: "Reward Card",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "07/26",
         balance: 7500.00,
         cardType: "gift",
@@ -199,6 +217,7 @@
         name: "Student Card",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "06/27",
         balance: 1500.00,
         cardType: "prepaid",
@@ -214,6 +233,7 @@
         name: "Shopping Card",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "05/25",
         balance: 3000.00,
         cardType: "gift",
@@ -229,6 +249,7 @@
         name: "FCMB Debit",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "04/26",
         balance: 22000.00,
         cardType: "debit",
@@ -244,6 +265,7 @@
         name: "GTB Credit",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "03/27",
         balance: 85000.00,
         cardType: "credit",
@@ -259,6 +281,7 @@
         name: "Access Debit",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
+        pin: "0000",
         expiry: "02/28",
         balance: 45000.00,
         cardType: "debit",

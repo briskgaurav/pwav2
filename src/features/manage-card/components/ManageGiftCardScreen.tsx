@@ -16,6 +16,7 @@ import { useSearchParams } from 'next/navigation'
 import EyeButton from '@/components/ui/EyeButton'
 import CardActionTiles from './CardActionTiles'
 import { useManageCardActions } from '../hooks/useManageCardActions'
+import { useManagingCard } from '@/hooks/useManagingCard'
 import { useAuth } from '@/lib/auth-context'
 
 export default function ManageGiftCardScreen() {
@@ -24,6 +25,7 @@ export default function ManageGiftCardScreen() {
   const [showActivationCode, setShowActivationCode] = useState(false)
   const { isFaqOpen, faqData, closeFaq } = useManageCardStore()
   const { showRemoveModal, setShowRemoveModal, handleCardActionClick, handleRemoveCard } = useManageCardActions()
+  const { mockupImageSrc, maskedNumber } = useManagingCard()
 
   const { isDarkMode } = useAuth()
 
@@ -31,7 +33,7 @@ export default function ManageGiftCardScreen() {
     <div className="h-screen flex flex-col">
       <SheetContainer>
         <div className="flex-1 overflow-auto pb-10 p-4 space-y-4">
-          <CardMockup imageSrc='/img/gift.png' />
+          <CardMockup imageSrc={mockupImageSrc ?? '/img/gift.png'} maskedNumber={maskedNumber} />
           <Balance />
 
           <div className="flex gap-4 items-start justify-between overflow-x-auto">

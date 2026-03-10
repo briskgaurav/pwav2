@@ -13,6 +13,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import CardMockup from '@/components/ui/CardMockup';
 import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
+import { useManagingCard } from '@/hooks/useManagingCard';
 
 interface AccordionItemProps {
     title: string;
@@ -233,6 +234,7 @@ function HowToUseCardContent() {
     const cardType = (searchParams.get('type') as CardType) || 'debit';
     const config = CARD_TYPE_CONFIG[cardType];
     const cardActions = useMemo(() => getCardActions(cardType), [cardType]);
+    const { mockupImageSrc, maskedNumber } = useManagingCard();
     useEffect(() => {
         notifyNavigation('how-to-use-card');
     }, []);
@@ -263,7 +265,7 @@ function HowToUseCardContent() {
                     </div>
 
                     {/* Card Preview */}
-                   <CardMockup isclickable={false} imageSrc={config.mockupImage} />
+                   <CardMockup isclickable={false} imageSrc={mockupImageSrc ?? config.mockupImage} maskedNumber={maskedNumber} />
 
                     {/* How to use section */}
                     <div className="mt-6">

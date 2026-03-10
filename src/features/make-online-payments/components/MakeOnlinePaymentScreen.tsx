@@ -8,6 +8,7 @@ import RecentTransactionsList from './RecentTransactionsList'
 import { useOnlinePaymentStore } from '../store/useOnlinePaymentStore'
 import { CARD_CONFIG } from '@/lib/card-config'
 import PullToRefresh from '@/components/ui/PullToRefresh'
+import { useManagingCard } from '@/hooks/useManagingCard'
 
 export default function MakeOnlinePaymentScreen() {
   const isVerified = useOnlinePaymentStore((s) => s.isVerified)
@@ -16,6 +17,7 @@ export default function MakeOnlinePaymentScreen() {
   const cardDetails = useOnlinePaymentStore((s) => s.cardDetails)
   const refreshData = useOnlinePaymentStore((s) => s.refreshData)
   const config = CARD_CONFIG[cardDetails.cardType]
+  const { imageSrc, maskedNumber, cardNumber } = useManagingCard()
 
   useEffect(() => {
     return () => {
@@ -29,8 +31,8 @@ export default function MakeOnlinePaymentScreen() {
       <div className="h-dvh flex flex-col">
         <CardPinAuth
           title="Enter PIN for selected Instacard"
-          cardImageSrc={config.image}
-          maskedNumber={cardDetails.maskedNumber}
+          cardImageSrc={imageSrc ?? config.image}
+          maskedNumber={maskedNumber ?? cardDetails.maskedNumber}
           onVerified={() => setVerified(true)}
         />
       </div>
@@ -46,7 +48,7 @@ export default function MakeOnlinePaymentScreen() {
           <div className="flex-1 overflow-y-auto pb-10">
             {/* Card section */}
             <div className="px-5 pt-10">
-              <VirtualCardDetails />
+              <VirtualCardDetails cardImageSrc={imageSrc ?? config.image} maskedNumber={maskedNumber ?? cardDetails.maskedNumber} cardNumber={cardNumber ?? cardDetails.pan} />
             </div>
 
             {/* Transactions section */}

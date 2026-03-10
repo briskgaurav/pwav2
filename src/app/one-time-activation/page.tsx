@@ -1,6 +1,7 @@
 'use client'
 import { Button, SheetContainer } from '@/components/ui'
 import CardMockup from '@/components/ui/CardMockup'
+import { useManagingCard } from '@/hooks/useManagingCard'
 import CopyButton from '@/components/ui/CopyButton'
 import { useRouter } from 'next/navigation'
 import React from 'react'
@@ -9,6 +10,7 @@ import { routes } from '@/lib/routes'
 
 export default function page() {
     const router = useRouter()
+    const { imageSrc, maskedNumber } = useManagingCard()
 
     const handleExitPWA = () => {
         // notifyCardAdded({
@@ -24,7 +26,7 @@ export default function page() {
         <div className='h-screen flex flex-col'>
             <SheetContainer>
                 <div className="flex-1 overflow-auto pb-10 p-4 space-y-2">
-                    <CardMockup  isclickable={false} imageSrc='/img/gift.png' />
+                    <CardMockup  isclickable={false} imageSrc={imageSrc ?? '/img/gift.png'} maskedNumber={maskedNumber} />
                     <p className='text-text-primary text-lg ml-1 mt-4'>One time Activation Code</p>
                     <div className='p-4 border flex items-center justify-between border-border my-4 rounded-2xl'>
                         <p className='text-text-primary text-md font-medium'>4668-4782-3787-78378</p>

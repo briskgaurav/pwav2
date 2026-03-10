@@ -10,8 +10,11 @@ export default function PinSetupPage() {
   const router = useRouter()
   const addCard = useCardWalletStore((s) => s.addCard)
 
-  const handleSubmit = async (_pin: string, cardType: CardType) => {
+  const setPendingPin = useCardWalletStore((s) => s.setPendingPin)
+
+  const handleSubmit = async (pin: string, cardType: CardType) => {
     await new Promise((resolve) => setTimeout(resolve, 1500))
+    setPendingPin(pin)
     const newCard = addCard(cardType)
     console.log('Card added:', newCard)
     router.push(routes.howToUseCard(cardType))

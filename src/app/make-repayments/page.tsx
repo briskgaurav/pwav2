@@ -1,5 +1,6 @@
 'use client'
 import CardMockup from '@/components/ui/CardMockup'
+import { useManagingCard } from '@/hooks/useManagingCard'
 import MakeRepayment from '@/components/ui/MakeRepayment'
 import { SheetContainer } from '@/components/ui/sheet-container'
 import React from 'react'
@@ -12,11 +13,12 @@ const paymentDetails = [
 ]
 
 export default function page() {
+  const { imageSrc, maskedNumber } = useManagingCard()
   return (
     <div className='h-screen flex flex-col'>
         <SheetContainer>
             <div className="flex-1 overflow-auto pb-10 p-4 space-y-5">
-                <CardMockup imageSrc='/img/creditcard.png' />
+                <CardMockup imageSrc={imageSrc ?? '/img/creditcard.png'} maskedNumber={maskedNumber} />
                 
                 <div className="grid grid-cols-2 gap-3">
                     {paymentDetails.map((item, index) => (

@@ -17,7 +17,7 @@ export default function RouteTitle() {
   const pathname = usePathname()
   const title = getTitleFromPath(pathname)
 
-  if (pathname === '/') return null
+  // if (pathname === '/') return null
 
   return (
     <div className="shrink-0 bg-text-primary h-[10%] rounded-t-3xl -mt-1 relative z-20 py-2.5 px-4">

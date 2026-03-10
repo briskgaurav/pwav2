@@ -12,18 +12,20 @@ import { useManageCardStore } from '../store/useManageCardStore'
 import CardMockup from '@/components/ui/CardMockup'
 import CardActionTiles from './CardActionTiles'
 import { useManageCardActions } from '../hooks/useManageCardActions'
+import { useManagingCard } from '@/hooks/useManagingCard'
 
 export default function ManageDebitCardScreen() {
   const searchParams = useSearchParams()
   const cardMode = (searchParams.get('mode') as 'virtual' | 'universal') || 'virtual'
   const { isFaqOpen, faqData, closeFaq } = useManageCardStore()
   const { showRemoveModal, setShowRemoveModal, handleCardActionClick, handleRemoveCard } = useManageCardActions()
+  const { mockupImageSrc, maskedNumber } = useManagingCard()
 
   return (
     <div className="h-screen flex flex-col">
       <SheetContainer>
         <div className="flex-1 overflow-auto pb-10 p-4 space-y-4">
-          <CardMockup imageSrc='/img/debitmockup.png' />
+          <CardMockup imageSrc={mockupImageSrc ?? '/img/debitmockup.png'} maskedNumber={maskedNumber} />
 
           <div className="flex gap-4 overflow-x-auto">
             {getManageBtns('debit').map((btn, index) => (

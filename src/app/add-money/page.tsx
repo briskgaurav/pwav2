@@ -2,6 +2,7 @@
 
 import { Button, SheetContainer } from '@/components/ui'
 import CardMockup from '@/components/ui/CardMockup'
+import { useManagingCard } from '@/hooks/useManagingCard'
 import BottomSheetModal from '@/components/modals/BottomSheetModal'
 import AddMoneyToggle from '@/features/add-money/components/AddMoneyToggle'
 import { AddMoneyForm } from '@/features/add-money/components/AddMoneyForm'
@@ -32,6 +33,7 @@ const bankAccounts: BankAccount[] = [
 
 export default function AddMoneyPage() {
     const router = useRouter()
+    const { imageSrc, maskedNumber } = useManagingCard()
     const [showBalance, setShowBalance] = useState(false)
     const [amount, setAmount] = useState('')
     const [modalOpen, setModalOpen] = useState(false)
@@ -130,7 +132,7 @@ export default function AddMoneyPage() {
         <div className='h-screen flex flex-col'>
             <SheetContainer>
                 <div className="flex-1 overflow-auto pb-10 p-4 space-y-5">
-                    <CardMockup />
+                    <CardMockup imageSrc={imageSrc} maskedNumber={maskedNumber} />
                     <Balance />
 
                     <AddMoneyForm

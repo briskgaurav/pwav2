@@ -8,6 +8,7 @@ import { PIN_LENGTH } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/lib/auth-context'
+import { useManagingCard } from '@/hooks/useManagingCard'
 
 type CardPinAuthProps = {
   title?: string
@@ -25,14 +26,16 @@ export default function CardPinAuth({
   const [pin, setPin] = useState('')
   const [error, setError] = useState('')
   const [resetKey, setResetKey] = useState(0)
-  const verifyPin = useCardStore((s) => s.verifyPin)
+  const { verifyPin: verifyCardPin, card: managingCard } = useManagingCard()
+  const verifyGlobalPin = useCardStore((s) => s.verifyPin)
   const router = useRouter()
   const { t } = useTranslation()
   const { language } = useAuth()
   const isRtl = language === 'ar'
 
   const handleContinue = () => {
-    if (verifyPin(pin)) {
+    const isValid = managingCard ? verifyCardPin(pin) : verifyGlobalPin(pin)
+    if (isValid) {
       onVerified()
     } else {
       setError(t('cardPinAuth.incorrectPin'))
@@ -79,7 +82,7 @@ export default function CardPinAuth({
               className="h-full w-full object-contain"
               priority
             />
-            <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#fff] text-2xl w-full text-center select-none">
+            <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#fff] text-xl w-full text-center select-none">
               {maskedNumber}
             </p>
           </div>

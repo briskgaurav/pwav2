@@ -69,20 +69,21 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body className={`${helveticaNeue.className} h-dvh overflow-hidden`}>
-        <AuthProvider>
-          <PWAHeaderProvider>
-            <div className="flex flex-col h-dvh overflow-hidden">
-              <PWAHeader />
-              <RouteTitle />
-              <PageSlideTransition>
-                {children}
-              </PageSlideTransition>
-            </div>
-            <GlobalProfileDrawer />
-          </PWAHeaderProvider>
-        </AuthProvider>
-      </body>
+
+        <body className={`${helveticaNeue.className} h-dvh overflow-hidden`}>
+          <AuthProvider>
+            <PWAHeaderProvider>
+              <div className="flex flex-col h-dvh overflow-hidden">
+                <PWAHeader />
+                <RouteTitle />
+                <PageSlideTransition>
+                  {children}
+                </PageSlideTransition>
+              </div>
+              <GlobalProfileDrawer />
+            </PWAHeaderProvider>
+          </AuthProvider>
+        </body>
     </html>
   );
 }

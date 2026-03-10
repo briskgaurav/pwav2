@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import CardPinAuth from '@/features/card-detail/components/CardPinAuth'
 import { CARD_CONFIG } from '@/lib/card-config'
 import type { CardType } from '@/lib/types'
+import { useManagingCard } from '@/hooks/useManagingCard'
 
 type ManageCardPageWrapperProps = {
   cardType: CardType
@@ -13,13 +14,14 @@ type ManageCardPageWrapperProps = {
 export default function ManageCardPageWrapper({ cardType, children }: ManageCardPageWrapperProps) {
   const [isVerified, setIsVerified] = useState(false)
   const config = CARD_CONFIG[cardType]
+  const { imageSrc, maskedNumber } = useManagingCard()
 
   if (!isVerified) {
     return (
       <CardPinAuth
         title={`Enter PIN to Manage this ${config.label}`}
-        cardImageSrc={config.mockupImage}
-        maskedNumber="0000 0000 0000 0000"
+        cardImageSrc={imageSrc ?? config.mockupImage}
+        maskedNumber={maskedNumber ?? '0000 0000 0000 0000'}
         onVerified={() => setIsVerified(true)}
       />
     )

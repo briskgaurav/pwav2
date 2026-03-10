@@ -6,7 +6,8 @@ import gsap from 'gsap'
 import Draggable from 'gsap/dist/Draggable'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import type { CardData, CardImageId } from './cardData'
+import type { CardData } from './cardData'
+import { CARD_IMAGE_PATHS } from './cardData'
 import type { CardType } from '@/lib/types'
 import { routes } from '@/lib/routes'
 import FAQModal from '../modals/FAQModal'
@@ -16,13 +17,6 @@ import { useCardWalletStore } from '@/store/useCardWalletStore'
 // Register GSAP plugin
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(Draggable)
-}
-
-const CARD_IMAGE_PATHS: Record<CardImageId, string> = {
-    1: '/img/cards/debit.png',
-    2: '/img/cards/credit.png',
-    3: '/img/cards/prepaid.png',
-    4: '/img/cards/gift.png',
 }
 
 type ActionItem = {
@@ -252,9 +246,7 @@ export default function ActionDrawer({
             if (!selectedCard) return
             onActionPress?.(actionId, selectedCard)
 
-            if (actionId === 'manage') {
-                useCardWalletStore.getState().setManagingCardId(selectedCard.id)
-            }
+            useCardWalletStore.getState().setManagingCardId(selectedCard.id)
 
             const path = actionRoutes[actionId as keyof typeof actionRoutes]
             if (path) {

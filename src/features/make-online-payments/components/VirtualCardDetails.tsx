@@ -9,7 +9,7 @@ import { EyeIcon, EyeOffIcon, RefreshCw } from 'lucide-react'
 import { haptic } from '@/lib/useHaptics'
 import gsap from 'gsap'
 
-export default function VirtualCardDetails() {
+export default function VirtualCardDetails({ cardImageSrc, maskedNumber, cardNumber }: { cardImageSrc: string, maskedNumber: string, cardNumber: string }) {
   const cardRef = useRef<HTMLDivElement>(null)
   const frontContentRef = useRef<HTMLDivElement>(null)
   const backContentRef = useRef<HTMLDivElement>(null)
@@ -248,7 +248,7 @@ export default function VirtualCardDetails() {
                 {/* Card Number */}
                 <div className="flex-1 -mt-23 flex items-center justify-center">
                   <p className="text-xl text-[#ffffff] text-center tracking-[3px]">
-                    {cardDetails.pan}
+                   {cardNumber}
                   </p>
                   <CopyButton  value={cardDetails.pan.replace(/\s/g, '')} className="text-[#ffffff] invert ml-2" />
                 </div>

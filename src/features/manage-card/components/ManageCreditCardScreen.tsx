@@ -13,6 +13,7 @@ import { useSearchParams } from 'next/navigation'
 import CardMockup from '@/components/ui/CardMockup'
 import CardActionTiles from './CardActionTiles'
 import { useManageCardActions } from '../hooks/useManageCardActions'
+import { useManagingCard } from '@/hooks/useManagingCard'
 import { RepaymentIcon, StatementsIcon } from '@/constants/icons'
 
 const creditCardDetails = [
@@ -29,12 +30,13 @@ export default function ManageCreditCardScreen() {
   const cardMode = (searchParams.get('mode') as 'virtual' | 'universal') || 'virtual'
   const { isFaqOpen, faqData, closeFaq } = useManageCardStore()
   const { showRemoveModal, setShowRemoveModal, handleCardActionClick, handleRemoveCard } = useManageCardActions()
+  const { mockupImageSrc, maskedNumber } = useManagingCard()
 
   return (
     <div className="h-screen flex flex-col">
       <SheetContainer>
         <div className="flex-1 overflow-auto pb-10 p-4 space-y-4">
-          <CardMockup showActions={true} imageSrc='/img/creditcard.png' />
+          <CardMockup showActions={true} imageSrc={mockupImageSrc ?? '/img/creditcard.png'} maskedNumber={maskedNumber} />
 
           <div className='w-full rounded-2xl bg-background2 border border-border py-6 px-4 space-y-4'>
             <div className='flex items-center pl-2 justify-between'>

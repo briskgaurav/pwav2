@@ -51,7 +51,7 @@ export default function PWAHeader() {
     return (
         <div className='shrink-0 pt-[env(safe-area-inset-top,0px)] bg-primary'>
             <div className='h-14 text-white relative flex items-center justify-between px-4 w-full'>
-                <button onClick={handleGoBack} className='h-fit w-fit rounded-full' aria-label="Go back">
+                <button onClick={handleGoBack} className={`h-fit ${showMenuIcon ? 'opacity-100 flex' : 'opacity-0 hidden pointer-events-none'} w-fit rounded-full`} aria-label="Go back">
                     <ChevronLeft
                         size={24}
                         color='white'
