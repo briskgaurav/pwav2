@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, X } from 'lucide-react';
+import { BarChart2, Check, X } from 'lucide-react';
 
 export type CardFilterType = 'all' | 'debit' | 'credit' | 'prepaid' | 'gift';
 
 export type FilterTab = 'all' | 'recent';
+
+export type SortByValue = 'recent' | 'most-used';
 
 const FILTER_LABELS: Record<CardFilterType, string> = {
   all: 'All Cards',
@@ -33,12 +35,17 @@ type ModeValue = 'virtual' | 'universal';
 interface FilterBarProps {
   cardFilters?: CardFilterType[];
   onCardFiltersChange?: (filters: CardFilterType[]) => void;
-  recentFilterActive?: boolean;
-  onRecentFilterPress?: () => void;
+  sortBy?: SortByValue;
+  onSortChange?: (sort: SortByValue) => void;
   mode: ModeValue;
   onModeChange: (mode: ModeValue) => void;
   isDarkMode?: boolean;
 }
+
+const SORT_ICONS = [
+  { id: 'recent' as SortByValue, Icon: RecentSortIcon, label: 'Recently Used' },
+  { id: 'most-used' as SortByValue, Icon: BarChart2, label: 'Most Used' },
+];
 
 const TOGGLE_OPTIONS: Array<{ id: ModeValue; label: string }> = [
   { id: 'virtual', label: 'Virtual' },
@@ -61,10 +68,22 @@ function FilterIcon({ className }: { className?: string }) {
   );
 }
 
-function SortIcon({ className }: { className?: string }) {
+function RecentSortIcon({ className }: { className?: string }) {
   return (
-    <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-      <path fillRule="evenodd" clipRule="evenodd" d="M6.89404 8.62232L9.41021 11.1385C9.65587 11.3841 10.0541 11.3841 10.2998 11.1385L12.8159 8.62232C13.0616 8.37666 13.0616 7.97843 12.8159 7.73277C12.5703 7.48711 12.172 7.48711 11.9264 7.73277L10.484 9.17504V0.629042C10.484 0.281635 10.2024 0 9.85499 0C9.50759 0 9.22594 0.281635 9.22594 0.629042V9.17504L7.78359 7.73277C7.53793 7.48711 7.13971 7.48711 6.89404 7.73277C6.64838 7.97843 6.64838 8.37666 6.89404 8.62232ZM3.59001 0.184242C3.34435 -0.0614114 2.94606 -0.0614114 2.70041 0.184242L0.18424 2.70041C-0.0614134 2.94606 -0.0614134 3.34435 0.18424 3.59001C0.429893 3.83566 0.828186 3.83566 1.07384 3.59001L2.51617 2.14768V10.6937C2.51617 11.0411 2.7978 11.3228 3.14521 11.3228C3.49261 11.3228 3.77425 11.0411 3.77425 10.6937V2.14768L5.2166 3.59001C5.46226 3.83566 5.86049 3.83566 6.10615 3.59001C6.35181 3.34435 6.35181 2.94606 6.10615 2.70041L3.59001 0.184242Z" fill="currentColor" />
+    <svg
+      width="13"
+      height="12"
+      viewBox="0 0 13 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M6.89404 8.62232L9.41021 11.1385C9.65587 11.3841 10.0541 11.3841 10.2998 11.1385L12.8159 8.62232C13.0616 8.37666 13.0616 7.97843 12.8159 7.73277C12.5703 7.48711 12.172 7.48711 11.9264 7.73277L10.484 9.17504V0.629042C10.484 0.281635 10.2024 0 9.85499 0C9.50759 0 9.22594 0.281635 9.22594 0.629042V9.17504L7.78359 7.73277C7.53793 7.48711 7.13971 7.48711 6.89404 7.73277C6.64838 7.97843 6.64838 8.37666 6.89404 8.62232ZM3.59001 0.184242C3.34435 -0.0614114 2.94606 -0.0614114 2.70041 0.184242L0.18424 2.70041C-0.0614134 2.94606 -0.0614134 3.34435 0.18424 3.59001C0.429893 3.83566 0.828186 3.83566 1.07384 3.59001L2.51617 2.14768V10.6937C2.51617 11.0411 2.7978 11.3228 3.14521 11.3228C3.49261 11.3228 3.77425 11.0411 3.77425 10.6937V2.14768L5.2166 3.59001C5.46226 3.83566 5.86049 3.83566 6.10615 3.59001C6.35181 3.34435 6.35181 2.94606 6.10615 2.70041L3.59001 0.184242Z"
+        fill="currentColor"
+      />
     </svg>
   );
 }
@@ -72,14 +91,16 @@ function SortIcon({ className }: { className?: string }) {
 export function FilterBar({
   cardFilters = ['all'],
   onCardFiltersChange,
-  recentFilterActive = false,
-  onRecentFilterPress,
+  sortBy = 'recent',
+  onSortChange,
   mode,
   onModeChange,
 }: FilterBarProps) {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
 
   const filterLabel = getFilterLabel(cardFilters);
+  const currentSort = SORT_ICONS.find((o) => o.id === sortBy) ?? SORT_ICONS[0];
 
   const handleFiltersChange = (filters: CardFilterType[]) => {
     onCardFiltersChange?.(filters);
@@ -98,7 +119,8 @@ export function FilterBar({
             aria-label={filterLabel}
             onClick={(e) => {
               e.stopPropagation();
-              setDropdownOpen((prev) => !prev);
+              setFilterDropdownOpen((prev) => !prev);
+              setSortDropdownOpen(false);
             }}
             className="inline-flex items-center justify-center rounded-full border border-border bg-white px-3 py-2 text-sm hover:bg-black/5 active:scale-95 transition"
           >
@@ -107,26 +129,34 @@ export function FilterBar({
 
           <button
             type="button"
-            aria-label={recentFilterActive ? 'Recently Used (active)' : 'Recently Used'}
-            onClick={onRecentFilterPress}
-            className={`inline-flex items-center justify-center rounded-full border px-3 py-2 text-sm transition ${recentFilterActive
-              ? 'border-primary bg-primary/5 text-primary'
-              : 'border-border bg-white text-text-primary'
-              }`}
+            aria-label={currentSort.label}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSortDropdownOpen((prev) => !prev);
+              setFilterDropdownOpen(false);
+            }}
+            className="inline-flex items-center justify-center rounded-full border px-3 py-2 text-sm transition active:scale-95 border-primary bg-primary/5 text-primary hover:bg-black/5/60"
           >
-            <SortIcon className="w-4 h-4" />
+            <currentSort.Icon className="w-4 h-4" />
           </button>
-
         </div>
       </div>
       <FilterDropdown
-        open={dropdownOpen}
-        onOpenChange={setDropdownOpen}
+        open={filterDropdownOpen}
+        onOpenChange={setFilterDropdownOpen}
         selectedFilters={cardFilters}
         onSelectionChange={handleFiltersChange}
       />
+      <SortDropdown
+        open={sortDropdownOpen}
+        onOpenChange={setSortDropdownOpen}
+        selectedSort={sortBy}
+        onSelect={(value) => {
+          onSortChange?.(value);
+          setSortDropdownOpen(false);
+        }}
+      />
     </>
-
   );
 }
 
@@ -140,10 +170,12 @@ function AnimatedToggle({ value, onChange }: AnimatedToggleProps) {
 
   return (
     <div
+      dir="ltr"
       className="relative inline-flex  items-center bg-white border border-border rounded-full p-1 gap-1 min-w-[160px]"
       role="tablist"
     >
       <div
+
         className={`absolute top-1/2 left-[2%] -translate-y-1/2 w-[45%] h-[85%]   rounded-full bg-primary transition-transform duration-200`}
         style={{
           transform: `translateX(${activeIndex * 112}%)`,
@@ -212,7 +244,7 @@ function FilterDropdown({
   return (
     <div className="fixed inset-0 h-dvh bg-black/10 z-40" onClick={() => onOpenChange(false)}>
       <div
-        className="absolute right-4 top-[25%] backdrop-blur-md  min-w-[260px] rounded-2xl bg-white/80  border border-border overflow-hidden"
+        className="absolute right-4 top-[18%] backdrop-blur-md  min-w-[260px] rounded-2xl bg-white/80  border border-border overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between  px-4 pt-3 pb-2 border-b border-border/40">
@@ -252,6 +284,67 @@ function FilterDropdown({
                 >
                   <Check className="w-3 h-3" />
                 </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface SortDropdownProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  selectedSort: SortByValue;
+  onSelect?: (sort: SortByValue) => void;
+}
+
+function SortDropdown({
+  open,
+  onOpenChange,
+  selectedSort,
+  onSelect,
+}: SortDropdownProps) {
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 h-dvh bg-black/10 z-40"
+      onClick={() => onOpenChange(false)}
+    >
+      <div
+        className="absolute right-4 top-[18%] backdrop-blur-md min-w-[220px] rounded-2xl bg-white/80 border border-border overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-border/40">
+          <span className="text-sm font-semibold text-text-primary">
+            Sort by
+          </span>
+          <button
+            type="button"
+            onClick={() => onOpenChange(false)}
+            aria-label="Close sort"
+            className="p-1 rounded-full hover:bg-black/5"
+          >
+            <X className="w-4 h-4 text-text-primary" />
+          </button>
+        </div>
+
+        <div className="px-4 py-3 space-y-1.5">
+          {SORT_ICONS.map(({ id, Icon, label }) => {
+            const isActive = selectedSort === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => onSelect?.(id)}
+                className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-left transition-colors ${
+                  isActive ? 'bg-primary/5 text-primary' : 'hover:bg-black/5'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{label}</span>
               </button>
             );
           })}

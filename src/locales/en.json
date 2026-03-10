@@ -6,6 +6,29 @@
     "forgotPin": "Forgot PIN ?"
   },
   "profile": {
-    "languages": "Languages"
+    "settings": "Settings",
+    "profileSettings": "Profile settings",
+    "accessFeatures": "Access Features",
+    "languages": "Languages",
+    "darkMode": "Dark mode",
+    "helpSupport": "Help & support",
+    "signOut": "Sign out",
+    "version": "Version 1.0.0"
+  },
+  "accessFeatures": {
+    "digitalAccountWallet": "Digital Account Wallet",
+    "virtualCardWallet": "Virtual Card Wallet",
+    "merchantAccountWallet": "Merchant Account Wallet",
+    "agencyBanking": "Agency Banking",
+    "instantDigitalLoans": "Instant Digital Loans",
+    "upgradeKyc": "Upgrade KYC",
+    "rewardsManagement": "Rewards Management",
+    "softTokenAccount": "Soft Token Account",
+    "chatboxHelpSupport": "ChatBox Help & Support",
+    "scanPay": "ScanPay"
+  },
+  "themeOverlay": {
+    "switchedToDark": "Switched to dark mode",
+    "switchedToLight": "Switched to light mode"
   }
 }

@@ -26,14 +26,14 @@ interface SwipeIndicatorProps {
         </span>
       : canGoRight
         ? <span className="text-xs text-text-secondary text-center font-medium inline-flex items-center gap-1">
-            <span className="font-semibold text-text-primary">Tap</span> to view details &
+            {/* <span className="font-semibold text-text-primary">Tap</span> to view details & */}
             <span className="font-semibold text-text-primary inline-flex items-center gap-0.5">
-              <ArrowLeft size={14} color="var(--color-primary)" /> Swipe Left
+              <ArrowLeft size={20} className="mr-2" color="var(--color-primary)" /> Swipe Left
             </span> to see next cards
           </span>
         : <span className="text-xs text-text-secondary text-center font-medium inline-flex items-center gap-1">
             <span className="font-semibold text-text-primary inline-flex items-center gap-0.5">
-              Swipe Right <ArrowRight size={14} color="var(--color-primary)" />
+              Swipe Right <ArrowRight size={20} className="mx-2" color="var(--color-primary)" />
             </span> to see previous cards
           </span>;
   
@@ -52,7 +52,7 @@ interface SwipeIndicatorProps {
     return (
       <div className="absolute left-0 right-0 bottom-[20%] flex flex-col items-center gap-2">
         {hintText}
-        <div className="flex flex-row items-center justify-center gap-4 mt-3">
+        <div dir="ltr" className="flex flex-row items-center justify-center gap-4 mt-3">
           <button
             onClick={handlePrevious}
             disabled={!canGoLeft}

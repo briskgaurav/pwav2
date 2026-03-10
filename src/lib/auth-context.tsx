@@ -117,6 +117,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  // Apply text/layout direction based on current language (RTL for Arabic)
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const langCode = language.split('-')[0] || 'en';
+    const isRTL = langCode === 'ar';
+    const dir = isRTL ? 'rtl' : 'ltr';
+    document.documentElement.dir = dir;
+    document.body.dir = dir;
+  }, [language]);
+
   useEffect(() => {
     return listenForThemeChanges((newTheme) => {
       setTheme(newTheme);

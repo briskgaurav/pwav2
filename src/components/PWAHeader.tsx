@@ -175,7 +175,7 @@ export default function PWAHeader({ title: titleProp, }: PWAHeaderProps) {
 
     return (
         <>
-            <div className='h-fit py-6 text-white relative z-800 flex items-center gap-2 justify-between px-4 w-full bg-primary'>
+            <div className='h-fit py-4 text-white relative z-800 flex items-center gap-2 justify-between px-4 w-full bg-primary'>
 
                 <button onClick={handleGoBack} className='h-fit w-fit rounded-full' aria-label="Go back">
                     <ChevronLeft

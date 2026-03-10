@@ -108,14 +108,14 @@ export function ProfileDrawer({ visible, onClose, children }: ProfileDrawerProps
     <>
       <div
         ref={backdropRef}
-        className="fixed inset-0 bg-black/50 z-998"
+        className="fixed inset-0 bg-black/50 z-998!"
         style={{ opacity: 0 }}
         onClick={handleClose}
         aria-hidden="true"
       />
       <div
         ref={drawerRef}
-        className="fixed top-0 right-0 bottom-0 w-[85vw] max-w-[400px] bg-white z-999 shadow-xl flex flex-col"
+        className="fixed top-0 right-0 bottom-0 w-[85vw] max-w-[400px] bg-white z-99999 shadow-xl flex flex-col"
         style={{ transform: 'translateX(100%)' }}
       >
         <div

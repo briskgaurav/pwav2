@@ -6,6 +6,29 @@
     "forgotPin": "نسيت رقم التعريف؟"
   },
   "profile": {
-    "languages": "اللغات"
+    "settings": "الإعدادات",
+    "profileSettings": "إعدادات الملف الشخصي",
+    "accessFeatures": "الوصول إلى الميزات",
+    "languages": "اللغات",
+    "darkMode": "الوضع الداكن",
+    "helpSupport": "المساعدة والدعم",
+    "signOut": "تسجيل الخروج",
+    "version": "الإصدار 1.0.0"
+  },
+  "accessFeatures": {
+    "digitalAccountWallet": "محفظة الحساب الرقمي",
+    "virtualCardWallet": "محفظة البطاقة الافتراضية",
+    "merchantAccountWallet": "محفظة حساب التاجر",
+    "agencyBanking": "الخدمات المصرفية عبر الوكلاء",
+    "instantDigitalLoans": "قروض رقمية فورية",
+    "upgradeKyc": "ترقية اعرف عميلك",
+    "rewardsManagement": "إدارة المكافآت",
+    "softTokenAccount": "حساب الرمز الناعم",
+    "chatboxHelpSupport": "مساعدة ودعم الدردشة",
+    "scanPay": "المسح للدفع"
+  },
+  "themeOverlay": {
+    "switchedToDark": "تم التبديل إلى الوضع الداكن",
+    "switchedToLight": "تم التبديل إلى الوضع الفاتح"
   }
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import {
-  ArrowRight,
+  ArrowLeft,
   ChevronRight,
   HelpCircle,
   LogOut,
@@ -11,6 +11,8 @@ import {
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LanguageDropdown } from './LanguageDropdown'
+import { useRouter } from 'next/navigation'
+import { AccessFeaturesDropdown } from './AccessFeaturesDropdown'
 
 interface ProfileContentProps {
   userName?: string
@@ -21,9 +23,11 @@ export function ProfileContent({
   userName = 'User',
   onClose,
 }: ProfileContentProps) {
-  const { i18n } = useTranslation()
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const { t, i18n } = useTranslation()
+  const [isDarkMode, setIsDarkMode] = useState(true)
   const selectedLang = i18n.language?.split('-')[0] ?? 'en'
+  const router = useRouter()
+  const isRTL = selectedLang === 'ar'
 
   // Initialize dark mode state from localStorage or system preference
   useEffect(() => {
@@ -37,6 +41,16 @@ export function ProfileContent({
       document.documentElement.classList.toggle('dark', prefersDark)
     }
   }, [])
+
+  // Apply text/layout direction based on current language (RTL for Arabic)
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+    const langCode = i18n.language?.split('-')[0] || 'en'
+    const isRTL = langCode === 'ar'
+    const dir = isRTL ? 'rtl' : 'ltr'
+    document.documentElement.dir = dir
+    document.body.dir = dir
+  }, [i18n.language])
 
   const toggleDarkMode = () => {
     const newDarkMode = !isDarkMode
@@ -54,15 +68,14 @@ export function ProfileContent({
 
   return (
     <div className="flex-1 flex flex-col bg-card-background overflow-hidden">
-      <header className="flex items-center justify-between px-6 pt-6 pb-5 shrink-0 border-b border-border">
-        <h2 className="text-xl font-semibold text-text-primary">Settings</h2>
+      <header className="flex items-center justify-center px-6 pt-6 pb-5 shrink-0 border-b border-border">
         <button
           type="button"
           onClick={onClose}
-          className="p-2 -m-2 rounded-full text-text-primary hover:bg-light-gray transition-colors"
-          aria-label="Close"
+          className="group flex items-center gap-3 px-6 py-3 rounded-xl bg-primary text-[#fff] font-semibold  transition-all duration-200"
         >
-          <ArrowRight className="w-7 h-7" />
+          <ArrowLeft className={`w-5 h-5 group-hover:-translate-x-1 transition-transform ${isRTL ? 'rotate-180' : ''}`} />
+          <span>Go back to my banking app</span>
         </button>
       </header>
 
@@ -82,19 +95,28 @@ export function ProfileContent({
         <nav className="rounded-2xl overflow-hidden ">
           <MenuRow
             icon={<User className="w-5 h-5 text-primary" />}
-            label="Profile settings"
+            label={t('profile.profileSettings')}
             onPress={() => {}}
+            isRTL={isRTL}
           />
           <LanguageDropdown
             selectedLang={selectedLang}
             onSelect={() => {}}
+            isRTL={isRTL}
             isDarkMode={isDarkMode}
+          />
+          <AccessFeaturesDropdown
+            isRTL={isRTL}
+            onSelect={() => {
+              onClose()
+            }}
           />
           <MenuRow
             icon={<Moon className="w-5 h-5 text-primary" />}
-            label="Dark mode"
+            label={t('profile.darkMode')}
             onPress={toggleDarkMode}
             showChevron={false}
+            isRTL={isRTL}
             rightElement={
               <button
                 type="button"
@@ -105,7 +127,7 @@ export function ProfileContent({
                   toggleDarkMode()
                 }}
                 className={`relative w-11 h-6 rounded-full transition-colors ${
-                  isDarkMode ? 'bg-primary' : 'bg-light-gray'
+                  isDarkMode ? 'bg-primary' : 'bg-border'
                 }`}
               >
                 <span
@@ -116,22 +138,27 @@ export function ProfileContent({
               </button>
             }
           />
-          <MenuRow
+          {/* <MenuRow
             icon={<HelpCircle className="w-5 h-5 text-primary" />}
-            label="Help & support"
-            onPress={() => {}}
-          />
+            label={t('profile.helpSupport')}
+            onPress={() => {
+              onClose()
+              window.setTimeout(() => router.push('/help-and-support'), 240)
+            }}
+            isRTL={isRTL}
+          /> */}
           <MenuRow
             icon={<LogOut className="w-5 h-5 text-error" />}
-            label="Sign out"
+            label={t('profile.signOut')}
             showChevron={false}
             onPress={onClose}
             danger
+            isRTL={isRTL}
           />
         </nav>
 
         <p className="text-center text-xs text-text-secondary mt-8">
-          Version 1.0.0
+          {t('profile.version')}
         </p>
       </div>
     </div>
@@ -145,6 +172,7 @@ interface MenuRowProps {
   rightElement?: React.ReactNode
   danger?: boolean
   showChevron?: boolean
+  isRTL?: boolean
 }
 
 function MenuRow({
@@ -154,6 +182,7 @@ function MenuRow({
   rightElement,
   danger,
   showChevron = true,
+  isRTL = false,
 }: MenuRowProps) {
   return (
     <button
@@ -176,7 +205,7 @@ function MenuRow({
         {label}
       </span>
       {rightElement}
-      {showChevron && <ChevronRight className="w-[18px] h-[18px] text-text-secondary" />}
+      {showChevron && <ChevronRight className={`w-[18px] h-[18px] text-text-secondary ${isRTL ? 'rotate-180' : ''}`} />}
     </button>
   )
 }

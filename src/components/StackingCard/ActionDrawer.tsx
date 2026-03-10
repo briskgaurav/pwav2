@@ -1,6 +1,6 @@
 'use client'
 
-import { X } from 'lucide-react'
+import { Phone, X } from 'lucide-react'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import Draggable from 'gsap/dist/Draggable'
@@ -78,20 +78,20 @@ export const ACTIONS: ActionItem[] = [
             ],
         },
     },
-    // {
-    //     id: 'contactless-default',
-    //     title: 'Make default for Contactless Payments',
-    //     icon: <Image src={ICONS.addCard} alt="Contactless" width={24} height={24} className='h-full w-full object-contain' />,
-    //     faqData: {
-    //         heading: 'Make Default for Contactless Payments',
-    //         bulletPoints: [
-    //             'Set this card as your default for tap-to-pay transactions.',
-    //             'Use your phone or smartwatch for contactless payments.',
-    //             'Enjoy faster checkout at supported terminals.',
-    //             'Change your default card anytime from settings.',
-    //         ],
-    //     },
-    // },
+    {
+        id: 'contactless-default',
+        title: 'Make default for Contactless Payments',
+        icon: <PhoneIcon />,
+        faqData: {
+            heading: 'Make Default for Contactless Payments',
+            bulletPoints: [
+                'Set this card as your default for tap-to-pay transactions.',
+                'Use your phone or smartwatch for contactless payments.',
+                'Enjoy faster checkout at supported terminals.',
+                'Change your default card anytime from settings.',
+            ],
+        },
+    },
     {
         id: 'link-physical',
         title: 'Link Virtual / Physical Card',
@@ -160,6 +160,15 @@ export default function ActionDrawer({
         }),
         [cardMode, selectedCardType]
     )
+
+    const filteredActions = useMemo(() => {
+        if (cardMode === 'universal') {
+            return ACTIONS.filter(
+                (action) => action.id !== 'make-online-payments' && action.id !== 'contactless-default'
+            )
+        }
+        return ACTIONS
+    }, [cardMode])
 
     const handleClose = useCallback(() => {
         if (modalRef.current && backdropRef.current) {
@@ -290,7 +299,7 @@ export default function ActionDrawer({
                     </div>
 
                     {/* Scrollable Content */}
-                    <div className="overflow-y-auto max-h-[calc(50vh-40px)] pb-6">
+                    <div className="overflow-y-auto max-h-[calc(50vh-40px)] px-2 pb-6">
                         {/* Card Carousel */}
                         <div className="pb-4">
                             <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-hide">
@@ -319,7 +328,7 @@ export default function ActionDrawer({
 
                         {/* Actions Grid */}
                         <div className="grid grid-cols-2 px-4  gap-2.5">
-                            {ACTIONS.map((action, index) => {
+                            {filteredActions.map((action, index) => {
                                 const displayTitle =
                                     action.id === 'link-physical'
                                         ? cardMode === 'virtual'
@@ -327,7 +336,7 @@ export default function ActionDrawer({
                                             : 'Link to Virtual Card'
                                         : action.title
                                 const isLastOdd =
-                                    index === ACTIONS.length - 1 && ACTIONS.length % 2 !== 0
+                                    index === filteredActions.length - 1 && filteredActions.length % 2 !== 0
 
                                 return (
                                     <div

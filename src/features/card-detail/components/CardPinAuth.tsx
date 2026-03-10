@@ -60,6 +60,8 @@ export default function CardPinAuth({
     }
   }, [pin, handleContinue]);
 
+  
+
   return (
     <SheetContainer>
       <div className=" flex flex-col h-fit overflow-y-auto" dir={isRtl ? 'rtl' : 'ltr'}>
@@ -77,7 +79,7 @@ export default function CardPinAuth({
               className="h-full w-full object-contain"
               priority
             />
-            <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-text-primary text-2xl w-full text-center select-none">
+            <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#fff] text-2xl w-full text-center select-none">
               {maskedNumber}
             </p>
           </div>
@@ -110,7 +112,7 @@ export default function CardPinAuth({
             <button
               type="button"
               onClick={() => router.push('/forget-pin')}
-              className="text-xs text-primary bg-transparent border-none cursor-pointer"
+              className="text-xs text-text-primary bg-transparent border-none cursor-pointer"
             >
               {t('cardPinAuth.forgotPin')}
             </button>

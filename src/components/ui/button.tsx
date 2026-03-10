@@ -21,7 +21,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const baseClasses = 'inline-flex items-center justify-center rounded-full font-medium border-none transition-all duration-100 ease-out';
     
     const variantClasses: Record<string, string> = {
-      primary: 'bg-primary text-white hover:bg-primary/90',
+      primary: 'bg-primary text-[#fff] hover:bg-primary/90',
       secondary: 'bg-gray-100 dark:bg-gray-800 text-text-primary hover:bg-gray-200 dark:hover:bg-gray-700',
       ghost: 'bg-transparent text-primary hover:bg-primary/10',
       error: 'bg-error text-white hover:bg-error/90',

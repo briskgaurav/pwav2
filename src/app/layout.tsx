@@ -4,6 +4,7 @@ import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
 import { PWAHeaderProvider } from '@/lib/pwa-header-context';
 import PWAHeader from '@/components/PWAHeader';
+import { PageSlideTransition } from '@/components/ui/page-slide-transition';
 
 const helveticaNeue = localFont({
   src: [
@@ -66,14 +67,15 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body className={`${helveticaNeue.className} min-h-dvh`} >
+      <body className={`${helveticaNeue.className} min-h-vh`} >
         <AuthProvider>
           <PWAHeaderProvider>
-            <main className="flex flex-col min-h-dvh">
-              <PWAHeader  />
-              <div className="flex-1 min-h-0 rounded-t-3xl flex flex-col overflow-auto">
-                {children}
-              </div>
+            <main className="flex flex-col min-h-vh">
+              <PWAHeader />
+              <PageSlideTransition>
+                  {children}
+                {/* </div> */}
+              </PageSlideTransition>
             </main>
           </PWAHeaderProvider>
         </AuthProvider>

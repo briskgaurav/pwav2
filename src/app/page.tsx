@@ -1,7 +1,7 @@
 'use client'
 import { mockCards, CardData } from '@/components/StackingCard/cardData'
 import { CardStack, CardStackRef } from '@/components/StackingCard/CardStack'
-import { CardFilterType, FilterBar } from '@/components/StackingCard/FilterBar'
+import { CardFilterType, FilterBar, type SortByValue } from '@/components/StackingCard/FilterBar'
 import GreetingBar from '@/components/StackingCard/greeting-bar'
 import { SwipeIndicator } from '@/components/StackingCard/SwipeIndicator'
 import FloatingBottomBar from '@/components/StackingCard/FloatingBottomBar'
@@ -15,7 +15,7 @@ import { useAuth } from '@/lib/auth-context'
 
 export default function CardsScreen() {
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all'])
-  const [recentFilterActive, setRecentFilterActive] = useState(false)
+  const [sortBy, setSortBy] = useState<SortByValue>('recent')
   const [currentCardIndex, setCurrentCardIndex] = useState(0)
   const [cardMode, setCardMode] = useState<'virtual' | 'universal'>('virtual')
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -45,34 +45,48 @@ export default function CardsScreen() {
   }, [])
 
   /**
-   * Filters cards based on:
+   * Filters and sorts cards based on:
    * 1. Card form (virtual/universal)
-   * 2. Recently used filter
+   * 2. Sort order (recently used / most used)
    * 3. Card type filters (debit, credit, prepaid, gift)
    */
   const filteredCards = useMemo(() => {
     // First filter by card form (virtual/universal)
     let cards = mockCards.filter((card) => card.cardForm === cardMode)
 
-    // Filter by recently used when sort/recent tab is active
-    if (recentFilterActive) {
-      cards = [...cards].sort(
-        (a, b) =>
+    // Sort by selected option
+    if (sortBy === 'recent') {
+      cards = [...cards].sort((a, b) => {
+        // Recently used first, then newest issuedDate
+        if (a.recentlyUsed !== b.recentlyUsed) {
+          return a.recentlyUsed ? -1 : 1
+        }
+        return (
           new Date(b.issuedDate).getTime() - new Date(a.issuedDate).getTime()
-      )
+        )
+      })
+    } else if (sortBy === 'most-used') {
+      cards = [...cards].sort((a, b) => {
+        // Most used first, then newest issuedDate
+        if (a.mostUsed !== b.mostUsed) {
+          return a.mostUsed ? -1 : 1
+        }
+        return (
+          new Date(b.issuedDate).getTime() - new Date(a.issuedDate).getTime()
+        )
+      })
     }
 
     // Then filter by card type filters
-    // If 'all' is selected or no filters, show all cards of the selected form
     if (cardFilters.includes('all') || cardFilters.length === 0) {
       return cards
     }
 
-    // Filter cards by selected types
     return cards.filter((card) =>
       cardFilters.includes(card.cardType as CardFilterType)
     )
-  }, [cardFilters, cardMode, recentFilterActive])
+
+  }, [cardFilters, cardMode, sortBy])
 
   /**
    * Handles card press to open the card actions drawer
@@ -93,6 +107,7 @@ export default function CardsScreen() {
   const { isDarkMode } = useAuth();
 
   return (
+    <>
     <div className="min-h-full bg-background flex flex-col relative">
       <div className='relative z-100 '>
 
@@ -104,16 +119,17 @@ export default function CardsScreen() {
           isDarkMode={isDarkMode}
         />
         <FilterBar
-          isDarkMode={false}
+          isDarkMode={isDarkMode}
           mode={cardMode}
           onModeChange={handleModeChange}
           cardFilters={cardFilters}
           onCardFiltersChange={handleCardFiltersChange}
-          recentFilterActive={recentFilterActive}
-          onRecentFilterPress={() => {
-            setRecentFilterActive((prev) => !prev)
+          sortBy={sortBy}
+          onSortChange={(s) => {
+            setSortBy(s)
             setSelectedCardId(null)
             setCurrentCardIndex(0)
+            console.log('Sort changed:', s, 'Cards:', filteredCards)
           }}
         />
       </div>
@@ -149,6 +165,7 @@ export default function CardsScreen() {
 
       {/* Floating bottom navigation bar */}
       <FloatingBottomBar
+        mode={cardMode}
         onScanPress={() => { }}
         onAddPress={() => { }}
         onAddGiftPress={() => { }}
@@ -168,6 +185,7 @@ export default function CardsScreen() {
       />
 
       {/* Profile drawer opened from avatar tap */}
+    </div>
       <ProfileDrawer
         visible={profileDrawerVisible}
         onClose={() => setProfileDrawerVisible(false)}
@@ -179,6 +197,6 @@ export default function CardsScreen() {
           />
         )}
       </ProfileDrawer>
-    </div>
+      </>
   )
 }

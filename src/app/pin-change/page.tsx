@@ -63,9 +63,9 @@ export default function PinChangePage() {
                             <button
                                 onClick={() => router.push('/forget-pin')}
                                 type="button"
-                                className="text-xs text-primary bg-transparent border-none cursor-pointer"
+                                className="text-xs  bg-transparent border-none cursor-pointer"
                             >
-                                Forgot PIN ?
+                               <p className='text-text-primary'>Forgot PIN ?</p>
                             </button>
                         </div>
                     </div>

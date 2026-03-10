@@ -6,6 +6,29 @@
     "forgotPin": "NIP oublié ?"
   },
   "profile": {
-    "languages": "Langues"
+    "settings": "Paramètres",
+    "profileSettings": "Paramètres du profil",
+    "accessFeatures": "Accéder aux fonctionnalités",
+    "languages": "Langues",
+    "darkMode": "Mode sombre",
+    "helpSupport": "Aide et support",
+    "signOut": "Se déconnecter",
+    "version": "Version 1.0.0"
+  },
+  "accessFeatures": {
+    "digitalAccountWallet": "Portefeuille de compte numérique",
+    "virtualCardWallet": "Portefeuille de carte virtuelle",
+    "merchantAccountWallet": "Portefeuille du compte marchand",
+    "agencyBanking": "Services bancaires d’agence",
+    "instantDigitalLoans": "Prêts numériques instantanés",
+    "upgradeKyc": "Mettre à niveau KYC",
+    "rewardsManagement": "Gestion des récompenses",
+    "softTokenAccount": "Compte Soft Token",
+    "chatboxHelpSupport": "Aide & support (ChatBox)",
+    "scanPay": "ScanPay"
+  },
+  "themeOverlay": {
+    "switchedToDark": "Passage en mode sombre",
+    "switchedToLight": "Passage en mode clair"
   }
 }

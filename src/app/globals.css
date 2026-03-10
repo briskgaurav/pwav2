@@ -41,7 +41,7 @@
 
 /* Dark mode colors */
 .dark {
-  --color-primary: #C77DFF;
+  --color-primary:#9d00ff;
   --color-primary-dark: #5A189A;
   --color-primary-light: #9D4EDD;
 
@@ -235,4 +235,17 @@ button,
 
 .text-base {
   font-size: 16px;
+}
+
+@keyframes pageSlideIn {
+  from {
+    transform: translateY(92%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.page-slide-in {
+  animation: pageSlideIn 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
