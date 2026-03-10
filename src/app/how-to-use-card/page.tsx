@@ -14,6 +14,7 @@ import CardMockup from '@/components/ui/CardMockup';
 import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
 import { useManagingCard } from '@/hooks/useManagingCard';
+import Link from 'next/link';
 
 interface AccordionItemProps {
     title: string;
@@ -21,6 +22,7 @@ interface AccordionItemProps {
     onToggle: () => void;
     children: React.ReactNode;
 }
+
 
 function AccordionItem({ title, isExpanded, onToggle, children }: AccordionItemProps) {
     return (
@@ -235,6 +237,7 @@ function HowToUseCardContent() {
     const config = CARD_TYPE_CONFIG[cardType];
     const cardActions = useMemo(() => getCardActions(cardType), [cardType]);
     const { mockupImageSrc, maskedNumber } = useManagingCard();
+    
     useEffect(() => {
         notifyNavigation('how-to-use-card');
     }, []);
@@ -265,7 +268,7 @@ function HowToUseCardContent() {
                     </div>
 
                     {/* Card Preview */}
-                   <CardMockup isclickable={false} imageSrc={mockupImageSrc ?? config.mockupImage} maskedNumber={maskedNumber} />
+                    <CardMockup isclickable={false} imageSrc={mockupImageSrc ?? config.mockupImage} maskedNumber={maskedNumber} />
 
                     {/* How to use section */}
                     <div className="mt-6">
@@ -325,9 +328,11 @@ function HowToUseCardContent() {
                         ))}
                     </div>
                 </div>
-                <FAQModal visible={isFaqOpen} onClose={closeFaq} data={faqData || undefined}  />
-
-
+                <div onClick={() => router.replace(routes.instacard)} className='p-4  w-full'>
+                    <Button className='w-full'>
+                        Go To Instacard Home
+                    </Button>
+                </div>
             </SheetContainer>
         </div>
     );
@@ -335,7 +340,7 @@ function HowToUseCardContent() {
 
 export default function HowToUseCardPage() {
     return (
-        <Suspense fallback={<div className="h-screen flex items-center justify-center">Loading...</div>}>
+        <Suspense fallback={<div>Loading...</div>}>
             <HowToUseCardContent />
         </Suspense>
     );
