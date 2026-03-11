@@ -13,7 +13,7 @@ export default function LinkCardScreen() {
     const router = useRouter()
     const allCards = useCardWalletStore((s) => s.cards)
     const universalCards = useMemo(
-        () => allCards.filter((c) => c.cardForm === 'universal' && !c.linkedVirtualCardId),
+        () => allCards.filter((c) => c.cardForm === 'universal'),
         [allCards]
     )
 

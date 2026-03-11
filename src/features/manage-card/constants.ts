@@ -24,6 +24,7 @@ export const getManageBtns = (cardType: CardType): Array<{ icon: ManageBtnIcon; 
     { icon: BlockUnblockIcon, title: 'Block/Unblock Card', href: routes.cardStatus },
   ]
 
+
   if (cardType === 'debit') {
     return baseBtns
   }

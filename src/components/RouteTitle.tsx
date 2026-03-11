@@ -86,8 +86,8 @@ export default function RouteTitle() {
   const title = getTitleFromPath(pathname)
 
   return (
-    <div className="shrink-0 bg-text-primary h-[10%] rounded-t-3xl -mt-1 relative z-20 py-2.5 px-4">
-      <p className="text-white text-sm text-center font-medium capitalize">{title}</p>
+    <div className="shrink-0 rounded-t-3xl bg-light-gray h-[10%] -mt-1 relative z-20 py-2.5 px-4">
+      <p className="text-text-primary text-sm text-center font-medium capitalize">{title}</p>
     </div>
   )
 }
