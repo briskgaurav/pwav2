@@ -9,8 +9,8 @@ import { routes } from '@/lib/routes';
 
 const ACCOUNT_OPTIONS = [
   { label: '0123456789 / NGN / Savings', icon: ICONS.fcmb },
-  { label: '0987654321 / USD / Current', icon: ICONS.accessBank },
-  { label: '0918273645 / NGN / Current', icon: ICONS.uba },
+  { label: '0987654321 / USD / Current', icon: ICONS.fcmb },
+  { label: '0918273645 / NGN / Current', icon: ICONS.fcmb },
 ];
 
 const TERMS = [

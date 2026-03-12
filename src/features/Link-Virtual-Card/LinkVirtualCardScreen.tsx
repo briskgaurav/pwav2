@@ -27,7 +27,7 @@ export default function LinkVirtualCardScreen() {
   const allCards = useCardWalletStore((s) => s.cards)
   const linkVirtualCard = useCardWalletStore((s) => s.linkVirtualCard)
   const managingCardId = useCardWalletStore((s) => s.managingCardId)
-  
+
   // Get unlinked virtual cards
   const unlinkedVirtualCards = useMemo(
     () => allCards.filter((c) =>
@@ -36,7 +36,7 @@ export default function LinkVirtualCardScreen() {
     ),
     [allCards]
   )
-  
+
   // Get linked virtual cards (already linked to a universal card)
   const linkedVirtualCards = useMemo(
     () => allCards.filter((c) =>
@@ -45,7 +45,7 @@ export default function LinkVirtualCardScreen() {
     ),
     [allCards]
   )
-  
+
   const router = useRouter()
   const [step, setStep] = useState<LinkVirtualStep>('pin')
   const [selectedCard, setSelectedCard] = useState<string | null>(null)
@@ -136,19 +136,20 @@ export default function LinkVirtualCardScreen() {
                     <>
                       <p className='text-xs text-text-secondary font-medium mt-4'>Already Linked Virtual Cards</p>
                       {linkedVirtualCards.map((card) => (
-                        <div
+                        <button
                           key={card.id}
-                          className="w-full p-4 border rounded-2xl flex items-center gap-3 border-green-500/40 bg-green-50"
+                          disabled
+                          className="w-full p-4 border rounded-2xl flex items-center gap-3 transition-all border-text-primary/10 opacity-50"
                         >
-                          <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center border-green-500 bg-green-500">
-                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
+                          <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center border-text-primary/20">
                           </div>
-                          <span className="text-sm text-text-primary">
-                            {maskCardNumber(card.cardNumber)} ( Virtual Card - Linked )
-                          </span>
-                        </div>
+                          <div className="flex flex-col items-start">
+                            <span className="text-sm text-text-primary">
+                              {maskCardNumber(card.cardNumber)} ( Virtual Card )
+                            </span>
+                            <span className="text-xs text-orange">Already linked</span>
+                          </div>
+                        </button>
                       ))}
                     </>
                   )}
@@ -178,34 +179,27 @@ export default function LinkVirtualCardScreen() {
             )}
           </div>
           <div className=" w-full p-4 space-y-2 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] ">
-            {unlinkedVirtualCards.length > 0 && (
-              <Link
-                href="#"
-                onClick={handleNextClick}
-                className={`bg-primary p-4 text-center text-white flex items-center justify-center rounded-full w-full ${!selectedCard || !consentChecked ? 'opacity-50' : ''
-                  }`}
-              >
-                Next
-              </Link>
-            )}
-            {/* <button
-              onClick={() => setShowAddCardModal(true)}
+            {/* {unlinkedVirtualCards.length > 0 && ( */}
+            <Link
+              href="#"
+              onClick={handleNextClick}
+              className={`bg-primary p-4 text-center text-white flex items-center justify-center rounded-full w-full ${!selectedCard || !consentChecked ? 'opacity-50' : ''
+                }`}
+            >
+              Next
+            </Link>
+            <Link
+              href={routes.addInstacard}
               className={`border-primary border p-4 gap-2 text-center text-text-primary flex items-center justify-center rounded-full w-full `}
             >
               <PlusIcon /> <p>
                 Add New Virtual Instacard
               </p>
-            </button> */}
+            </Link>
+            {/* )} */}
           </div>
         </SheetContainer>
 
-        <AddSigmaCardModal
-          visible={showAddCardModal}
-          onClose={() => setShowAddCardModal(false)}
-          onSubmit={(cardNumber) => {
-            console.log('Card number submitted:', cardNumber)
-          }}
-        />
       </div>
     )
   }

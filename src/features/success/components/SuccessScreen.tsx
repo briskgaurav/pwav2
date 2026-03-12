@@ -78,7 +78,7 @@ export default function SuccessScreen({
               <p className="text-[15px] pl-4 text-text-primary w-full text-left leading-normal m-0">
                 Your Instacard is Ready for Activation.
               </p>
-              <div className="mt-2 w-full  aspect-[1.58] rounded-2xl p-2flex flex-col justify-between ">
+              <div className="mt-2 w-full  aspect-[1.58] rounded-2xl p-2 flex flex-col justify-between ">
                 <Image
                   src={imageSrc || ''}
                   alt="Debit Card"
@@ -86,9 +86,9 @@ export default function SuccessScreen({
                   height={1000}
                   className="h-full w-full object-contain rounded-2xl"
                 />
-                <p className="text-sm text-text-secondary mt-2">
+                {/* <p className="text-sm text-text-secondary mt-2">
                   {maskedNumber}
-                </p>
+                </p> */}
               </div>
             </div>
           )}

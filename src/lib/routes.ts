@@ -6,6 +6,7 @@ export const routes = {
 
   // Add card flows
   addCard: (type: CardType) => `/${type}`,
+  addInstacard: '/add-instacard',
   otp: (type: CardType) => `/otp?type=${type}`,
   success: (type: CardType) => `/success?type=${type}`,
 

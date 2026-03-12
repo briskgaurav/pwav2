@@ -129,6 +129,7 @@ export default function PaymentAmountPage() {
             cardImageSrc={CARD_IMAGES[selectedBank?.cardType ?? 'debit'] ?? CARD_IMAGES.debit}
             maskedNumber={selectedBank?.subtitle ?? 'FCMB Debit Card'}
             onVerified={handlePinVerified}
+            
           />
         </div>
       )}
