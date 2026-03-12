@@ -68,6 +68,17 @@ export const routes = {
   paymentAmount: '/payment-amount',
   paymentSuccess: '/payment-success',
 
+  // Registration / KYC flow
+  registrationFaceScan: '/registration/face-scan',
+  registrationVerificationMethod: '/registration/verification-method',
+  registrationVerificationOtp: '/registration/verification-otp',
+  registrationAcceptTerms: '/registration/accept-terms',
+  registrationKycSuccess: '/registration/kyc-success',
+  registrationContinueOrRegister: '/registration/continue-or-register',
+  registrationNewEmail: '/registration/new-email',
+  registrationVerifyExistingEmail: '/registration/verify-existing-email',
+  registrationWithExistingEmailSuccess: '/registration/with-existing-email-success',
+
   // Physical card linking
   linkPhysicalCard: '/link-physical-card',
   linkVirtualCard: '/link-virtual-card',

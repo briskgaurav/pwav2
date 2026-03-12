@@ -42,7 +42,7 @@ export default function LinkedSuccessPage() {
   };
 
   return (
-    <div className='h-[100dvh] w-full flex flex-col overflow-hidden'>
+    <div className='h-dvh w-full flex flex-col overflow-hidden'>
       <SheetContainer>
         <div className='flex-1 w-full flex flex-col justify-between items-center overflow-auto pt-10 space-y-4 p-6'>
           <p className='text-sm text-text-secondary'>This Instacard has been successfully linked to your Universal Card</p>
