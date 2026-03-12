@@ -62,6 +62,11 @@ export const routes = {
   addUniversalPinSetup: '/add-universal-card/pin-setup',
   addUniversalSuccess: '/add-universal-card/success',
 
+  // Scan & Pay
+  scan: '/scan',
+  paymentAmount: '/payment-amount',
+  paymentSuccess: '/payment-success',
+
   // Physical card linking
   linkPhysicalCard: '/link-physical-card',
   linkVirtualCard: '/link-virtual-card',

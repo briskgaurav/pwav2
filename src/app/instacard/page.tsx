@@ -179,7 +179,7 @@ export default function CardsScreen() {
       {/* Bottom bar */}
       <FloatingBottomBar
         mode={cardMode}
-        onScanPress={() => { }}
+        onScanPress={() => router.push(routes.scan)}
         onAddPress={handleAddPress}
         onAddGiftPress={() => { }}
       />

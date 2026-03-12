@@ -52,6 +52,8 @@ const ROUTE_TITLES: Record<string, string> = {
   '/make-online-payments': 'Make Online Payments',
 
   // Physical card linking
+  '/scan': 'Scan & Pay',
+  '/payment-amount': 'Payment',
   '/link-physical-card': 'Link Universal Card',
   '/link-virtual-card': 'Link Virtual Card',
   '/link-physical-card/sigma-cards-options': 'Sigma Cards Options',
