@@ -5,6 +5,7 @@ import { useRef } from 'react';
 import gsap from 'gsap';
 import { LucideGift, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 interface FloatingBottomBarProps {
   mode: 'virtual' | 'universal';
@@ -13,6 +14,9 @@ interface FloatingBottomBarProps {
   onAddPress?: () => void;
   onAddGiftPress?: () => void;
 }
+
+// Define which paths should show the floating bottom bar
+const ALLOWED_PATHS = ['/instacard', '/scan', '/add-a-gift-card','/manage-card/debit', ];
 
 function hapticLight() {
   if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
@@ -35,7 +39,11 @@ export function FloatingBottomBar({
 }: FloatingBottomBarProps) {
   const plusRef = useRef<HTMLDivElement>(null);
   const rotationRef = useRef(0);
-
+  const pathname = usePathname();
+  
+  // Only show on allowed paths
+  const shouldShow = ALLOWED_PATHS.includes(pathname);
+  
   const rotatePlus = () => {
     rotationRef.current += 90;
     if (!plusRef.current) return;
@@ -46,15 +54,29 @@ export function FloatingBottomBar({
     });
   };
 
+  if (!shouldShow) {
+    return null;
+  }
+
   return (
     <>
       <div
-        className="fixed left-1/2 w-fit flex-col z-999 -translate-x-1/2 h-fit rounded-full flex items-center justify-center gap-5"
-        style={{ bottom: 'calc(5% + env(safe-area-inset-bottom, 0px))' }}
+        className="fixed left-1/2 w-fit flex-col z-999 -translate-x-1/2 h-fit rounded-full flex items-center justify-center gap-2"
+        style={{ bottom: 'calc(2% + env(safe-area-inset-bottom, 0px))' }}
         role="navigation"
         aria-label="Bottom actions"
       >
-
+        {pathname == '/instacard' && (
+          <Link
+            href="/add-a-gift-card"
+            className=" flex items-center justify-center gap-1 text-text-secondary"
+            onClick={onAddGiftPress}
+            aria-label="Add Gift Card"
+          >
+            <LucideGift className='w-5 h-5 text-text-secondary mb-1' />
+            <span className="text-sm">Add Gift Card</span>
+          </Link>
+        )}
         <div className='bg-primary  flex items-center justify-center gap-5 px-2 py-2 rounded-full'>
 
           {/* Optional Home action kept for parity */}
@@ -107,16 +129,6 @@ export function FloatingBottomBar({
           </Link>
         </div>
 
-        <Link
-          href="/add-a-gift-card"
-          className=" flex items-center justify-center gap-1 text-text-secondary"
-
-          onClick={onAddGiftPress}
-          aria-label="Add Gift Card"
-        >
-          <LucideGift className='w-5 h-5 text-text-secondary mb-1' />
-          <span className="text-sm">Add Gift Card</span>
-        </Link>
       </div>
 
     </>

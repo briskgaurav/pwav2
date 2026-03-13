@@ -50,7 +50,7 @@ interface SwipeIndicatorProps {
     };
   
     return (
-      <div className="absolute left-0 right-0 bottom-[27%] flex flex-col items-center gap-2">
+      <div className="absolute left-0 right-0 bottom-[30%] flex flex-col items-center gap-2">
         {hintText}
         <div dir="ltr" className="flex flex-row items-center justify-center gap-4 mt-2">
           <button
