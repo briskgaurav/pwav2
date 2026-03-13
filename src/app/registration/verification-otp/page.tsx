@@ -64,17 +64,17 @@ export default function RegistrationVerificationOtpPage() {
     case 'email':
       title = 'Verify your Email'
       subtitle = 'We have sent a 6-digit code to your registered email'
-      maskedValue = 'your registered email'
+      maskedValue = 'nird***malik@gmail.com'
       break
     case 'phone':
       title = 'Verify your Phone Number'
       subtitle = 'We have sent a 6-digit code to your registered phone number'
-      maskedValue = 'your registered phone number'
+      maskedValue = '+234802**** 0955'
       break
     case 'bvn':
       title = 'Verify your BVN'
       subtitle = 'We have sent a 6-digit code linked to your BVN'
-      maskedValue = 'your registered BVN'
+      maskedValue = '****5678901'
       break
   }
 

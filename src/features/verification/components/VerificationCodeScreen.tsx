@@ -24,7 +24,7 @@ type VerificationCodeScreenProps = {
 export default function VerificationCodeScreen({
   title,
   subtitle,
-  maskedValue,
+  maskedValue = 'nird***malik@gmail.com',
   successRoute,
   showKeypad = true,
   onSuccess,

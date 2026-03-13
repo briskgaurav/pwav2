@@ -8,10 +8,10 @@ import { Mail, Phone, Fingerprint } from 'lucide-react'
 
 type VerificationMethod = 'email' | 'phone' | 'bvn'
 
-const METHODS: { id: VerificationMethod; label: string; Icon: typeof Mail }[] = [
-  { id: 'email', label: 'Verify via Email', Icon: Mail },
-  { id: 'phone', label: 'Verify via Phone Number', Icon: Phone },
-  { id: 'bvn', label: 'Verify via BVN', Icon: Fingerprint },
+const METHODS: { id: VerificationMethod; label: string; maskedValue: string; Icon: typeof Mail }[] = [
+  { id: 'email', label: 'Verify via Email', maskedValue: 'j***@example.com', Icon: Mail },
+  { id: 'phone', label: 'Verify via Phone Number', maskedValue: '+234 *** *** 4567', Icon: Phone },
+  { id: 'bvn', label: 'Verify via BVN', maskedValue: '****5678901', Icon: Fingerprint },
 ]
 
 export default function VerificationMethodScreen() {
@@ -36,10 +36,10 @@ export default function VerificationMethodScreen() {
           </p>
 
           <div className="flex flex-col gap-3">
-            {METHODS.map(({ id, label, Icon }) => (
+            {METHODS.map(({ id, label, maskedValue, Icon }) => (
               <RadioOption
                 key={id}
-                label={label}
+                label={maskedValue}
                 selected={selected === id}
                 onSelect={() => setSelected(id)}
                 IconComponent={Icon}

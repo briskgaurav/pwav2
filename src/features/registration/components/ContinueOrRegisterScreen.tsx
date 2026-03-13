@@ -13,6 +13,7 @@ const CURRENT_EMAIL = 'nird***malik@gmail.com'
 export default function ContinueOrRegisterScreen() {
   const router = useRouter()
   const [choice, setChoice] = useState<Choice | null>(null)
+  const [newEmail, setNewEmail] = useState('')
 
   const handleContinue = () => {
     if (!choice) return
@@ -21,9 +22,17 @@ export default function ContinueOrRegisterScreen() {
       localStorage.setItem('kyc_email', CURRENT_EMAIL)
       router.replace(routes.registrationVerifyExistingEmail)
     } else {
+      if (!newEmail.trim()) return
+      localStorage.setItem('kyc_email', newEmail)
       router.push(routes.registrationNewEmail)
     }
   }
+
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  }
+
+  const canContinue = choice === 'current' || (choice === 'new' && isValidEmail(newEmail))
 
   return (
     <div className="h-screen flex flex-col">
@@ -43,18 +52,37 @@ export default function ContinueOrRegisterScreen() {
               onSelect={() => setChoice('current')}
               IconComponent={Mail}
             />
-            <RadioOption
-              label="Register a new Email ID"
-              selected={choice === 'new'}
-              onSelect={() => setChoice('new')}
-              IconComponent={UserPlus}
-            />
+            <div className="flex flex-col">
+              <RadioOption
+                label="Register a new Email ID"
+                selected={choice === 'new'}
+                onSelect={() => setChoice('new')}
+                IconComponent={UserPlus}
+              />
+              {choice === 'new' && (
+                <div className="mt-3  animate-in slide-in-from-top-2 duration-200">
+                  <input
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-white/60 backdrop-blur-xl text-sm text-text-primary placeholder:text-text-secondary focus:outline-none! focus:ring-0! focus:ring-primary/20 focus:border-primary transition-all"
+                    autoFocus
+                  />
+                  {newEmail && !isValidEmail(newEmail) && (
+                    <p className="text-xs text-red-500 mt-1.5 ml-1">
+                      Please enter a valid email address
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
         <div className="p-4 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] pt-2">
-          <Button fullWidth onClick={handleContinue} disabled={!choice}>
-            {choice === 'current' ? 'Continue to Instacard' : choice === 'new' ? 'Register New Email' : 'Continue'}
+          <Button fullWidth onClick={handleContinue} disabled={!canContinue}>
+            {choice === 'current' ? 'Continue to Instacard' : choice === 'new' ? 'Continue With New Email' : 'Continue'}
           </Button>
         </div>
       </SheetContainer>
