@@ -12,8 +12,6 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LanguageDropdown } from './LanguageDropdown'
 import { useRouter } from 'next/navigation'
-import { AccessFeaturesDropdown } from './AccessFeaturesDropdown'
-import Image from 'next/image'
 
 interface ProfileContentProps {
   userName?: string
@@ -25,21 +23,22 @@ export function ProfileContent({
   onClose,
 }: ProfileContentProps) {
   const { t, i18n } = useTranslation()
-  const [isDarkMode, setIsDarkMode] = useState(true)
+  const [isDarkMode, setIsDarkMode] = useState(false)
   const selectedLang = i18n.language?.split('-')[0] ?? 'en'
   const router = useRouter()
   const isRTL = selectedLang === 'ar'
 
-  // Initialize dark mode state from localStorage or system preference
+  // Initialize dark mode state from localStorage or default to light
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme')
     if (savedTheme) {
       setIsDarkMode(savedTheme === 'dark')
       document.documentElement.classList.toggle('dark', savedTheme === 'dark')
     } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      setIsDarkMode(prefersDark)
-      document.documentElement.classList.toggle('dark', prefersDark)
+      // Default to light theme and save it
+      setIsDarkMode(false)
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
     }
   }, [])
 
