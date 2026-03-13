@@ -9,9 +9,11 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { useCardWalletStore } from '@/store/useCardWalletStore'
-import { useProfileDrawerStore } from '@/store/useProfileDrawerStore'
 import { routes } from '@/lib/routes'
 import { useCardModeStore } from '@/store/useCardModeStore'
+import LeftSideDrawer from '@/components/LeftSideDrawer'
+import { ProfileContent } from '@/components/ProfileDrawer/ProfileContent'
+import FloatingBottomBarLayoutClient from '@/components/StackingCard/FloatingBottomBarLayoutClient'
 
 
 
@@ -19,7 +21,6 @@ export default function CardsScreen() {
   const router = useRouter()
   const allCards = useCardWalletStore((s) => s.cards)
   const setPendingCardForm = useCardWalletStore((s) => s.setPendingCardForm)
-  const openProfileDrawer = useProfileDrawerStore((s) => s.open)
   const cardMode = useCardModeStore((s) => s.cardMode)
   const setCardMode = useCardModeStore((s) => s.setCardMode)
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all'])
@@ -27,6 +28,7 @@ export default function CardsScreen() {
   const [currentCardIndex, setCurrentCardIndex] = useState(0)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
+  const [leftDrawerVisible, setLeftDrawerVisible] = useState(false)
   const cardStackRef = useRef<CardStackRef>(null)
 
   /**
@@ -128,7 +130,7 @@ export default function CardsScreen() {
           onSearchPress={() => { }}
           onAddPress={handleAddPress}
           mode={cardMode}
-          onAvatarPress={openProfileDrawer}
+          onAvatarPress={() => setLeftDrawerVisible(true)}
           isDarkMode={isDarkMode}
           onAddGiftPress={() => { }}
         />
@@ -170,18 +172,29 @@ export default function CardsScreen() {
 
 
 
-          {filteredCards.length > 0 && (
-            <SwipeIndicator
-              currentIndex={currentCardIndex}
-              totalCount={filteredCards.length}
-              onPreviousPress={() => cardStackRef.current?.goToPrevious()}
-              onNextPress={() => cardStackRef.current?.goToNext()}
-            />
-          )}
+        {filteredCards.length > 0 && (
+          <SwipeIndicator
+            currentIndex={currentCardIndex}
+            totalCount={filteredCards.length}
+            onPreviousPress={() => cardStackRef.current?.goToPrevious()}
+            onNextPress={() => cardStackRef.current?.goToNext()}
+          />
+        )}
       </div>
 
 
       {/* Card actions drawer */}
+
+
+      <LeftSideDrawer
+        visible={leftDrawerVisible}
+        onClose={() => setLeftDrawerVisible(false)}
+      >
+        <ProfileContent
+          userName="Nirdesh Malik"
+          onClose={() => setLeftDrawerVisible(false)}
+        />
+      </LeftSideDrawer>
       <ActionDrawer
         visible={drawerVisible}
         cards={filteredCards}
@@ -193,6 +206,8 @@ export default function CardsScreen() {
         setCurrentCardIndex={setCurrentCardIndex}
         isDarkMode={isDarkMode}
       />
+      <FloatingBottomBarLayoutClient hidescan={false} />
+
     </div>
   )
 }

@@ -275,7 +275,7 @@ export default function ActionDrawer({
 
     return (
         <>
-            <div className="fixed inset-0 z-1000 flex items-end justify-center">
+            <div className="fixed inset-0 z-50 flex items-end justify-center">
                 {/* Backdrop */}
                 <div
                     ref={backdropRef}
@@ -286,7 +286,7 @@ export default function ActionDrawer({
                 {/* Modal */}
                 <div
                     ref={modalRef}
-                    className="relative w-full max-h-[50vh] bg-white/80 backdrop-blur-sm border border-border rounded-t-[28px] overflow-hidden"
+                    className="relative w-full z-1000 max-h-[50vh] bg-white/80 backdrop-blur-sm border border-border rounded-t-[28px] overflow-hidden"
                 >
                     {/* Handle Indicator */}
                     <div

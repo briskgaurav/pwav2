@@ -9,16 +9,6 @@ export default function HomePage() {
   const router = useRouter()
   const [checking, setChecking] = useState(true)
 
-  useEffect(() => {
-    const hasSavedUser =
-      localStorage.getItem('kyc_completed') === 'true' ||
-      !!localStorage.getItem('user')
-    if (hasSavedUser) {
-      router.replace(routes.instacard)
-    } else {
-      setChecking(false)
-    }
-  }, [router])
 
 
 

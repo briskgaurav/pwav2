@@ -5,7 +5,7 @@ import gsap from 'gsap'
 import { useIsWebView } from '@/hooks/use-is-webview'
 import { useRouter, usePathname } from 'next/navigation'
 import { usePWAHeader } from '@/lib/pwa-header-context'
-import { useProfileDrawerStore } from '@/store/useProfileDrawerStore'
+import { useAccessDrawerStore } from '@/store/useAccessDrawerStore'
 import Image from 'next/image'
 
 export default function PWAHeader() {
@@ -13,7 +13,7 @@ export default function PWAHeader() {
     const router = useRouter()
     const pathname = usePathname()
     const { title: contextTitle } = usePWAHeader()
-    const openProfileDrawer = useProfileDrawerStore((s) => s.open)
+    const openAccessDrawer = useAccessDrawerStore((s) => s.open)
 
     const showMenuIcon = pathname !== '/'
     const titleRef = useRef<HTMLParagraphElement>(null)
@@ -63,7 +63,7 @@ export default function PWAHeader() {
                     />
                 </button>
 
-                <p ref={titleRef} className='text-sm absolute flex items-center gap-2 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-white capitalize'>
+                <p ref={titleRef} className='text-sm absolute flex items-center gap-2 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-[#fff] capitalize'>
                     <span className='block w-5 h-5'>
                         <Image src={'/img/instacard.png'} alt='Instacard Logo' width={40} height={40} className='h-full w-full object-contain' />
                     </span>
@@ -71,7 +71,7 @@ export default function PWAHeader() {
                 </p>
 
                 <button
-                    onClick={openProfileDrawer}
+                    onClick={openAccessDrawer}
                     aria-label="Open menu"
                     className={`h-6 w-6 duration-300 transition-all ${showMenuIcon ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                 >

@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 
 interface FloatingBottomBarProps {
   mode: 'virtual' | 'universal';
+  hideScan?: boolean;
   onHomePress?: () => void;
   onScanPress?: () => void;
   onAddPress?: () => void;
@@ -16,7 +17,7 @@ interface FloatingBottomBarProps {
 }
 
 // Define which paths should show the floating bottom bar
-const ALLOWED_PATHS = ['/instacard', '/scan', '/add-a-gift-card','/manage-card/debit', ];
+// const ALLOWED_PATHS = ['/instacard', '/scan', '/add-a-gift-card','/manage-card/debit', ];
 
 function hapticLight() {
   if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
@@ -31,6 +32,7 @@ function hapticMedium() {
 }
 
 export function FloatingBottomBar({
+  hideScan = false,
   mode,
   onHomePress,
   onScanPress,
@@ -42,7 +44,7 @@ export function FloatingBottomBar({
   const pathname = usePathname();
   
   // Only show on allowed paths
-  const shouldShow = ALLOWED_PATHS.includes(pathname);
+  // const shouldShow = ALLOWED_PATHS.includes(pathname);
   
   const rotatePlus = () => {
     rotationRef.current += 90;
@@ -54,14 +56,14 @@ export function FloatingBottomBar({
     });
   };
 
-  if (!shouldShow) {
-    return null;
-  }
+  // if (!shouldShow) {
+  //   return null;
+  // }
 
   return (
     <>
       <div
-        className="fixed left-1/2 w-fit flex-col z-999 -translate-x-1/2 h-fit rounded-full flex items-center justify-center gap-2"
+        className="fixed left-1/2 w-fit flex-col z-1 -translate-x-1/2 h-fit rounded-full flex items-center justify-center gap-2"
         style={{ bottom: 'calc(2% + env(safe-area-inset-bottom, 0px))' }}
         role="navigation"
         aria-label="Bottom actions"
@@ -69,15 +71,15 @@ export function FloatingBottomBar({
         {pathname == '/instacard' && (
           <Link
             href="/add-a-gift-card"
-            className=" flex items-center justify-center gap-1 text-text-secondary"
+            className=" flex items-center justify-center gap-1 text-text-primary"
             onClick={onAddGiftPress}
             aria-label="Add Gift Card"
           >
-            <LucideGift className='w-5 h-5 text-text-secondary mb-1' />
+            <LucideGift className='w-5 h-5 text-text-primary mb-1' />
             <span className="text-sm">Add Gift Card</span>
           </Link>
         )}
-        <div className='bg-primary  flex items-center justify-center gap-5 px-2 py-2 rounded-full'>
+        <div className='bg-primary  flex items-center justify-center gap-5 px-1 py-1 rounded-full'>
 
           {/* Optional Home action kept for parity */}
           {/* <button
@@ -107,26 +109,28 @@ export function FloatingBottomBar({
             <div className="w-full flex items-center gap-2 justify-center">
               <div className='flex items-center   gap-2 justify-center'>
 
-                <div className='h-[55px] w-[55px] rounded-full aspect-square bg-white p-3  border-2 border-primary flex items-center justify-center'>
+                <div className='h-[55px] w-[55px] rounded-full aspect-square bg-[#fff] p-3  border-2 border-primary flex items-center justify-center'>
 
                   <Image src="/svg/fcmb.svg" alt="Scan" width={30} height={30} className='h-full w-full object-contain' />
                 </div>
-                <p className="text-[#ffffff] w-full text-center text-xs font-medium">FCMB</p>
+                <p style={{
+                  paddingRight: hideScan ? '16px' : '0px',
+                }} className="text-[#ffffff] w-full text-center text-xs font-medium">FCMB</p>
               </div>
             </div>
 
           </Link>
 
-          <Link href="/scan" className="w-full flex items-center gap-2 justify-center">
+          {!hideScan && <Link href="/scan" className="w-full flex items-center gap-2 justify-center">
             <div className='flex items-center   gap-2 justify-center'>
 
-              <div className='h-[55px] w-[55px] rounded-full border-2 border-white p-3 flex items-center justify-center'>
+              <div className='h-[55px] w-[55px] rounded-full border-2 border-[#fff] p-3 flex items-center justify-center'>
 
                 <Image src="/svg/scan.svg" alt="Scan" width={30} height={30} className='h-full w-full object-contain' />
               </div>
               {/* <p className="text-[#ffffff] w-full text-center text-xs font-medium">SCAN</p> */}
             </div>
-          </Link>
+          </Link>}
         </div>
 
       </div>

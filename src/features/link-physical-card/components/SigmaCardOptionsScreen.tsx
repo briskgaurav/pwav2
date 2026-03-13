@@ -22,18 +22,18 @@ export default function SigmaCardOptionsScreen() {
         () => allCards.filter((c) => c.cardForm === 'universal'),
         [allCards]
     )
-    
+
     // Separate linked and unlinked universal cards
     const unlinkedUniversalCards = useMemo(
         () => universalCards.filter((card) => !card.linkedVirtualCardId),
         [universalCards]
     )
-    
+
     const linkedUniversalCards = useMemo(
         () => universalCards.filter((card) => !!card.linkedVirtualCardId),
         [universalCards]
     )
-    
+
     const [selectedCard, setSelectedCard] = useState<string | null>(null)
     const [consentChecked, setConsentChecked] = useState(false)
     const [showAddCardModal, setShowAddCardModal] = useState(false)
@@ -59,7 +59,7 @@ export default function SigmaCardOptionsScreen() {
     return (
         <div className='h-screen flex flex-col'>
             <SheetContainer>
-                <div className="flex-1 flex-col flex justify-start items-center overflow-auto pt-10 space-y-4  p-6">
+                <div className="flex-1 flex-col flex  justify-start items-center overflow-auto pt-10 pb-[50%] space-y-4  p-6">
                     <p className="font-medium text-sm">Link this Virtual Instacard to a Universal Instacard</p>
                     <div className='h-auto w-full relative '>
                         <Image src='/img/creditcard.png' alt='Credit Card' width={1000} height={1000} className='h-full w-full object-contain' />
@@ -73,7 +73,7 @@ export default function SigmaCardOptionsScreen() {
                         {universalCards.length === 0 && (
                             <p className="text-sm text-text-secondary text-center w-full py-4">No universal cards available</p>
                         )}
-                        
+
                         {/* Unlinked Universal Cards */}
                         {unlinkedUniversalCards.length > 0 && (
                             <>
@@ -83,8 +83,8 @@ export default function SigmaCardOptionsScreen() {
                                         key={card.id}
                                         onClick={() => setSelectedCard(card.id)}
                                         className={`w-full p-4 border rounded-2xl flex items-center gap-3 transition-all ${selectedCard === card.id
-                                                ? 'border-text-primary border-2'
-                                                : 'border-text-primary/20'
+                                            ? 'border-text-primary border-2'
+                                            : 'border-text-primary/20'
                                             }`}
                                     >
                                         <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedCard === card.id ? 'border-orange bg-orange' : 'border-text-primary/40'
@@ -102,7 +102,7 @@ export default function SigmaCardOptionsScreen() {
                                 ))}
                             </>
                         )}
-                        
+
                         {/* Linked Universal Cards */}
                         {linkedUniversalCards.length > 0 && (
                             <>
@@ -150,14 +150,14 @@ export default function SigmaCardOptionsScreen() {
 
 
                 </div>
-                <div className=" w-full p-4 space-y-2 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] ">
+                <div className=" w-full p-4 space-y-2 absolute bottom-0 left-0 right-0 bg-background pb-[calc(env(safe-area-inset-bottom,24px)+24px)] ">
                     <Link
                         href={routes.faceVerification}
                         onClick={handleNextClick}
                         className={`bg-primary p-4 text-center text-white flex items-center justify-center rounded-full w-full ${!selectedCard || !consentChecked ? 'opacity-50' : ''
                             }`}
                     >
-                       Next
+                        Next
                     </Link>
                     <button
                         onClick={() => setShowAddCardModal(true)}

@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { LanguageDropdown } from './LanguageDropdown'
 import { useRouter } from 'next/navigation'
 import { AccessFeaturesDropdown } from './AccessFeaturesDropdown'
+import Image from 'next/image'
 
 interface ProfileContentProps {
   userName?: string
@@ -75,28 +76,34 @@ export function ProfileContent({
 
   return (
     <div className="flex-1 flex flex-col bg-card-background overflow-hidden">
-      <header className="flex items-center justify-center px-6 pt-6 pb-5 shrink-0 border-b border-border">
+      {/* <header className="flex items-center justify-center px-6 pt-6 pb-5 shrink-0 border-b border-border">
         <button
           type="button"
           onClick={handleGoBack}
           className="group flex items-center gap-3 px-6 py-3 rounded-xl bg-primary text-[#fff] font-semibold  transition-all duration-200"
         >
-          <ArrowLeft className={`w-5 h-5 group-hover:-translate-x-1 transition-transform ${isRTL ? 'rotate-180' : ''}`} />
-          <span>Go back to my banking app</span>
+          <span className="w-18 h-18">
+
+            <Image src="/svg/fcmb.svg" alt="FCMB" width={1000} height={1000} className='h-full w-full object-contain' />
+          </span>
+          <span className='capitalize text-sm w-[70%] leading-[1.2]'>Go back to my banking app</span>
         </button>
-      </header>
+      </header> */}
 
       <div className="flex-1 overflow-y-auto px-5 pb-8">
-        <div className="flex flex-col items-center mt-8 mb-8">
-          <div className="w-[200px] h-[200px] rounded-[40px] bg-shadow flex items-center justify-center mb-3">
-            <span className="text-[28px] font-bold text-text-on-primary">
+        <div className="flex ml-4 items-center mt-8 mb-8">
+          <div className="w-[50px] mr-2 h-[50px] rounded-xl bg-shadow flex items-center justify-center">
+            <span className="text-xs font-bold text-text-on-primary">
               {initials}
             </span>
           </div>
-          <p className="text-xl font-semibold text-text-primary mb-1">
-            {userName}
-          </p>
-          <p className="text-sm text-text-secondary">user@example.com</p>
+          <div className="flex flex-col justify-center mt-1">
+
+            <p className="text-xl font-semibold leading-none text-text-primary">
+              {userName}
+            </p>
+            <p className="text-sm text-text-secondary leading-none">user@example.com</p>
+          </div>
         </div>
 
         <nav className="rounded-2xl overflow-hidden ">
@@ -111,12 +118,6 @@ export function ProfileContent({
             onSelect={() => { }}
             isRTL={isRTL}
             isDarkMode={isDarkMode}
-          />
-          <AccessFeaturesDropdown
-            isRTL={isRTL}
-            onSelect={() => {
-              onClose()
-            }}
           />
           <MenuRow
             icon={<Moon className="w-5 h-5 text-primary" />}

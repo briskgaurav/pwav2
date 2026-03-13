@@ -45,7 +45,7 @@ export function AccessFeaturesDropdown({
   onSelect,
 }: AccessFeaturesDropdownProps) {
   const { t } = useTranslation()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
   const router = useRouter()
 
   const features = useMemo<FeatureRow[]>(
@@ -92,9 +92,9 @@ export function AccessFeaturesDropdown({
 
       <div
         className="overflow-hidden transition-[max-height] duration-300 ease-out"
-        style={{ maxHeight: isOpen ? 300 : 0 }}
+        style={{ maxHeight: isOpen ? '300' : 0 }}
       >
-        <div className="bg-light-gray py-2 px-2 rounded-xl mx-1 my-1 max-h-[280px] overflow-y-auto">
+        <div className="bg-light-gray py-2 px-2 rounded-xl mx-1 my-1  overflow-y-auto">
           {features.map(({ id, Icon }) => (
             <button
               key={id}

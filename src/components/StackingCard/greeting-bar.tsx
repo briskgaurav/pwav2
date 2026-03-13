@@ -32,14 +32,17 @@ export function GreetingBar({
 
   return (
     <div className="flex items-center justify-between px-4 pt-4 pb-2">
-      <p
-        className="text-base font-normal flex items-center gap-2 text-text-primary"
+      <button
+        type="button"
+        onClick={onAvatarPress}
+        className="text-base font-normal flex items-center gap-2 text-text-primary text-left"
         aria-label={`Hello, ${userName}`}
       >
-        <span className='h-10 w-10 rounded-full bg-primary flex items-center justify-center'>
-          <span className='text-white text-sm font-medium'>N</span>
-        </span> {userName}
-      </p>
+        <span className="h-10 w-10 rounded-full bg-primary flex items-center justify-center shrink-0">
+          <span className="text-[#fff] text-sm font-medium">N</span>
+        </span>
+        <span>{userName}</span>
+      </button>
 
       {/* <div className="flex items-center gap-2">
         <button
@@ -105,9 +108,9 @@ export function GreetingBar({
       >
         <div className="flex items-center gap-2 justify-center">
           <div className='w-fit'>
-            <Plus className='w-5 h-5 text-white mb-1' />
+            <Plus className='w-5 h-5 text-[#fff] mb-1' />
           </div>
-          <p className="text-white text-sm font-medium">Add {mode === 'virtual' ? 'Virtual Card' : 'Universal Card'}</p>
+          <p className="text-[#fff] text-sm font-medium">Add {mode === 'virtual' ? 'Virtual Card' : 'Universal Card'}</p>
         </div>
       </Link>
     </div>

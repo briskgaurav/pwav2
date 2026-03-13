@@ -6,6 +6,7 @@ import { PWAHeaderProvider } from '@/lib/pwa-header-context';
 import PWAHeader from '@/components/PWAHeader';
 import RouteTitle from '@/components/RouteTitle';
 import GlobalProfileDrawer from '@/components/GlobalProfileDrawer';
+import GlobalAccessDrawer from '@/components/GlobalAccessDrawer';
 import { PageSlideTransition } from '@/components/ui/page-slide-transition';
 import FloatingBottomBarLayoutClient from '@/components/StackingCard/FloatingBottomBarLayoutClient';
 
@@ -81,9 +82,9 @@ export default function RootLayout({
               <PageSlideTransition>
                 {children}
               </PageSlideTransition>
-              <FloatingBottomBarLayoutClient />
             </div>
             <GlobalProfileDrawer />
+            <GlobalAccessDrawer />
           </PWAHeaderProvider>
         </AuthProvider>
       </body>
