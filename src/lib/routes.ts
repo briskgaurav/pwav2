@@ -69,7 +69,6 @@ export const routes = {
   paymentSuccess: '/payment-success',
 
   // Registration / KYC flow
-  registrationFaceScan: '/registration/face-scan',
   registrationVerificationMethod: '/registration/verification-method',
   registrationVerificationOtp: '/registration/verification-otp',
   registrationAcceptTerms: '/registration/accept-terms',

@@ -75,7 +75,7 @@ export default function RootLayout({
             <PWAHeaderProvider>
               <div className="flex flex-col h-dvh overflow-hidden">
                 <PWAHeader />
-                {/* <RouteTitle /> */}
+                <RouteTitle />
                 <PageSlideTransition>
                   {children}
                 </PageSlideTransition>
