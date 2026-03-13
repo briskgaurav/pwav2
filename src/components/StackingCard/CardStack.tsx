@@ -472,6 +472,7 @@ export const CardStack = forwardRef<CardStackRef, CardStackProps>(
         >
           {visibleCards}
         </div>
+        
       </div>
     );
   }

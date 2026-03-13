@@ -3,7 +3,7 @@
 import { useAuth } from '@/lib/auth-context';
 import { useCardWalletStore } from '@/store/useCardWalletStore';
 import { haptic } from '@/lib/useHaptics';
-import { Gift, PlusIcon } from 'lucide-react';
+import { Gift, Plus, PlusIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -33,10 +33,12 @@ export function GreetingBar({
   return (
     <div className="flex items-center justify-between px-4 pt-4 pb-2">
       <p
-        className="text-base font-normal text-text-primary"
+        className="text-base font-normal flex items-center gap-2 text-text-primary"
         aria-label={`Hello, ${userName}`}
       >
-        Hello, {userName}
+        <span className='h-10 w-10 rounded-full bg-primary flex items-center justify-center'>
+          <span className='text-white text-sm font-medium'>N</span>
+        </span> {userName}
       </p>
 
       {/* <div className="flex items-center gap-2">
@@ -95,17 +97,17 @@ export function GreetingBar({
       </div> */}
 
       <Link
-        href="/add-a-gift-card"
+        href={mode === 'virtual' ? '/add-instacard' : '/add-universal-card'}
 
-        onClick={onAddGiftPress}
+        onClick={() => useCardWalletStore.getState().setPendingCardForm(mode)}
         className="flex items-center bg-primary rounded-full justify-center gap-2 w-fit px-4 py-2"
         aria-label="Add Instacard"
       >
         <div className="flex items-center gap-2 justify-center">
           <div className='w-fit'>
-            <Gift className='w-5 h-5 text-white mb-1' />
+            <Plus className='w-5 h-5 text-white mb-1' />
           </div>
-          <p className="text-white text-sm font-medium">Claim A Gift Card</p>
+          <p className="text-white text-sm font-medium">Add {mode === 'virtual' ? 'Virtual Card' : 'Universal Card'}</p>
         </div>
       </Link>
     </div>

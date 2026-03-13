@@ -49,13 +49,16 @@ export function FloatingBottomBar({
   return (
     <>
       <div
-        className="absolute left-1/2 w-[60%]  bottom-16  -translate-x-1/2 z-30 h-fit py-4 bg-primary rounded-full flex items-center justify-center gap-5 px-6 "
-
+        className="fixed left-1/2 w-fit flex-col z-999 -translate-x-1/2 h-fit rounded-full flex items-center justify-center gap-5"
+        style={{ bottom: 'calc(5% + env(safe-area-inset-bottom, 0px))' }}
         role="navigation"
         aria-label="Bottom actions"
       >
-        {/* Optional Home action kept for parity */}
-        {/* <button
+
+        <div className='bg-primary  flex items-center justify-center gap-5 px-2 py-2 rounded-full'>
+
+          {/* Optional Home action kept for parity */}
+          {/* <button
           type="button"
           className="flex items-center gap-1 px-2"
           onClick={() => {
@@ -68,55 +71,54 @@ export function FloatingBottomBar({
           <span className="text-white text-base">Home</span>
         </button> */}
 
-        <Link
-          href="/add-instacard"
+          <Link
+            href="/"
 
-          className="flex items-center gap-2 justify-center  pr-0 w-full"
-          onClick={() => {
-            hapticLight();
-            rotatePlus();
-            window.setTimeout(() => onAddPress?.(), 500);
-          }}
-          aria-label="Add Instacard"
-        >
-          <div className="w-full flex items-center gap-2 justify-center">
-            <div className='flex items-center gap-2 justify-center'>
-
-              <div ref={plusRef} className='w-fit'>
-
-                <PlusIcon className='w-5 h-5 text-[#ffffff] mb-1' />
-              </div>
-              <p className="text-[#ffffff] w-full text-sm font-medium">Add {mode === 'virtual' ? 'Virtual Card' : 'Universal Card'}</p>
-            </div>
-          </div>
-
-        </Link>
-
-        {/* <div className="flex items-center justify-center">
-          <button
-            type="button"
-            className="h-[55px] w-[55px] rounded-full bg-primary border-2 border-white flex items-center justify-center"
+            className="flex items-center gap-2 justify-center  w-full"
             onClick={() => {
-              hapticMedium();
-              onScanPress?.();
+              hapticLight();
+              rotatePlus();
+              window.setTimeout(() => onAddPress?.(), 500);
             }}
-            aria-label="Scan"
+            aria-label="FCMB"
           >
-            <Image src="/svg/scan.svg" alt="Scan" width={30} height={30} />
-          </button>
-        </div> */}
+            <div className="w-full flex items-center gap-2 justify-center">
+              <div className='flex items-center   gap-2 justify-center'>
+
+                <div className='h-[55px] w-[55px] rounded-full aspect-square bg-white p-3  border-2 border-primary flex items-center justify-center'>
+
+                  <Image src="/svg/fcmb.svg" alt="Scan" width={30} height={30} className='h-full w-full object-contain' />
+                </div>
+                <p className="text-[#ffffff] w-full text-center text-xs font-medium">FCMB</p>
+              </div>
+            </div>
+
+          </Link>
+
+          <Link href="/scan" className="w-full flex items-center gap-2 justify-center">
+            <div className='flex items-center   gap-2 justify-center'>
+
+              <div className='h-[55px] w-[55px] rounded-full border-2 border-white p-3 flex items-center justify-center'>
+
+                <Image src="/svg/scan.svg" alt="Scan" width={30} height={30} className='h-full w-full object-contain' />
+              </div>
+              {/* <p className="text-[#ffffff] w-full text-center text-xs font-medium">SCAN</p> */}
+            </div>
+          </Link>
+        </div>
+
+        <Link
+          href="/add-a-gift-card"
+          className=" flex items-center justify-center gap-1 text-text-secondary"
+
+          onClick={onAddGiftPress}
+          aria-label="Add Gift Card"
+        >
+          <LucideGift className='w-5 h-5 text-text-secondary mb-1' />
+          <span className="text-sm">Add Gift Card</span>
+        </Link>
       </div>
 
-      <Link
-        href="/add-a-gift-card"
-        className="absolute left-0 right-0 z-30 bottom-6 flex items-center justify-center gap-1 text-text-secondary"
-
-        onClick={onAddGiftPress}
-        aria-label="Add Gift Card"
-      >
-        <LucideGift className='w-5 h-5 text-text-secondary mb-1' />
-        <span className="text-sm">Add Gift Card</span>
-      </Link>
     </>
   );
 }

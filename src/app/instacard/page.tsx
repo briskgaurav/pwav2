@@ -4,7 +4,6 @@ import { CardStack, CardStackRef } from '@/components/StackingCard/CardStack'
 import { CardFilterType, FilterBar, type SortByValue } from '@/components/StackingCard/FilterBar'
 import GreetingBar from '@/components/StackingCard/greeting-bar'
 import { SwipeIndicator } from '@/components/StackingCard/SwipeIndicator'
-import FloatingBottomBar from '@/components/StackingCard/FloatingBottomBar'
 import ActionDrawer from '@/components/StackingCard/ActionDrawer'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -12,6 +11,7 @@ import { useAuth } from '@/lib/auth-context'
 import { useCardWalletStore } from '@/store/useCardWalletStore'
 import { useProfileDrawerStore } from '@/store/useProfileDrawerStore'
 import { routes } from '@/lib/routes'
+import { useCardModeStore } from '@/store/useCardModeStore'
 
 
 
@@ -20,10 +20,11 @@ export default function CardsScreen() {
   const allCards = useCardWalletStore((s) => s.cards)
   const setPendingCardForm = useCardWalletStore((s) => s.setPendingCardForm)
   const openProfileDrawer = useProfileDrawerStore((s) => s.open)
+  const cardMode = useCardModeStore((s) => s.cardMode)
+  const setCardMode = useCardModeStore((s) => s.setCardMode)
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all'])
   const [sortBy, setSortBy] = useState<SortByValue>('recent')
   const [currentCardIndex, setCurrentCardIndex] = useState(0)
-  const [cardMode, setCardMode] = useState<'virtual' | 'universal'>('virtual')
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
   const cardStackRef = useRef<CardStackRef>(null)
@@ -36,7 +37,7 @@ export default function CardsScreen() {
     setCardMode(mode)
     setSelectedCardId(null)
     setCurrentCardIndex(0)
-  }, [])
+  }, [setCardMode])
 
   /**
    * Handles card filter changes and resets selection state
@@ -123,7 +124,7 @@ export default function CardsScreen() {
       {/* Top controls — greeting + filters */}
       <div className="shrink-0 relative z-10">
         <GreetingBar
-          userName="Nirdesh Malik"
+          userName="Nirdesh"
           onSearchPress={() => { }}
           onAddPress={handleAddPress}
           mode={cardMode}
@@ -166,23 +167,19 @@ export default function CardsScreen() {
           </div>
         )}
 
-        {filteredCards.length > 0 && (
-          <SwipeIndicator
-            currentIndex={currentCardIndex}
-            totalCount={filteredCards.length}
-            onPreviousPress={() => cardStackRef.current?.goToPrevious()}
-            onNextPress={() => cardStackRef.current?.goToNext()}
-          />
-        )}
+
+
+
+          {filteredCards.length > 0 && (
+            <SwipeIndicator
+              currentIndex={currentCardIndex}
+              totalCount={filteredCards.length}
+              onPreviousPress={() => cardStackRef.current?.goToPrevious()}
+              onNextPress={() => cardStackRef.current?.goToNext()}
+            />
+          )}
       </div>
 
-      {/* Bottom bar */}
-      <FloatingBottomBar
-        mode={cardMode}
-        onScanPress={() => router.push(routes.scan)}
-        onAddPress={handleAddPress}
-        onAddGiftPress={() => { }}
-      />
 
       {/* Card actions drawer */}
       <ActionDrawer

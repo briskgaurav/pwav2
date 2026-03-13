@@ -41,7 +41,11 @@ export default function PWAHeader() {
     }, [currentTitle, displayedTitle])
 
     const handleGoBack = () => {
-        router.back()
+        if (pathname === '/instacard') {
+            router.push('/')
+        } else {
+            router.back()
+        }
     }
 
     if (isWebView) {

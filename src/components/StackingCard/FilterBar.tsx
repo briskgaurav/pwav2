@@ -146,7 +146,7 @@ export function FilterBar({
             </button>
           </div>
         </div>
-        <div className="flex items-center justify-center">
+        {/* <div className="flex items-center justify-center">
 
           <Link
             href={mode === 'virtual' ? '/add-instacard' : '/add-universal-card'}
@@ -158,7 +158,7 @@ export function FilterBar({
             <Plus className='w-5 h-5 text-white' />
             <span className="text-white text-sm font-medium">Add {mode === 'virtual' ? 'Virtual Card' : 'Universal Card'}</span>
           </Link>
-        </div>
+        </div> */}
       </div>
 
       <FilterDropdown

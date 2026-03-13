@@ -7,6 +7,7 @@ import PWAHeader from '@/components/PWAHeader';
 import RouteTitle from '@/components/RouteTitle';
 import GlobalProfileDrawer from '@/components/GlobalProfileDrawer';
 import { PageSlideTransition } from '@/components/ui/page-slide-transition';
+import FloatingBottomBarLayoutClient from '@/components/StackingCard/FloatingBottomBarLayoutClient';
 
 const helveticaNeue = localFont({
   src: [
@@ -67,23 +68,25 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" href="/img/instacard.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"></meta>
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
 
-        <body className={`${helveticaNeue.className} h-dvh overflow-hidden`}>
-          <AuthProvider>
-            <PWAHeaderProvider>
-              <div className="flex flex-col h-dvh overflow-hidden">
-                <PWAHeader />
-                <RouteTitle />
-                <PageSlideTransition>
-                  {children}
-                </PageSlideTransition>
-              </div>
-              <GlobalProfileDrawer />
-            </PWAHeaderProvider>
-          </AuthProvider>
-        </body>
+      <body className={`${helveticaNeue.className} h-dvh overflow-hidden`}>
+        <AuthProvider>
+          <PWAHeaderProvider>
+            <div className="flex flex-col h-dvh overflow-hidden">
+              <PWAHeader />
+              <RouteTitle />
+              <PageSlideTransition>
+                {children}
+              </PageSlideTransition>
+              <FloatingBottomBarLayoutClient />
+            </div>
+            <GlobalProfileDrawer />
+          </PWAHeaderProvider>
+        </AuthProvider>
+      </body>
     </html>
   );
 }
