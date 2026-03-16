@@ -8,20 +8,7 @@ import type { Transaction } from '../store/useOnlinePaymentStore'
 import { useRouter } from 'next/navigation'
 import { Share2, Download, AlertTriangle, CheckCircle2, Clock, XCircle } from 'lucide-react'
 import { haptic } from '@/lib/useHaptics'
-
-declare global {
-  interface Window {
-    AndroidShare?: {
-      share: (text: string) => void
-    }
-  }
-}
-
-function shareApp() {
-  if (typeof window !== "undefined" && (window as unknown as { AndroidApp?: { share: (text: string) => void } }).AndroidApp) {
-    (window as unknown as { AndroidApp: { share: (text: string) => void } }).AndroidApp.share("Check this app https://instacard-pwa.vercel.app");
-  }
-}
+import { shareText } from '@/lib/fetchDataFromKotlin'
 
 function StatusBadge({ status }: { status: Transaction['status'] }) {
   const config = {
@@ -98,40 +85,31 @@ export default function TransactionReceipt({ transactionId }: TransactionReceipt
     )
   }
 
+  const formatShareText = () => {
+    const statusLabel = transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)
+    const amountPrefix = transaction.isDebit ? '-' : '+'
+    
+    return `📄 Transaction Receipt
+
+💳 ${transaction.merchantName}
+💰 Amount: ${amountPrefix}₦${transaction.amount}
+📊 Status: ${statusLabel}
+
+📅 Date: ${transaction.date}
+🕐 Time: ${transaction.time}
+🔢 Reference: ${transaction.referenceId}
+💳 Card: Virtual Card (${cardDetails.maskedNumber})
+${transaction.category ? `📁 Category: ${transaction.category}\n` : ''}
+---
+Powered by InstaCard`
+  }
+
   const handleShare = async () => {
     haptic('medium')
 
-    const shareText = `Transaction Receipt\n${transaction.merchantName} - ${transaction.isDebit ? '-' : '+'}N ${transaction.amount} (${transaction.status})\n${window.location.href}`
-
-    if (typeof window !== "undefined" && window.AndroidShare) {
-      window.AndroidShare.share(shareText)
-      return
-    }
-
-    const shareData = {
-      title: 'Transaction Receipt',
-      text: `${transaction.merchantName} - ${transaction.isDebit ? '-' : '+'}N ${transaction.amount} (${transaction.status})`,
-      url: window.location.href,
-    }
-
-    try {
-      if (navigator.share && navigator.canShare?.(shareData)) {
-        await navigator.share(shareData)
-      } else {
-        // Fallback: copy to clipboard
-        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-          await navigator.clipboard.writeText(
-            `${shareData.title}\n${shareData.text}\n${shareData.url}`
-          )
-          alert('Receipt copied to clipboard')
-        } else {
-          alert('Sharing is not supported on this device')
-        }
-      }
-    } catch (err) {
-      console.error('Share failed:', err)
-    }
+    await shareText({ title: 'Transaction Receipt', text: formatShareText() })
   }
+
   const handleDownload = () => {
     haptic('medium')
     // Placeholder for receipt download
@@ -180,8 +158,7 @@ export default function TransactionReceipt({ transactionId }: TransactionReceipt
             <Button
               variant="primary"
               fullWidth
-              // onClick={handleShare}
-              onClick={shareApp}
+              onClick={handleShare}
             >
               <span className="flex items-center justify-center gap-2">
                 <Share2 className="w-4 h-4" />
@@ -193,7 +170,7 @@ export default function TransactionReceipt({ transactionId }: TransactionReceipt
               fullWidth
               onClick={handleDownload}
             >
-              <span className="flex items-center justify-center gap-2">
+              <span className="flex items-center text-[#fff] justify-center gap-2">
                 <Download className="w-4 h-4" />
                 Download
               </span>

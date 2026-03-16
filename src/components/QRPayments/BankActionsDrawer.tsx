@@ -377,7 +377,7 @@ export function BankActionsDrawer({
             type="button"
             onClick={() => { haptic(15); onConfirm() }}
             disabled={!canConfirm}
-            className="flex-1 py-3 rounded-[20px] bg-primary text-white font-medium text-base disabled:opacity-30 active:scale-[0.97] transition-transform"
+            className="flex-1 py-3 rounded-[20px] bg-primary text-[#fff] font-medium text-base disabled:opacity-30 active:scale-[0.97] transition-transform"
           >
           Pay Now
           </button>

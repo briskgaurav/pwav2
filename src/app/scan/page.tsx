@@ -9,21 +9,6 @@ import { routes } from '@/lib/routes'
 const SCANNER_SIZE = 240
 const CORNER_SIZE = 45
 
-// Flash control functions for Android WebView
-function flashOn() {
-  if (typeof window !== "undefined" && (window as unknown as { AndroidApp?: { flashOn: () => void } }).AndroidApp) {
-    (window as unknown as { AndroidApp: { flashOn: () => void } }).AndroidApp.flashOn();
-  } else {
-    console.log("Flash API not available");
-  }
-}
-
-function flashOff() {
-  if (typeof window !== "undefined" && (window as unknown as { AndroidApp?: { flashOff: () => void } }).AndroidApp) {
-    (window as unknown as { AndroidApp: { flashOff: () => void } }).AndroidApp.flashOff();
-  }
-}
-
 export default function ScanPage() {
   const router = useRouter()
 
@@ -44,7 +29,7 @@ export default function ScanPage() {
 
   const [cameraError, setCameraError] = useState<string | null>(null)
   const [permissionDenied, setPermissionDenied] = useState(false)
-  const [flashOnState, setFlashOnState] = useState(false)
+  const [flashOn, setFlashOn] = useState(false)
   const [flashSupported, setFlashSupported] = useState(false)
   const [result, setResult] = useState<string | null>(null)
 
@@ -54,12 +39,7 @@ export default function ScanPage() {
       streamRef.current = null
     }
     cancelAnimationFrame(scanRafRef.current)
-    // Turn off flash when stopping camera
-    if (flashOnState) {
-      flashOff()
-      setFlashOnState(false)
-    }
-  }, [flashOnState])
+  }, [])
 
   const startCamera = useCallback(async () => {
     try {
@@ -98,15 +78,9 @@ export default function ScanPage() {
         }
       }
 
-      // Check if AndroidApp is available
-      if (typeof window !== "undefined" && (window as unknown as { AndroidApp?: unknown }).AndroidApp) {
-        setFlashSupported(true)
-      } else {
-        // Fallback: check native torch capability
-        const track = stream.getVideoTracks()[0]
-        const caps = track.getCapabilities?.() as Record<string, unknown> | undefined
-        if (caps && 'torch' in caps) setFlashSupported(true)
-      }
+      const track = stream.getVideoTracks()[0]
+      const caps = track.getCapabilities?.() as Record<string, unknown> | undefined
+      if (caps && 'torch' in caps) setFlashSupported(true)
     } catch (error) {
       // Don't set error state if component unmounted
       if (!isMountedRef.current) return
@@ -123,15 +97,41 @@ export default function ScanPage() {
     }
   }, [])
 
-  const toggleFlash = useCallback(() => {
-    const newFlashState = !flashOnState
-    if (newFlashState) {
-      flashOn()
-    } else {
-      flashOff()
+  const toggleFlash = useCallback(async () => {
+    if (!streamRef.current) return
+    const track = streamRef.current.getVideoTracks()[0]
+    if (!track) return
+    
+    const newFlashState = !flashOn
+    try {
+      // Use ImageCapture API for torch control on supported devices
+      if ('ImageCapture' in window) {
+        const imageCapture = new (window as unknown as { ImageCapture: new (track: MediaStreamTrack) => { getPhotoCapabilities: () => Promise<{ fillLightMode?: string[] }>; setOptions: (opts: { fillLightMode: string }) => Promise<void> } }).ImageCapture(track)
+        const capabilities = await imageCapture.getPhotoCapabilities()
+        if (capabilities.fillLightMode?.includes('flash')) {
+          await imageCapture.setOptions({ fillLightMode: newFlashState ? 'flash' : 'off' })
+          setFlashOn(newFlashState)
+          return
+        }
+      }
+      
+      // Fallback to applyConstraints with torch
+      await track.applyConstraints({ 
+        advanced: [{ torch: newFlashState } as MediaTrackConstraintSet] 
+      })
+      setFlashOn(newFlashState)
+    } catch (err) {
+      console.error('Flash toggle failed:', err)
+      // Try alternative method
+      try {
+        const constraints = { torch: newFlashState } as MediaTrackConstraintSet
+        await track.applyConstraints(constraints)
+        setFlashOn(newFlashState)
+      } catch {
+        /* flash not available */
+      }
     }
-    setFlashOnState(newFlashState)
-  }, [flashOnState])
+  }, [flashOn])
 
   const handleGalleryPress = useCallback(() => {
     const input = document.createElement('input')
@@ -267,8 +267,8 @@ export default function ScanPage() {
       {/* Camera feed or error state */}
       {cameraError ? (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black px-8 gap-6">
-          <h2 className="text-white text-2xl font-semibold text-center">Camera Access Required</h2>
-          <p className="text-white/70 text-base text-center leading-relaxed">
+          <h2 className="text-[#fff] text-2xl font-semibold text-center">Camera Access Required</h2>
+          <p className="text-[#fff]/70 text-base text-center leading-relaxed">
             {cameraError}
           </p>
           {permissionDenied && (
@@ -276,11 +276,11 @@ export default function ScanPage() {
               onClick={handleRequestPermission} 
               className="bg-primary py-4 px-10 rounded-2xl"
             >
-              <span className="text-white font-semibold">Grant Camera Permission</span>
+              <span className="text-[#fff] font-semibold">Grant Camera Permission</span>
             </button>
           )}
           <button onClick={handleClose} className="p-3">
-            <span className="text-white/60 text-sm">Go Back</span>
+            <span className="text-[#fff]/60 text-sm">Go Back</span>
           </button>
         </div>
       ) : (
@@ -307,42 +307,42 @@ export default function ScanPage() {
             {/* Breathing wrapper */}
             <div
               ref={scannerBoxRef}
-              className="p-5 bg-text-primary/10 rounded-3xl"
+              className="p-5 bg-[#fff]/10 rounded-3xl"
               style={{ willChange: 'transform' }}
             >
               <div className="relative" style={{ width: SCANNER_SIZE, height: SCANNER_SIZE }}>
                 {/* Corner brackets */}
                 <div
                   ref={cornerTLRef}
-                  className="absolute top-0 left-0 border-t-4 border-l-4 border-text-primary rounded-tl-[20px]"
+                  className="absolute top-0 left-0 border-t-4 border-l-4 border-[#fff] rounded-tl-[20px]"
                   style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
                 />
                 <div
                   ref={cornerTRRef}
-                  className="absolute top-0 right-0 border-t-4 border-r-4 border-text-primary rounded-tr-[20px]"
+                  className="absolute top-0 right-0 border-t-4 border-r-4 border-[#fff] rounded-tr-[20px]"
                   style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
                 />
                 <div
                   ref={cornerBLRef}
-                  className="absolute bottom-0 left-0 border-b-4 border-l-4 border-text-primary rounded-bl-[20px]"
+                  className="absolute bottom-0 left-0 border-b-4 border-l-4 border-[#fff] rounded-bl-[20px]"
                   style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
                 />
                 <div
                   ref={cornerBRRef}
-                  className="absolute bottom-0 right-0 border-b-4 border-r-4 border-text-primary rounded-br-[20px]"
+                  className="absolute bottom-0 right-0 border-b-4 border-r-4 border-[#fff] rounded-br-[20px]"
                   style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
                 />
 
                 {/* Scanning line */}
                 <div
                   ref={scanLineRef}
-                  className="absolute left-6 right-6 h-[3px] bg-text-primary rounded-full top-6"
+                  className="absolute left-6 right-6 h-[3px] bg-[#fff] rounded-full top-6"
                   style={{ boxShadow: '0 0 12px rgba(255,255,255,1)', willChange: 'transform' }}
                 />
 
                 {/* Scanned result toast */}
                 {result && (
-                  <div className="absolute top-[110%] -left-2.5 -right-2.5 rounded-2xl overflow-hidden backdrop-blur-xl bg-text-primary/80">
+                  <div className="absolute top-[110%] -left-2.5 -right-2.5 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#fff]/80">
                     <div className="px-5 py-3.5 text-center">
                       <p className="text-sm font-medium text-text-primary truncate">
                         {result.length > 40 ? `${result.substring(0, 40)}…` : result}
@@ -357,32 +357,32 @@ export default function ScanPage() {
           {/* Bottom actions */}
           <div ref={bottomRef} className="relative z-10 rounded-t-3xl overflow-hidden">
             <div className="flex flex-col items-center pt-8 pb-[max(2rem,calc(env(safe-area-inset-bottom,0px)+2rem))]">
-              <p className="text-text-primary/80 text-[15px] font-medium text-center mb-7">
+              <p className="text-[#fff]/80 text-[15px] font-medium text-center mb-7">
                 Align QR code within the frame to scan
               </p>
 
               <div className="flex justify-center gap-14">
                 {/* Gallery */}
                 <button onClick={handleGalleryPress} className="flex flex-col items-center gap-2.5 group">
-                  <div className="w-[60px] h-[60px] rounded-full bg-text-primary/30 backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform">
+                  <div className="w-[60px] h-[60px] rounded-full bg-[#fff]/30 backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform">
                     <Image src="/svg/gallery.svg" alt="Gallery" width={24} height={24} />
                   </div>
-                  <span className="text-text-primary text-[13px] font-medium">Gallery</span>
+                  <span className="text-[#fff] text-[13px] font-medium">Gallery</span>
                 </button>
 
                 {/* Flash */}
                 {/* {flashSupported && ( */}
                   <button onClick={toggleFlash} className="flex flex-col items-center gap-2.5 group">
-                    <div className={`w-[60px] h-[60px] rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform ${flashOnState ? 'bg-primary-light' : 'bg-text-primary/30'}`}>
+                    <div className={`w-[60px] h-[60px] rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform ${flashOn ? 'bg-primary-light' : 'bg-[#fff]/30'}`}>
                       <Image 
-                        src={flashOnState ? '/svg/thunder-on.svg' : '/svg/thunder-off.svg'} 
+                        src={flashOn ? '/svg/thunder-on.svg' : '/svg/thunder-off.svg'} 
                         alt="Flash" 
                         width={16} 
                         height={22} 
                       />
                     </div>
-                    <span className="text-text-primary text-[13px] font-medium">
-                      {flashOnState ? 'Flash On' : 'Flash Off'}
+                    <span className="text-[#fff] text-[13px] font-medium">
+                      {flashOn ? 'Flash On' : 'Flash Off'}
                     </span>
                   </button>
                 {/* )} */}

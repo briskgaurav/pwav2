@@ -5,9 +5,21 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import gsap from 'gsap'
 import { Check, User, AtSign, Receipt, Calendar, Share2 } from 'lucide-react'
 import { formatAmountWithCommas } from '@/lib/format-amount'
+import { sharePaymentReceipt } from '@/lib/fetchDataFromKotlin'
 
 function haptic(ms = 15) {
   if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(ms)
+}
+
+declare global {
+  interface Window {
+    AndroidShare?: {
+      share: (text: string) => void
+    }
+    AndroidApp?: {
+      share: (text: string) => void
+    }
+  }
 }
 
 export default function PaymentSuccessPage() {
@@ -96,17 +108,16 @@ export default function PaymentSuccessPage() {
 
   const handleShareReceipt = useCallback(async () => {
     haptic()
-    if (typeof navigator !== 'undefined' && navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Payment Receipt',
-          text: `Payment of ₦${formatAmountWithCommas(amount)} to ${recipientName} was successful.\nTransaction ID: ${transactionId}\nDate: ${date}`,
-        })
-      } catch {
-        // user cancelled share
-      }
-    }
-  }, [amount, recipientName, transactionId, date])
+
+    await sharePaymentReceipt({
+      amount,
+      recipientName,
+      upiId,
+      message,
+      transactionId,
+      date,
+    })
+  }, [amount, recipientName, upiId, message, transactionId, date])
 
   const details = [
     { icon: User, label: 'Paid To', value: recipientName },
@@ -191,7 +202,7 @@ export default function PaymentSuccessPage() {
         <button
           type="button"
           onClick={handleDone}
-          className="w-full py-4 rounded-[25px] bg-primary text-white font-medium active:scale-[0.97] transition-transform"
+          className="w-full py-4 rounded-[25px] bg-primary text-[#fff] font-medium active:scale-[0.97] transition-transform"
         >
           Done
         </button>
