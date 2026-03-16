@@ -11,16 +11,16 @@ const CORNER_SIZE = 45
 
 // Flash control functions for Android WebView
 function flashOn() {
-  if (typeof window !== "undefined" && (window as unknown as { AndroidFlash?: { flashOn: () => void } }).AndroidFlash) {
-    (window as unknown as { AndroidFlash: { flashOn: () => void } }).AndroidFlash.flashOn();
+  if (typeof window !== "undefined" && (window as unknown as { AndroidApp?: { flashOn: () => void } }).AndroidApp) {
+    (window as unknown as { AndroidApp: { flashOn: () => void } }).AndroidApp.flashOn();
   } else {
     console.log("Flash API not available");
   }
 }
 
 function flashOff() {
-  if (typeof window !== "undefined" && (window as unknown as { AndroidFlash?: { flashOff: () => void } }).AndroidFlash) {
-    (window as unknown as { AndroidFlash: { flashOff: () => void } }).AndroidFlash.flashOff();
+  if (typeof window !== "undefined" && (window as unknown as { AndroidApp?: { flashOff: () => void } }).AndroidApp) {
+    (window as unknown as { AndroidApp: { flashOff: () => void } }).AndroidApp.flashOff();
   }
 }
 
@@ -98,8 +98,8 @@ export default function ScanPage() {
         }
       }
 
-      // Check if AndroidFlash is available
-      if (typeof window !== "undefined" && (window as unknown as { AndroidFlash?: unknown }).AndroidFlash) {
+      // Check if AndroidApp is available
+      if (typeof window !== "undefined" && (window as unknown as { AndroidApp?: unknown }).AndroidApp) {
         setFlashSupported(true)
       } else {
         // Fallback: check native torch capability
@@ -307,42 +307,42 @@ export default function ScanPage() {
             {/* Breathing wrapper */}
             <div
               ref={scannerBoxRef}
-              className="p-5 bg-white/10 rounded-3xl"
+              className="p-5 bg-text-primary/10 rounded-3xl"
               style={{ willChange: 'transform' }}
             >
               <div className="relative" style={{ width: SCANNER_SIZE, height: SCANNER_SIZE }}>
                 {/* Corner brackets */}
                 <div
                   ref={cornerTLRef}
-                  className="absolute top-0 left-0 border-t-4 border-l-4 border-white rounded-tl-[20px]"
+                  className="absolute top-0 left-0 border-t-4 border-l-4 border-text-primary rounded-tl-[20px]"
                   style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
                 />
                 <div
                   ref={cornerTRRef}
-                  className="absolute top-0 right-0 border-t-4 border-r-4 border-white rounded-tr-[20px]"
+                  className="absolute top-0 right-0 border-t-4 border-r-4 border-text-primary rounded-tr-[20px]"
                   style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
                 />
                 <div
                   ref={cornerBLRef}
-                  className="absolute bottom-0 left-0 border-b-4 border-l-4 border-white rounded-bl-[20px]"
+                  className="absolute bottom-0 left-0 border-b-4 border-l-4 border-text-primary rounded-bl-[20px]"
                   style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
                 />
                 <div
                   ref={cornerBRRef}
-                  className="absolute bottom-0 right-0 border-b-4 border-r-4 border-white rounded-br-[20px]"
+                  className="absolute bottom-0 right-0 border-b-4 border-r-4 border-text-primary rounded-br-[20px]"
                   style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
                 />
 
                 {/* Scanning line */}
                 <div
                   ref={scanLineRef}
-                  className="absolute left-6 right-6 h-[3px] bg-white rounded-full top-6"
+                  className="absolute left-6 right-6 h-[3px] bg-text-primary rounded-full top-6"
                   style={{ boxShadow: '0 0 12px rgba(255,255,255,1)', willChange: 'transform' }}
                 />
 
                 {/* Scanned result toast */}
                 {result && (
-                  <div className="absolute top-[110%] -left-2.5 -right-2.5 rounded-2xl overflow-hidden backdrop-blur-xl bg-white/80">
+                  <div className="absolute top-[110%] -left-2.5 -right-2.5 rounded-2xl overflow-hidden backdrop-blur-xl bg-text-primary/80">
                     <div className="px-5 py-3.5 text-center">
                       <p className="text-sm font-medium text-text-primary truncate">
                         {result.length > 40 ? `${result.substring(0, 40)}…` : result}
@@ -357,23 +357,23 @@ export default function ScanPage() {
           {/* Bottom actions */}
           <div ref={bottomRef} className="relative z-10 rounded-t-3xl overflow-hidden">
             <div className="flex flex-col items-center pt-8 pb-[max(2rem,calc(env(safe-area-inset-bottom,0px)+2rem))]">
-              <p className="text-white/80 text-[15px] font-medium text-center mb-7">
+              <p className="text-text-primary/80 text-[15px] font-medium text-center mb-7">
                 Align QR code within the frame to scan
               </p>
 
               <div className="flex justify-center gap-14">
                 {/* Gallery */}
                 <button onClick={handleGalleryPress} className="flex flex-col items-center gap-2.5 group">
-                  <div className="w-[60px] h-[60px] rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform">
+                  <div className="w-[60px] h-[60px] rounded-full bg-text-primary/30 backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform">
                     <Image src="/svg/gallery.svg" alt="Gallery" width={24} height={24} />
                   </div>
-                  <span className="text-white text-[13px] font-medium">Gallery</span>
+                  <span className="text-text-primary text-[13px] font-medium">Gallery</span>
                 </button>
 
                 {/* Flash */}
                 {/* {flashSupported && ( */}
                   <button onClick={toggleFlash} className="flex flex-col items-center gap-2.5 group">
-                    <div className={`w-[60px] h-[60px] rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform ${flashOnState ? 'bg-primary-light' : 'bg-white/30'}`}>
+                    <div className={`w-[60px] h-[60px] rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform ${flashOnState ? 'bg-primary-light' : 'bg-text-primary/30'}`}>
                       <Image 
                         src={flashOnState ? '/svg/thunder-on.svg' : '/svg/thunder-off.svg'} 
                         alt="Flash" 
@@ -381,7 +381,7 @@ export default function ScanPage() {
                         height={22} 
                       />
                     </div>
-                    <span className="text-white text-[13px] font-medium">
+                    <span className="text-text-primary text-[13px] font-medium">
                       {flashOnState ? 'Flash On' : 'Flash Off'}
                     </span>
                   </button>

@@ -17,12 +17,18 @@ declare global {
   }
 }
 
+function shareApp() {
+  if (typeof window !== "undefined" && (window as unknown as { AndroidApp?: { share: (text: string) => void } }).AndroidApp) {
+    (window as unknown as { AndroidApp: { share: (text: string) => void } }).AndroidApp.share("Check this app https://instacard-pwa.vercel.app");
+  }
+}
+
 function StatusBadge({ status }: { status: Transaction['status'] }) {
   const config = {
     success: {
       icon: CheckCircle2,
       label: 'Successful',
-      bg: 'bg-success/10',
+      bg: 'bg-success/10',  
       text: 'text-success',
       border: 'border-success/20',
     },
@@ -174,7 +180,8 @@ export default function TransactionReceipt({ transactionId }: TransactionReceipt
             <Button
               variant="primary"
               fullWidth
-              onClick={handleShare}
+              // onClick={handleShare}
+              onClick={shareApp}
             >
               <span className="flex items-center justify-center gap-2">
                 <Share2 className="w-4 h-4" />

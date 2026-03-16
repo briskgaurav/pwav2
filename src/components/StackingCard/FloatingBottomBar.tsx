@@ -76,7 +76,7 @@ export function FloatingBottomBar({
             aria-label="Add Gift Card"
           >
             <LucideGift className='w-5 h-5 text-text-primary mb-1' />
-            <span className="text-sm">Add Gift Card</span>
+            <span className="text-sm">Claim Gift Card</span>
           </Link>
         )}
         <div className='bg-primary  flex items-center justify-center gap-5 px-1 py-1 rounded-full'>

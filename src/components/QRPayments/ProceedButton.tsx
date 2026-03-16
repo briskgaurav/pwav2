@@ -42,7 +42,7 @@ export function ProceedButton({ amount, onPress }: ProceedButtonProps) {
       type="button"
       onClick={handlePress}
       disabled={isDisabled}
-      className="w-full py-3.5 bg-primary rounded-[25px] text-white font-medium text-base disabled:cursor-not-allowed active:scale-[0.97] transition-transform"
+      className="w-full py-3.5 bg-primary rounded-[25px] text-text-on-primary font-medium text-base disabled:cursor-not-allowed active:scale-[0.97] transition-transform"
     >
       Proceed
     </button>

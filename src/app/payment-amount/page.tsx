@@ -90,7 +90,7 @@ export default function PaymentAmountPage() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-background">
       <ProfileSection
         name={RECIPIENT.name}
         phone={RECIPIENT.phone}
@@ -102,7 +102,7 @@ export default function PaymentAmountPage() {
 
       <MessageInput value={message} onChangeText={setMessage} />
 
-      <div className="px-6 py-4">
+      <div className="px-6 text-text-primary py-4">
         <ProceedButton amount={amount} onPress={handleProceed} />
       </div>
 
@@ -123,7 +123,7 @@ export default function PaymentAmountPage() {
       />
 
       {pinVisible && (
-        <div className="fixed inset-0 z-50 bg-white">
+        <div className="fixed inset-0 z-50 bg-background">
           <CardPinAuth
             title="Enter PIN to Pay"
             cardImageSrc={CARD_IMAGES[selectedBank?.cardType ?? 'debit'] ?? CARD_IMAGES.debit}
