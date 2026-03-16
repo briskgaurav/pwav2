@@ -109,7 +109,8 @@ export function ProfileContent({
           <MenuRow
             icon={<User className="w-5 h-5 text-primary" />}
             label={t('profile.profileSettings')}
-            onPress={() => { }}
+            onPress={() => { router.push('/underdev') }}
+            
             isRTL={isRTL}
           />
           <LanguageDropdown
