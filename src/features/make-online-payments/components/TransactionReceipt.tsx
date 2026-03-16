@@ -9,6 +9,14 @@ import { useRouter } from 'next/navigation'
 import { Share2, Download, AlertTriangle, CheckCircle2, Clock, XCircle } from 'lucide-react'
 import { haptic } from '@/lib/useHaptics'
 
+declare global {
+  interface Window {
+    AndroidShare?: {
+      share: (text: string) => void
+    }
+  }
+}
+
 function StatusBadge({ status }: { status: Transaction['status'] }) {
   const config = {
     success: {
@@ -86,6 +94,13 @@ export default function TransactionReceipt({ transactionId }: TransactionReceipt
 
   const handleShare = async () => {
     haptic('medium')
+
+    const shareText = `Transaction Receipt\n${transaction.merchantName} - ${transaction.isDebit ? '-' : '+'}N ${transaction.amount} (${transaction.status})\n${window.location.href}`
+
+    if (typeof window !== "undefined" && window.AndroidShare) {
+      window.AndroidShare.share(shareText)
+      return
+    }
 
     const shareData = {
       title: 'Transaction Receipt',
