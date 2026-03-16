@@ -6,7 +6,7 @@ import { haptic } from '@/lib/useHaptics'
 import { Button } from './button'
 import { ChevronDown } from 'lucide-react'
 import DatePickerModal from './DatePickerModal'
-import { ICONS } from '@/constants/icons'
+import { StatementsIcon } from '@/constants/icons'
 
 type StatementOption = {
   id: 'mini' | 'custom'
@@ -114,7 +114,7 @@ export default function EmailStatements() {
       <div className='p-5 border border-border rounded-2xl'>
         <div className='flex items-center gap-2 mb-5'>
           <div className='w-6 h-6 flex items-center justify-center '>
-            <Image src={ICONS.emailStatements} alt='Email Statement' width={20} height={20} className='object-contain size-full' />
+           <StatementsIcon />
           </div>
           <p className='text-text-primary text-md font-medium'>Email Statements</p>
         </div>

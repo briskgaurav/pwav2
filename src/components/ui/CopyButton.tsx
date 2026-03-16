@@ -102,9 +102,9 @@ export default function CopyButton({ value, size = 'md', className = '' }: CopyB
     >
       <div ref={iconRef} className={sizeClasses}>
         {copied ? (
-          <Check className={`w-full h-full text-text-primary ${isDarkMode ? 'invert' : ''}`} />
+          <Check className={`w-full h-full text-text-primary ${isDarkMode ? 'text-[#fff]' : ''}`} />
         ) : (
-          <Copy className={`w-full h-full text-text-primary ${isDarkMode ? 'invert' : ''}`} />
+          <Copy className={`w-full h-full text-text-primary ${isDarkMode ? 'text-[#fff]' : ''}`} />
         )}
       </div>
     </button>

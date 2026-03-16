@@ -18,6 +18,7 @@ import CardActionTiles from './CardActionTiles'
 import { useManageCardActions } from '../hooks/useManageCardActions'
 import { useManagingCard } from '@/hooks/useManagingCard'
 import { useAuth } from '@/lib/auth-context'
+import { shareText } from '@/lib/fetchDataFromKotlin'
 
 export default function ManageGiftCardScreen() {
   const searchParams = useSearchParams()
@@ -54,16 +55,22 @@ export default function ManageGiftCardScreen() {
             <div className='flex items-center flex-col z-10 justify-center gap-5 py-6'>
               <div className='flex items-center gap-2'>
                 <p className='text-orange text-xl font-bold'>DS73488QDJ738</p>
-                <CopyButton value="DS73488QDJ738" size="sm" />
+                <CopyButton value="DS73488QDJ738" size="sm" className='' />
               </div>
 
               <div className='flex items-center gap-4'>
-                <div className='h-fit py-4 px-4 flex items-center gap-2 border border-primary rounded-full'>
+                <button
+                  onClick={() => shareText({
+                    title: 'Instacard Gift Card',
+                    text: `🎁 Instacard Gift Card\n\nCode: DS73488QDJ738\n\nRedeem your gift card on Instacard!`,
+                  })}
+                  className='h-fit py-4 px-4 flex items-center gap-2 border border-primary rounded-full cursor-pointer'
+                >
                   <span className='w-5 h-5 block'>
                             <Image className='object-contain h-full w-full' src={ICONS.share} alt="Share" width={20} height={20} />
                   </span>
                   <p className={` text-xs font-medium ${isDarkMode ? 'text-white' : 'text-text-primary'}`}>Share Gift Card</p>
-                </div>
+                </button>
                 <div className='h-fit py-4 px-4 flex items-center gap-2 border border-primary rounded-full'>
                   <span className='w-5 h-5 block'>
                             <Image className={`object-contain h-full ${isDarkMode ? 'brightness-0' : ''} w-full`} src={ICONS.mail} alt="Download" width={20} height={20} />

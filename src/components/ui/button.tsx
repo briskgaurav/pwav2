@@ -24,7 +24,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       primary: 'bg-primary text-[#fff] hover:bg-primary/90',
       secondary: 'bg-gray-100 dark:bg-gray-800 text-text-primary hover:bg-gray-200 dark:hover:bg-gray-700',
       ghost: 'bg-transparent text-primary hover:bg-primary/10',
-      error: 'bg-error text-white hover:bg-error/90',
+      error: 'bg-error text-[#fff] hover:bg-error/90',
     };
 
     const sizeClasses: Record<string, string> = {

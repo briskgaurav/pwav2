@@ -154,7 +154,7 @@ export default function SigmaCardOptionsScreen() {
                     <Link
                         href={routes.faceVerification}
                         onClick={handleNextClick}
-                        className={`bg-primary p-4 text-center text-white flex items-center justify-center rounded-full w-full ${!selectedCard || !consentChecked ? 'opacity-50' : ''
+                        className={`bg-primary p-4 text-center text-[#fff] flex items-center justify-center rounded-full w-full ${!selectedCard || !consentChecked ? 'opacity-50' : ''
                             }`}
                     >
                         Next

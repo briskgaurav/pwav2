@@ -25,7 +25,7 @@ export default function HomePage() {
       <div className="shrink-0 flex items-center justify-center h-full relative z-10">
         <button
           onClick={handleClick}
-          className="bg-primary text-white text-base font-medium px-8 py-4 rounded-full transition-transform active:scale-95"
+          className="bg-primary text-[#fff] text-base font-medium px-8 py-4 rounded-full transition-transform active:scale-95"
         >
           Go to Instacard
         </button>

@@ -99,7 +99,7 @@ export default function FaceVerificationScreen() {
         <button
           onClick={handleCapture}
           disabled={isVerifying }
-          className={`bg-primary p-4 text-center text-white flex items-center justify-center rounded-full w-full font-medium text-base transition-all ${isVerifying ? 'opacity-100 brightness-75 cursor-not-allowed' : ''}`}
+          className={`bg-primary p-4 text-center text-[#fff] flex items-center justify-center rounded-full w-full font-medium text-base transition-all ${isVerifying ? 'opacity-100 brightness-75 cursor-not-allowed' : ''}`}
         >
           {isVerifying ? 'Verifying...' : 'Capture'}
         </button>

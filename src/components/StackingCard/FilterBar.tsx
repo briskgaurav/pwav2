@@ -140,7 +140,7 @@ export function FilterBar({
                 setSortDropdownOpen((prev) => !prev);
                 setFilterDropdownOpen(false);
               }}
-              className="inline-flex items-center justify-center rounded-full border px-3 py-2 text-sm transition active:scale-95 border-primary bg-primary/5 text-primary hover:bg-black/5/60"
+              className="inline-flex items-center justify-center rounded-full border px-3 py-2 text-sm transition active:scale-95 border-border bg-white text-[#fff] hover:bg-black/5/60"
             >
               <currentSort.Icon className="w-4 h-4" />
             </button>
@@ -298,7 +298,7 @@ function FilterDropdown({
                 <span className="text-text-primary">{option.label}</span>
                 <span
                   className={`flex h-5 w-5 items-center justify-center rounded-md border text-[10px] ${isSelected
-                    ? 'bg-primary border-primary text-white'
+                    ? 'bg-primary border-primary text-[#fff]'
                     : 'border-text-primary text-transparent'
                     }`}
                 >

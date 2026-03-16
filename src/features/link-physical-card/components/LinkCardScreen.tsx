@@ -65,7 +65,7 @@ export default function LinkCardScreen() {
 
                     </div>
                     <div className=" w-full p-4 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] pt-2">
-                        <Link href={routes.addUniversalVerifyMobile} className='bg-primary p-4 text-center text-white flex items-center justify-center  rounded-full w-full'>
+                        <Link href={routes.addUniversalVerifyMobile} className='bg-primary p-4 text-center text-[#fff] flex items-center justify-center  rounded-full w-full'>
                             Apply Now
                         </Link>
                     </div>
