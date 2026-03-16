@@ -5,11 +5,12 @@ import { notifyUserCancelled } from '@/lib/bridge'
 import PinSetupForm from '@/features/pin/components/PinSetupForm'
 import PinSuccessPopup from '@/features/pin/components/PinSuccessPopup'
 import { useManagingCard } from '@/hooks/useManagingCard'
+import { useRouter } from 'next/navigation'
 
 export default function PinChangeSetupPage() {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
   const { changePin } = useManagingCard()
-
+  const router = useRouter()
   const handleSubmit = async (pin: string) => {
     await new Promise((resolve) => setTimeout(resolve, 1500))
     changePin(pin)
@@ -18,6 +19,7 @@ export default function PinChangeSetupPage() {
 
   const handlePopupClose = () => {
     setShowSuccessPopup(false)
+    router.push('/instacard')
     notifyUserCancelled()
   }
 

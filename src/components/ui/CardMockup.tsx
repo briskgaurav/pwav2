@@ -1,7 +1,7 @@
 import { useAuth } from '@/lib/auth-context'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 import { BlockUnblockIcon, ICONS, LimitationsIcon, PinIcon } from '@/constants/icons'
 
 type CardMockupProps = {
@@ -21,19 +21,46 @@ export default function CardMockup({
 
 }: CardMockupProps) {
     const { isDarkMode } = useAuth()
-    return (
-        <div className='relative'>
-            {isclickable ? <Link href={'/make-online-payments'} className="flex relative items-center pt-5 justify-center">
-                <Image src={imageSrc} alt="Debit Card Front" width={340} height={215} className="w-full h-auto object-contain" />
+    const [isImageLoading, setIsImageLoading] = useState(true)
+
+    const renderCardImage = () => (
+        <div className="relative w-full" style={{ aspectRatio: '340/215' }}>
+            {isImageLoading && (
+                <div className="absolute inset-0 flex items-center justify-center  rounded-lg">
+                    <div className="flex gap-1">
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                    </div>
+                </div>
+            )}
+            <Image
+                src={imageSrc}
+                alt="Debit Card Front"
+                width={340}
+                height={215}
+                className={`w-full h-full object-contain transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
+                onLoad={() => setIsImageLoading(false)}
+            />
+            {!isImageLoading && (
                 <p className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#fff] ${numberSize} w-full text-center select-none`}>
                     {maskedNumber}
                 </p>
-            </Link> : <div className="flex relative items-center pt-5 justify-center">
-                <Image src={imageSrc} alt="Debit Card Front" width={340} height={215} className="w-full h-auto object-contain" />
-                <p className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white ${numberSize} w-full text-center select-none`}>
-                    {maskedNumber}
-                </p>
-            </div>}
+            )}
+        </div>
+    )
+
+    return (
+        <div className='relative'>
+            {isclickable ? (
+                <Link href={'/make-online-payments'} className="flex relative items-center pt-5 justify-center">
+                    {renderCardImage()}
+                </Link>
+            ) : (
+                <div className="flex relative items-center pt-5 justify-center">
+                    {renderCardImage()}
+                </div>
+            )}
             {isclickable && <p className='text-text-primary text-center text-xs mt-2'><span className='font-medium'>Tap</span> to make online payments</p>}
             {
                 showActions && (

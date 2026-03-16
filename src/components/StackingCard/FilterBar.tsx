@@ -140,9 +140,9 @@ export function FilterBar({
                 setSortDropdownOpen((prev) => !prev);
                 setFilterDropdownOpen(false);
               }}
-              className="inline-flex items-center justify-center rounded-full border px-3 py-2 text-sm transition active:scale-95 border-border bg-white text-[#fff] hover:bg-black/5/60"
+              className="inline-flex items-center justify-center rounded-full border px-3 py-2 text-sm transition active:scale-95 border-border bg-white p-2 hover:bg-black/5/60"
             >
-              <currentSort.Icon className="w-4 h-4" />
+              <currentSort.Icon className="w-4 h-4 text-text-primary" />
             </button>
           </div>
         </div>

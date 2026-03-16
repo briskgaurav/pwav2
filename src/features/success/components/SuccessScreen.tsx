@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SheetContainer, Button } from '@/components/ui';
 import { notifyNavigation } from '@/lib/bridge';
 import Image from 'next/image';
@@ -32,6 +32,7 @@ export default function SuccessScreen({
 }: SuccessScreenProps = {}) {
 
   const isCustom = Boolean(onButtonClick);
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   useEffect(() => {
     notifyNavigation('success');
@@ -78,13 +79,23 @@ export default function SuccessScreen({
               <p className="text-[15px] pl-4 text-text-primary w-full text-left leading-normal m-0">
                 Your Instacard is Ready for Activation.
               </p>
-              <div className="mt-2 w-full  aspect-[1.58] rounded-2xl p-2 flex flex-col justify-between ">
+              <div className="mt-2 w-full  aspect-[1.58] rounded-2xl p-2 flex flex-col justify-center items-center relative">
+                {isImageLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg">
+                    <div className="flex items-center justify-center gap-1">
+                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                    </div>
+                  </div>
+                )}
                 <Image
                   src={imageSrc || '/img/frontside.png'}
                   alt="Debit Card"
                   width={1000}
                   height={1000}
-                  className="h-full w-full object-contain rounded-2xl"
+                  className={`h-full w-full object-contain rounded-2xl transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
+                  onLoad={() => setIsImageLoading(false)}
                 />
                 {/* <p className="text-sm text-text-secondary mt-2">
                   {maskedNumber}
@@ -104,4 +115,3 @@ export default function SuccessScreen({
     </div>
   );
 }
-
