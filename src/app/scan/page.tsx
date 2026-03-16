@@ -25,8 +25,10 @@ export default function ScanPage() {
   const streamRef = useRef<MediaStream | null>(null)
   const hasScanned = useRef(false)
   const scanRafRef = useRef<number>(0)
+  const isMountedRef = useRef(true)
 
-  const [permission, setPermission] = useState<'prompt' | 'granted' | 'denied' | 'loading'>('loading')
+  const [cameraError, setCameraError] = useState<string | null>(null)
+  const [permissionDenied, setPermissionDenied] = useState(false)
   const [flashOn, setFlashOn] = useState(false)
   const [flashSupported, setFlashSupported] = useState(false)
   const [result, setResult] = useState<string | null>(null)
@@ -41,24 +43,57 @@ export default function ScanPage() {
 
   const startCamera = useCallback(async () => {
     try {
+      setCameraError(null)
+      setPermissionDenied(false)
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setCameraError('Camera is not supported on this device or browser. Please use a modern browser with HTTPS.')
+        return
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
         audio: false,
       })
+      
+      // Check if component is still mounted before proceeding
+      if (!isMountedRef.current) {
+        stream.getTracks().forEach(track => track.stop())
+        return
+      }
+      
       streamRef.current = stream
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream
-        await videoRef.current.play()
+        try {
+          await videoRef.current.play()
+        } catch (playError) {
+          // Ignore AbortError as it happens when component unmounts during play
+          if (playError instanceof DOMException && playError.name === 'AbortError') {
+            console.log('Video play was aborted (component likely unmounted)')
+            return
+          }
+          throw playError
+        }
       }
 
       const track = stream.getVideoTracks()[0]
       const caps = track.getCapabilities?.() as Record<string, unknown> | undefined
       if (caps && 'torch' in caps) setFlashSupported(true)
-
-      setPermission('granted')
-    } catch {
-      setPermission('denied')
+    } catch (error) {
+      // Don't set error state if component unmounted
+      if (!isMountedRef.current) return
+      
+      console.error('Error accessing camera:', error)
+      if (error instanceof DOMException && (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError')) {
+        setPermissionDenied(true)
+        setCameraError('Camera permission denied. Please allow camera access to continue.')
+      } else if (error instanceof DOMException && error.name === 'NotFoundError') {
+        setCameraError('No camera found on this device.')
+      } else {
+        setCameraError('Unable to access camera. Please check your device settings.')
+      }
     }
   }, [])
 
@@ -120,18 +155,26 @@ export default function ScanPage() {
     router.back()
   }, [stopCamera, router])
 
+  const handleRequestPermission = useCallback(() => {
+    startCamera()
+  }, [startCamera])
+
   // --- Camera init & cleanup ---
   useEffect(() => {
+    isMountedRef.current = true
     startCamera()
-    return () => stopCamera()
+    return () => {
+      isMountedRef.current = false
+      stopCamera()
+    }
   }, [startCamera, stopCamera])
 
   // --- QR code detection loop ---
   useEffect(() => {
-    if (permission !== 'granted') return
+    if (cameraError) return
 
     const scan = () => {
-      if (!videoRef.current || !canvasRef.current || hasScanned.current) return
+      if (!videoRef.current || !canvasRef.current || hasScanned.current || !isMountedRef.current) return
 
       const video = videoRef.current
       const canvas = canvasRef.current
@@ -148,7 +191,7 @@ export default function ScanPage() {
       if ('BarcodeDetector' in window) {
         const detector = new (window as unknown as { BarcodeDetector: new (opts: { formats: string[] }) => { detect: (source: HTMLCanvasElement) => Promise<{ rawValue: string }[]> } }).BarcodeDetector({ formats: ['qr_code'] })
         detector.detect(canvas).then((barcodes) => {
-          if (barcodes.length > 0 && !hasScanned.current) {
+          if (barcodes.length > 0 && !hasScanned.current && isMountedRef.current) {
             hasScanned.current = true
             setResult(barcodes[0].rawValue)
             if ('vibrate' in navigator) navigator.vibrate([50, 30, 50])
@@ -162,11 +205,11 @@ export default function ScanPage() {
 
     scanRafRef.current = requestAnimationFrame(scan)
     return () => cancelAnimationFrame(scanRafRef.current)
-  }, [permission, router])
+  }, [cameraError, router])
 
   // --- GSAP animations ---
   useEffect(() => {
-    if (permission !== 'granted') return
+    if (cameraError) return
 
     const ctx = gsap.context(() => {
       // Entrance: fade in the overlay + bottom section
@@ -216,143 +259,138 @@ export default function ScanPage() {
     })
 
     return () => ctx.revert()
-  }, [permission])
-
-  // --- Permission: loading ---
-  if (permission === 'loading') {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-black rounded-t-3xl">
-        <p className="text-white/70 text-base">Loading camera…</p>
-      </div>
-    )
-  }
-
-  // --- Permission: denied ---
-  if (permission === 'denied') {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center bg-black rounded-t-3xl px-8 gap-6">
-        <h2 className="text-white text-2xl font-semibold text-center">Camera Access Required</h2>
-        <p className="text-white/70 text-base text-center leading-relaxed">
-          Please allow camera access to scan QR codes for payments.
-        </p>
-        <button onClick={startCamera} className="bg-primary py-4 px-10 rounded-2xl">
-          <span className="text-white font-semibold">Grant Permission</span>
-        </button>
-        <button onClick={handleClose} className="p-3">
-          <span className="text-white/60 text-sm">Go Back</span>
-        </button>
-      </div>
-    )
-  }
+  }, [cameraError])
 
   // --- Main scanner UI ---
   return (
     <div className="flex-1 flex flex-col bg-black relative overflow-hidden">
-      {/* Camera feed */}
-      <video
-        ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover border-0 outline-none"
-        style={{ border: 'none' }}
-        playsInline
-        muted
-        autoPlay
-      />
-
-      {/* Hidden canvas for QR detection */}
-      <canvas ref={canvasRef} className="hidden" />
-
-      {/* Dark overlay with scanner cutout */}
-      <div ref={overlayRef} className="absolute inset-0 bg-black/40 z-1" />
-
-    
-
-      {/* Scanner frame area */}
-      <div className="flex-1 relative z-10 flex items-center justify-center pb-[10%]">
-        {/* Breathing wrapper */}
-        <div
-          ref={scannerBoxRef}
-          className="p-5 bg-white/10 rounded-3xl"
-          style={{ willChange: 'transform' }}
-        >
-          <div className="relative" style={{ width: SCANNER_SIZE, height: SCANNER_SIZE }}>
-            {/* Corner brackets */}
-            <div
-              ref={cornerTLRef}
-              className="absolute top-0 left-0 border-t-4 border-l-4 border-white rounded-tl-[20px]"
-              style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
-            />
-            <div
-              ref={cornerTRRef}
-              className="absolute top-0 right-0 border-t-4 border-r-4 border-white rounded-tr-[20px]"
-              style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
-            />
-            <div
-              ref={cornerBLRef}
-              className="absolute bottom-0 left-0 border-b-4 border-l-4 border-white rounded-bl-[20px]"
-              style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
-            />
-            <div
-              ref={cornerBRRef}
-              className="absolute bottom-0 right-0 border-b-4 border-r-4 border-white rounded-br-[20px]"
-              style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
-            />
-
-            {/* Scanning line */}
-            <div
-              ref={scanLineRef}
-              className="absolute left-6 right-6 h-[3px] bg-white rounded-full top-6"
-              style={{ boxShadow: '0 0 12px rgba(255,255,255,1)', willChange: 'transform' }}
-            />
-
-            {/* Scanned result toast */}
-            {result && (
-              <div className="absolute top-[110%] -left-2.5 -right-2.5 rounded-2xl overflow-hidden backdrop-blur-xl bg-white/80">
-                <div className="px-5 py-3.5 text-center">
-                  <p className="text-sm font-medium text-text-primary truncate">
-                    {result.length > 40 ? `${result.substring(0, 40)}…` : result}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom actions */}
-      <div ref={bottomRef} className="relative z-10 rounded-t-3xl overflow-hidden">
-        <div className="flex flex-col items-center pt-8 pb-[max(2rem,calc(env(safe-area-inset-bottom,0px)+2rem))]">
-          <p className="text-white/80 text-[15px] font-medium text-center mb-7">
-            Align QR code within the frame to scan
+      {/* Camera feed or error state */}
+      {cameraError ? (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black px-8 gap-6">
+          <h2 className="text-white text-2xl font-semibold text-center">Camera Access Required</h2>
+          <p className="text-white/70 text-base text-center leading-relaxed">
+            {cameraError}
           </p>
-
-          <div className="flex justify-center gap-14">
-            {/* Gallery */}
-            <button onClick={handleGalleryPress} className="flex flex-col items-center gap-2.5 group">
-              <div className="w-[60px] h-[60px] rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform">
-                <Image src="/svg/gallery.svg" alt="Gallery" width={24} height={24} />
-              </div>
-              <span className="text-white text-[13px] font-medium">Gallery</span>
+          {permissionDenied && (
+            <button 
+              onClick={handleRequestPermission} 
+              className="bg-primary py-4 px-10 rounded-2xl"
+            >
+              <span className="text-white font-semibold">Grant Camera Permission</span>
             </button>
-
-            {/* Flash */}
-            {/* {flashSupported && ( */}
-              <button onClick={toggleFlash} className="flex flex-col items-center gap-2.5 group">
-                <div className={`w-[60px] h-[60px] rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform ${flashOn ? 'bg-primary-light' : 'bg-white/30'}`}>
-                  <Image 
-                    src={flashOn ? '/svg/thunder-on.svg' : '/svg/thunder-off.svg'} 
-                    alt="Flash" 
-                    width={16} 
-                    height={22} 
-                  />
-                </div>
-                <span className="text-white text-[13px] font-medium">
-                  {flashOn ? 'Flash On' : 'Flash Off'}
-                </span>
-              </button>
-            {/* )} */}
-          </div>
+          )}
+          <button onClick={handleClose} className="p-3">
+            <span className="text-white/60 text-sm">Go Back</span>
+          </button>
         </div>
-      </div>
+      ) : (
+        <>
+          <video
+            ref={videoRef}
+            className="absolute inset-0 w-full h-full object-cover border-0 outline-none"
+            style={{ border: 'none' }}
+            playsInline
+            muted
+            autoPlay
+          />
+
+          {/* Hidden canvas for QR detection */}
+          <canvas ref={canvasRef} className="hidden" />
+
+          {/* Dark overlay with scanner cutout */}
+          <div ref={overlayRef} className="absolute inset-0 bg-black/40 z-1" />
+
+        
+
+          {/* Scanner frame area */}
+          <div className="flex-1 relative z-10 flex items-center justify-center pb-[10%]">
+            {/* Breathing wrapper */}
+            <div
+              ref={scannerBoxRef}
+              className="p-5 bg-white/10 rounded-3xl"
+              style={{ willChange: 'transform' }}
+            >
+              <div className="relative" style={{ width: SCANNER_SIZE, height: SCANNER_SIZE }}>
+                {/* Corner brackets */}
+                <div
+                  ref={cornerTLRef}
+                  className="absolute top-0 left-0 border-t-4 border-l-4 border-white rounded-tl-[20px]"
+                  style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
+                />
+                <div
+                  ref={cornerTRRef}
+                  className="absolute top-0 right-0 border-t-4 border-r-4 border-white rounded-tr-[20px]"
+                  style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
+                />
+                <div
+                  ref={cornerBLRef}
+                  className="absolute bottom-0 left-0 border-b-4 border-l-4 border-white rounded-bl-[20px]"
+                  style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
+                />
+                <div
+                  ref={cornerBRRef}
+                  className="absolute bottom-0 right-0 border-b-4 border-r-4 border-white rounded-br-[20px]"
+                  style={{ width: CORNER_SIZE, height: CORNER_SIZE }}
+                />
+
+                {/* Scanning line */}
+                <div
+                  ref={scanLineRef}
+                  className="absolute left-6 right-6 h-[3px] bg-white rounded-full top-6"
+                  style={{ boxShadow: '0 0 12px rgba(255,255,255,1)', willChange: 'transform' }}
+                />
+
+                {/* Scanned result toast */}
+                {result && (
+                  <div className="absolute top-[110%] -left-2.5 -right-2.5 rounded-2xl overflow-hidden backdrop-blur-xl bg-white/80">
+                    <div className="px-5 py-3.5 text-center">
+                      <p className="text-sm font-medium text-text-primary truncate">
+                        {result.length > 40 ? `${result.substring(0, 40)}…` : result}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom actions */}
+          <div ref={bottomRef} className="relative z-10 rounded-t-3xl overflow-hidden">
+            <div className="flex flex-col items-center pt-8 pb-[max(2rem,calc(env(safe-area-inset-bottom,0px)+2rem))]">
+              <p className="text-white/80 text-[15px] font-medium text-center mb-7">
+                Align QR code within the frame to scan
+              </p>
+
+              <div className="flex justify-center gap-14">
+                {/* Gallery */}
+                <button onClick={handleGalleryPress} className="flex flex-col items-center gap-2.5 group">
+                  <div className="w-[60px] h-[60px] rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform">
+                    <Image src="/svg/gallery.svg" alt="Gallery" width={24} height={24} />
+                  </div>
+                  <span className="text-white text-[13px] font-medium">Gallery</span>
+                </button>
+
+                {/* Flash */}
+                {/* {flashSupported && ( */}
+                  <button onClick={toggleFlash} className="flex flex-col items-center gap-2.5 group">
+                    <div className={`w-[60px] h-[60px] rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform ${flashOn ? 'bg-primary-light' : 'bg-white/30'}`}>
+                      <Image 
+                        src={flashOn ? '/svg/thunder-on.svg' : '/svg/thunder-off.svg'} 
+                        alt="Flash" 
+                        width={16} 
+                        height={22} 
+                      />
+                    </div>
+                    <span className="text-white text-[13px] font-medium">
+                      {flashOn ? 'Flash On' : 'Flash Off'}
+                    </span>
+                  </button>
+                {/* )} */}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
