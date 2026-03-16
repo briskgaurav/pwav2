@@ -102,7 +102,12 @@ const OtpInput: React.FC<OtpInputProps> = ({
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               autoFocus={showAutoFocus && index === 0 && autoFocus}
-              style={{ width: boxSize, height: boxSize }}
+              style={{ 
+                width: boxSize, 
+                height: boxSize,
+                fontSize: '16px',
+                touchAction: 'manipulation',
+              }}
               className='rounded-lg border border-text-primary text-center text-md leading-none font-semibold text-text-primary bg-white focus:outline-none! focus:ring-0! focus:ring-primary'
             />
           )
@@ -130,4 +135,3 @@ const OtpInput: React.FC<OtpInputProps> = ({
 }
 
 export default OtpInput
-
