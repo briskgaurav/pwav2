@@ -9,6 +9,21 @@ import { routes } from '@/lib/routes'
 const SCANNER_SIZE = 240
 const CORNER_SIZE = 45
 
+// Flash control functions for Android WebView
+function flashOn() {
+  if (typeof window !== "undefined" && (window as unknown as { AndroidFlash?: { flashOn: () => void } }).AndroidFlash) {
+    (window as unknown as { AndroidFlash: { flashOn: () => void } }).AndroidFlash.flashOn();
+  } else {
+    console.log("Flash API not available");
+  }
+}
+
+function flashOff() {
+  if (typeof window !== "undefined" && (window as unknown as { AndroidFlash?: { flashOff: () => void } }).AndroidFlash) {
+    (window as unknown as { AndroidFlash: { flashOff: () => void } }).AndroidFlash.flashOff();
+  }
+}
+
 export default function ScanPage() {
   const router = useRouter()
 
@@ -29,7 +44,7 @@ export default function ScanPage() {
 
   const [cameraError, setCameraError] = useState<string | null>(null)
   const [permissionDenied, setPermissionDenied] = useState(false)
-  const [flashOn, setFlashOn] = useState(false)
+  const [flashOnState, setFlashOnState] = useState(false)
   const [flashSupported, setFlashSupported] = useState(false)
   const [result, setResult] = useState<string | null>(null)
 
@@ -39,7 +54,12 @@ export default function ScanPage() {
       streamRef.current = null
     }
     cancelAnimationFrame(scanRafRef.current)
-  }, [])
+    // Turn off flash when stopping camera
+    if (flashOnState) {
+      flashOff()
+      setFlashOnState(false)
+    }
+  }, [flashOnState])
 
   const startCamera = useCallback(async () => {
     try {
@@ -78,9 +98,15 @@ export default function ScanPage() {
         }
       }
 
-      const track = stream.getVideoTracks()[0]
-      const caps = track.getCapabilities?.() as Record<string, unknown> | undefined
-      if (caps && 'torch' in caps) setFlashSupported(true)
+      // Check if AndroidFlash is available
+      if (typeof window !== "undefined" && (window as unknown as { AndroidFlash?: unknown }).AndroidFlash) {
+        setFlashSupported(true)
+      } else {
+        // Fallback: check native torch capability
+        const track = stream.getVideoTracks()[0]
+        const caps = track.getCapabilities?.() as Record<string, unknown> | undefined
+        if (caps && 'torch' in caps) setFlashSupported(true)
+      }
     } catch (error) {
       // Don't set error state if component unmounted
       if (!isMountedRef.current) return
@@ -97,41 +123,15 @@ export default function ScanPage() {
     }
   }, [])
 
-  const toggleFlash = useCallback(async () => {
-    if (!streamRef.current) return
-    const track = streamRef.current.getVideoTracks()[0]
-    if (!track) return
-    
-    const newFlashState = !flashOn
-    try {
-      // Use ImageCapture API for torch control on supported devices
-      if ('ImageCapture' in window) {
-        const imageCapture = new (window as unknown as { ImageCapture: new (track: MediaStreamTrack) => { getPhotoCapabilities: () => Promise<{ fillLightMode?: string[] }>; setOptions: (opts: { fillLightMode: string }) => Promise<void> } }).ImageCapture(track)
-        const capabilities = await imageCapture.getPhotoCapabilities()
-        if (capabilities.fillLightMode?.includes('flash')) {
-          await imageCapture.setOptions({ fillLightMode: newFlashState ? 'flash' : 'off' })
-          setFlashOn(newFlashState)
-          return
-        }
-      }
-      
-      // Fallback to applyConstraints with torch
-      await track.applyConstraints({ 
-        advanced: [{ torch: newFlashState } as MediaTrackConstraintSet] 
-      })
-      setFlashOn(newFlashState)
-    } catch (err) {
-      console.error('Flash toggle failed:', err)
-      // Try alternative method
-      try {
-        const constraints = { torch: newFlashState } as MediaTrackConstraintSet
-        await track.applyConstraints(constraints)
-        setFlashOn(newFlashState)
-      } catch {
-        /* flash not available */
-      }
+  const toggleFlash = useCallback(() => {
+    const newFlashState = !flashOnState
+    if (newFlashState) {
+      flashOn()
+    } else {
+      flashOff()
     }
-  }, [flashOn])
+    setFlashOnState(newFlashState)
+  }, [flashOnState])
 
   const handleGalleryPress = useCallback(() => {
     const input = document.createElement('input')
@@ -373,16 +373,16 @@ export default function ScanPage() {
                 {/* Flash */}
                 {/* {flashSupported && ( */}
                   <button onClick={toggleFlash} className="flex flex-col items-center gap-2.5 group">
-                    <div className={`w-[60px] h-[60px] rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform ${flashOn ? 'bg-primary-light' : 'bg-white/30'}`}>
+                    <div className={`w-[60px] h-[60px] rounded-full backdrop-blur-sm flex items-center justify-center group-active:scale-90 transition-transform ${flashOnState ? 'bg-primary-light' : 'bg-white/30'}`}>
                       <Image 
-                        src={flashOn ? '/svg/thunder-on.svg' : '/svg/thunder-off.svg'} 
+                        src={flashOnState ? '/svg/thunder-on.svg' : '/svg/thunder-off.svg'} 
                         alt="Flash" 
                         width={16} 
                         height={22} 
                       />
                     </div>
                     <span className="text-white text-[13px] font-medium">
-                      {flashOn ? 'Flash On' : 'Flash Off'}
+                      {flashOnState ? 'Flash On' : 'Flash Off'}
                     </span>
                   </button>
                 {/* )} */}

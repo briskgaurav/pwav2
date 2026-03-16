@@ -60,7 +60,7 @@ export default function AddCreditScreen() {
                 className="text-blue"
                 href="https://www.accessbankplc.com/credit-cards-terms.aspx"
               >
-                https://www.accessbankplc.com/credit-cards-terms.aspx
+                https://demo-link.apx
               </Link>
             </div>
 

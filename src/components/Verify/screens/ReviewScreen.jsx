@@ -4,7 +4,7 @@ import VerifyButton from '../components/VerifyButton';
 
 export default function ReviewScreen({ imageData, onRetake, onContinue }) {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="h-fit bg-white flex flex-col">
       {/* Header */}
       <div className="flex-shrink-0 p-6 flex items-center justify-between">
         <button
@@ -17,12 +17,12 @@ export default function ReviewScreen({ imageData, onRetake, onContinue }) {
           </svg>
         </button>
         <h1 className="text-lg font-semibold text-black">Review Photo</h1>
-        <div className="w-10" /> {/* Spacer for centering */}
+        {/* <div className="w-10" /> Spacer for centerin */}
       </div>
 
       {/* Photo preview */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-6">
-        <div className="relative w-full max-w-sm aspect-[3/4] bg-gray-100 rounded-3xl overflow-hidden shadow-lg">
+      <div className="flex flex-col items-center justify-center px-6 pb-6">
+        <div className="relative w-full max-w-sm h-[45vh] bg-gray-100 rounded-3xl overflow-hidden shadow-lg">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageData}

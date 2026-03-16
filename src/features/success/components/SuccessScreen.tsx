@@ -80,7 +80,7 @@ export default function SuccessScreen({
               </p>
               <div className="mt-2 w-full  aspect-[1.58] rounded-2xl p-2 flex flex-col justify-between ">
                 <Image
-                  src={imageSrc || ''}
+                  src={imageSrc || '/img/frontside.png'}
                   alt="Debit Card"
                   width={1000}
                   height={1000}

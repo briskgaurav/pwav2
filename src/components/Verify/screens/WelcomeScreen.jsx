@@ -4,9 +4,9 @@ import VerifyButton from '../components/VerifyButton';
 
 export default function WelcomeScreen({ onStart }) {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="h-[85vh] bg-white flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="flex-shrink-0 p-6">
+      <div className=" p-4">
         <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center">
           <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
@@ -20,12 +20,12 @@ export default function WelcomeScreen({ onStart }) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-12">
+      <div className="my-auto flex flex-col items-center justify-center px-6 overflow-auto">
         {/* Illustration */}
-        <div className="w-48 h-48 mb-8 relative">
+        <div className="w-36 h-36 mb-6 relative flex-shrink-0">
           <div className="absolute inset-0 bg-gray-100 rounded-full" />
-          <div className="absolute inset-4 bg-gray-200 rounded-full flex items-center justify-center">
-            <svg className="w-20 h-20 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="absolute inset-3 bg-gray-200 rounded-full flex items-center justify-center">
+            <svg className="w-16 h-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -35,8 +35,8 @@ export default function WelcomeScreen({ onStart }) {
             </svg>
           </div>
           {/* Camera icon */}
-          <div className="absolute bottom-2 right-2 w-12 h-12 bg-black rounded-full flex items-center justify-center">
-            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="absolute bottom-1 right-1 w-10 h-10 bg-black rounded-full flex items-center justify-center">
+            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -54,15 +54,15 @@ export default function WelcomeScreen({ onStart }) {
         </div>
 
         {/* Text */}
-        <h1 className="text-2xl font-bold text-black text-center mb-3">
+        <h1 className="text-xl font-bold text-black text-center mb-2">
           Verify Your Identity
         </h1>
-        <p className="text-gray-500 text-center max-w-xs mb-8">
+        <p className="text-gray-500 text-center text-sm max-w-xs mb-6">
           We need to take a quick photo to confirm it&apos;s really you. This helps keep your account secure.
         </p>
 
         {/* Requirements */}
-        <div className="w-full max-w-xs space-y-3 mb-8">
+        <div className="w-full max-w-xs space-y-2 mb-4">
           <div className="flex items-center gap-3 text-sm">
             <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
               <svg className="w-3.5 h-3.5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -92,11 +92,11 @@ export default function WelcomeScreen({ onStart }) {
       </div>
 
       {/* Footer */}
-      <div className="flex-shrink-0 p-6 pb-8">
+      <div className="flex-shrink-0 p-4 pb-[calc(env(safe-area-inset-bottom,16px)+16px)]">
         <VerifyButton onClick={onStart} fullWidth size="lg">
           Start Verification
         </VerifyButton>
-        <p className="text-xs text-gray-400 text-center mt-4">
+        <p className="text-xs text-gray-400 text-center mt-3">
           Your photo will be used only for verification purposes
         </p>
       </div>

@@ -345,8 +345,8 @@ export function BankActionsDrawer({
           <div>
             <p className="text-xs text-text-secondary uppercase tracking-wider">Select Bank</p>
           </div>
-          <p className="text-xs  text-text-primary">Pay
-            <span className="line-through font-bold ml-1"> N</span>{formatAmountWithCommas(amount)}
+          <p className="text-sm  text-text-primary">Pay
+            <span className="line-through font-bold ml-1">N</span>{formatAmountWithCommas(amount)}
           </p>
 
         </div>
