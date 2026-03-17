@@ -21,12 +21,19 @@
 
     export type CardImageId = 1 | 2 | 3 | 4 | 5;
 
+    // export const CARD_IMAGE_PATHS: Record<CardImageId, string> = {
+    //   1: '/img/cards/debit.png',
+    //   2: '/img/cards/credit.png',
+    //   3: '/img/cards/prepaid.png',
+    //   4: '/img/cards/gift.png',
+    //   5: '/img/cards/Universal1.png',
+    // };
     export const CARD_IMAGE_PATHS: Record<CardImageId, string> = {
-      1: '/img/cards/debit.png',
-      2: '/img/cards/credit.png',
-      3: '/img/cards/prepaid.png',
-      4: '/img/cards/gift.png',
-      5: '/img/cards/universal.png',
+      1: '/img/cards/DebitCard.png',
+      2: '/img/cards/Credit1.png',
+      3: '/img/cards/prepaid1.png',
+      4: '/img/cards/Gift1.png',
+      5: '/img/cards/Universal1.png',
     };
 
     /** All supported card types */

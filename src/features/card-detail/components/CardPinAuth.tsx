@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { SheetContainer, OTPInput, OTPKeypad, Button } from '@/components/ui'
+import { SheetContainer, OTPInput, OTPKeypad, Button, CardMockup } from '@/components/ui'
 import Image from 'next/image'
 import { useCardStore } from '@/store/useCardStore'
 import { PIN_LENGTH } from '@/lib/types'
@@ -64,7 +64,7 @@ export default function CardPinAuth({
     }
   }, [pin, handleContinue]);
 
-  
+
 
   return (
     <SheetContainer>
@@ -73,31 +73,16 @@ export default function CardPinAuth({
           <p className="text-md text-center text-text-primary">
             {title}
           </p>
+          <div className='w-[70%] mx-auto'>
 
-          <div className="h-auto w-[70%] relative">
-            {isImageLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-transparent rounded-lg">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
-                </div>
-              </div>
-            )}
-            <Image
-              src={cardImageSrc}
-              alt="Instacard"
-              width={1000}
-              height={1000}
-              className={`h-full w-full object-contain ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
-              priority
-              onLoad={() => setIsImageLoading(false)}
+            <CardMockup
+              imageSrc={cardImageSrc || '/img/cards/DebitCard.png'}
+              maskedNumber={maskedNumber}
+              isclickable={false}
+              showActions={false}
+              showNumber={true}
+              
             />
-            {!isImageLoading && (
-              <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#fff] text-xl w-full text-center select-none">
-                {maskedNumber}
-              </p>
-            )}
           </div>
 
           <div className="flex w-full flex-col items-center gap-4">

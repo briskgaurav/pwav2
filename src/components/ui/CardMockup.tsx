@@ -10,6 +10,7 @@ type CardMockupProps = {
     maskedNumber?: string
     showActions?: boolean
     numberSize?: string
+    showNumber?: boolean
 }
 
 export default function CardMockup({
@@ -18,13 +19,13 @@ export default function CardMockup({
     maskedNumber = '0000 0000 0000 0000',
     showActions = false,
     numberSize = 'text-2xl',
-
+    showNumber = true,
 }: CardMockupProps) {
     const { isDarkMode } = useAuth()
     const [isImageLoading, setIsImageLoading] = useState(true)
 
     const renderCardImage = () => (
-        <div className="relative w-full" style={{ aspectRatio: '340/215' }}>
+        <div className="relative w-full rounded-[5vw]  overflow-hidden" >
             {isImageLoading && (
                 <div className="absolute inset-0 flex items-center justify-center  rounded-lg">
                     <div className="flex gap-1">
@@ -39,10 +40,10 @@ export default function CardMockup({
                 alt="Debit Card Front"
                 width={340}
                 height={215}
-                className={`w-full h-full object-contain transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
+                className={`w-full h-full object-contain  transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
                 onLoad={() => setIsImageLoading(false)}
             />
-            {!isImageLoading && (
+            {!isImageLoading && showNumber && (
                 <p className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#fff] ${numberSize} w-full text-center select-none`}>
                     {maskedNumber}
                 </p>

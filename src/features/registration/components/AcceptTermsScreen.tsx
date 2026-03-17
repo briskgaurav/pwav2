@@ -38,15 +38,15 @@ export default function AcceptTermsScreen() {
           </div>
 
           <h2 className="text-xl font-semibold text-text-primary text-center">
-            Confirm Your Bank Details
+           Authorize Your Details
           </h2>
           <p className="text-sm text-text-secondary mt-2 mb-6 text-center">
-            Please review your bank details below and authorize Instacard to use this information.
+            These details will be saved in your Instacard account for future use.
           </p>
 
           {/* Bank Details Card */}
           <div className="bg-white/60 backdrop-blur-xl rounded-2xl border border-border p-4 space-y-4 mb-6">
-            <div className="flex items-center gap-3">
+            {/* <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <Building2 className="w-5 h-5 text-primary" />
               </div>
@@ -54,16 +54,16 @@ export default function AcceptTermsScreen() {
                 <p className="text-xs text-text-secondary">Bank Name</p>
                 <p className="text-sm font-medium text-text-primary">{bankDetails.bankName}</p>
               </div>
-            </div>
+            </div> */}
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+              {/* <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <User className="w-5 h-5 text-primary" />
               </div>
               <div className="flex-1">
                 <p className="text-xs text-text-secondary">Account Name</p>
                 <p className="text-sm font-medium text-text-primary">{bankDetails.accountName}</p>
-              </div>
+              </div> */}
             </div>
 
             <div className="flex items-center gap-3">

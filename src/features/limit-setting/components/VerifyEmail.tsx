@@ -4,10 +4,13 @@ import { useState, useEffect, useRef } from 'react';
 import { SheetContainer, Button, OTPKeypad, OtpInput } from '@/components/ui';
 import { notifyNavigation, notifyUserCancelled } from '@/lib/bridge';
 import gsap from 'gsap';
+import { routes } from '@/lib/routes';
+import { useRouter } from 'next/navigation';
 
 const MAX_CODE_LENGTH = 6;
 
 export default function VerifyEmailScreen() {
+    const router = useRouter();
     const [code, setCode] = useState('');
     const [isVerifying, setIsVerifying] = useState(false);
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
@@ -73,7 +76,7 @@ export default function VerifyEmailScreen() {
             delay: 0.1,
             onComplete: () => {
                 setShowSuccessPopup(false);
-                // router.push(routes.limitSetting);
+                router.push(routes.instacard);
                 notifyUserCancelled()
             },
         });
