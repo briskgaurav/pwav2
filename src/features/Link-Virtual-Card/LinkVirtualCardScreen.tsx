@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import CardPinAuth from '@/features/card-detail/components/CardPinAuth'
 import VerificationCodeScreen from '@/features/verification/components/VerificationCodeScreen'
 import SuccessScreen from '@/features/success/components/SuccessScreen'
-import { SheetContainer } from '@/components/ui'
+import { CardMockup, SheetContainer } from '@/components/ui'
 import { routes } from '@/lib/routes'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -82,7 +82,7 @@ export default function LinkVirtualCardScreen() {
 
   if (step === 'selectCard') {
     return (
-      <div className='h-screen flex flex-col'>
+      <div className='h-screen flex flex-col overflow-hidden'>
         <SheetContainer>
           <div className="flex-1 flex-col flex justify-start items-center overflow-auto pt-10 space-y-4 p-6">
             {unlinkedVirtualCards.length === 0 && linkedVirtualCards.length === 0 ? (
@@ -90,11 +90,17 @@ export default function LinkVirtualCardScreen() {
             ) : (
               <>
                 <p className="font-medium text-sm">Link this Virtual Instacard to a Universal Instacard</p>
-                <div className='h-auto w-full relative '>
-                  <Image src={imageSrc || ''} alt='Credit Card' width={1000} height={1000} className='h-full w-full object-contain' />
-                  <p className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-2xl w-full text-center'>{maskedNumber}</p>
-                </div>
+                <div className='-mt-5'>
 
+                  <CardMockup
+                    imageSrc={imageSrc || ''}
+                    maskedNumber={maskedNumber}
+                    isclickable={false}
+                    showActions={false}
+                    showNumber={true}
+                  />
+
+                </div>
 
 
                 <p className='mt-4 text-sm'>You have following Universal Instacard available for linking to this Virtual Card issued by <strong>FCMB.</strong></p>
@@ -178,7 +184,7 @@ export default function LinkVirtualCardScreen() {
               </>
             )}
           </div>
-          <div className=" w-full p-4 space-y-2 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] ">
+          <div className=" w-full p-4 space-y-2 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] flex-shrink-0">
             {/* {unlinkedVirtualCards.length > 0 && ( */}
             <Link
               href="#"

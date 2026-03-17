@@ -57,9 +57,9 @@ export default function SigmaCardOptionsScreen() {
     }
 
     return (
-        <div className='h-screen flex flex-col'>
+        <div className='h-screen flex flex-col overflow-hidden'>
             <SheetContainer>
-                <div className="flex-1 flex-col flex  justify-start items-center overflow-auto pt-10 pb-[50%] space-y-4  p-6">
+                <div className="flex-1 flex-col flex justify-start items-center overflow-auto pt-10 pb-48 space-y-4 p-6">
                     <p className="font-medium text-sm">Link this Virtual Instacard to a Universal Instacard</p>
                     <div className='h-auto w-full relative '>
                         <Image src='/img/creditcard.png' alt='Credit Card' width={1000} height={1000} className='h-full w-full object-contain' />
@@ -150,9 +150,10 @@ export default function SigmaCardOptionsScreen() {
 
 
                 </div>
-                <div className=" w-full p-4 space-y-2 absolute bottom-0 left-0 right-0 bg-background pb-[calc(env(safe-area-inset-bottom,24px)+24px)] ">
+                <div className="w-full p-4 space-y-2 absolute bottom-0 left-0 right-0 bg-background pb-[calc(env(safe-area-inset-bottom,24px)+24px)]">
                     <Link
-                        href={routes.faceVerification}
+                        // href={routes.faceVerification}
+                        href={routes.bvnVerification}
                         onClick={handleNextClick}
                         className={`bg-primary p-4 text-center text-[#fff] flex items-center justify-center rounded-full w-full ${!selectedCard || !consentChecked ? 'opacity-50' : ''
                             }`}
@@ -161,7 +162,7 @@ export default function SigmaCardOptionsScreen() {
                     </Link>
                     <button
                         onClick={() => setShowAddCardModal(true)}
-                        className={`border-primary border  p-4  gap-2 text-center text-text-primary flex items-center justify-center rounded-full w-full `}
+                        className={`border-primary border p-4 gap-2 text-center text-text-primary flex items-center justify-center rounded-full w-full`}
                     >
                         <PlusIcon /> <p>
                             Add New Universal Instacard

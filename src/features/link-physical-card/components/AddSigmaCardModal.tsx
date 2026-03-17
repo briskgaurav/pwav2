@@ -199,7 +199,7 @@ export default function AddSigmaCardModal({ visible, onClose, onSubmit }: AddSig
                                 height={30}
                                 className="object-contain h-full w-auto"
                             />
-                              <Image onClick={() => router.push(routes.addUniversalFaceVerification)} src={ICONS.scan} alt='scan' width={40} height={24} className={`object-contain h-5 w-auto ${isDarkMode ? '' : 'invert'}`} />
+                              {/* <Image onClick={() => router.push(routes.addUniversalFaceVerification)} src={ICONS.scan} alt='scan' width={40} height={24} className={`object-contain h-5 w-auto ${isDarkMode ? '' : 'invert'}`} /> */}
                         </div>
                     </div>
 

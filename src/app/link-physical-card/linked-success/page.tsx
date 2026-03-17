@@ -1,5 +1,5 @@
 'use client'
-import { Button, SheetContainer } from '@/components/ui'
+import { Button, CardMockup, SheetContainer } from '@/components/ui'
 import { notifyCardAdded, notifyNavigation } from '@/lib/bridge';
 import Image from 'next/image'
 import React, { useEffect, useRef } from 'react'
@@ -46,22 +46,16 @@ export default function LinkedSuccessPage() {
       <SheetContainer>
         <div className='flex-1 w-full flex flex-col justify-between items-center overflow-auto pt-10 space-y-4 p-6'>
           <p className='text-sm text-text-secondary'>This Instacard has been successfully linked to your Universal Card</p>
-          <div className='h-auto w-full relative'>
-            <Image
-              src={linkedVirtualCard ? CARD_IMAGE_PATHS[linkedVirtualCard.imageId] : '/img/creditcard.png'}
-              alt='Credit Card'
-              width={1000}
-              height={1000}
-              className='h-full w-full object-contain'
-              priority
-            />
-            <p className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#fff] text-2xl w-full text-center select-none'>
-              {linkedVirtualCard
-                ? `**** **** **** ${linkedVirtualCard.cardNumber.slice(-4)}`
-                : '0000 0000 0000 0000'
-              }
-            </p>
-          </div>
+        <CardMockup 
+        imageSrc={linkedVirtualCard ? CARD_IMAGE_PATHS[linkedVirtualCard.imageId] : '/img/creditcard.png'}
+        maskedNumber={linkedVirtualCard
+          ? `**** **** **** ${linkedVirtualCard.cardNumber.slice(-4)}`
+          : '0000 0000 0000 0000'
+        }
+        isclickable={false}
+        showActions={false}
+        showNumber={true}
+        />
 
           <div className="w-full flex-1 flex relative flex-col items-center justify-center animate-scale-in">
             <Image
