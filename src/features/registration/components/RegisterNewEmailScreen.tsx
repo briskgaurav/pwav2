@@ -52,9 +52,9 @@ export default function RegisterNewEmailScreen() {
 
   if (step === 'success') {
     return (
-      <div className="h-screen flex flex-col">
+      <div className="h-fit flex flex-col">
         <SheetContainer>
-          <div className="flex-1 flex flex-col items-center justify-center p-6 py-10 gap-6 text-center">
+          <div className="flex flex-col items-center justify-center p-6 py-10 gap-6 text-center">
             {/* Success Icon with glow effect */}
             <div className="w-full flex relative flex-col items-center justify-start animate-scale-in">
               <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mb-4">
@@ -95,21 +95,21 @@ export default function RegisterNewEmailScreen() {
               </div>
             </div>
           </div>
-
           <div className="p-4 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] pt-2">
             <Button fullWidth onClick={handleFinish}>
               Go to Instacard
             </Button>
           </div>
+
         </SheetContainer>
       </div>
     )
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-fit flex flex-col">
       <SheetContainer>
-        <div className="flex-1 flex flex-col">
+        <div className="flex flex-col">
           <div className="flex flex-col justify-center px-5 py-10 text-center gap-3">
             <h2 className="text-xl font-semibold text-text-primary">
               Verify Your Email
@@ -148,7 +148,7 @@ export default function RegisterNewEmailScreen() {
             </p>
           </div>
         </div>
-        <div className="w-full mt-auto">
+        <div className="w-full fixed bottom-0 left-0 py-2">
           <OTPKeypad onKeyPress={handleKeyPress} />
         </div>
       </SheetContainer>

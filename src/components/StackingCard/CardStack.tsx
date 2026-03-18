@@ -38,7 +38,6 @@ interface CardStackProps {
   onCardChange?: (index: number) => void;
   isDrawerOpen?: boolean;
   selectedCardId?: string | null;
-  isLoading?: boolean;
 }
 
 export const CardStack = forwardRef<CardStackRef, CardStackProps>(
@@ -49,7 +48,6 @@ export const CardStack = forwardRef<CardStackRef, CardStackProps>(
       onCardChange,
       isDrawerOpen = false,
       selectedCardId = null,
-      isLoading = false,
     },
     ref
   ) {
@@ -442,19 +440,6 @@ export const CardStack = forwardRef<CardStackRef, CardStackProps>(
         applyCardTransforms,
       ]
     );
-
-    if (isLoading) {
-      return (
-        <div ref={containerRef} className="relative px-4">
-          <div className="w-full flex justify-center items-center min-h-[200px]">
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-              <span className="text-sm text-text-primary/60">Loading cards...</span>
-            </div>
-          </div>
-        </div>
-      );
-    }
 
     if (!cards.length) return null;
 

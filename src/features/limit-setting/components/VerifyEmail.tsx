@@ -6,11 +6,13 @@ import { notifyNavigation, notifyUserCancelled } from '@/lib/bridge';
 import gsap from 'gsap';
 import { routes } from '@/lib/routes';
 import { useRouter } from 'next/navigation';
+import { useUserStore } from '@/store/useUserStore';
 
 const MAX_CODE_LENGTH = 6;
 
 export default function VerifyEmailScreen() {
     const router = useRouter();
+    const maskedEmail = useUserStore((s) => s.maskedEmail);
     const [code, setCode] = useState('');
     const [isVerifying, setIsVerifying] = useState(false);
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
@@ -89,7 +91,7 @@ export default function VerifyEmailScreen() {
             {/* <Header title="Verify Phone" showBackButton onBack={handleBack} /> */}
 
             <SheetContainer>
-                <div className="flex-1 flex flex-col">
+                <div className="flex-1 flex pt-10 flex-col">
                     <div className='flex flex-col h-1/2 py-10 overflow-y-auto items-center justify-center '>
 
                         <div className="p-6 flex-1  px-5 text-center flex flex-col items-center gap-2">
@@ -100,7 +102,7 @@ export default function VerifyEmailScreen() {
                                 We have sent you a 6-digit code to your Registered Email
                             </p>
                             <p className="text-md leading-none font-semibold text-text-primary m-0">
-                                ******@gmail.com
+                                {maskedEmail}
                             </p>
                             <p className="text-[13px] text-text-primary m-0">
                                 Please check your messages and enter it here

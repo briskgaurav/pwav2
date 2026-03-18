@@ -5,18 +5,20 @@ import { useRouter } from 'next/navigation'
 import { SheetContainer, Button, RadioOption } from '@/components/ui'
 import { routes } from '@/lib/routes'
 import { Mail, Phone, Fingerprint } from 'lucide-react'
+import { useUserStore } from '@/store/useUserStore'
 
 type VerificationMethod = 'email' | 'phone' | 'bvn'
-
-const METHODS: { id: VerificationMethod; label: string; maskedValue: string; Icon: typeof Mail }[] = [
-  { id: 'email', label: 'Verify via Email', maskedValue: 'j***@example.com', Icon: Mail },
-  { id: 'phone', label: 'Verify via Phone Number', maskedValue: '+234 *** *** 4567', Icon: Phone },
-  { id: 'bvn', label: 'Verify via BVN', maskedValue: '****5678901', Icon: Fingerprint },
-]
 
 export default function VerificationMethodScreen() {
   const router = useRouter()
   const [selected, setSelected] = useState<VerificationMethod | null>(null)
+  const { maskedEmail, maskedMobile, maskedBvn } = useUserStore()
+
+  const METHODS: { id: VerificationMethod; label: string; maskedValue: string; Icon: typeof Mail }[] = [
+    { id: 'email', label: 'Verify via Email', maskedValue: maskedEmail, Icon: Mail },
+    { id: 'phone', label: 'Verify via Phone Number', maskedValue: maskedMobile, Icon: Phone },
+    // { id: 'bvn', label: 'Verify via BVN', maskedValue: maskedBvn, Icon: Fingerprint },
+  ]
 
   const handleContinue = () => {
     if (!selected) return
@@ -25,7 +27,7 @@ export default function VerificationMethodScreen() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-fit flex flex-col">
       <SheetContainer>
         <div className="flex-1 flex flex-col p-6 py-10">
           <h2 className="text-xl font-semibold text-text-primary">

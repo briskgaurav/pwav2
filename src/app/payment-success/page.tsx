@@ -6,6 +6,7 @@ import gsap from 'gsap'
 import { Check, User, AtSign, Receipt, Calendar, Share2 } from 'lucide-react'
 import { formatAmountWithCommas } from '@/lib/format-amount'
 import { sharePaymentReceipt } from '@/lib/fetchDataFromKotlin'
+import { useUserStore } from '@/store/useUserStore'
 
 function haptic(ms = 15) {
   if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(ms)
@@ -25,10 +26,11 @@ declare global {
 export default function PaymentSuccessPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { fullName, email } = useUserStore()
 
   const amount = searchParams.get('amount') ?? '0'
-  const recipientName = searchParams.get('recipientName') ?? 'Nirdesh Malik'
-  const upiId = searchParams.get('upiId') ?? 'nirdeshmalik@okaxis'
+  const recipientName = searchParams.get('recipientName') ?? fullName
+  const upiId = searchParams.get('upiId') ?? email
   const message = searchParams.get('message') ?? ''
   const transactionId = searchParams.get('transactionId') ?? `TXN${Date.now().toString().slice(-10)}`
   const date = searchParams.get('date') ?? new Date().toLocaleDateString('en-NG', {
@@ -121,7 +123,7 @@ export default function PaymentSuccessPage() {
 
   const details = [
     { icon: User, label: 'Paid To', value: recipientName },
-    { icon: AtSign, label: 'UPI ID', value: upiId, small: false },
+    { icon: AtSign, label: 'Email ID', value: email, small: false },
     { icon: Receipt, label: 'Transaction ID', value: transactionId, small: true },
     { icon: Calendar, label: 'Date & Time', value: date },
   ]

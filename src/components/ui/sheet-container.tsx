@@ -9,7 +9,7 @@ interface SheetContainerProps {
 export function SheetContainer({ children }: SheetContainerProps) {
   return (
     <div
-      className="sheet-container bg-white "
+      className="sheet-container bg-white  "
       
       style={{
         flex: 1,

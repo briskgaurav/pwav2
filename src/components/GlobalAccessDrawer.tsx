@@ -3,6 +3,7 @@
 import { ProfileDrawer } from '@/components/ProfileDrawer'
 import i18n from '@/lib/i18n'
 import { useAccessDrawerStore } from '@/store/useAccessDrawerStore'
+import { useUserStore } from '@/store/useUserStore'
 import {
   CreditCard,
   HandCoins,
@@ -52,6 +53,7 @@ export default function GlobalAccessDrawer() {
   const { t } = useTranslation()
   const selectedLang = i18n.language?.split('-')[0] ?? 'en'
   const isRTL = selectedLang === 'ar'
+  const { fullName, initials, email } = useUserStore()
 
   const handleGoBack = () => {
     close()
@@ -84,15 +86,15 @@ export default function GlobalAccessDrawer() {
           <div className="flex ml-4 items-center mt-8 mb-8">
             <div className="w-[50px] mr-2 h-[50px] rounded-xl bg-shadow flex items-center justify-center">
               <span className="text-xs font-bold text-text-on-primary">
-                N
+                {initials}
               </span>
             </div>
             <div className="flex flex-col justify-center mt-1">
 
               <p className="text-xl font-semibold leading-none text-text-primary">
-                Nirdesh Malik
+                {fullName}
               </p>
-              <p className="text-sm text-text-secondary leading-none">user@example.com</p>
+              <p className="text-sm text-text-secondary leading-none">{email}</p>
             </div>
           </div>
 

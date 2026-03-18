@@ -76,7 +76,7 @@ export default function RootLayout({
       <body className={`${helveticaNeue.className} h-dvh overflow-hidden`}>
         <AuthProvider>
           <PWAHeaderProvider>
-            <div className="flex flex-col h-dvh overflow-hidden">
+            <div className="flex flex-col h-full overflow-hidden">
               <PWAHeader />
               <RouteTitle />
               <PageSlideTransition>

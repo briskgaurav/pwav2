@@ -3,7 +3,7 @@
 import { haptic } from '@/lib/useHaptics';
 
 interface CheckboxProps {
-  label: string;
+  label: React.ReactNode;
   checked: boolean;
   onChange: (checked: boolean) => void;
   accessibilityLabel?: string;
@@ -20,7 +20,7 @@ export function Checkbox({ label, checked, onChange, accessibilityLabel }: Check
       type="button"
       role="checkbox"
       aria-checked={checked}
-      aria-label={accessibilityLabel || label}
+      aria-label={accessibilityLabel || (typeof label === 'string' ? label : undefined)}
       onClick={handleChange}
       className="btn-press flex items-start gap-[10px] bg-transparent border-none p-0 cursor-pointer text-left"
     >

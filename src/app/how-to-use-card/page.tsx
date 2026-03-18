@@ -14,6 +14,7 @@ import CardMockup from '@/components/ui/CardMockup';
 import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
 import { useManagingCard } from '@/hooks/useManagingCard';
+import { useUserStore } from '@/store/useUserStore';
 import Link from 'next/link';
 
 interface AccordionItemProps {
@@ -237,7 +238,8 @@ function HowToUseCardContent() {
     const config = CARD_TYPE_CONFIG[cardType];
     const cardActions = useMemo(() => getCardActions(cardType), [cardType]);
     const { mockupImageSrc, maskedNumber } = useManagingCard();
-    
+    const userFullName = useUserStore((s) => s.fullName);
+
     useEffect(() => {
         notifyNavigation('how-to-use-card');
     }, []);
@@ -263,7 +265,7 @@ function HowToUseCardContent() {
                 <div className="flex-1 flex flex-col overflow-auto py-10  p-6">
                     {/* Header */}
                     <div className="text-center">
-                        <p className="text-sm text-text-primary">Hello, Nirdesh Malik</p>
+                        <p className="text-sm text-text-primary">Hello, {userFullName}</p>
                         <p className="text-sm text-text-primary mt-1">Your Instacard is now ready for usage</p>
                     </div>
 

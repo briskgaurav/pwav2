@@ -41,11 +41,10 @@ export default function MakeOnlinePaymentScreen() {
 
   // Screen 3: Virtual Card Details (payment-ready)
   return (
-    <div className="h-dvh flex flex-col">
+    <div className="h-dvh flex flex-col overflow-hidden">
       <SheetContainer>
         <PullToRefresh onRefresh={refreshData}>
-
-          <div className="flex-1 overflow-y-auto pb-10">
+          <div className="h-full overflow-y-auto pb-10">
             {/* Card section */}
             <div className="px-5 pt-10">
               <VirtualCardDetails cardImageSrc={imageSrc ?? config.image} maskedNumber={maskedNumber ?? cardDetails.maskedNumber} cardNumber={cardNumber ?? cardDetails.pan} />

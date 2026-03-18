@@ -20,7 +20,7 @@ export default function ContinueOrRegisterScreen() {
 
     if (choice === 'current') {
       localStorage.setItem('kyc_email', CURRENT_EMAIL)
-      router.replace(routes.registrationVerifyExistingEmail)
+      router.replace(routes.registrationWithExistingEmailSuccess)
     } else {
       if (!newEmail.trim()) return
       localStorage.setItem('kyc_email', newEmail)
@@ -35,24 +35,24 @@ export default function ContinueOrRegisterScreen() {
   const canContinue = choice === 'current' || (choice === 'new' && isValidEmail(newEmail))
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-fit overflow-hidden flex flex-col">
       <SheetContainer>
-        <div className="flex-1 flex flex-col p-6 py-10">
+        <div className="h-full flex flex-col p-6 py-10">
           <h2 className="text-xl font-semibold text-text-primary">
-            Email Registration
+            Confirm Your Email
           </h2>
           <p className="text-sm text-text-secondary mt-2 mb-8">
             Would you like to continue with your existing email or register a new one?
           </p>
 
-          <div className="flex flex-col gap-3">
+          <div className="space-y-3">
             <RadioOption
               label={`Continue with ${CURRENT_EMAIL}`}
               selected={choice === 'current'}
               onSelect={() => setChoice('current')}
               IconComponent={Mail}
             />
-            <div className="flex flex-col">
+            <div>
               <RadioOption
                 label="Register a new Email ID"
                 selected={choice === 'new'}
@@ -60,13 +60,13 @@ export default function ContinueOrRegisterScreen() {
                 IconComponent={UserPlus}
               />
               {choice === 'new' && (
-                <div className="mt-3  animate-in slide-in-from-top-2 duration-200">
+                <div className="mt-3 animate-in slide-in-from-top-2 duration-200">
                   <input
                     type="email"
                     placeholder="Enter your email address"
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-border bg-white/60 backdrop-blur-xl text-sm text-text-primary placeholder:text-text-secondary focus:outline-none! focus:ring-0! focus:ring-primary/20 focus:border-primary transition-all"
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-white/60 backdrop-blur-xl text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-0 focus:border-primary transition-all"
                     autoFocus
                   />
                   {newEmail && !isValidEmail(newEmail) && (
@@ -78,12 +78,12 @@ export default function ContinueOrRegisterScreen() {
               )}
             </div>
           </div>
-        </div>
 
-        <div className="p-4 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] pt-2">
-          <Button fullWidth onClick={handleContinue} disabled={!canContinue}>
-            {choice === 'current' ? 'Continue to Instacard' : choice === 'new' ? 'Continue With New Email' : 'Continue'}
-          </Button>
+          <div className=" py-4 pb-[calc(env(safe-area-inset-bottom,24px)+24px)]">
+            <Button fullWidth onClick={handleContinue} disabled={!canContinue}>
+              {choice === 'current' ? 'Continue to Instacard' : choice === 'new' ? 'Continue With New Email' : 'Continue'}
+            </Button>
+          </div>
         </div>
       </SheetContainer>
     </div>

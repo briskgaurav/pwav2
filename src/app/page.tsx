@@ -21,7 +21,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-screen bg-background">
       <div className="shrink-0 flex items-center justify-center h-full relative z-10">
         <button
           onClick={handleClick}

@@ -7,17 +7,20 @@ import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
 import React, { ComponentType, useState } from 'react'
 import { LucideIcon } from 'lucide-react'
+import { useUserStore } from '@/store/useUserStore'
 
-const VERIFICATION_OPTIONS = [
-  { id: 'phone', label: '+234802**** 0955', Icon:PhoneIcon },
-  { id: 'email', label: 'nird***malik@gmail.com', Icon: MessageIcon },
-] as const
+const VERIFICATION_OPTIONS_CONFIG = (maskedMobile: string, maskedEmail: string) => [
+  { id: 'phone' as const, label: maskedMobile, Icon: PhoneIcon },
+  { id: 'email' as const, label: maskedEmail, Icon: MessageIcon },
+]
 
-type VerificationOption = (typeof VERIFICATION_OPTIONS)[number]['id']
+type VerificationOption = 'phone' | 'email'
 
 export default function page() {
   const router = useRouter()
   const [selectedOption, setSelectedOption] = useState<VerificationOption>('phone')
+  const { maskedMobile, maskedEmail } = useUserStore()
+  const VERIFICATION_OPTIONS = VERIFICATION_OPTIONS_CONFIG(maskedMobile, maskedEmail)
 
   const handleNext = () => {
     if(selectedOption === 'phone') {

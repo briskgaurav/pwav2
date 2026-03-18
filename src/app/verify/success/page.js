@@ -1,12 +1,19 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useVerifyProgress } from '@/components/Verify/VerifyProgressContext';
 import { routes } from '@/lib/routes';
 import { getFromSession, clearFromSession } from '@/components/Verify/utils/imageProcessing';
 
 export default function VerifySuccessPage() {
   const router = useRouter();
+  const { setStep } = useVerifyProgress();
+
+  // Face verification complete - show step 2 (OTP) as current
+  useEffect(() => {
+    setStep(2);
+  }, [setStep]);
 
   // Get image from session storage on initial render
   const capturedImage = useMemo(() => {
@@ -25,17 +32,17 @@ export default function VerifySuccessPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-[85vh] bg-white flex flex-col">
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6">
+      <div className="flex-1 flex pt-6 flex-col items-center  px-6">
         {/* Success animation */}
-        <div className="relative w-32 h-32 mb-8">
+        <div className="relative w-12 h-12 mb-8">
           {/* Circle */}
           <div className="absolute inset-0 bg-green-100 rounded-full" />
           {/* Check icon */}
           <div className="absolute inset-0 flex items-center justify-center">
             <svg
-              className="w-16 h-16 text-green-500"
+              className="w-7 h-7 text-green-500"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -95,7 +102,7 @@ export default function VerifySuccessPage() {
       </div>
 
       {/* Actions */}
-      <div className="flex-shrink-0 p-6 pb-8 space-y-3">
+      <div className=" p-6 pb-16 space-y-3">
         <button
           onClick={handleDone}
           className="w-full bg-black text-white font-medium py-4 px-6 rounded-full hover:bg-gray-800 transition-colors"

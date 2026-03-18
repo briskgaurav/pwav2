@@ -49,7 +49,7 @@ export default function CameraScreen({ onCapture, onBack }) {
   // Error state
   if (cameraError) {
     return (
-      <div className="h-dvh bg-black flex flex-col items-center justify-center p-6">
+      <div className="h-fit  bg-black flex flex-col items-center justify-center p-6">
         <div className="bg-white rounded-2xl p-6 max-w-sm w-full text-center">
           <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
             <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -79,7 +79,7 @@ export default function CameraScreen({ onCapture, onBack }) {
   return (
     <div className="h-fit bg-black overflow-hidden flex flex-col ">
       {/* Camera view */}
-      <div className="relative min-h-[70vh]">
+      <div className="relative min-h-[60vh]">
         <CameraView ref={videoRef} />
         <FaceGuide isValid={allPass} />
 
@@ -121,7 +121,7 @@ export default function CameraScreen({ onCapture, onBack }) {
       </div>
 
       {/* Controls */}
-        <div className="shrink-0 bg-black/80 backdrop-blur-sm mb-[30%] pt-6">
+        <div className=" bg-black/80 backdrop-blur-sm mb-[30%] pt-6">
         <div className="flex flex-col items-center">
           <CaptureButton
             onClick={handleCapture}

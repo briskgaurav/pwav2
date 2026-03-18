@@ -11,6 +11,7 @@ import { useAuth } from '@/lib/auth-context'
 import { useCardWalletStore } from '@/store/useCardWalletStore'
 import { routes } from '@/lib/routes'
 import { useCardModeStore } from '@/store/useCardModeStore'
+import { useUserStore } from '@/store/useUserStore'
 import LeftSideDrawer from '@/components/LeftSideDrawer'
 import { ProfileContent } from '@/components/ProfileDrawer/ProfileContent'
 import FloatingBottomBarLayoutClient from '@/components/StackingCard/FloatingBottomBarLayoutClient'
@@ -120,13 +121,14 @@ export default function CardsScreen() {
   }, [cardMode, router, setPendingCardForm])
 
   const { isDarkMode } = useAuth();
+  const { firstName, fullName } = useUserStore();
 
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Top controls — greeting + filters */}
       <div className="shrink-0 relative z-10">
         <GreetingBar
-          userName="Nirdesh"
+          userName={firstName}
           onSearchPress={() => { }}
           onAddPress={handleAddPress}
           mode={cardMode}
@@ -191,7 +193,7 @@ export default function CardsScreen() {
         onClose={() => setLeftDrawerVisible(false)}
       >
         <ProfileContent
-          userName="Nirdesh Malik"
+          userName={fullName}
           onClose={() => setLeftDrawerVisible(false)}
         />
       </LeftSideDrawer>

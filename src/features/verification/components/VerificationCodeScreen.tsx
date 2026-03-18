@@ -69,11 +69,11 @@ export default function VerificationCodeScreen({
 
   if (showKeypad) {
     return (
-      <div className="h-screen  flex flex-col">
+      <div className="h-screen flex  flex-col">
         <SheetContainer>
 
           {/* NEED PADDING MY INPUT BOXES NOT TAKING PADDING */}
-          <div className="flex-1 flex flex-col">
+          <div className="flex flex-col">
             <div className="flex flex-col justify-center px-5 py-10 text-center gap-3">
               <h2 className="text-xl font-semibold text-text-primary">
                 {title}
@@ -104,7 +104,7 @@ export default function VerificationCodeScreen({
               </Button>
             </div>
           </div>
-          <div className="w-full mt-auto">
+          <div className="w-full fixed bottom-0 left-0 py-2 ">
             <OTPKeypad onKeyPress={handleKeyPress} />
           </div>
         </SheetContainer>
@@ -113,11 +113,11 @@ export default function VerificationCodeScreen({
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-fit flex flex-col">
       <SheetContainer>
-        <div className="flex-1 flex flex-col">
-          <div className="flex flex-col flex-1 items-center justify-center h-full">
-            <div className="p-6 flex-1 py-10 px-5 text-center flex flex-col items-center gap-2">
+        <div className="  flex flex-col">
+          <div className="flex flex-col items-center justify-center h-full">
+            <div className="p-6 py-10 px-5 text-center flex flex-col items-center gap-2">
               <h2 className="text-xl font-semibold text-text-primary m-0">
                 {title}
               </h2>

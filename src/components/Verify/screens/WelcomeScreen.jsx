@@ -1,12 +1,13 @@
 'use client';
 
+import { User, User2 } from 'lucide-react';
 import VerifyButton from '../components/VerifyButton';
 
 export default function WelcomeScreen({ onStart }) {
   return (
     <div className="h-[85vh] bg-white flex flex-col overflow-hidden">
       {/* Header */}
-      <div className=" p-4">
+      {/* <div className=" p-4">
         <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center">
           <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
@@ -17,25 +18,18 @@ export default function WelcomeScreen({ onStart }) {
             />
           </svg>
         </div>
-      </div>
+      </div> */}
 
       {/* Content */}
-      <div className="my-auto flex flex-col items-center justify-center px-6 overflow-auto">
+      <div className="py-10 flex flex-col items-center justify-center px-6 overflow-auto">
         {/* Illustration */}
         <div className="w-36 h-36 mb-6 relative flex-shrink-0">
-          <div className="absolute inset-0 bg-gray-100 rounded-full" />
-          <div className="absolute inset-3 bg-gray-200 rounded-full flex items-center justify-center">
-            <svg className="w-16 h-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
+          <div className="absolute inset-0 bg-primary/50  rounded-full" />
+          <div className="absolute inset-3 bg-primary rounded-full flex items-center justify-center">
+           <User size={50} className='text-[#fff]' />
           </div>
           {/* Camera icon */}
-          <div className="absolute bottom-1 right-1 w-10 h-10 bg-black rounded-full flex items-center justify-center">
+          {/* <div className="absolute bottom-1 right-1 w-10 h-10 bg-black invert rounded-full flex items-center justify-center">
             <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
@@ -50,7 +44,7 @@ export default function WelcomeScreen({ onStart }) {
                 d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
               />
             </svg>
-          </div>
+          </div> */}
         </div>
 
         {/* Text */}
@@ -58,7 +52,7 @@ export default function WelcomeScreen({ onStart }) {
           Verify Your Identity
         </h1>
         <p className="text-gray-500 text-center text-sm max-w-xs mb-6">
-          We need to take a quick photo to confirm it&apos;s really you. This helps keep your account secure.
+        Take a quick photo to confirm it’s you.
         </p>
 
         {/* Requirements */}

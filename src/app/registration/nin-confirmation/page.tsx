@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { SheetContainer, Button, Checkbox } from '@/components/ui'
+import { routes } from '@/lib/routes'
 import { ShieldCheck } from 'lucide-react'
 import { useUserStore } from '@/store/useUserStore'
 import FAQModal, { type FAQData } from '@/components/modals/FAQModal'
@@ -24,7 +25,7 @@ const TERMS_DATA: FAQData = {
   ],
 }
 
-export default function AcceptTermsScreen() {
+export default function NinConfirmationScreen() {
   const router = useRouter()
   const [acceptTerms, setAcceptTerms] = useState(false)
   const [showTermsModal, setShowTermsModal] = useState(false)
@@ -32,14 +33,14 @@ export default function AcceptTermsScreen() {
 
   const handleProceed = () => {
     if (!acceptTerms) return
-    router.push('/registration/nin-confirmation')
+    router.push(routes.registrationContinueOrRegister)
   }
 
   const formFields = [
     { label: 'First Name', value: user.firstName || 'Your First Name', required: true },
     { label: 'Middle Name (Optional)', value: user.middleName || 'Your Middle Name', required: false },
     { label: 'Last Name', value: user.lastName || 'Your Last Name', required: true },
-    { label: 'BVN', value: user.maskedBvn || '', required: true },
+    { label: 'NIN', value: user.maskedBvn || '', required: true },
     { label: 'Date of Birth', value: user.maskedDob || 'Your date of birth', required: true },
     { label: 'Email', value: user.maskedEmail || 'Your Email Address', required: false },
     { label: 'Gender', value: user.gender || 'Male', required: true },
@@ -61,10 +62,10 @@ export default function AcceptTermsScreen() {
           </div>
 
           <h2 className="text-xl font-semibold text-text-primary text-center">
-            Confirm BVN Details
+            Confirm NIN Details
           </h2>
           <p className="text-sm text-text-secondary mt-2 mb-6 leading-relaxed text-center">
-          Here are your BVN details (+202374093742). <br /> Please confirm to complete KYC.
+            Here are your NIN details (00202374093742). <br /> Please confirm to complete KYC.
           </p>
 
           {/* Form Fields - Read-only prefilled appearance */}

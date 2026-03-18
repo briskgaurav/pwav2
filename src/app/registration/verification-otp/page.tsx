@@ -28,7 +28,7 @@ export default function RegistrationVerificationOtpPage() {
 
   if (step === 'success') {
     return (
-      <div className="h-screen flex flex-col">
+      <div className="h-fit flex flex-col">
         <SheetContainer>
           <div className="flex-1 flex flex-col items-center justify-center p-6 py-10 gap-6 text-center">
             <div className="w-full flex relative flex-col items-center justify-start animate-scale-in">

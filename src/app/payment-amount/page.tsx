@@ -9,12 +9,7 @@ import { NumberPad } from '@/components/QRPayments/NumberPad'
 import { ProceedButton } from '@/components/QRPayments/ProceedButton'
 import { BankActionsDrawer, type BankItem } from '@/components/QRPayments/BankActionsDrawer'
 import CardPinAuth from '@/features/card-detail/components/CardPinAuth'
-
-const RECIPIENT = {
-  name: 'Nirdesh Malik',
-  phone: '9876543210',
-  upiId: 'nirdeshmalik@okaxis',
-}
+import { useUserStore } from '@/store/useUserStore'
 
 const BANKS: BankItem[] = [
   { id: 'debit1', name: 'FCMB Bank Debit', subtitle: 'FCMB Debit Card', balance: 'N 12,450.10', cardType: 'debit' },
@@ -34,6 +29,12 @@ const CARD_IMAGES: Record<string, string> = {
 
 export default function PaymentAmountPage() {
   const router = useRouter()
+  const { fullName, mobile, email } = useUserStore()
+  const RECIPIENT = {
+    name: fullName,
+    phone: mobile,
+    upiId: email,
+  }
   const [amount, setAmount] = useState('0')
   const [message, setMessage] = useState('')
   const [bankDrawerVisible, setBankDrawerVisible] = useState(false)

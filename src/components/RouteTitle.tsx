@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 
 // Exact-path titles
 const ROUTE_TITLES: Record<string, string> = {
-  '/': 'Bank App',
+  '/': 'FCMB',
   '/instacard': 'Instacard',
 
   // Add card
@@ -33,16 +33,25 @@ const ROUTE_TITLES: Record<string, string> = {
 
   // Gift card
   '/add-a-gift-card': 'Add Gift Card',
-  '/add-a-gift-card/one-time-activation': 'Activate Gift Card',
+  '/add-a-gift-card/one-time-activation': 'One Time Activation Code',
   '/gift-a-card': 'Gift a Card',
   '/ready-to-use': 'Ready to Use',
   '/share-gift-card': 'Share Gift Card',
   '/one-time-activation': 'Activation Code',
+  '/add-a-gift-card/email-verify-gift': 'Email Verification',
 
   // Statements & repayments
   '/make-repayments': 'Make Repayments',
   '/make-repayments/verify-otp': 'Verify OTP',
   '/make-repayments/verify-otp/success': 'Repayment Successful',
+  '/verify': 'Face Verification',
+  '/verify/success': 'Face Verification Successful',
+  '/registration/verification-method': 'Choose OTP Method',
+  '/registration/verification-otp': 'OTP Verification',
+  '/registration/accept-terms': 'Confirm BVN Details',
+  '/registration/nin-confirmation': 'Confirm NIN Details',
+  '/registration/continue-or-register': 'Confirm Your Email ID',
+  '/registration/with-existing-email-success' : 'Email Verification',
 
   // Limit setting
   '/limit-setting': 'Limit Setting',

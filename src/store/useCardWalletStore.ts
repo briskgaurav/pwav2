@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { CardData, CardType, CardForm, CardImageId } from '@/components/StackingCard/cardData'
+import { useUserStore } from './useUserStore'
 
 const CARD_TYPE_TO_IMAGE: Record<CardType, CardImageId> = {
   debit: 1,
@@ -74,7 +75,7 @@ export const useCardWalletStore = create<CardWalletStore>()(
           id: generateId(),
           imageId,
           name: pickName(cardType, cards),
-          cardHolder: 'Nirdesh Malik',
+          cardHolder: useUserStore.getState().fullName,
           cardNumber: generateCardNumber(),
           pin: pendingPin ?? '0000',
           expiry: '12/28',
