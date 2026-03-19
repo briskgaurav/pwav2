@@ -23,7 +23,7 @@ export default function VerificationMethodScreen() {
   const handleContinue = () => {
     if (!selected) return
     localStorage.setItem('kyc_verification_method', selected)
-    router.push(routes.registrationVerificationOtp)
+    router.push(routes.registrationVerificationConfirm)
   }
 
   return (

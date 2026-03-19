@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { SCREENS } from '../constants';
 
 export const useVerifyFlow = (onComplete) => {
-  const [currentScreen, setCurrentScreen] = useState(SCREENS.CAMERA);
+  const [currentScreen, setCurrentScreen] = useState(SCREENS.WELCOME);
   const [capturedImage, setCapturedImage] = useState(null);
 
   const goToCamera = useCallback(() => {

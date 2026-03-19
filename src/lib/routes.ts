@@ -70,6 +70,7 @@ export const routes = {
 
   // Registration / KYC flow
   registrationVerificationMethod: '/registration/verification-method',
+  registrationVerificationConfirm: '/registration/verification-confirm',
   registrationVerificationOtp: '/registration/verification-otp',
   registrationAcceptTerms: '/registration/accept-terms',
   registrationKycSuccess: '/registration/kyc-success',

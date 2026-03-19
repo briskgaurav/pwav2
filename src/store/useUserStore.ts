@@ -84,7 +84,7 @@ const DEFAULT_PROFILE: UserProfile = {
   lastName: 'Malik',
   middleName: 'Nirdesh',
   email: 'nirdeshmalik@gmail.com',
-  mobile: '2348020000955',
+  mobile: '+2340000000000',
   bvn: '12345678901',
   address: 'Lagos, Nigeria',
   dateOfBirth: '1990-06-15',

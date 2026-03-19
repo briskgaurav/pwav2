@@ -19,6 +19,8 @@ function RegistrationKycInner({ children }: { children: React.ReactNode }) {
     // 4: Email Registration
     if (pathname.includes('/registration/verification-method')) {
       setStep(2);
+    } else if (pathname.includes('/registration/verification-confirm')) {
+      setStep(2);
     } else if (pathname.includes('/registration/verification-otp')) {
       setStep(2);
     } else if (

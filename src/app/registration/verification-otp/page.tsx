@@ -6,12 +6,14 @@ import VerificationCodeScreen from '@/features/verification/components/Verificat
 import { SheetContainer, Button } from '@/components/ui'
 import { routes } from '@/lib/routes'
 import { CheckCircle2 } from 'lucide-react'
+import { useUserStore } from '@/store/useUserStore'
 
 type VerificationMethod = 'email' | 'phone' | 'bvn'
 type Step = 'otp' | 'success'
 
 export default function RegistrationVerificationOtpPage() {
   const router = useRouter()
+  const { maskedEmail, maskedMobile, maskedBvn } = useUserStore()
   const [method, setMethod] = useState<VerificationMethod | null>(null)
   const [step, setStep] = useState<Step>('otp')
 
@@ -64,17 +66,17 @@ export default function RegistrationVerificationOtpPage() {
     case 'email':
       title = 'Verify your Email'
       subtitle = 'We have sent a 6-digit code to your registered email'
-      maskedValue = 'nird***malik@gmail.com'
+      maskedValue = maskedEmail
       break
     case 'phone':
       title = 'Verify your Phone Number'
       subtitle = 'We have sent a 6-digit code to your registered phone number'
-      maskedValue = '+234802**** 0955'
+      maskedValue = maskedMobile
       break
     case 'bvn':
       title = 'Verify your BVN'
       subtitle = 'We have sent a 6-digit code linked to your BVN'
-      maskedValue = '****5678901'
+      maskedValue = maskedBvn
       break
   }
 
@@ -89,4 +91,3 @@ export default function RegistrationVerificationOtpPage() {
     />
   )
 }
-

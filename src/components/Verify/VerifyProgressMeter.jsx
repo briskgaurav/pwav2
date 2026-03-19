@@ -23,9 +23,9 @@ export default function VerifyProgressMeter({ currentStep = 1 }) {
               <div
                 className={`h-1.5 w-full rounded-full ${
                   isCompleted
-                    ? 'bg-blue'
+                    ? 'bg-green-500'
                     : isCurrent
-                      ? 'bg-orange'
+                      ? 'bg-yellow-500'
                       : 'bg-gray-200'
                 }`}
               />
@@ -34,7 +34,7 @@ export default function VerifyProgressMeter({ currentStep = 1 }) {
                   isCompleted
                     ? 'text-blue'
                     : isCurrent
-                      ? 'text-orange'
+                      ? 'text-yellow-500'
                       : 'text-gray-400'
                 }`}
                 title={label}

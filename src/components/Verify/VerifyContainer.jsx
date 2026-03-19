@@ -48,8 +48,8 @@ export default function VerifyContainer() {
   };
 
   switch (currentScreen) {
-    // case SCREENS.WELCOME:
-    //   return <WelcomeScreen onStart={goToCamera} />;
+    case SCREENS.WELCOME:
+      return <WelcomeScreen onStart={goToCamera} />;
 
     case SCREENS.CAMERA:
       return <CameraScreen onCapture={goToReview} onBack={goBack} />;
