@@ -12,6 +12,7 @@ interface Transaction {
   paymentStatus: 'success' | 'pending' | 'failed'
 }
 
+
 // Category colors mapping
 const CATEGORY_COLORS = {
   cloud: 'bg-orange',      // Google Cloud, Amazon
