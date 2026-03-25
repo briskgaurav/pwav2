@@ -1,4 +1,4 @@
-import VerificationCodeScreen from '@/features/verification/components/VerificationCodeScreen'
+import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen'
 
 export default function EmailVerificationPage() {
   return (

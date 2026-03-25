@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui';
-import BottomSheetModal from '@/components/modals/BottomSheetModal';
+import BottomSheetModal from '@/components/screens/components/ui/BottomSheetModal';
 import AddMoneyToggle from '@/features/add-money/components/AddMoneyToggle';
 import { AddMoneyCardsSection, CardType } from '@/features/add-money/components/AddMoneyCardsSection';
 import { AddNewCardForm } from '@/features/add-money/components/AddNewCardForm';

@@ -2,7 +2,7 @@
 
 import ManageGiftCardScreen from '@/features/manage-card/components/ManageGiftCardScreen'
 import ManageCardPageWrapper from '@/features/manage-card/components/ManageCardPageWrapper'
-import FloatingBottomBarLayoutClient from '@/components/StackingCard/FloatingBottomBarLayoutClient'
+import FloatingBottomBarLayoutClient from '@/components/screens/InstacardScreens/FloatingBottomBarLayoutClient'
 
 export default function ManageGiftPage() {
   return (

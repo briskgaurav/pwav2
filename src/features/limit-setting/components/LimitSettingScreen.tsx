@@ -5,7 +5,9 @@ import { LimitationsIcon, MerchantIcon, PhoneIcon } from '@/constants/icons'
 import React from 'react'
 
 import LimitToggle from './LimitToggle'
-import { useLimitSettingStore } from '../store/useLimitSettingStore'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { setActiveTab } from '@/store/redux/slices/limitSettingSlice'
+import type { LimitTab } from '@/store/redux/slices/limitSettingSlice'
 import LimitFAQ from './LimitFAQ'
 import LimitSetComponent from './LimitSetComponent'
 import { useRouter } from 'next/navigation'
@@ -83,7 +85,9 @@ const internationalLimitItems = [
 ]
 
 export default function LimitSettingScreen() {
-  const { activeTab, setActiveTab } = useLimitSettingStore()
+  const dispatch = useAppDispatch()
+  const activeTab = useAppSelector((s) => s.limitSetting.activeTab)
+  const handleSetActiveTab = (tab: LimitTab) => dispatch(setActiveTab(tab))
   const router = useRouter()
   const limitItems = activeTab === 'domestic' ? domesticLimitItems : internationalLimitItems
 
@@ -92,7 +96,7 @@ export default function LimitSettingScreen() {
       {/* <Header title="Limit Settings" showBackButton /> */}
       <SheetContainer>
         <div className="flex-1 overflow-auto pb-10 p-4 pt-8 space-y-4">
-          <LimitToggle value={activeTab} onChange={setActiveTab} />
+          <LimitToggle value={activeTab} onChange={handleSetActiveTab} />
           <LimitFAQ />
           {limitItems.map((item, index) => (
             <LimitSetComponent

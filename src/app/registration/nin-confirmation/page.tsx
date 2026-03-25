@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'
 import { SheetContainer, Button, Checkbox } from '@/components/ui'
 import { routes } from '@/lib/routes'
 import { ShieldCheck } from 'lucide-react'
-import { useUserStore } from '@/store/useUserStore'
-import FAQModal, { type FAQData } from '@/components/modals/FAQModal'
+import { useAppSelector } from '@/store/redux/hooks'
+import FAQModal, { type FAQData } from '@/components/screens/components/ui/FAQModal'
 
 const TERMS_DATA: FAQData = {
   heading: 'Terms of Service & Privacy Policy',
@@ -29,7 +29,7 @@ export default function NinConfirmationScreen() {
   const router = useRouter()
   const [acceptTerms, setAcceptTerms] = useState(false)
   const [showTermsModal, setShowTermsModal] = useState(false)
-  const user = useUserStore()
+  const user = useAppSelector((s) => s.user)
 
   const handleProceed = () => {
     if (!acceptTerms) return

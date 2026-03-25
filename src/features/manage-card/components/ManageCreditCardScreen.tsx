@@ -1,12 +1,13 @@
 'use client'
 
-import FAQModal from '@/components/modals/FAQModal'
-import RemoveCardModal from '@/components/modals/RemoveCardModal'
+import FAQModal from '@/components/screens/components/ui/FAQModal'
+import RemoveCardModal from '@/components/screens/components/ui/RemoveCardModal'
 import ManageBtn from './ManageBtn'
 import { SheetContainer } from '@/components/ui'
 import React from 'react'
 
-import { useManageCardStore } from '../store/useManageCardStore'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { closeFaq } from '@/store/redux/slices/manageCardSlice'
 import { routes } from '@/lib/routes'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -15,6 +16,7 @@ import CardActionTiles from './CardActionTiles'
 import { useManageCardActions } from '../hooks/useManageCardActions'
 import { useManagingCard } from '@/hooks/useManagingCard'
 import { RepaymentIcon, StatementsIcon } from '@/constants/icons'
+import LayoutSheet from '@/components/screens/components/LayoutSheet'
 
 const creditCardDetails = [
   { label: 'Approved Credit Limit', value: '₦ 1,000,000' },
@@ -28,13 +30,15 @@ const creditCardDetails = [
 export default function ManageCreditCardScreen() {
   const searchParams = useSearchParams()
   const cardMode = (searchParams.get('mode') as 'virtual' | 'universal') || 'virtual'
-  const { isFaqOpen, faqData, closeFaq } = useManageCardStore()
+  const dispatch = useAppDispatch()
+  const isFaqOpen = useAppSelector((s) => s.manageCard.isFaqOpen)
+  const faqData = useAppSelector((s) => s.manageCard.faqData)
+  const handleCloseFaq = () => dispatch(closeFaq())
   const { showRemoveModal, setShowRemoveModal, handleCardActionClick, handleRemoveCard } = useManageCardActions()
   const { mockupImageSrc, maskedNumber } = useManagingCard()
 
   return (
-    <div className="h-screen flex flex-col">
-      <SheetContainer>
+    <LayoutSheet needPadding={false} routeTitle="Manage Credit Card">
         <div className="flex-1 overflow-auto pb-10 p-4 space-y-4">
           <CardMockup showActions={true} imageSrc={mockupImageSrc ?? '/img/creditcard.png'} maskedNumber={maskedNumber} />
 
@@ -70,14 +74,13 @@ export default function ManageCreditCardScreen() {
 
           <CardActionTiles cardMode={cardMode} onActionClick={handleCardActionClick} />
         </div>
-      </SheetContainer>
 
-      <FAQModal visible={isFaqOpen} onClose={closeFaq} data={faqData || undefined} />
+      <FAQModal visible={isFaqOpen} onClose={handleCloseFaq} data={faqData || undefined} />
       <RemoveCardModal
         visible={showRemoveModal}
         onClose={() => setShowRemoveModal(false)}
         onConfirm={handleRemoveCard}
       />
-    </div>
+    </LayoutSheet>
   )
 }

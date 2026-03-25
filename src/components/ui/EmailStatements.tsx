@@ -3,10 +3,10 @@
 import Image from 'next/image'
 import React, { useState } from 'react'
 import { haptic } from '@/lib/useHaptics'
-import { Button } from './button'
 import { ChevronDown } from 'lucide-react'
 import DatePickerModal from './DatePickerModal'
 import { StatementsIcon } from '@/constants/icons'
+import ButtonComponent from '../screens/components/ui/ButtonComponent'
 
 type StatementOption = {
   id: 'mini' | 'custom'
@@ -195,9 +195,8 @@ export default function EmailStatements() {
             <p className='text-green-600 text-sm text-center'>Statements sent on your registered mail address</p>
           )} */}
 
-          <Button variant='primary' size='lg' fullWidth onClick={handleSendEmail}>
-            Send to Registered Email
-          </Button>
+          <ButtonComponent title='Send to Registered Email' onClick={handleSendEmail} />
+          
         </div>
       </div>
 

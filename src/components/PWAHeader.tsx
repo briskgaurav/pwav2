@@ -5,7 +5,8 @@ import gsap from 'gsap'
 import { useIsWebView } from '@/hooks/use-is-webview'
 import { useRouter, usePathname } from 'next/navigation'
 import { usePWAHeader } from '@/lib/pwa-header-context'
-import { useAccessDrawerStore } from '@/store/useAccessDrawerStore'
+import { useAppDispatch } from '@/store/redux/hooks'
+import { openAccessDrawer } from '@/store/redux/slices/accessDrawerSlice'
 import Image from 'next/image'
 
 export default function PWAHeader() {
@@ -13,7 +14,8 @@ export default function PWAHeader() {
     const router = useRouter()
     const pathname = usePathname()
     const { title: contextTitle } = usePWAHeader()
-    const openAccessDrawer = useAccessDrawerStore((s) => s.open)
+    const dispatch = useAppDispatch()
+    const handleOpenAccessDrawer = () => dispatch(openAccessDrawer())
 
     const showMenuIcon = pathname !== '/'
     const titleRef = useRef<HTMLParagraphElement>(null)
@@ -71,7 +73,7 @@ export default function PWAHeader() {
                 </p>
 
                 <button
-                    onClick={openAccessDrawer}
+                    onClick={handleOpenAccessDrawer}
                     aria-label="Open menu"
                     className={`h-6 w-6 duration-300 transition-all ${showMenuIcon ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
                 >

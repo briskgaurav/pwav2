@@ -3,7 +3,8 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
-import { useCardWalletStore } from '@/store/useCardWalletStore'
+import { useAppDispatch } from '@/store/redux/hooks'
+import { setPendingCardForm } from '@/store/redux/slices/cardWalletSlice'
 import { SheetContainer } from '@/components/ui'
 import { ICONS } from '@/constants/icons'
 import Image from 'next/image'
@@ -12,7 +13,7 @@ import Link from 'next/link'
 
 export default function AddUniversalCardPage() {
   const router = useRouter()
-  const setPendingCardForm = useCardWalletStore((s) => s.setPendingCardForm)
+  const dispatch = useAppDispatch()
   const [cardNumber, setCardNumber] = useState('')
 
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {

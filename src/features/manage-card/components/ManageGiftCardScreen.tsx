@@ -9,9 +9,10 @@ import CardMockup from '@/components/ui/CardMockup'
 import ManageBtn from './ManageBtn'
 import { getManageBtns } from '../constants'
 import Balance from '@/components/ui/Balance'
-import RemoveCardModal from '@/components/modals/RemoveCardModal'
-import FAQModal from '@/components/modals/FAQModal'
-import { useManageCardStore } from '../store/useManageCardStore'
+import RemoveCardModal from '@/components/screens/components/ui/RemoveCardModal'
+import FAQModal from '@/components/screens/components/ui/FAQModal'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { closeFaq } from '@/store/redux/slices/manageCardSlice'
 import { useSearchParams } from 'next/navigation'
 import EyeButton from '@/components/ui/EyeButton'
 import CardActionTiles from './CardActionTiles'
@@ -24,7 +25,10 @@ export default function ManageGiftCardScreen() {
   const searchParams = useSearchParams()
   const cardMode = (searchParams.get('mode') as 'virtual' | 'universal') || 'virtual'
   const [showActivationCode, setShowActivationCode] = useState(false)
-  const { isFaqOpen, faqData, closeFaq } = useManageCardStore()
+  const dispatch = useAppDispatch()
+  const isFaqOpen = useAppSelector((s) => s.manageCard.isFaqOpen)
+  const faqData = useAppSelector((s) => s.manageCard.faqData)
+  const handleCloseFaq = () => dispatch(closeFaq())
   const { showRemoveModal, setShowRemoveModal, handleCardActionClick, handleRemoveCard } = useManageCardActions()
   const { mockupImageSrc, maskedNumber } = useManagingCard()
 
@@ -99,7 +103,7 @@ export default function ManageGiftCardScreen() {
         </div>
       </SheetContainer>
 
-      <FAQModal visible={isFaqOpen} onClose={closeFaq} data={faqData || undefined} />
+      <FAQModal visible={isFaqOpen} onClose={handleCloseFaq} data={faqData || undefined} />
       <RemoveCardModal
         visible={showRemoveModal}
         onClose={() => setShowRemoveModal(false)}

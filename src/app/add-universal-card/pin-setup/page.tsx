@@ -1,18 +1,19 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import PinSetupForm from '@/features/pin/components/PinSetupForm'
+import PinSetupForm from '@/components/screens/AuthScreens/PinSetupFormScreen'
 import { routes } from '@/lib/routes'
-import { useCardWalletStore } from '@/store/useCardWalletStore'
+import { useAppDispatch } from '@/store/redux/hooks'
+import { setPendingPin } from '@/store/redux/slices/cardWalletSlice'
 import type { CardType } from '@/lib/types'
 
 export default function UniversalPinSetupPage() {
   const router = useRouter()
-  const setPendingPin = useCardWalletStore((s) => s.setPendingPin)
+  const dispatch = useAppDispatch()
 
   const handleSubmit = async (pin: string, _cardType: CardType) => {
     await new Promise((resolve) => setTimeout(resolve, 1500))
-    setPendingPin(pin)
+    dispatch(setPendingPin(pin))
     router.push(routes.addUniversalSuccess)
   }
 

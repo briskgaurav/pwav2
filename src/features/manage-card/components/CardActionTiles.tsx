@@ -3,8 +3,10 @@
 import React from 'react'
 import Image from 'next/image'
 import FaqIconButton from '@/components/ui/FaqIconButton'
+import type { FAQData } from '@/components/screens/components/ui/FAQModal'
 import { getCardActions, type CardAction } from '../constants'
-import { useManageCardStore } from '../store/useManageCardStore'
+import { useAppDispatch } from '@/store/redux/hooks'
+import { openFaq } from '@/store/redux/slices/manageCardSlice'
 import { useAuth } from '@/lib/auth-context'
 import { useMemo } from 'react'
 
@@ -14,7 +16,8 @@ type CardActionTilesProps = {
 }
 
 export default function CardActionTiles({ cardMode = 'virtual', onActionClick }: CardActionTilesProps) {
-  const { openFaq } = useManageCardStore()
+  const dispatch = useAppDispatch()
+  const handleOpenFaq = (data: FAQData) => dispatch(openFaq(data))
   const { isDarkMode } = useAuth()
   const iconClassName = `h-full w-full object-contain ${isDarkMode ? 'invert' : ''}`
   const actions = useMemo(() => getCardActions(cardMode), [cardMode])
@@ -39,7 +42,7 @@ export default function CardActionTiles({ cardMode = 'virtual', onActionClick }:
             <FaqIconButton
               onClick={(e) => {
                 e.stopPropagation()
-                openFaq(action.faqData)
+                handleOpenFaq(action.faqData)
               }}
             />
           </div>

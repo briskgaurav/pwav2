@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { SheetContainer, Button } from '@/components/ui'
 import { routes } from '@/lib/routes'
-import { useUserStore } from '@/store/useUserStore'
+import { useAppSelector } from '@/store/redux/hooks'
 
 type VerificationMethod = 'email' | 'phone' | 'bvn'
 
@@ -21,7 +21,10 @@ const COUNTRY_CODE_LENGTH = 3 // e.g. 234
 
 export default function ConfirmVerificationDestinationScreen() {
   const router = useRouter()
-  const { email, mobile, maskedEmail, maskedMobile } = useUserStore()
+  const email = useAppSelector((s) => s.user.email)
+  const mobile = useAppSelector((s) => s.user.mobile)
+  const maskedEmail = useAppSelector((s) => s.user.maskedEmail)
+  const maskedMobile = useAppSelector((s) => s.user.maskedMobile)
   const [method, setMethod] = useState<VerificationMethod | null>(null)
   const [inputValue, setInputValue] = useState('')
   const [touched, setTouched] = useState(false)

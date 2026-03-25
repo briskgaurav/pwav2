@@ -5,14 +5,16 @@ import { useRouter } from 'next/navigation'
 import { SheetContainer, Button, RadioOption } from '@/components/ui'
 import { routes } from '@/lib/routes'
 import { Mail, Phone, Fingerprint } from 'lucide-react'
-import { useUserStore } from '@/store/useUserStore'
+import { useAppSelector } from '@/store/redux/hooks'
 
 type VerificationMethod = 'email' | 'phone' | 'bvn'
 
 export default function VerificationMethodScreen() {
   const router = useRouter()
   const [selected, setSelected] = useState<VerificationMethod | null>(null)
-  const { maskedEmail, maskedMobile, maskedBvn } = useUserStore()
+  const maskedEmail = useAppSelector((s) => s.user.maskedEmail)
+  const maskedMobile = useAppSelector((s) => s.user.maskedMobile)
+  const maskedBvn = useAppSelector((s) => s.user.maskedBvn)
 
   const METHODS: { id: VerificationMethod; label: string; maskedValue: string; Icon: typeof Mail }[] = [
     { id: 'email', label: 'Verify via Email', maskedValue: maskedEmail, Icon: Mail },

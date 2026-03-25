@@ -3,7 +3,7 @@
 import { Button, SheetContainer } from '@/components/ui'
 import CardMockup from '@/components/ui/CardMockup'
 import { useManagingCard } from '@/hooks/useManagingCard'
-import BottomSheetModal from '@/components/modals/BottomSheetModal'
+import BottomSheetModal from '@/components/screens/components/ui/BottomSheetModal'
 import AddMoneyToggle from '@/features/add-money/components/AddMoneyToggle'
 import { AddMoneyForm } from '@/features/add-money/components/AddMoneyForm'
 import { AddMoneyCardsSection, CardType } from '@/features/add-money/components/AddMoneyCardsSection'

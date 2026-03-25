@@ -1,4 +1,4 @@
-import VerificationCodeScreen from '@/features/verification/components/VerificationCodeScreen'
+import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen'
 import { routes } from '@/lib/routes'
 
 export default function EmailVerifyGiftPage() {

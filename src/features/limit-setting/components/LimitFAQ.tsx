@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import FAQModal, { FAQData } from '@/components/modals/FAQModal'
+import FAQModal, { FAQData } from '@/components/screens/components/ui/FAQModal'
 import FaqIconButton from '@/components/ui/FaqIconButton'
 
 const limitFaqData: FAQData = {

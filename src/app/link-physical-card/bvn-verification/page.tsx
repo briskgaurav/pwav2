@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
 import React, { ComponentType, useState } from 'react'
 import { LucideIcon } from 'lucide-react'
-import { useUserStore } from '@/store/useUserStore'
+import { useAppSelector } from '@/store/redux/hooks'
 
 const VERIFICATION_OPTIONS_CONFIG = (maskedMobile: string, maskedEmail: string) => [
   { id: 'phone' as const, label: maskedMobile, Icon: PhoneIcon },
@@ -19,7 +19,8 @@ type VerificationOption = 'phone' | 'email'
 export default function page() {
   const router = useRouter()
   const [selectedOption, setSelectedOption] = useState<VerificationOption>('phone')
-  const { maskedMobile, maskedEmail } = useUserStore()
+  const maskedMobile = useAppSelector((s) => s.user.maskedMobile)
+  const maskedEmail = useAppSelector((s) => s.user.maskedEmail)
   const VERIFICATION_OPTIONS = VERIFICATION_OPTIONS_CONFIG(maskedMobile, maskedEmail)
 
   const handleNext = () => {

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { FileQuestionMark, HelpCircle } from 'lucide-react'
-import FAQModal from '@/components/modals/FAQModal'
+import FAQModal from '@/components/screens/components/ui/FAQModal'
 import FaqIconButton from './FaqIconButton'
 
 type Transaction = {

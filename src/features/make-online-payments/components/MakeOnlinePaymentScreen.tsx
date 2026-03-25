@@ -2,28 +2,27 @@
 
 import React, { useEffect } from 'react'
 import { SheetContainer } from '@/components/ui'
-import CardPinAuth from '@/features/card-detail/components/CardPinAuth'
+import CardPinAuth from '@/components/screens/AuthScreens/CardPinAuth'
 import VirtualCardDetails from './VirtualCardDetails'
 import RecentTransactionsList from './RecentTransactionsList'
-import { useOnlinePaymentStore } from '../store/useOnlinePaymentStore'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { setVerified, resetSession, refreshData, setRefreshStart } from '@/store/redux/slices/onlinePaymentSlice'
 import { CARD_CONFIG } from '@/lib/card-config'
 import PullToRefresh from '@/components/ui/PullToRefresh'
 import { useManagingCard } from '@/hooks/useManagingCard'
 
 export default function MakeOnlinePaymentScreen() {
-  const isVerified = useOnlinePaymentStore((s) => s.isVerified)
-  const setVerified = useOnlinePaymentStore((s) => s.setVerified)
-  const resetSession = useOnlinePaymentStore((s) => s.resetSession)
-  const cardDetails = useOnlinePaymentStore((s) => s.cardDetails)
-  const refreshData = useOnlinePaymentStore((s) => s.refreshData)
+  const dispatch = useAppDispatch()
+  const isVerified = useAppSelector((s) => s.onlinePayment.isVerified)
+  const cardDetails = useAppSelector((s) => s.onlinePayment.cardDetails)
   const config = CARD_CONFIG[cardDetails.cardType]
   const { imageSrc, maskedNumber, cardNumber } = useManagingCard()
 
   useEffect(() => {
     return () => {
-      resetSession()
+      dispatch(resetSession())
     }
-  }, [resetSession])
+  }, [dispatch])
 
   // Screen 2: PIN Authentication
   if (!isVerified) {
@@ -33,7 +32,7 @@ export default function MakeOnlinePaymentScreen() {
           title="Enter PIN for selected Instacard"
           cardImageSrc={imageSrc ?? config.image}
           maskedNumber={maskedNumber ?? cardDetails.maskedNumber}
-          onVerified={() => setVerified(true)}
+          onVerified={() => dispatch(setVerified(true))}
         />
       </div>
     )
@@ -43,7 +42,7 @@ export default function MakeOnlinePaymentScreen() {
   return (
     <div className="h-dvh flex flex-col overflow-hidden">
       <SheetContainer>
-        <PullToRefresh onRefresh={refreshData}>
+        <PullToRefresh onRefresh={() => { dispatch(setRefreshStart()); setTimeout(() => dispatch(refreshData()), 1500) }}>
           <div className="h-full overflow-y-auto pb-10">
             {/* Card section */}
             <div className="px-5 pt-10">

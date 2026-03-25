@@ -3,16 +3,17 @@
 import { Button, SheetContainer } from '@/components/ui'
 import { notifyCardAdded, notifyNavigation } from '@/lib/bridge'
 import { routes } from '@/lib/routes'
-import { useCardWalletStore } from '@/store/useCardWalletStore'
-import { CARD_IMAGE_PATHS, type CardData } from '@/components/StackingCard/cardData'
+import { useAppDispatch, useAppSelector } from '@/store/redux/hooks'
+import { addCard, setPendingCardForm } from '@/store/redux/slices/cardWalletSlice'
+import { CARD_IMAGE_PATHS, type CardData } from '@/constants/cardData'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { ICONS, ManageCard, PhoneIcon } from '@/constants/icons'
 import { ChevronDown } from 'lucide-react'
 import FaqIconButton from '@/components/ui/FaqIconButton'
-import FAQModal from '@/components/modals/FAQModal'
-import type { FAQData } from '@/components/modals/FAQModal'
+import FAQModal from '@/components/screens/components/ui/FAQModal'
+import type { FAQData } from '@/components/screens/components/ui/FAQModal'
 import CardMockup from '@/components/ui/CardMockup'
 
 interface AccordionItemProps {
@@ -110,8 +111,9 @@ const cardActions: Array<{
 
 export default function UniversalCardSuccessPage() {
   const router = useRouter()
-  const addCard = useCardWalletStore((s) => s.addCard)
-  const setPendingCardForm = useCardWalletStore((s) => s.setPendingCardForm)
+  const dispatch = useAppDispatch()
+  const fullName = useAppSelector((s) => s.user.fullName)
+  const cards = useAppSelector((s) => s.cardWallet.cards)
   const cardAddedRef = useRef(false)
   const [createdCard, setCreatedCard] = useState<CardData | null>(null)
   const [expandedSection, setExpandedSection] = useState<string | null>('virtual')
@@ -123,16 +125,22 @@ export default function UniversalCardSuccessPage() {
 
     if (!cardAddedRef.current) {
       cardAddedRef.current = true
-      setPendingCardForm('universal')
-      const newCard = addCard('debit')
-      setCreatedCard(newCard)
+      dispatch(setPendingCardForm('universal'))
+      dispatch(addCard({ cardType: 'debit', cardHolderName: fullName }))
+    }
+  }, [dispatch, fullName])
+
+  useEffect(() => {
+    if (cardAddedRef.current && !createdCard && cards.length > 0) {
+      const lastCard = cards[cards.length - 1]
+      setCreatedCard(lastCard)
       notifyCardAdded({
-        cardId: newCard.id,
-        cardType: newCard.cardType,
-        lastFourDigits: newCard.cardNumber.slice(-4),
+        cardId: lastCard.id,
+        cardType: lastCard.cardType,
+        lastFourDigits: lastCard.cardNumber.slice(-4),
       })
     }
-  }, [addCard, setPendingCardForm])
+  }, [cards, createdCard])
 
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? null : section)

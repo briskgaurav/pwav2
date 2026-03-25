@@ -1,14 +1,15 @@
 'use client'
 
-import FAQModal from '@/components/modals/FAQModal'
-import RemoveCardModal from '@/components/modals/RemoveCardModal'
+import FAQModal from '@/components/screens/components/ui/FAQModal'
+import RemoveCardModal from '@/components/screens/components/ui/RemoveCardModal'
 import ManageBtn from './ManageBtn'
 import { SheetContainer } from '@/components/ui'
 import EyeButton from '@/components/ui/EyeButton'
 import React, { useState } from 'react'
 
 import { getManageBtns } from '../constants'
-import { useManageCardStore } from '../store/useManageCardStore'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { closeFaq } from '@/store/redux/slices/manageCardSlice'
 import { useSearchParams } from 'next/navigation'
 import CardMockup from '@/components/ui/CardMockup'
 import CardActionTiles from './CardActionTiles'
@@ -18,7 +19,10 @@ import { useManagingCard } from '@/hooks/useManagingCard'
 export default function ManagePrepaidCardScreen() {
   const searchParams = useSearchParams()
   const cardMode = (searchParams.get('mode') as 'virtual' | 'universal') || 'virtual'
-  const { isFaqOpen, faqData, closeFaq } = useManageCardStore()
+  const dispatch = useAppDispatch()
+  const isFaqOpen = useAppSelector((s) => s.manageCard.isFaqOpen)
+  const faqData = useAppSelector((s) => s.manageCard.faqData)
+  const handleCloseFaq = () => dispatch(closeFaq())
   const [showBalance, setShowBalance] = useState(false)
   const { showRemoveModal, setShowRemoveModal, handleCardActionClick, handleRemoveCard } = useManageCardActions()
   const { mockupImageSrc, maskedNumber } = useManagingCard()
@@ -59,7 +63,7 @@ export default function ManagePrepaidCardScreen() {
         </div>
       </SheetContainer>
 
-      <FAQModal visible={isFaqOpen} onClose={closeFaq} data={faqData || undefined} />
+      <FAQModal visible={isFaqOpen} onClose={handleCloseFaq} data={faqData || undefined} />
       <RemoveCardModal
         visible={showRemoveModal}
         onClose={() => setShowRemoveModal(false)}

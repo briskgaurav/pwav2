@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
-import { Button } from './button'
 import { Dropdown } from './Dropdown'
 import { routes } from '@/lib/routes'
 import { useRouter } from 'next/navigation'
 import { AddCardIcon } from '@/constants/icons'
+import ButtonComponent from '../screens/components/ui/ButtonComponent'
 
 type PaymentOption = 'full' | 'minimum' | 'other'
 
@@ -138,16 +138,7 @@ export default function MakeRepayment() {
         {renderFields('other')}
       </div>
 
-      <Button
-        onClick={() =>
-          router.push(routes.makeRepaymentsVerifyOtp)
-        }
-        variant='primary'
-        size='lg'
-        fullWidth
-      >
-        Pay Now
-      </Button>
+      <ButtonComponent title='Pay Now' onClick={() => router.push(routes.makeRepaymentsVerifyOtp)} />
     </div>
   )
 }

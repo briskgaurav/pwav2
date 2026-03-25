@@ -3,8 +3,8 @@
 import React from 'react'
 import { SheetContainer, Button } from '@/components/ui'
 import { Header } from '@/components/ui'
-import { useOnlinePaymentStore } from '../store/useOnlinePaymentStore'
-import type { Transaction } from '../store/useOnlinePaymentStore'
+import { useAppSelector } from '@/store/redux/hooks'
+import type { Transaction } from '@/store/redux/slices/onlinePaymentSlice'
 import { useRouter } from 'next/navigation'
 import { Share2, Download, AlertTriangle, CheckCircle2, Clock, XCircle } from 'lucide-react'
 import { haptic } from '@/lib/useHaptics'
@@ -62,8 +62,8 @@ type TransactionReceiptProps = {
 
 export default function TransactionReceipt({ transactionId }: TransactionReceiptProps) {
   const router = useRouter()
-  const transactions = useOnlinePaymentStore((s) => s.transactions)
-  const cardDetails = useOnlinePaymentStore((s) => s.cardDetails)
+  const transactions = useAppSelector((s) => s.onlinePayment.transactions)
+  const cardDetails = useAppSelector((s) => s.onlinePayment.cardDetails)
   const transaction = transactions.find((t) => t.id === transactionId)
 
   if (!transaction) {

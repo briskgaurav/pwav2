@@ -3,16 +3,16 @@ import { Button, CardMockup, SheetContainer } from '@/components/ui'
 import { notifyCardAdded, notifyNavigation } from '@/lib/bridge';
 import Image from 'next/image'
 import React, { useEffect, useRef } from 'react'
-import { useCardWalletStore } from '@/store/useCardWalletStore'
-import { CARD_IMAGE_PATHS } from '@/components/StackingCard/cardData'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { linkVirtualCard, setPendingLinkUniversalCardId } from '@/store/redux/slices/cardWalletSlice'
+import { CARD_IMAGE_PATHS } from '@/constants/cardData'
 import { useRouter } from 'next/navigation'
 
 export default function LinkedSuccessPage() {
-  const linkVirtualCard = useCardWalletStore((s) => s.linkVirtualCard)
-  const managingCardId = useCardWalletStore((s) => s.managingCardId)
-  const pendingLinkUniversalCardId = useCardWalletStore((s) => s.pendingLinkUniversalCardId)
-  const setPendingLinkUniversalCardId = useCardWalletStore((s) => s.setPendingLinkUniversalCardId)
-  const cards = useCardWalletStore((s) => s.cards)
+  const dispatch = useAppDispatch()
+  const managingCardId = useAppSelector((s) => s.cardWallet.managingCardId)
+  const pendingLinkUniversalCardId = useAppSelector((s) => s.cardWallet.pendingLinkUniversalCardId)
+  const cards = useAppSelector((s) => s.cardWallet.cards)
   const linkedRef = useRef(false)
   const router = useRouter()
 
@@ -26,8 +26,8 @@ export default function LinkedSuccessPage() {
   useEffect(() => {
     if (!linkedRef.current && pendingLinkUniversalCardId && managingCardId) {
       linkedRef.current = true
-      linkVirtualCard(pendingLinkUniversalCardId, managingCardId)
-      setPendingLinkUniversalCardId(null)
+      dispatch(linkVirtualCard({ universalCardId: pendingLinkUniversalCardId, virtualCardId: managingCardId }))
+      dispatch(setPendingLinkUniversalCardId(null))
     }
   }, [pendingLinkUniversalCardId, managingCardId, linkVirtualCard, setPendingLinkUniversalCardId])
 

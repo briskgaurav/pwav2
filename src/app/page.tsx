@@ -16,7 +16,7 @@ export default function HomePage() {
     if (hasSavedUser) {
       router.push(routes.instacard)
     } else {
-      router.push('/verify')
+      router.push(routes.identityRegistrationProcess)
     }
   }
 

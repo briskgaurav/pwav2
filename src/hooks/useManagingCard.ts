@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
-import { useCardWalletStore } from '@/store/useCardWalletStore'
-import { CARD_IMAGE_PATHS } from '@/components/StackingCard/cardData'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { changeCardPin as changeCardPinAction } from '@/store/redux/slices/cardWalletSlice'
+import { CARD_IMAGE_PATHS, type CardImageId } from '@/constants/cardData'
 
-/** "1234 5678 9012 3456" → "XXXX XXXX XXXX 3456" */
 export function maskCardNumber(cardNumber: string): string {
   const digits = cardNumber.replace(/\s/g, '')
   if (digits.length < 4) return cardNumber
@@ -10,33 +10,27 @@ export function maskCardNumber(cardNumber: string): string {
   return `XXXX XXXX XXXX ${last4}`
 }
 
-/**
- * Returns the currently managing card's data, image path, card number,
- * and per-card PIN helpers (verifyPin / changePin).
- * Falls back to defaults when no card is being managed.
- */
 export function useManagingCard() {
-  const managingCardId = useCardWalletStore((s) => s.managingCardId)
-  const cards = useCardWalletStore((s) => s.cards)
-  const verifyCardPin = useCardWalletStore((s) => s.verifyCardPin)
-  const changeCardPin = useCardWalletStore((s) => s.changeCardPin)
+  const dispatch = useAppDispatch()
+  const managingCardId = useAppSelector((s) => s.cardWallet.managingCardId)
+  const cards = useAppSelector((s) => s.cardWallet.cards)
 
   const card = managingCardId ? cards.find((c) => c.id === managingCardId) ?? null : null
 
   const verifyPin = useCallback(
     (pin: string) => {
       if (!card) return false
-      return verifyCardPin(card.id, pin)
+      return card.pin === pin
     },
-    [card, verifyCardPin]
+    [card]
   )
 
   const changePin = useCallback(
     (newPin: string) => {
       if (!card) return
-      changeCardPin(card.id, newPin)
+      dispatch(changeCardPinAction({ cardId: card.id, newPin }))
     },
-    [card, changeCardPin]
+    [card, dispatch]
   )
 
   if (!card) {
@@ -54,7 +48,7 @@ export function useManagingCard() {
     }
   }
 
-  const imgPath = CARD_IMAGE_PATHS[card.imageId]
+  const imgPath = CARD_IMAGE_PATHS[card.imageId as CardImageId]
 
   return {
     card,

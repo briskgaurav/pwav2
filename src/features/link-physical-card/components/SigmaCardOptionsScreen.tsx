@@ -7,7 +7,8 @@ import Link from 'next/link'
 import React, { useState, useRef, useMemo } from 'react'
 import AddSigmaCardModal from '@/features/link-physical-card/components/AddSigmaCardModal'
 import { routes } from '@/lib/routes'
-import { useCardWalletStore } from '@/store/useCardWalletStore'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { setPendingLinkUniversalCardId } from '@/store/redux/slices/cardWalletSlice'
 
 function maskCardNumber(cardNumber: string): string {
     const digits = cardNumber.replace(/\s/g, '')
@@ -16,8 +17,9 @@ function maskCardNumber(cardNumber: string): string {
 }
 
 export default function SigmaCardOptionsScreen() {
-    const allCards = useCardWalletStore((s) => s.cards)
-    const setPendingLinkUniversalCardId = useCardWalletStore((s) => s.setPendingLinkUniversalCardId)
+    const dispatch = useAppDispatch()
+    const allCards = useAppSelector((s) => s.cardWallet.cards)
+    const handleSetPendingLinkUniversalCardId = (id: string | null) => dispatch(setPendingLinkUniversalCardId(id))
     const universalCards = useMemo(
         () => allCards.filter((c) => c.cardForm === 'universal'),
         [allCards]
@@ -52,7 +54,7 @@ export default function SigmaCardOptionsScreen() {
                 setTimeout(() => setShake(false), 500)
             }
         } else {
-            setPendingLinkUniversalCardId(selectedCard)
+            handleSetPendingLinkUniversalCardId(selectedCard)
         }
     }
 

@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { notifyUserCancelled } from '@/lib/bridge'
-import PinSetupForm from '@/features/pin/components/PinSetupForm'
-import PinSuccessPopup from '@/features/pin/components/PinSuccessPopup'
+import PinSetupForm from '@/components/screens/AuthScreens/PinSetupFormScreen'
+import SuccessScreen from '@/components/screens/AuthScreens/SuccessScreen'
 import { useManagingCard } from '@/hooks/useManagingCard'
 
 export default function CreatePinPage() {
@@ -23,11 +23,12 @@ export default function CreatePinPage() {
 
   if (showSuccessPopup) {
     return (
-      <PinSuccessPopup
+      <SuccessScreen
         title="PIN Updated Successfully!"
         description="Your card PIN has been successfully updated."
         buttonText="Back to Home"
         onButtonClick={handlePopupClose}
+        showCardPreview={false}
       />
     )
   }

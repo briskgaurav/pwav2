@@ -1,5 +1,5 @@
 'use client'
-import SuccessScreen from '@/features/success/components/SuccessScreen'
+import SuccessScreen from '@/components/screens/AuthScreens/SuccessScreen'
 import { notifyUserCancelled } from '@/lib/bridge'
 import { useRouter } from 'next/navigation'
 

@@ -3,7 +3,7 @@
 import { SheetContainer } from '@/components/ui'
 import TransactionHistoryItem from '@/components/ui/TransactionHistoryItem'
 import React, { useState } from 'react'
-import CardPinAuth from '@/features/card-detail/components/CardPinAuth'
+import CardPinAuth from '@/components/screens/AuthScreens/CardPinAuth'
 import CardMockup from '@/components/ui/CardMockup'
 import { CARD_CONFIG } from '@/lib/card-config'
 import type { CardType } from '@/lib/types'

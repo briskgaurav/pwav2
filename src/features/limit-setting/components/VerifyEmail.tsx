@@ -6,13 +6,13 @@ import { notifyNavigation, notifyUserCancelled } from '@/lib/bridge';
 import gsap from 'gsap';
 import { routes } from '@/lib/routes';
 import { useRouter } from 'next/navigation';
-import { useUserStore } from '@/store/useUserStore';
+import { useAppSelector } from '@/store/redux/hooks';
 
 const MAX_CODE_LENGTH = 6;
 
 export default function VerifyEmailScreen() {
     const router = useRouter();
-    const maskedEmail = useUserStore((s) => s.maskedEmail);
+    const maskedEmail = useAppSelector((s) => s.user.maskedEmail);
     const [code, setCode] = useState('');
     const [isVerifying, setIsVerifying] = useState(false);
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);

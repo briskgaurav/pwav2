@@ -2,18 +2,20 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import VerificationCodeScreen from '@/features/verification/components/VerificationCodeScreen'
+import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen'
 import { SheetContainer, Button } from '@/components/ui'
 import { routes } from '@/lib/routes'
 import { CheckCircle2 } from 'lucide-react'
-import { useUserStore } from '@/store/useUserStore'
+import { useAppSelector } from '@/store/redux/hooks'
 
 type VerificationMethod = 'email' | 'phone' | 'bvn'
 type Step = 'otp' | 'success'
 
 export default function RegistrationVerificationOtpPage() {
   const router = useRouter()
-  const { maskedEmail, maskedMobile, maskedBvn } = useUserStore()
+  const maskedEmail = useAppSelector((s) => s.user.maskedEmail)
+  const maskedMobile = useAppSelector((s) => s.user.maskedMobile)
+  const maskedBvn = useAppSelector((s) => s.user.maskedBvn)
   const [method, setMethod] = useState<VerificationMethod | null>(null)
   const [step, setStep] = useState<Step>('otp')
 

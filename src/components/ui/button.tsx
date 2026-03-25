@@ -1,53 +1,66 @@
-'use client';
+'use client'
 
-import { ButtonHTMLAttributes, forwardRef } from 'react';
-import { haptic } from '@/lib/useHaptics';
+import React from 'react'
+import { haptic } from '@/lib/useHaptics'
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'error';
-  size?: 'sm' | 'md' | 'lg';
-  fullWidth?: boolean;
+export type ButtonVariant = 'primary' | 'secondary' | 'error'
+export type ButtonSize = 'sm' | 'md' | 'lg'
+
+export type ButtonProps = {
+  children: React.ReactNode
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
+  disabled?: boolean
+  fullWidth?: boolean
+  variant?: ButtonVariant
+  size?: ButtonSize
+  className?: string
+  type?: 'button' | 'submit' | 'reset'
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', size = 'md', fullWidth = false, disabled, children, className, onClick, ...props }, ref) => {
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (!disabled) {
-        haptic('light');
-      }
-      onClick?.(e);
-    };
+export default function Button({
+  children,
+  onClick,
+  disabled = false,
+  fullWidth = false,
+  variant = 'primary',
+  size = 'md',
+  className = '',
+  type = 'button',
+}: ButtonProps) {
+  const variantClass =
+    variant === 'primary'
+      ? 'bg-primary text-white'
+      : variant === 'error'
+        ? 'bg-error text-white'
+        : 'bg-white border border-border text-text-primary'
 
-    const baseClasses = 'inline-flex items-center justify-center rounded-full font-medium border-none transition-all duration-100 ease-out';
-    
-    const variantClasses: Record<string, string> = {
-      primary: 'bg-primary text-[#fff] hover:bg-primary/90',
-      secondary: 'bg-gray-100 dark:bg-gray-800 text-text-primary hover:bg-gray-200 dark:hover:bg-gray-700',
-      ghost: 'bg-transparent text-primary hover:bg-primary/10',
-      error: 'bg-error text-[#fff] hover:bg-error/90',
-    };
+  const sizeClass =
+    size === 'sm'
+      ? 'px-4 py-2 text-sm'
+      : size === 'lg'
+        ? 'px-6 py-3 text-base'
+        : 'px-5 py-3 text-sm'
 
-    const sizeClasses: Record<string, string> = {
-      sm: 'px-5 py-2.5 text-[10px]',
-      md: 'px-6 py-4 text-sm',
-      lg: 'px-8 py-[18px] text-[17px]',
-    };
+  return (
+    <button
+      type={type}
+      disabled={disabled}
+      onClick={(e) => {
+        if (disabled) return
+        haptic('light')
+        onClick?.(e)
+      }}
+      className={[
+        'btn-press flex items-center justify-center rounded-full font-medium transition-opacity',
+        sizeClass,
+        variantClass,
+        fullWidth ? 'w-full' : '',
+        disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
+        className,
+      ].join(' ')}
+    >
+      {children}
+    </button>
+  )
+}
 
-    const disabledClasses = disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer';
-    const widthClasses = fullWidth ? 'w-full' : 'w-auto';
-
-    return (
-      <button
-        ref={ref}
-        disabled={disabled}
-        className={`btn-press ${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabledClasses} ${widthClasses} ${className || ''}`}
-        onClick={handleClick}
-        {...props}
-      >
-        {children}
-      </button>
-    );
-  }
-);
-
-Button.displayName = 'Button';

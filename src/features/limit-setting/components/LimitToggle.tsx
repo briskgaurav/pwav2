@@ -1,6 +1,6 @@
 import React from 'react'
 
-import type { LimitTab } from '../store/useLimitSettingStore'
+import type { LimitTab } from '@/store/redux/slices/limitSettingSlice'
 
 type LimitToggleOption = {
   label: string

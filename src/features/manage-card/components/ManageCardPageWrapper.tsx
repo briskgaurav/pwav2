@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
-import CardPinAuth from '@/features/card-detail/components/CardPinAuth'
+import CardPinAuth from '@/components/screens/AuthScreens/CardPinAuth'
 import { CARD_CONFIG } from '@/lib/card-config'
 import type { CardType } from '@/lib/types'
 import { useManagingCard } from '@/hooks/useManagingCard'

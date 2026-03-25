@@ -1,13 +1,13 @@
 // Core UI primitives
-export { Button } from './button'
 export { Checkbox } from './checkbox'
 export { Header } from './header'
 export { OTPInput } from './otp-input'
-export { OTPKeypad } from './otp-keypad'
+export { OTPKeypad } from '../screens/components/ui/Keypad'
 export { RadioOption } from './radio-option'
 export { RadioOption2 } from './RadioButton2'
 export { SheetContainer } from './sheet-container'
 export { Dropdown } from './Dropdown'
+export { default as Button } from './Button'
 
 // Default-exported UI components
 export { default as Balance } from './Balance'

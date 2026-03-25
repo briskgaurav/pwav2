@@ -6,13 +6,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { routes } from '@/lib/routes'
 import { useRouter } from 'next/navigation'
-import { useCardWalletStore } from '@/store/useCardWalletStore'
+import { useAppSelector } from '@/store/redux/hooks'
 import SigmaCardOptionsScreen from './SigmaCardOptionsScreen'
 import formatCardNumber from '@/lib/formated-card-number'
 
 export default function LinkCardScreen() {
     const router = useRouter()
-    const allCards = useCardWalletStore((s) => s.cards)
+    const allCards = useAppSelector((s) => s.cardWallet.cards)
     const universalCards = useMemo(
         () => allCards.filter((c) => c.cardForm === 'universal'),
         [allCards]

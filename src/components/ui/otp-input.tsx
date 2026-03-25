@@ -8,9 +8,10 @@ interface OTPInputProps {
   onChange?: (value: string) => void;
   useDots?: boolean;
   resetKey?: string | number;
+  onPress?: () => void;
 }
 
-export function OTPInput({ value, maxLength, onChange, useDots = false, resetKey = 'default' }: OTPInputProps) {
+export function OTPInput({ value, maxLength, onChange, useDots = false, resetKey = 'default', onPress }: OTPInputProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const digits = useMemo(() => {
@@ -84,7 +85,7 @@ export function OTPInput({ value, maxLength, onChange, useDots = false, resetKey
           type={useDots ? 'password' : 'tel'}
           inputMode="none"
           readOnly={true}
-          
+          onClick={onPress}
           maxLength={1}
           value={digit}
           onChange={(e) => handleChange(index, e.target.value)}

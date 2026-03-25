@@ -1,5 +1,5 @@
-import SelectCardTypeScreen from '@/features/select-card-type/components/SelectCardTypeScreen'
+import AddInstacardScreen from '@/components/screens/AddInstacardScreens/AddInstacardScreen'
 
-export default function SelectCardTypePage() {
-  return <SelectCardTypeScreen />
+export default function AddInstacardPage() {
+  return <AddInstacardScreen />
 }

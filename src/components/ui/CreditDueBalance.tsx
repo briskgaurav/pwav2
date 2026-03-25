@@ -1,5 +1,4 @@
 import React from 'react'
-import { Button } from './button'
 
 const limits = [
     { label: 'Approved Credit Limit', value: '1,000,000', highlight: false },
@@ -23,9 +22,9 @@ export default function CreditDueBalance() {
                 </div>
                 <div className='w-[40%]'>
 
-                    <Button fullWidth variant='primary' size='md'>
+                    {/* <Button fullWidth variant='primary' size='md'>
                         Pay Now
-                    </Button>
+                    </Button> */}
                 </div>
             </div>
 

@@ -5,8 +5,9 @@ import React, { useEffect, useState } from 'react'
 import { DayPicker } from 'react-day-picker'
 import { createPortal } from 'react-dom'
 import { haptic } from '@/lib/useHaptics'
-import { Button } from './button'
+
 import 'react-day-picker/style.css'
+import ButtonComponent from '../screens/components/ui/ButtonComponent'
 
 export interface DatePickerModalProps {
   visible: boolean
@@ -87,9 +88,7 @@ export default function DatePickerModal({
       >
         <div className='flex items-center justify-between px-5 py-2 border-b border-border'>
           <h2 className='text-sm font-medium text-text-primary'>{title}</h2>
-          <Button variant='ghost' size='md' onClick={handleClose}>
-            Cancel
-          </Button>
+          <ButtonComponent title='Cancel' onClick={handleClose} />
         </div>
         <div className='overflow-auto p-4 flex justify-center'>
           <div
@@ -118,9 +117,7 @@ export default function DatePickerModal({
           </div>
         </div>
         <div className='p-4 border-t border-border'>
-          <Button fullWidth variant='primary' onClick={handleConfirm} disabled={!tempSelected}>
-            Select {tempSelected ? format(tempSelected, 'MMM d, yyyy') : 'Date'}
-          </Button>
+          <ButtonComponent title={tempSelected ? format(tempSelected, 'MMM d, yyyy') : 'Date'} onClick={handleConfirm} />
         </div>
       </div>
       <style jsx global>{`

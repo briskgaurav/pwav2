@@ -1,5 +1,5 @@
 import React from 'react'
-import type { FAQData } from '@/components/modals/FAQModal'
+import type { FAQData } from '@/components/screens/components/ui/FAQModal'
 import type { CardType } from '@/lib/types'
 import { routes } from '@/lib/routes'
 import {

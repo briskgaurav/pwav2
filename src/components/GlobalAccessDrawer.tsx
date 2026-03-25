@@ -2,8 +2,8 @@
 
 import { ProfileDrawer } from '@/components/ProfileDrawer'
 import i18n from '@/lib/i18n'
-import { useAccessDrawerStore } from '@/store/useAccessDrawerStore'
-import { useUserStore } from '@/store/useUserStore'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { selectAccessDrawerVisible, closeAccessDrawer } from '@/store/redux/slices/accessDrawerSlice'
 import {
   CreditCard,
   HandCoins,
@@ -47,13 +47,16 @@ const features: { id: FeatureId; Icon: React.ComponentType<{ className?: string 
 ]
 
 export default function GlobalAccessDrawer() {
-  const visible = useAccessDrawerStore((s) => s.visible)
-  const close = useAccessDrawerStore((s) => s.close)
+  const dispatch = useAppDispatch()
+  const visible = useAppSelector(selectAccessDrawerVisible)
+  const fullName = useAppSelector((s) => s.user.fullName)
+  const initials = useAppSelector((s) => s.user.initials)
+  const email = useAppSelector((s) => s.user.email)
+  const close = () => dispatch(closeAccessDrawer())
   const router = useRouter()
   const { t } = useTranslation()
   const selectedLang = i18n.language?.split('-')[0] ?? 'en'
   const isRTL = selectedLang === 'ar'
-  const { fullName, initials, email } = useUserStore()
 
   const handleGoBack = () => {
     close()

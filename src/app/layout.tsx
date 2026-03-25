@@ -8,7 +8,8 @@ import RouteTitle from '@/components/RouteTitle';
 import GlobalProfileDrawer from '@/components/GlobalProfileDrawer';
 import GlobalAccessDrawer from '@/components/GlobalAccessDrawer';
 import { PageSlideTransition } from '@/components/ui/page-slide-transition';
-import FloatingBottomBarLayoutClient from '@/components/StackingCard/FloatingBottomBarLayoutClient';
+import FloatingBottomBarLayoutClient from '@/components/screens/InstacardScreens/FloatingBottomBarLayoutClient';
+import ReduxProvider from '@/store/redux/ReduxProvider';
 
 const helveticaNeue = localFont({
   src: [
@@ -74,19 +75,26 @@ export default function RootLayout({
       </head>
 
       <body className={`${helveticaNeue.className} h-dvh overflow-hidden`}>
-        <AuthProvider>
-          <PWAHeaderProvider>
-            <div className="flex flex-col h-full overflow-hidden">
-              <PWAHeader />
-              <RouteTitle />
-              <PageSlideTransition>
-                {children}
-              </PageSlideTransition>
+        <ReduxProvider>
+          <AuthProvider>
+            {/* <PWAHeaderProvider> */}
+            {/* <div className="flex flex-col h-full overflow-hidden"> */}
+            {/* <PWAHeader /> */}
+            {/* <RouteTitle /> */}
+            {/* <PageSlideTransition> */}
+            {/* {children} */}
+            {/* </PageSlideTransition> */}
+            {/* </div> */}
+
+            {/* </PWAHeaderProvider> */}
+
+            <div className="flex flex-col h-full">
+              {children}
             </div>
             <GlobalProfileDrawer />
             <GlobalAccessDrawer />
-          </PWAHeaderProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

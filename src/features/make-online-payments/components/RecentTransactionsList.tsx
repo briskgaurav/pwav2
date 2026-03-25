@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { useOnlinePaymentStore } from '../store/useOnlinePaymentStore'
-import type { Transaction } from '../store/useOnlinePaymentStore'
+import { useAppSelector } from '@/store/redux/hooks'
+import type { Transaction } from '@/store/redux/slices/onlinePaymentSlice'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
 import { ChevronRight } from 'lucide-react'
@@ -83,8 +83,8 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
 }
 
 export default function RecentTransactionsList() {
-  const transactions = useOnlinePaymentStore((s) => s.transactions)
-  const isRefreshing = useOnlinePaymentStore((s) => s.isRefreshing)
+  const transactions = useAppSelector((s) => s.onlinePayment.transactions)
+  const isRefreshing = useAppSelector((s) => s.onlinePayment.isRefreshing)
 
   return (
     <div className="flex flex-col">

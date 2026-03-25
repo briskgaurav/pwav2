@@ -2,7 +2,8 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
-import { useOnlinePaymentStore } from '../store/useOnlinePaymentStore'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { toggleCardVisibility, setRefreshStart, refreshData } from '@/store/redux/slices/onlinePaymentSlice'
 import { useCvvTimer } from '../hooks/useCvvTimer'
 import CopyButton from '@/components/ui/CopyButton'
 import { EyeIcon, EyeOffIcon, RefreshCw } from 'lucide-react'
@@ -17,9 +18,9 @@ export default function VirtualCardDetails({ cardImageSrc, maskedNumber, cardNum
   const progressRef = useRef<SVGCircleElement>(null)
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
-  const cardDetails = useOnlinePaymentStore((s) => s.cardDetails)
-  const isRefreshing = useOnlinePaymentStore((s) => s.isRefreshing)
-  const refreshData = useOnlinePaymentStore((s) => s.refreshData)
+  const dispatch = useAppDispatch()
+  const cardDetails = useAppSelector((s) => s.onlinePayment.cardDetails)
+  const isRefreshing = useAppSelector((s) => s.onlinePayment.isRefreshing)
   const { cvvTimeRemaining } = useCvvTimer()
 
   const [isFlipped, setIsFlipped] = useState(false)
@@ -160,7 +161,8 @@ export default function VirtualCardDetails({ cardImageSrc, maskedNumber, cardNum
 
   const handleRefresh = () => {
     haptic('medium')
-    refreshData()
+    dispatch(setRefreshStart())
+    setTimeout(() => dispatch(refreshData()), 1500)
   }
 
   useEffect(() => {

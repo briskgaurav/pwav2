@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { SheetContainer } from '@/components/ui'
 import { AddMoneyForm } from '@/features/add-money/components/AddMoneyForm'
-import FAQModal from '@/components/modals/FAQModal'
+import FAQModal from '@/components/screens/components/ui/FAQModal'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
 import { GiftCardHeader } from '@/features/gift/components/GiftCardHeader'

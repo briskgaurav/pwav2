@@ -1,22 +1,23 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { useOnlinePaymentStore } from '../store/useOnlinePaymentStore'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { decrementCvvTimer } from '@/store/redux/slices/onlinePaymentSlice'
 
 export function useCvvTimer() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const decrementCvvTimer = useOnlinePaymentStore((s) => s.decrementCvvTimer)
-  const cvvTimeRemaining = useOnlinePaymentStore((s) => s.cvvTimeRemaining)
+  const dispatch = useAppDispatch()
+  const cvvTimeRemaining = useAppSelector((s) => s.onlinePayment.cvvTimeRemaining)
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      decrementCvvTimer()
+      dispatch(decrementCvvTimer())
     }, 1000)
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
     }
-  }, [decrementCvvTimer])
+  }, [dispatch])
 
   const minutes = Math.floor(cvvTimeRemaining / 60)
   const seconds = cvvTimeRemaining % 60
