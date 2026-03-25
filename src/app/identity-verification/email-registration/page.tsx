@@ -1,10 +1,10 @@
 'use client'
 
-import LayoutSheet from '@/components/screens/components/LayoutSheet'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
-import ButtonComponent from '@/components/screens/components/ui/ButtonComponent'
+import ButtonComponent from '@/components/ui/ButtonComponent'
 import ConfirmYourEmailScreen from '@/components/screens/IdentityVerificationScreens/EmailRegistration/ConfirmYourEmailScreen'
 
 export default function EmailRegistrationPage() {

@@ -7,8 +7,8 @@ import { notifyNavigation } from '@/lib/bridge'
 import { haptic } from '@/lib/useHaptics'
 import { routes } from '@/lib/routes'
 import type { CardType } from '@/lib/types'
-import ButtonComponent from '../components/ui/ButtonComponent'
-import LayoutSheet from '../components/LayoutSheet'
+import ButtonComponent from '../../ui/ButtonComponent'
+import LayoutSheet from '../../ui/LayoutSheet'
 
 const CARD_TYPE_OPTIONS = [
   { id: 'debit' as const, label: 'Debit Card', icon: '/svg/debitcard.svg' },

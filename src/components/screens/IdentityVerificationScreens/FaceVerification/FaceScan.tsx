@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useCallback, useState } from 'react';
-import { useCamera } from '@/components/Verify/hooks/useCamera';
-import CameraView from '@/components/Verify/components/CameraView';
-import FaceGuide from '@/components/Verify/components/FaceGuide';
-import ValidationStatus from '@/components/Verify/components/ValidationStatus';
-import { useFaceDetection } from '@/components/Verify/hooks/useFaceDetection';
-import ButtonComponent from '../../components/ui/ButtonComponent';
+import { useCamera } from '@/hooks/useCamera';
+import CameraView from '@/components/Extras/CameraView';
+import FaceGuide from '@/components/Extras/FaceGuide';
+import ValidationStatus from '@/components/Extras/ValidationStatus';
+import ButtonComponent from '@/components/ui/ButtonComponent';
+import { useFaceDetection } from '@/hooks/useFaceDetection';
 
 export default function FaceScan({ getButtonText, handleContinue }: { getButtonText: () => string, handleContinue: () => void }) {
   const {

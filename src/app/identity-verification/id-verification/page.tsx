@@ -1,11 +1,11 @@
 'use client'
 
-import LayoutSheet from '@/components/screens/components/LayoutSheet'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
 import { useDispatch, useSelector } from 'react-redux'
-import ButtonComponent from '@/components/screens/components/ui/ButtonComponent'
+import ButtonComponent from '@/components/ui/ButtonComponent'
 import { RootState } from '@/store/redux/store'
 import { nextStep } from '@/store/redux/slices/idVerificationSlice'
 import VerificationMethod from '@/components/screens/IdentityVerificationScreens/IDVerification/VerificationMethod'

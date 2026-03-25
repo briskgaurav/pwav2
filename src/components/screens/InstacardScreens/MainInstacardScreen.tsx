@@ -116,7 +116,7 @@ export default function MainInstacardScreen() {
   const handleAddPress = useCallback(() => {
     if (cardMode === 'universal') {
       dispatch(setPendingCardForm('universal'))
-      router.push(routes.addUniversalFaceVerification)
+      router.push(routes.addUniversalCard)
     }
   }, [cardMode, router, dispatch])
 

@@ -6,7 +6,7 @@ import { SheetContainer, RadioOption, Checkbox, Button } from '@/components/ui';
 import { ICONS } from '@/constants/icons';
 import { notifyNavigation } from '@/lib/bridge';
 import { routes } from '@/lib/routes';
-import LayoutSheet from '../components/LayoutSheet';
+import LayoutSheet from '../../ui/LayoutSheet';
 
 const ACCOUNT_OPTIONS = [
   { label: '0123456789 / NGN / Savings', icon: ICONS.fcmb },

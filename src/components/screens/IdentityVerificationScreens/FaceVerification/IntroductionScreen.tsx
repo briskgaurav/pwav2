@@ -1,6 +1,6 @@
 import React from 'react'
 import { User, Sun, Eye, Camera } from 'lucide-react'
-import ButtonComponent from '../../components/ui/ButtonComponent'
+import ButtonComponent from '../../../ui/ButtonComponent'
 import Image from 'next/image'
 
 export default function Introduction({ getButtonText, handleContinue }: { getButtonText: () => string, handleContinue: () => void }) {

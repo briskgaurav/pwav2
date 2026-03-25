@@ -6,7 +6,7 @@ import { Dropdown } from './Dropdown'
 import { routes } from '@/lib/routes'
 import { useRouter } from 'next/navigation'
 import { AddCardIcon } from '@/constants/icons'
-import ButtonComponent from '../screens/components/ui/ButtonComponent'
+import ButtonComponent from './ButtonComponent'
 
 type PaymentOption = 'full' | 'minimum' | 'other'
 

@@ -71,7 +71,7 @@ export function FloatingBottomBar({
       >
         {pathname == '/instacard' && (
           <Link
-            href="/add-a-gift-card"
+            href={routes.claimGiftCard}
             className=" flex items-center justify-center gap-1 text-text-primary"
             onClick={onAddGiftPress}
             aria-label="Add Gift Card"

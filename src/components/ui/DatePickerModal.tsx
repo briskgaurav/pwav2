@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom'
 import { haptic } from '@/lib/useHaptics'
 
 import 'react-day-picker/style.css'
-import ButtonComponent from '../screens/components/ui/ButtonComponent'
+import ButtonComponent from './ButtonComponent'
 
 export interface DatePickerModalProps {
   visible: boolean

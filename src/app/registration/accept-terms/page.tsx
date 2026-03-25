@@ -1,4 +1,4 @@
-import AcceptTermsScreen from '@/features/registration/components/AcceptTermsScreen'
+import AcceptTermsScreen from '@/components/ui/AcceptTermsScreen'
 
 export default function AcceptTermsPage() {
   return <AcceptTermsScreen />

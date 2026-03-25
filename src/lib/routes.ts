@@ -10,76 +10,85 @@ export const routes = {
   IdVerification: "/identity-verification/id-verification",
   EmailRegistration: "/identity-verification/email-registration",
   instacard: "/instacard",
+
   // QR PAYMENTS
-  scanpay: "/scan-and-pay",
-  makePayment: "/scan-and-pay/make-payment",
+  scanpay: "/instacard/scan-and-pay",
+  makePayment: "/instacard/scan-and-pay/make-payment",
+
   // ADD INSTACARD
-  addInstacard: "/add-instacard",
-  addCard: (type: CardType) => `/add-instacard/${type}`,
-  otp: (type: CardType) => `/add-instacard/otp?type=${type}`,
-  success: (type: CardType) => `/add-instacard/success?type=${type}`,
-  pinSetup: (type: CardType) => `/add-instacard/pin-setup?type=${type}`,
+  addInstacard: "/instacard/add-instacard",
+  addCard: (type: CardType) => `/instacard/add-instacard/${type}`,
+  otp: (type: CardType) => `/instacard/add-instacard/otp?type=${type}`,
+  success: (type: CardType) => `/instacard/add-instacard/success?type=${type}`,
+  pinSetup: (type: CardType) => `/instacard/add-instacard/pin-setup?type=${type}`,
   howToUseCard: (type: CardType) =>
-    `/add-instacard/how-to-use-card?type=${type}`,
+    `/instacard/add-instacard/how-to-use-card?type=${type}`,
+
+  // Add universal card flow
+  addUniversalCard: "/instacard/add-universal-card",
+  addUniversalVerifyMobile: "/instacard/add-universal-card/verify-mobile",
+  addUniversalVerifyEmail: "/instacard/add-universal-card/verify-email",
+  addUniversalPinSetup: "/instacard/add-universal-card/pin-setup",
+  addUniversalSuccess: "/instacard/add-universal-card/success",
+
+  //ADD GIFT CARD
+  giftACard: "/add-instacard/gift-a-card",
+  giftACardReadyToUse: "/add-instacard/gift-a-card/ready-to-use",
+  shareGiftCard: "/add-instacard/gift-a-card/share-gift-card",
+  giftCardActivationCode: "/add-instacard/gift-a-card/one-time-activation",
+
   // MANAGE INSTACARD
-  pinChange: "/manage-card/pin-change",
-  pinChangeSetup: "/manage-card/pin-change/pin-setup",
-  limitSetting: "manage-card/limit-setting",
-  limitSettingVerifyEmail: "/limit-setting/verify-email",
-
-
-
-
-
-  cardDetail: (type: CardType) => `/card-detail/${type}`,
+  pinChange: "/instacard/manage-card/pin-change",
+  pinChangeSetup: "/instacard/manage-card/pin-change/pin-setup",
+  limitSetting: "/instacard/manage-card/limit-setting",
+  limitSettingVerifyEmail: "/instacard/manage-card/limit-setting/verify-email",
   manageCard: (type: CardType, cardMode?: "virtual" | "universal") =>
-    `/manage-card/${type}${cardMode ? `?mode=${cardMode}` : ""}`,
-  cardStatus: "/manage-card/card-status",
+    `/instacard/manage-card/${type}${cardMode ? `?mode=${cardMode}` : ""}`,
+  cardStatus: "/instacard/manage-card/card-status",
+  emailStatements: (type: CardType) =>
+    `/instacard/manage-card/email-statements/${type}`,
+  makeRepayments: "/instacard/manage-card/make-repayments",
+  makeRepaymentsVerifyOtp: "/instacard/manage-card/make-repayments/verify-otp",
+  makeRepaymentsVerifyOtpSuccess:
+    "/instacard/manage-card/make-repayments/verify-otp/success",
+
+  // CLAIM A GIFT CARD
+  claimGiftCard: "/instacard/claim-gift-card",
+  claimGiftCardEmailVerify: "/instacard/claim-gift-card/email-verify-gift",
+  claimGiftCardOneTimeActivation:
+    "/instacard/claim-gift-card/one-time-activation",
+
+  // CardDetail
+  cardDetail: (type: CardType) => `/instacard/card-detail/${type}`,
+
+  // Make online payments
+  makeOnlinePayments: "/instacard/make-online-payments",
+  transactionReceipt: (txnId: string) =>
+    `/instacard/make-online-payments/transaction/${txnId}`,
+
+  // Add money
+  addMoney: "/instacard/manage-card/prepaid/add-money",
+  addMoneyVerifyEmail: "/instacard/manage-card/prepaid/add-money/verify-email",
+  addMoneySuccess: "/instacard/manage-card/prepaid/add-money/success",
 
   // PIN flows
   chooseOptions: "/forget-pin/choose-options",
   forgetPinPhoneVerification: "/forget-pin/phone-verification",
   forgetPinEmailVerification: "/forget-pin/email-verification",
-  emailVerifyGift: "/add-a-gift-card/email-verify-gift",
 
-  // Post-setup
 
-  // Add money
-  addMoney: "/add-money",
-  addMoneyVerifyEmail: "/add-money/verify-email",
-  addMoneySuccess: "/add-money/success",
+  // Virtual card linking
+  linkVirtualCard: "/instacard/link-virtual-card",
 
-  // Gift card
-  addGiftCard: "/add-a-gift-card",
-  giftCardActivation: "/add-a-gift-card/one-time-activation",
-  giftACard: "/gift-a-card",
-  readyToUse: "/ready-to-use",
-  shareGiftCard: "/share-gift-card",
-  oneTimeActivation: "/one-time-activation",
+  // Physical card linking
+  linkPhysicalCard: "/instacard/link-universal-card",
+  sigmaCardsOptions: "/instacard/link-universal-card/sigma-cards-options",
+  faceVerification: "/instacard/link-universal-card/face-verification",
+  bvnVerification: "/instacard/link-universal-card/bvn-verification",
+  linkVerifyEmail: "/instacard/link-universal-card/verify-email",
+  linkVerifyOtp: "/instacard/link-universal-card/verify-otp",
+  linkedSuccess: "/instacard/link-universal-card/linked-success",
 
-  // Statements
-  emailStatements: (type: CardType) => `/email-statements/${type}`,
-  makeRepayments: "/make-repayments",
-  makeRepaymentsVerifyOtp: "/make-repayments/verify-otp",
-  makeRepaymentsVerifyOtpSuccess: "/make-repayments/verify-otp/success",
-
-  // Make online payments
-  makeOnlinePayments: "/make-online-payments",
-  transactionReceipt: (txnId: string) =>
-    `/make-online-payments/transaction/${txnId}`,
-
-  // Add universal card flow
-  addUniversalCard: "/add-universal-card",
-  addUniversalFaceVerification: "/add-universal-card/face-verification",
-  addUniversalVerifyMobile: "/add-universal-card/verify-mobile",
-  addUniversalVerifyEmail: "/add-universal-card/verify-email",
-  addUniversalPinSetup: "/add-universal-card/pin-setup",
-  addUniversalSuccess: "/add-universal-card/success",
-
-  // Scan & Pay
-  scan: "/scan",
-  paymentAmount: "/payment-amount",
-  paymentSuccess: "/payment-success",
 
   // Registration / KYC flow
   registrationVerificationMethod: "/registration/verification-method",
@@ -93,13 +102,4 @@ export const routes = {
   registrationWithExistingEmailSuccess:
     "/registration/with-existing-email-success",
 
-  // Physical card linking
-  linkPhysicalCard: "/link-physical-card",
-  linkVirtualCard: "/link-virtual-card",
-  sigmaCardsOptions: "/link-physical-card/sigma-cards-options",
-  faceVerification: "/link-physical-card/face-verification",
-  bvnVerification: "/link-physical-card/bvn-verification",
-  linkVerifyEmail: "/link-physical-card/verify-email",
-  linkVerifyOtp: "/link-physical-card/verify-otp",
-  linkedSuccess: "/link-physical-card/linked-success",
 } as const;

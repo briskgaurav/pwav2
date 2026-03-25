@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { FAQData } from '@/components/screens/components/ui/FAQModal'
+import type { FAQData } from '@/components/ui/FAQModal'
 
 type ManageCardState = {
   isFaqOpen: boolean

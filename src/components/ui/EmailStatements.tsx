@@ -6,7 +6,10 @@ import { haptic } from '@/lib/useHaptics'
 import { ChevronDown } from 'lucide-react'
 import DatePickerModal from './DatePickerModal'
 import { StatementsIcon } from '@/constants/icons'
-import ButtonComponent from '../screens/components/ui/ButtonComponent'
+import ButtonComponent from './ButtonComponent'
+import Button from './button'
+import { routes } from '@/lib/routes'
+import { useRouter } from 'next/navigation'
 
 type StatementOption = {
   id: 'mini' | 'custom'
@@ -27,6 +30,7 @@ export default function EmailStatements() {
   const [datePickerOpen, setDatePickerOpen] = useState<'from' | 'to' | null>(null)
   const [successMessage, setSuccessMessage] = useState(false)
   const [dateError, setDateError] = useState<string>('')
+  const router = useRouter()
 
   const handleSelect = (option: 'mini' | 'custom') => {
     haptic('light')
@@ -107,6 +111,7 @@ export default function EmailStatements() {
   const handleClosePopup = () => {
     haptic('light')
     setShowPopup(false)
+    router.push(routes.instacard)
   }
 
   return (
@@ -119,7 +124,7 @@ export default function EmailStatements() {
           <p className='text-text-primary text-md font-medium'>Email Statements</p>
         </div>
 
-        <div className='space-y-5'>
+        <div className='space-y-5 relative'>
           {statementOptions.map((option, index) => (
             <React.Fragment key={option.id}>
               {index > 0 && <div className='' />}
@@ -195,7 +200,7 @@ export default function EmailStatements() {
             <p className='text-green-600 text-sm text-center'>Statements sent on your registered mail address</p>
           )} */}
 
-          <ButtonComponent title='Send to Registered Email' onClick={handleSendEmail} />
+          <Button fullWidth variant='primary' size='md' className='w-full' onClick={handleSendEmail}>Send to Registered Email</Button>
           
         </div>
       </div>

@@ -69,10 +69,10 @@ export function OTPInput({ value, maxLength, onChange, useDots = false, resetKey
       key={resetKey}
       style={{
         display: 'flex',
-        gap: 10,
-        width: '100%',          // ⭐ important
-        paddingLeft: 20,        // same as px-5 (optional)
-        paddingRight: 20,       // same as px-5 (optional)
+        gap: maxLength > 6 ? 6 : 10,
+        width: '100%',
+        paddingLeft: 20,
+        paddingRight: 20,
         boxSizing: 'border-box',
         justifyContent: 'center',
       }}
@@ -93,7 +93,7 @@ export function OTPInput({ value, maxLength, onChange, useDots = false, resetKey
 
           onPaste={handlePaste}
 
-          className="w-12 h-12 rounded-[10px] border border-text-primary flex items-center justify-center text-base font-semibold text-text-primary text-center outline-none"
+          className={`${maxLength > 6 ? 'w-10 h-10' : 'w-12 h-12'} rounded-[10px] border border-text-primary flex items-center justify-center text-base font-semibold text-text-primary text-center outline-none flex-shrink-0`}
         />
       ))}
     </div>

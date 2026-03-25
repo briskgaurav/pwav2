@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import  { useState } from 'react'
 import { BlockUnblockIcon, LimitationsIcon, PinIcon } from '@/constants/icons'
+import { routes } from '@/lib/routes'
 
 type CardMockupProps = {
     isclickable?: boolean
@@ -68,9 +69,9 @@ export default function CardMockup({
                     <div className='w-full  flex items-start justify-between pt-6 px-5  h-fit '>
 
                         {[
-                            { icon: <LimitationsIcon />, title: 'Limit Setting', href: '/limit-setting' },
-                            { icon: <PinIcon />, title: 'PIN Change', href: '/pin-change' },
-                            { icon: <BlockUnblockIcon />, title: 'Block/Unblock Card', href: '/card-status' },
+                            { icon: <LimitationsIcon />, title: 'Limit Setting', href: routes.limitSetting },
+                            { icon: <PinIcon />, title: 'PIN Change', href: routes.pinChange },
+                            { icon: <BlockUnblockIcon />, title: 'Block/Unblock Card', href: routes.cardStatus },
                         ].map((item, index) => (
                             <Link href={item.href} key={index} className='aspect-square shrink-0 flex flex-col gap-2 items-center justify-center  '>
                                 <div className='w-16 h-16 p-4.5 flex items-center rounded-full text-text-primary justify-center aspect-square bg-background2'>

@@ -9,8 +9,8 @@ import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
 import { useAppSelector } from '@/store/redux/hooks';
 import { useManagingCard } from '@/hooks/useManagingCard';
-import LayoutSheet from '../components/LayoutSheet';
-import ButtonComponent from '../components/ui/ButtonComponent';
+import LayoutSheet from '../../ui/LayoutSheet';
+import ButtonComponent from '../../ui/ButtonComponent';
 
 export type SuccessScreenProps = {
   /** Custom title (e.g. "Success!") */

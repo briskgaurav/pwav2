@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import EyeButton from '@/components/ui/EyeButton'
+import EyeButton from './EyeButton'
 
 export default function Balance() {
     const [showBalance, setShowBalance] = useState(false)

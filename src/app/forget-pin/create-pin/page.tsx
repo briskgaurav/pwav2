@@ -5,11 +5,13 @@ import { notifyUserCancelled } from '@/lib/bridge'
 import PinSetupForm from '@/components/screens/AuthScreens/PinSetupFormScreen'
 import SuccessScreen from '@/components/screens/AuthScreens/SuccessScreen'
 import { useManagingCard } from '@/hooks/useManagingCard'
+import { useRouter } from 'next/navigation'
+import { routes } from '@/lib/routes'
 
 export default function CreatePinPage() {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
   const { changePin } = useManagingCard()
-
+  const router = useRouter()
   const handleSubmit = async (pin: string) => {
     await new Promise((resolve) => setTimeout(resolve, 1500))
     changePin(pin)
@@ -18,6 +20,7 @@ export default function CreatePinPage() {
 
   const handlePopupClose = () => {
     setShowSuccessPopup(false)
+    router.push(routes.instacard)
     notifyUserCancelled()
   }
 

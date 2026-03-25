@@ -1,4 +1,4 @@
-import VerifyExistingEmailScreen from '@/features/registration/components/VerifyExistingEmailScreen'
+import VerifyExistingEmailScreen from '@/components/ui/VerifyExistingEmailScreen'
 
 export default function VerifyExistingEmailPage() {
   return <VerifyExistingEmailScreen />

@@ -2,14 +2,14 @@
 
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { VerifyProgressProvider, useVerifyProgress } from '@/components/Verify/VerifyProgressContext';
-import VerifyProgressMeter from '@/components/Verify/VerifyProgressMeter';
+import { VerifyProgressProvider, useVerifyProgress } from '@/components/ui/VerifyProgressContext';
+import VerifyProgressMeter from '@/components/ui/VerifyProgressMeter';
 
 function RegistrationKycInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { currentStep, setStep } = useVerifyProgress();
 
-  useEffect(() => {
+  useEffect(() => { 
     if (!pathname) return;
 
     // Map registration routes to the 4-step KYC meter

@@ -1,26 +1,25 @@
 // Core UI primitives
-export { Checkbox } from './checkbox'
-export { Header } from './header'
-export { OTPInput } from './otp-input'
-export { OTPKeypad } from '../screens/components/ui/Keypad'
-export { RadioOption } from './radio-option'
-export { RadioOption2 } from './RadioButton2'
-export { SheetContainer } from './sheet-container'
-export { Dropdown } from './Dropdown'
-export { default as Button } from './Button'
-
+export { Checkbox } from "./checkbox";
+export { Header } from "./header";
+export { OTPInput } from "./otp-input";
+export { OTPKeypad } from "./Keypad";
+export { RadioOption } from "./radio-option";
+export { RadioOption2 } from "./RadioButton2";
+export { SheetContainer } from "./sheet-container";
+export { Dropdown } from "./Dropdown";
+export { default as Button } from "./button";
 // Default-exported UI components
-export { default as Balance } from './Balance'
-export { default as CardMockup } from './CardMockup'
-export { default as CopyButton } from './CopyButton'
-export { default as CreditCardTransactions } from './CreditCardTransactions'
-export { default as CreditDueBalance } from './CreditDueBalance'
-export { default as DatePickerModal } from './DatePickerModal'
-export { default as EmailStatements } from './EmailStatements'
-export { default as EyeButton } from './EyeButton'
-export { default as FaqIconButton } from './FaqIconButton'
-export { default as InputField } from './InputField'
-export { default as MakeRepayment } from './MakeRepayment'
-export { default as OtpInput } from './OtpInput'
-export { default as RecentTransactions } from './RecentTransactions'
-export { default as TransactionHistoryItem } from './TransactionHistoryItem'
+export { default as Balance } from "./Balance";
+export { default as CardMockup } from "./CardMockup";
+export { default as CopyButton } from "./CopyButton";
+export { default as CreditCardTransactions } from "./CreditCardTransactions";
+export { default as CreditDueBalance } from "./CreditDueBalance";
+export { default as DatePickerModal } from "./DatePickerModal";
+export { default as EmailStatements } from "./EmailStatements";
+export { default as EyeButton } from "./EyeButton";
+export { default as FaqIconButton } from "./FaqIconButton";
+export { default as InputField } from "./InputField";
+export { default as MakeRepayment } from "./MakeRepayment";
+export { default as OtpInput } from "./OtpInput";
+export { default as RecentTransactions } from "./RecentTransactions";
+export { default as TransactionHistoryItem } from "./TransactionHistoryItem";

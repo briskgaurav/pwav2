@@ -2,8 +2,8 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import LayoutSheet from '../components/LayoutSheet'
-import ButtonComponent from '../components/ui/ButtonComponent'
+import LayoutSheet from '../../ui/LayoutSheet'
+import ButtonComponent from '../../ui/ButtonComponent'
 
 export default function CardStatusScreen() {
   const [isUnblocked, setIsUnblocked] = useState(true)

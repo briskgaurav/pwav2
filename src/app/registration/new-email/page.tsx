@@ -1,4 +1,4 @@
-import RegisterNewEmailScreen from '@/features/registration/components/RegisterNewEmailScreen'
+import RegisterNewEmailScreen from '@/components/ui/RegisterNewEmailScreen'
 
 export default function RegisterNewEmailPage() {
   return <RegisterNewEmailScreen />

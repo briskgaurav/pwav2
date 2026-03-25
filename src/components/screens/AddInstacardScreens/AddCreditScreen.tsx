@@ -6,8 +6,8 @@ import { SheetContainer, Checkbox, Button } from '@/components/ui';
 import { notifyNavigation } from '@/lib/bridge';
 import { routes } from '@/lib/routes';
 import Link from 'next/link';
-import LayoutSheet from '../components/LayoutSheet';
-import ButtonComponent from '../components/ui/ButtonComponent';
+import LayoutSheet from '../../ui/LayoutSheet';
+import ButtonComponent from '../../ui/ButtonComponent';
 
 const TERMS = [
   'Issuance Fee - N 1000',

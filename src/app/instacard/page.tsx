@@ -1,5 +1,5 @@
 'use client'
-import LayoutSheet from '@/components/screens/components/LayoutSheet'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 import MainInstacardScreen from '@/components/screens/InstacardScreens/MainInstacardScreen'
 
 export default function CardsScreen() {

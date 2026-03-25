@@ -14,7 +14,7 @@ import { routes } from '@/lib/routes'
 import { AddCardIcon, LinkToUniversalIcon, ManageCard, PhoneIcon } from '@/constants/icons'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { setManagingCardId } from '@/store/redux/slices/cardWalletSlice'
-import FAQModal from '@/components/screens/components/ui/FAQModal'
+import FAQModal from '@/components/ui/FAQModal'
 
 // Register GSAP plugin
 if (typeof window !== 'undefined') {
@@ -155,7 +155,7 @@ export default function ActionDrawer({
             'make-online-payments': routes.makeOnlinePayments,
             'link-physical':
                 cardMode === 'virtual' ? routes.linkPhysicalCard : routes.linkVirtualCard,
-            'add-gift': routes.addGiftCard,
+            'add-gift': routes.claimGiftCard,
         }),
         [cardMode, selectedCardType]
     )

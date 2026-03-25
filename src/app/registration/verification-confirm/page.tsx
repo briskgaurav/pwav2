@@ -1,6 +1,6 @@
 'use client'
 
-import ConfirmVerificationDestinationScreen from '../../../features/registration/components/ConfirmVerificationDestinationScreen'
+import ConfirmVerificationDestinationScreen from '../../../components/ui/ConfirmVerificationDestinationScreen'
 
 export default function RegistrationVerificationConfirmPage() {
   return <ConfirmVerificationDestinationScreen />

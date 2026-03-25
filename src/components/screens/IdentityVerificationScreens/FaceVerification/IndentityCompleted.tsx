@@ -1,5 +1,5 @@
 import React from 'react'
-import ButtonComponent from '../../components/ui/ButtonComponent'
+import ButtonComponent from '../../../ui/ButtonComponent'
 
 export default function IndentityCompleted({ getButtonText, handleContinue }: { getButtonText: () => string, handleContinue: () => void }) {
   return (

@@ -1,4 +1,4 @@
-import KycSuccessScreen from '@/features/registration/components/KycSuccessScreen'
+import KycSuccessScreen from '@/components/ui/KycSuccessScreen'
 
 export default function KycSuccessPage() {
   return <KycSuccessScreen />

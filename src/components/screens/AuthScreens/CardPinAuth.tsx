@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/lib/auth-context'
 import { useManagingCard } from '@/hooks/useManagingCard'
-import LayoutSheet from '@/components/screens/components/LayoutSheet'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
 
 type CardPinAuthProps = {

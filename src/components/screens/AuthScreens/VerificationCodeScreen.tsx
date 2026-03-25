@@ -1,13 +1,19 @@
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { SheetContainer, OTPInput, OTPKeypad } from '@/components/ui'
-import LayoutSheet from '../components/LayoutSheet'
-import ButtonComponent from '../components/ui/ButtonComponent'
+import LayoutSheet from '../../ui/LayoutSheet'
+import ButtonComponent from '../../ui/ButtonComponent'
 import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
+import gsap from 'gsap'
 
 const MAX_CODE_LENGTH = 6
+
+type SuccessPopupContent = {
+  message: string
+  buttonText?: string
+}
 
 type VerificationCodeScreenProps = {
   title: string
@@ -16,6 +22,8 @@ type VerificationCodeScreenProps = {
   successRoute: string
   showKeypad?: boolean
   onSuccess?: () => void
+  showSuccessPopup?: boolean
+  successPopupContent?: SuccessPopupContent
 }
 
 export default function VerificationCodeScreen({
@@ -25,15 +33,39 @@ export default function VerificationCodeScreen({
   successRoute,
   showKeypad = true,
   onSuccess,
+  showSuccessPopup: enableSuccessPopup = false,
+  successPopupContent = {
+    message: 'Your Payment Limits have been successfully updated',
+    buttonText: 'Ok',
+  },
 }: VerificationCodeScreenProps) {
   const router = useRouter()
   const [code, setCode] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false)
   const otpInputRef = useRef<HTMLDivElement>(null)
+  const popupOverlayRef = useRef<HTMLDivElement>(null)
+  const popupContentRef = useRef<HTMLDivElement>(null)
 
   const { keypadRef, isKeypadOpen, keypadHeight, openKeypad, closeKeypad } = useSlideUpKeypad({
     insideRefs: [otpInputRef],
   })
+
+  useEffect(() => {
+    if (showSuccessPopup) {
+      // Animate in
+      gsap.fromTo(
+        popupOverlayRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3, ease: 'power2.out' }
+      )
+      gsap.fromTo(
+        popupContentRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3, ease: 'power2.out', delay: 0.1 }
+      )
+    }
+  }, [showSuccessPopup])
 
   const handleKeyPress = useCallback((key: string) => {
     if (key === 'del') {
@@ -55,6 +87,18 @@ export default function VerificationCodeScreen({
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
     setIsVerifying(false)
+    
+    if (enableSuccessPopup) {
+      setShowSuccessPopup(true)
+    } else if (onSuccess) {
+      onSuccess()
+    } else {
+      router.replace(successRoute)
+    }
+  }
+
+  const handlePopupOk = () => {
+    setShowSuccessPopup(false)
     if (onSuccess) {
       onSuccess()
     } else {
@@ -68,6 +112,35 @@ export default function VerificationCodeScreen({
   }
 
   const isCodeComplete = code.length === MAX_CODE_LENGTH
+
+  const renderSuccessPopup = () => {
+    if (!showSuccessPopup) return null
+    
+    return (
+      <div
+        ref={popupOverlayRef}
+        className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50"
+        style={{ opacity: 0 }}
+      >
+        <div
+          ref={popupContentRef}
+          className="bg-white/80 backdrop-blur-xl  rounded-2xl p-6 mx-8 text-center border border-white/60 min-w-[280px]"
+          style={{ opacity: 0 }}
+        >
+          <p className="text-text-primary text-xm mb-6">
+            {successPopupContent.message}
+          </p>
+          <button
+            onClick={handlePopupOk}
+            className="w-full py-3 rounded-full text-text-primary font-medium cursor-pointer border-none"
+            type="button"
+          >
+            {successPopupContent.buttonText || 'Ok'}
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   if (showKeypad) {
     return (
@@ -106,6 +179,7 @@ export default function VerificationCodeScreen({
           <div ref={keypadRef} className="w-full fixed bottom-0 left-0 py-2 ">
             <OTPKeypad onKeyPress={handleKeyPress} />
           </div>
+          {renderSuccessPopup()}
       </LayoutSheet>
     )
   }
@@ -157,6 +231,7 @@ export default function VerificationCodeScreen({
           </div>
         </div>
       </SheetContainer>
+      {renderSuccessPopup()}
     </div>
   )
 }

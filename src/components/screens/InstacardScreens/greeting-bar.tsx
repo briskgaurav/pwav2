@@ -7,6 +7,7 @@ import { haptic } from '@/lib/useHaptics';
 import { Gift, Plus, PlusIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { routes } from '@/lib/routes';
 
 interface GreetingBarProps {
   userName: string;
@@ -102,7 +103,7 @@ export function GreetingBar({
       </div> */}
 
       <Link
-        href={mode === 'virtual' ? '/add-instacard' : '/add-universal-card'}
+        href={mode === 'virtual' ? routes.addInstacard : routes.addUniversalCard}
 
         onClick={() => dispatch(setPendingCardForm(mode))}
         className="flex items-center bg-primary rounded-full justify-center gap-2 w-fit px-4 py-2"
