@@ -2,7 +2,6 @@
 import { ChevronLeft, Menu } from 'lucide-react'
 import React, { useRef, useEffect, useState } from 'react'
 import gsap from 'gsap'
-import { useIsWebView } from '@/hooks/use-is-webview'
 import { useRouter, usePathname } from 'next/navigation'
 import { usePWAHeader } from '@/lib/pwa-header-context'
 import { useAppDispatch } from '@/store/redux/hooks'
@@ -10,7 +9,6 @@ import { openAccessDrawer } from '@/store/redux/slices/accessDrawerSlice'
 import Image from 'next/image'
 
 export default function PWAHeader() {
-    const isWebView = useIsWebView()
     const router = useRouter()
     const pathname = usePathname()
     const { title: contextTitle } = usePWAHeader()
@@ -50,12 +48,9 @@ export default function PWAHeader() {
         }
     }
 
-    if (isWebView) {
-        return null
-    }
-
     return (
-        <div className='shrink-0 bg-primary mt-10' style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
+        // <div className='shrink-0 bg-primary mt-10' style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
+        <div className='shrink-0 bg-primary mt-4 ' style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
             <div className='h-16 text-white relative flex items-center justify-between px-4 w-full'>
                 <button onClick={handleGoBack} className={`h-fit ${showMenuIcon ? 'opacity-100 flex' : 'opacity-0 hidden pointer-events-none'} w-fit rounded-full`} aria-label="Go back">
                     <ChevronLeft
