@@ -1,5 +1,5 @@
-import VerificationMethodScreen from '@/components/screens/IdentityVerificationScreens/IDVerification/VerificationMethodScreen'
+import VerificationMethodScreen from "@/components/screens/IdentityVerificationScreens/IDVerification/VerificationMethodScreen";
 
 export default function VerificationMethodPage() {
-  return <VerificationMethodScreen />
+  return null;
 }
