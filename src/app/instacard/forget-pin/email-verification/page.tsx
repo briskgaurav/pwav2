@@ -1,4 +1,5 @@
 import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen'
+import { routes } from '@/lib/routes'
 
 export default function EmailVerificationPage() {
   return (
@@ -6,7 +7,7 @@ export default function EmailVerificationPage() {
       title="Verify your Registered Email"
       subtitle="We have sent you a 6-digit code to your Registered Email"
       maskedValue="******@gmail.com"
-      successRoute="/forget-pin/create-pin"
+      successRoute={routes.forgetPinCreatePin}
     />
   )
 }

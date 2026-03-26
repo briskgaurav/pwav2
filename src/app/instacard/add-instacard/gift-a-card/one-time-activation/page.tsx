@@ -1,5 +1,4 @@
 'use client'
-import { Button, SheetContainer } from '@/components/ui'
 import CardMockup from '@/components/ui/CardMockup'
 import { useManagingCard } from '@/hooks/useManagingCard'
 import CopyButton from '@/components/ui/CopyButton'

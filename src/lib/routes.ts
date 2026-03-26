@@ -9,6 +9,7 @@ export const routes = {
   livenessVerification: "/identity-verification/liveness-verification",
   IdVerification: "/identity-verification/id-verification",
   EmailRegistration: "/identity-verification/email-registration",
+  kycStatus: "/identity-verification/kyc-status",
   instacard: "/instacard",
 
   // QR PAYMENTS
@@ -20,7 +21,8 @@ export const routes = {
   addCard: (type: CardType) => `/instacard/add-instacard/${type}`,
   otp: (type: CardType) => `/instacard/add-instacard/otp?type=${type}`,
   success: (type: CardType) => `/instacard/add-instacard/success?type=${type}`,
-  pinSetup: (type: CardType) => `/instacard/add-instacard/pin-setup?type=${type}`,
+  pinSetup: (type: CardType) =>
+    `/instacard/add-instacard/pin-setup?type=${type}`,
   howToUseCard: (type: CardType) =>
     `/instacard/add-instacard/how-to-use-card?type=${type}`,
 
@@ -71,11 +73,12 @@ export const routes = {
   addMoneyVerifyEmail: "/instacard/manage-card/prepaid/add-money/verify-email",
   addMoneySuccess: "/instacard/manage-card/prepaid/add-money/success",
 
-  // PIN flows
-  chooseOptions: "/forget-pin/choose-options",
-  forgetPinPhoneVerification: "/forget-pin/phone-verification",
-  forgetPinEmailVerification: "/forget-pin/email-verification",
-
+  // Forget PIN
+  forgetPin: "/instacard/forget-pin",
+  chooseOptions: "/instacard/forget-pin/choose-options",
+  forgetPinPhoneVerification: "/instacard/forget-pin/phone-verification",
+  forgetPinEmailVerification: "/instacard/forget-pin/email-verification",
+  forgetPinCreatePin: "/instacard/forget-pin/create-pin",
 
   // Virtual card linking
   linkVirtualCard: "/instacard/link-virtual-card",
@@ -89,7 +92,6 @@ export const routes = {
   linkVerifyOtp: "/instacard/link-universal-card/verify-otp",
   linkedSuccess: "/instacard/link-universal-card/linked-success",
 
-
   // Registration / KYC flow
   registrationVerificationMethod: "/registration/verification-method",
   registrationVerificationConfirm: "/registration/verification-confirm",
@@ -101,5 +103,4 @@ export const routes = {
   registrationVerifyExistingEmail: "/registration/verify-existing-email",
   registrationWithExistingEmailSuccess:
     "/registration/with-existing-email-success",
-
 } as const;

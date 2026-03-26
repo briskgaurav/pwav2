@@ -6,18 +6,19 @@ import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import ConfirmYourEmailScreen from '@/components/screens/IdentityVerificationScreens/EmailRegistration/ConfirmYourEmailScreen'
+import IdentityVerificationProgress from '@/components/ui/IdentityVerificationProgress'
 
 export default function EmailRegistrationPage() {
   const router = useRouter()
 
   const handleContinue = () => {
     // TODO: Navigate to next step when ready
-    router.push(routes.instacard)
+    router.push(routes.kycStatus)
   }
 
   // Render content based on current step
   const renderStepContent = () => {
-    return <ConfirmYourEmailScreen />
+    return <ConfirmYourEmailScreen getButtonText={getButtonText} handleContinue={handleContinue} />
   }
 
   // Get button text based on current step
@@ -26,7 +27,11 @@ export default function EmailRegistrationPage() {
   }
 
   return (
-    <LayoutSheet routeTitle='Email Registration'>
+    <LayoutSheet
+      routeTitle='Email Registration'
+      progressNode={<IdentityVerificationProgress />}
+      needPadding={false}
+    >
       <div className="flex flex-col h-full">
         {/* Step Content */}
         <div className="flex-1 flex items-center justify-center">
@@ -34,7 +39,6 @@ export default function EmailRegistrationPage() {
         </div>
 
         {/* Continue Button */}
-        <ButtonComponent title={getButtonText()} onClick={handleContinue} />
 
       </div>
     </LayoutSheet>

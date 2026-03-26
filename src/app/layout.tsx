@@ -2,13 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
-import { PWAHeaderProvider } from '@/lib/pwa-header-context';
-import PWAHeader from '@/components/PWAHeader';
-import RouteTitle from '@/components/RouteTitle';
 import GlobalProfileDrawer from '@/components/GlobalProfileDrawer';
 import GlobalAccessDrawer from '@/components/GlobalAccessDrawer';
-import { PageSlideTransition } from '@/components/ui/page-slide-transition';
-import FloatingBottomBarLayoutClient from '@/components/screens/InstacardScreens/FloatingBottomBarLayoutClient';
 import ReduxProvider from '@/store/redux/ReduxProvider';
 
 const helveticaNeue = localFont({

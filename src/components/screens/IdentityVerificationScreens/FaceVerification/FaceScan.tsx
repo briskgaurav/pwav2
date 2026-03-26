@@ -7,6 +7,7 @@ import FaceGuide from '@/components/Extras/FaceGuide';
 import ValidationStatus from '@/components/Extras/ValidationStatus';
 import ButtonComponent from '@/components/ui/ButtonComponent';
 import { useFaceDetection } from '@/hooks/useFaceDetection';
+import { captureImage, saveToSession } from '@/components/Extras/utils/imageProcessing';
 
 export default function FaceScan({ getButtonText, handleContinue }: { getButtonText: () => string, handleContinue: () => void }) {
   const {
@@ -24,10 +25,30 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
     allPass,
   } = useFaceDetection(videoRef, isCameraReady);
 
+  const [isCapturing, setIsCapturing] = useState(false);
+
   // Start camera on mount
   useEffect(() => {
     startCamera();
   }, [startCamera]);
+
+  const handleCapture = useCallback(() => {
+    // The review screen needs to render the same captured frame.
+    // We persist it to sessionStorage since the flow stays in the same browser tab.
+    setIsCapturing(true);
+    try {
+      const videoEl = videoRef.current as HTMLVideoElement | null;
+      if (videoEl && videoEl.videoWidth > 0 && videoEl.videoHeight > 0) {
+        const imageData = captureImage(videoEl);
+        saveToSession(imageData);
+      }
+    } catch (e) {
+      console.error('Failed to capture face image:', e);
+    } finally {
+      setIsCapturing(false);
+      handleContinue();
+    }
+  }, [handleContinue, videoRef]);
 
   // Error state
   if (cameraError) {
@@ -65,13 +86,13 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
         <FaceGuide isValid={allPass} />
 
         {/* Validation status */}
-        <div className="absolute top-[5%] left-1/2 space-y-2 -translate-x-1/2 z-10">
-          <p className="text-white  text-sm text-center">
-            {allPass ? 'Ready to capture' : 'Position your face in the frame'}
+        <div className="absolute bottom-[25%] left-1/2 -translate-x-1/2 z-10 flex flex-col items-center space-y-2">
+          <p className="text-white text-sm text-center">
+            {allPass ? 'Ready to capture' : 'Position your face'}
           </p>
           {isDetectionLoading ? (
             <div className="bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
-              <div className="flex items-center gap-2 text-gray-500 text-sm">
+              <div className="flex items-center justify-center gap-2 text-gray-500 text-sm">
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path
@@ -94,7 +115,7 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
       </div>
 
         {/* Continue Button */}
-        <ButtonComponent title={getButtonText()} onClick={handleContinue} />
+        <ButtonComponent title={getButtonText()} onClick={handleCapture} disabled={!allPass || isCapturing} />
 
       {/* Instructions */}
 

@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useRef, useEffect, useState, useCallback } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 
 export default function page() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -70,40 +71,45 @@ export default function page() {
   }
 
   return (
-    <div className='h-screen flex flex-col'>
-      <div className="flex-1 flex-col bg-zinc-400 flex justify-center items-center overflow-auto ">
-        {cameraError ? (
-          <div className="text-white pointer-events-none text-center p-4 flex flex-col items-center gap-4">
-            <p>{cameraError}</p>
-            {permissionDenied && (
-              <button
-                onClick={handleRequestPermission}
-                className="bg-white text-black px-6 py-3 rounded-full font-medium"
-              >
-                Grant Camera Permission
-              </button>
-            )}
+    <LayoutSheet routeTitle='Forgot PIN' needPadding={false}>
+
+      <div className='w-full flex-1 h-full relative'>
+
+        <div className="flex-1 absolute inset-0 bg-zinc-400 flex flex-col justify-center items-center">
+          {cameraError ? (
+            <div className="text-white pointer-events-none text-center p-4 flex flex-col items-center gap-4">
+              <p>{cameraError}</p>
+              {permissionDenied && (
+                <button
+                  onClick={handleRequestPermission}
+                  className="bg-white text-black px-6 py-3 rounded-full font-medium"
+                >
+                  Grant Camera Permission
+                </button>
+              )}
+            </div>
+          ) : (
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ transform: 'scaleX(-1)' }} // Mirror the front camera
+            />
+          )}
+          <div className="w-full absolute z-10 bottom-0 p-4 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] pt-2">
+            <button
+              onClick={handleCapture}
+              disabled={isVerifying}
+              className={`bg-primary p-4 text-center text-white flex items-center justify-center rounded-full w-full font-medium text-base transition-all ${isVerifying ? 'opacity-100 brightness-75 cursor-not-allowed' : ''}`}
+            >
+              {isVerifying ? 'Verifying...' : 'Capture'}
+            </button>
           </div>
-        ) : (
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            className="w-full h-full object-cover"
-            style={{ transform: 'scaleX(-1)' }} // Mirror the front camera
-          />
-        )}
+        </div>
       </div>
-      <div className="w-full absolute z-10 bottom-0 p-4 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] pt-2">
-        <button
-          onClick={handleCapture}
-          disabled={isVerifying }
-          className={`bg-primary p-4 text-center text-white flex items-center justify-center rounded-full w-full font-medium text-base transition-all ${isVerifying ? 'opacity-100 brightness-75 cursor-not-allowed' : ''}`}
-        >
-          {isVerifying ? 'Verifying...' : 'Capture'}
-        </button>
-      </div>
-    </div>
+
+    </LayoutSheet>
   )
 }

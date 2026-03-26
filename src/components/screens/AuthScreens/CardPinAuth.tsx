@@ -10,6 +10,7 @@ import { useAuth } from '@/lib/auth-context'
 import { useManagingCard } from '@/hooks/useManagingCard'
 import LayoutSheet from '@/components/ui/LayoutSheet'
 import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
+import { routes } from '@/lib/routes'
 
 type CardPinAuthProps = {
   title?: string
@@ -126,7 +127,7 @@ export default function CardPinAuth({
             </button>
             <button
               type="button"
-              onClick={() => router.replace('/forget-pin')}
+              onClick={() => router.replace(routes.forgetPin)}
               className="text-xs text-text-primary bg-transparent border-none cursor-pointer"
             >
               {t('cardPinAuth.forgotPin')}

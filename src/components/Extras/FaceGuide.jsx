@@ -1,31 +1,23 @@
 'use client';
 
 export default function FaceGuide({ isValid = false }) {
+  const borderColor = isValid ? 'border-green-500' : 'border-white';
+  const cornerClasses = `absolute w-8 h-8 transition-colors duration-300 ${borderColor}`;
+
   return (
-    <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+    <div className="absolute inset-0 pointer-events-none flex items-start justify-center">
       {/* Rounded rectangle border */}
-      <div className="relative w-[70%] aspect-[4/5] max-w-[300px]" style={{ marginTop: '-5%' }}>
+      <div className="relative w-[70%] mt-[15%] aspect-[4/5] max-w-[300px]">
         <div
-          className={`
-            absolute inset-0  rounded-3xl border-2
-            transition-all duration-300
-            ${isValid ? 'border-green-500' : 'border-white border'}
-          `}
+          className={`absolute inset-0 rounded-3xl border-2 transition-all duration-300 ${borderColor}`}
         />
 
         {/* Corner markers */}
-        <div className={`absolute -top-2 -left-2 w-8 h-8 border-l-4 border-t-4 rounded-tl-3xl transition-colors duration-300 ${isValid ? 'border-green-500' : 'border-white'}`} />
-        <div className={`absolute -top-2 -right-2 w-8 h-8 border-r-4 border-t-4 rounded-tr-3xl transition-colors duration-300 ${isValid ? 'border-green-500' : 'border-white'}`} />
-        <div className={`absolute -bottom-2 -left-2 w-8 h-8 border-l-4 border-b-4 rounded-bl-3xl transition-colors duration-300 ${isValid ? 'border-green-500' : 'border-white'}`} />
-        <div className={`absolute -bottom-2 -right-2 w-8 h-8 border-r-4 border-b-4 rounded-br-3xl transition-colors duration-300 ${isValid ? 'border-green-500' : 'border-white'}`} />
+        <div className={`${cornerClasses} -top-2 -left-2 border-l-4 border-t-4 rounded-tl-3xl`} />
+        <div className={`${cornerClasses} -top-2 -right-2 border-r-4 border-t-4 rounded-tr-3xl`} />
+        <div className={`${cornerClasses} -bottom-2 -left-2 border-l-4 border-b-4 rounded-bl-3xl`} />
+        <div className={`${cornerClasses} -bottom-2 -right-2 border-r-4 border-b-4 rounded-br-3xl`} />
       </div>
-
-      {/* Instructions text */}
-      {/* <div className="absolute bottom-24 left-0 right-0 text-center">
-        <p className="text-white text-sm font-medium px-4">
-          {isValid ? 'Hold still...' : 'Position your face within the frame'}
-        </p>
-      </div> */}
     </div>
   );
 }

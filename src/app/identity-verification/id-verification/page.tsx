@@ -8,10 +8,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import { RootState } from '@/store/redux/store'
 import { nextStep } from '@/store/redux/slices/idVerificationSlice'
-import VerificationMethod from '@/components/screens/IdentityVerificationScreens/IDVerification/VerificationMethod'
 import VerificationConfirmScreen from '@/components/screens/IdentityVerificationScreens/IDVerification/VerificationConfirmScreen'
 import OTPVerificationScreen from '@/components/screens/IdentityVerificationScreens/IDVerification/OTPVerificationScreen'
 import ConfirmBankDetailsScreen from '@/components/screens/IdentityVerificationScreens/IDVerification/ConfirmBankDetailsScreen'
+import IdentityVerificationProgress from '@/components/ui/IdentityVerificationProgress'
+import VerificationMethodScreen from '@/components/screens/IdentityVerificationScreens/IDVerification/VerificationMethodScreen'
 
 export default function IdVerificationPage() {
   const dispatch = useDispatch()
@@ -37,16 +38,16 @@ export default function IdVerificationPage() {
   const renderStepContent = () => {
     switch (currentStep) {
       case 'chooseMethod':
-        return <VerificationMethod />
+        return <VerificationMethodScreen getButtonText={getButtonText} handleContinue={handleContinue} />
 
       case 'verificationConfirm':
-        return <VerificationConfirmScreen />
+        return <VerificationConfirmScreen getButtonText={getButtonText} handleContinue={handleContinue} />
 
       case 'otpVerify':
-        return <OTPVerificationScreen />
+        return <OTPVerificationScreen getButtonText={getButtonText} handleContinue={handleContinue} />
 
       case 'confirmBankDetails':
-        return <ConfirmBankDetailsScreen />
+        return <ConfirmBankDetailsScreen getButtonText={getButtonText} handleContinue={handleContinue} />
 
       default:
         return null
@@ -59,7 +60,7 @@ export default function IdVerificationPage() {
       case 'chooseMethod':
         return 'Start Verification'
       case 'verificationConfirm':
-        return 'Verify'
+        return 'Send Code'
       case 'otpVerify':
         return 'Confirm'
       case 'confirmBankDetails':
@@ -70,15 +71,18 @@ export default function IdVerificationPage() {
   }
 
   return (
-    <LayoutSheet routeTitle='ID Verification'>
+    <LayoutSheet
+      routeTitle='ID Verification'
+      progressNode={<IdentityVerificationProgress />}
+      needPadding={false}
+    >
       <div className="flex flex-col h-full">
         {/* Step Content */}
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1">
           {renderStepContent()}
         </div>
 
         {/* Continue Button */}
-        <ButtonComponent title={getButtonText()} onClick={handleContinue} />
 
       </div>
     </LayoutSheet>

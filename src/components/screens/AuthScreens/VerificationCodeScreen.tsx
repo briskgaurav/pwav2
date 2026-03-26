@@ -16,6 +16,7 @@ type SuccessPopupContent = {
 }
 
 type VerificationCodeScreenProps = {
+  hideLayerSheet?: boolean
   title: string
   subtitle: string
   maskedValue: string
@@ -27,6 +28,7 @@ type VerificationCodeScreenProps = {
 }
 
 export default function VerificationCodeScreen({
+  hideLayerSheet = false,
   title,
   subtitle,
   maskedValue = 'nird***malik@gmail.com',
@@ -144,7 +146,7 @@ export default function VerificationCodeScreen({
 
   if (showKeypad) {
     return (
-      <LayoutSheet routeTitle={title} needPadding={false}>
+      <LayoutSheet routeTitle={title} needPadding={false} hideLayerSheet={hideLayerSheet}>
 
           {/* NEED PADDING MY INPUT BOXES NOT TAKING PADDING */}
           <div className="flex flex-col" style={{ paddingBottom: isKeypadOpen ? keypadHeight : 0 }}>
