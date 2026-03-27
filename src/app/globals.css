@@ -8,6 +8,7 @@
 
   /* Backgrounds */
   --color-white: #FFFFFF;
+  --disable-button: #AF8AC4;
   --color-light-gray: #F5F5F5;
   --color-background2: #F6F7FF;
   --color-card-background: #FFFFFF;
@@ -80,6 +81,7 @@
   --color-card-background: var(--color-card-background);
   --color-background: var(--color-white);
   --color-background2: var(--color-background2);
+  --color-disable-button: var(--disable-button);
 
   /* Text colors */
   --color-text-primary: var(--color-text-primary);
