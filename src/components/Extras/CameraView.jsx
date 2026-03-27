@@ -9,7 +9,7 @@ const CameraView = forwardRef(function CameraView({ className = '' }, ref) {
         ref={ref}
         autoPlay
         playsInline
-        webkitPlaysInline
+        webkitplaysinline
         muted
         controls={false}
         disablePictureInPicture

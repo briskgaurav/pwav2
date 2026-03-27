@@ -69,7 +69,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
 
-      <body className={`${helveticaNeue.className} h-dvh overflow-hidden`}>
+      <body className={`${helveticaNeue.className} overflow-hidden`} style={{ height: '100vh', minHeight: '100%' }}>
         <ReduxProvider>
           <AuthProvider>
             {/* <PWAHeaderProvider> */}
@@ -83,7 +83,7 @@ export default function RootLayout({
 
             {/* </PWAHeaderProvider> */}
 
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col h-full" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '100vh' }}>
               {children}
             </div>
             <GlobalProfileDrawer />

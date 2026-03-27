@@ -4,6 +4,7 @@ import { ProfileDrawer } from '@/components/ProfileDrawer'
 import i18n from '@/lib/i18n'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { selectAccessDrawerVisible, closeAccessDrawer } from '@/store/redux/slices/accessDrawerSlice'
+import { closeWebView, isNativeWebView } from '@/utils/nativeBridge'
 import {
   CreditCard,
   HandCoins,
@@ -60,8 +61,13 @@ export default function GlobalAccessDrawer() {
 
   const handleGoBack = () => {
     close()
-    router.push('/')
-
+    // If running in a native WebView, close the WebView and return to the host app
+    // Otherwise, navigate to the home page
+    if (isNativeWebView()) {
+      closeWebView()
+    } else {
+      router.push('/')
+    }
   }
 
   const handleFeatureClick = (id: FeatureId) => {
