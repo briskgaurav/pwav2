@@ -42,7 +42,7 @@ export function GreetingBar({
         aria-label={`Hello, ${userName}`}
       >
         <span className="h-10 w-10 rounded-full bg-primary flex items-center justify-center shrink-0">
-          <span className="text-[#fff] text-sm font-medium">N</span>
+          <span className="text-[#fff] mt-[2px] text-sm font-medium">N</span>
         </span>
         <span>{userName}</span>
       </button>

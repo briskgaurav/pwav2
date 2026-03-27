@@ -28,6 +28,7 @@ export function ProfileContent({
   const { t, i18n } = useTranslation()
   const userEmail = useAppSelector((s) => s.user.email)
   const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
   const selectedLang = i18n.language?.split('-')[0] ?? 'en'
   const router = useRouter()
   const isRTL = selectedLang === 'ar'
@@ -85,6 +86,9 @@ export function ProfileContent({
   const handleDarkModeClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
 
+    // Prevent clicking while animation is in progress
+    if (isAnimating) return
+
     const overlay = overlayRef.current
     const iconContainer = iconContainerRef.current
     const sun = sunRef.current
@@ -93,6 +97,8 @@ export function ProfileContent({
     const willBeDark = !isDarkMode
 
     if (overlay && iconContainer && sun && moon && circle) {
+      setIsAnimating(true)
+
       // Set initial states
       gsap.set(overlay, { 
         display: 'flex', 
@@ -118,58 +124,59 @@ export function ProfileContent({
         gsap.set(sun, { opacity: 0, scale: 0.5, rotation: 90 })
       }
 
-      // Create animation timeline with slower, smoother transitions
+      // Create animation timeline with faster transitions
       const tl = gsap.timeline()
       
-      // Fade in overlay - slower
+      // Fade in overlay - faster
       tl.to(overlay, {
         opacity: 1,
-        duration: 0.3,
+        duration: 0.15,
         ease: 'sine.out',
       })
-      // Expand circle from center - much slower and smoother
+      // Expand circle from center - faster
       .to(circle, {
         scale: 3,
-        duration: 1.5,
+        duration: 0.6,
         ease: 'power2.out',
-      }, '-=0.2')
-      // Animate icon transition - slower with smoother easing
+      }, '-=0.1')
+      // Animate icon transition - faster
       .to(willBeDark ? sun : moon, {
         opacity: 0,
         scale: 0.5,
         rotation: willBeDark ? 180 : -180,
-        duration: 0.6,
+        duration: 0.25,
         ease: 'power2.inOut',
-      }, '-=0.9')
+      }, '-=0.4')
       .to(willBeDark ? moon : sun, {
         opacity: 1,
         scale: 1,
         rotation: 0,
-        duration: 0.7,
+        duration: 0.3,
         ease: 'elastic.out(1, 0.5)',
-      }, '-=0.3')
+      }, '-=0.15')
       // Toggle dark mode
       .call(() => {
         toggleDarkMode()
       })
-      // Hold longer for smoother feel
-      .to({}, { duration: 0.5 })
-      // Fade out icon - slower
+      // Hold shorter
+      .to({}, { duration: 0.2 })
+      // Fade out icon - faster
       .to(iconContainer, {
         opacity: 0,
         scale: 0.8,
-        duration: 0.4,
+        duration: 0.2,
         ease: 'power2.inOut',
       })
     
       .to(overlay, {
         opacity: 0,
-        duration: 0.6,
+        duration: 0.25,
         ease: 'power2.out',
         onComplete: () => {
           gsap.set(overlay, { display: 'none' })
+          setIsAnimating(false)
         }
-      }, '-=0.2')
+      }, '-=0.1')
     } else {
       toggleDarkMode()
     }
@@ -180,7 +187,7 @@ export function ProfileContent({
       <div 
         ref={overlayRef}
         id='theme-overlay' 
-        className='h-screen fixed top-0 left-0 z-[100] w-screen flex items-center justify-center pointer-events-none'
+        className='h-screen fixed top-0 left-0 z-100 w-screen flex items-center justify-center pointer-events-none'
         style={{ display: 'none' }}
       >
         {/* Expanding circle background */}
@@ -263,8 +270,9 @@ export function ProfileContent({
                   role="switch"
                   aria-checked={isDarkMode}
                   onClick={handleDarkModeClick}
+                  disabled={isAnimating}
                   className={`relative w-11 h-6 rounded-full transition-colors ${isDarkMode ? 'bg-primary' : 'bg-border'
-                    }`}
+                    } ${isAnimating ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <span
                     className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform ${isDarkMode ? 'left-1 translate-x-5' : 'left-1'

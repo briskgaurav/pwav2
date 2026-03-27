@@ -1,11 +1,11 @@
 import Link from 'next/link'
 import { SheetContainer } from '@/components/ui/sheet-container'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 
 export default function NotFound() {
   return (
-    <div className='min-h-screen flex flex-col bg-primary'>
-      <SheetContainer>
-        <div className='flex-1 flex flex-col items-center justify-center p-6'>
+    <LayoutSheet needPadding={false} routeTitle='Under Development'>
+        <div className='flex-1 flex flex-col items-center justify-center p-6 min-h-full'>
           <div className='flex flex-col items-center text-center space-y-6'>
             <div className='w-32 h-32 flex items-center justify-center rounded-full bg-background2'>
               <span className='text-3xl font-bold text-primary'>🚧</span>
@@ -21,7 +21,6 @@ export default function NotFound() {
           
           </div>
         </div>
-      </SheetContainer>
-    </div>
+    </LayoutSheet>
   )
 }

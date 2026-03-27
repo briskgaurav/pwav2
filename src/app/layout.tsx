@@ -72,17 +72,6 @@ export default function RootLayout({
       <body className={`${helveticaNeue.className} h-dvh overflow-hidden`}>
         <ReduxProvider>
           <AuthProvider>
-            {/* <PWAHeaderProvider> */}
-            {/* <div className="flex flex-col h-full overflow-hidden"> */}
-            {/* <PWAHeader /> */}
-            {/* <RouteTitle /> */}
-            {/* <PageSlideTransition> */}
-            {/* {children} */}
-            {/* </PageSlideTransition> */}
-            {/* </div> */}
-
-            {/* </PWAHeaderProvider> */}
-
             <div className="flex flex-col h-full">
               {children}
             </div>
