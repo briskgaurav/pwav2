@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 export default function Introduction({ getButtonText, handleContinue }: { getButtonText: () => string, handleContinue: () => void }) {
   return (
-    <div className="h-full text-sm bg-white space-y-8 flex w-full flex-col overflow-hidden">
+    <div className="h-full text-sm bg-white space-y-8 flex w-full flex-col overflow-hidden" style={{ backgroundColor: '#FFFFFF', minHeight: '100%' }}>
       <div className='w-[50vw] mx-auto h-auto pt-10 '>
         <Image src='/svg/face.svg' alt='Introduction' width={100} height={100} className='h-full w-full object-contain' />
       </div>

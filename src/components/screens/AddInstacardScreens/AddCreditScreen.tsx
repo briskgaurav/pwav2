@@ -61,9 +61,9 @@ export default function AddCreditScreen() {
               <Link
                 target="_blank"
                 className="text-blue"
-                href="https://www.accessbankplc.com/credit-cards-terms.aspx"
+                href="#"
               >
-                https://demo-link.apx
+                https://demo-link.com
               </Link>
             </div>
 
