@@ -49,8 +49,7 @@ export default function PWAHeader() {
     }
 
     return (
-        // <div className='shrink-0 bg-primary mt-10' style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
-        <div className='shrink-0 bg-primary mt-4 ' style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
+        <div className='shrink-0 bg-primary' style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 8px)' }}>
             <div className='h-16 text-white relative flex items-center justify-between px-4 w-full'>
                 <button onClick={handleGoBack} className={`h-fit ${showMenuIcon ? 'opacity-100 flex' : 'opacity-0 hidden pointer-events-none'} w-fit rounded-full`} aria-label="Go back">
                     <ChevronLeft

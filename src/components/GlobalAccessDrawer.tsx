@@ -77,7 +77,10 @@ export default function GlobalAccessDrawer() {
 
   return (
     <ProfileDrawer visible={visible} onClose={close} side="right">
-      <div className="h-full flex flex-col p-4 bg-card-background overflow-hidden pt-12">
+      <div
+        className="h-full flex flex-col p-4 bg-card-background overflow-hidden"
+        style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}
+      >
         <button
           type="button"
           onClick={handleGoBack}
