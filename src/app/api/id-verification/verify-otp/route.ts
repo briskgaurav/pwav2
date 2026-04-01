@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+const DEFAULT_TEST_OTP = '111111'
+
 type Body = {
   userInfo?: {
     id: number
@@ -29,12 +31,17 @@ export async function POST(request: Request) {
   if (method !== 'email' && method !== 'phone') {
     return NextResponse.json({ status: false, message: 'Invalid method' }, { status: 400 })
   }
-  if (!/^\d{6}$/.test(code)) {
+  const isDefaultTestOtp = process.env.NODE_ENV !== 'production' && code === DEFAULT_TEST_OTP
+  if (!/^\d{6}$/.test(code) && !isDefaultTestOtp) {
     return NextResponse.json({ status: false, message: 'Invalid code' }, { status: 400 })
   }
 
   if (!userInfo || typeof userInfo.id !== 'number') {
     return NextResponse.json({ status: false, message: 'Missing userInfo' }, { status: 400 })
+  }
+
+  if (isDefaultTestOtp) {
+    return NextResponse.json({ status: true })
   }
 
   const storeKey = `${userInfo.id}:${method}`
