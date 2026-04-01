@@ -1,10 +1,7 @@
-export type IdVerificationMethod = 'email' | 'phone'
+import { parseApiError } from '@/lib/verification'
+import type { UserInfo, IdVerificationMethod } from '@/lib/verification'
 
-export type UserInfo = {
-  id: number
-  email: string
-  phone_number: string
-}
+export type { UserInfo, IdVerificationMethod }
 
 export type SendOtpRequest = {
   userInfo: UserInfo
@@ -27,27 +24,13 @@ export type VerifyOtpResponse = {
   status: true
 }
 
-async function parseError(res: Response): Promise<string> {
-  try {
-    const json = (await res.json()) as { message?: string }
-    if (json?.message) return json.message
-  } catch {
-    // ignore
-  }
-  return 'Something went wrong'
-}
-
 export async function sendIdVerificationOtp(body: SendOtpRequest): Promise<SendOtpResponse> {
   const res = await fetch('/api/id-verification/send-otp', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(body),
   })
-
-  if (!res.ok) {
-    throw new Error(await parseError(res))
-  }
-
+  if (!res.ok) throw new Error(await parseApiError(res))
   return (await res.json()) as SendOtpResponse
 }
 
@@ -57,11 +40,6 @@ export async function verifyIdVerificationOtp(body: VerifyOtpRequest): Promise<V
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(body),
   })
-
-  if (!res.ok) {
-    throw new Error(await parseError(res))
-  }
-
+  if (!res.ok) throw new Error(await parseApiError(res))
   return (await res.json()) as VerifyOtpResponse
 }
-

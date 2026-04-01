@@ -6,26 +6,46 @@ import GlobalProfileDrawer from '@/components/GlobalProfileDrawer';
 import GlobalAccessDrawer from '@/components/GlobalAccessDrawer';
 import ReduxProvider from '@/store/redux/ReduxProvider';
 
-const helveticaNeue = localFont({
+const trueno = localFont({
   src: [
     {
-      path: '../fonts/HelveticaNeue-Light.otf',
-      weight: '300',
-      style: 'normal',
-    },
-    {
-      path: '../fonts/HelveticaNeue-Roman.otf',
+      path: './fonts/truenorg.otf',
       weight: '400',
       style: 'normal',
     },
     {
-      path: '../fonts/HelveticaNeue-Medium.otf',
-      weight: '500',
+      path: './fonts/truenobd.otf',
+      weight: '700',
       style: 'normal',
     },
     {
-      path: '../fonts/HelveticaNeue-Bold.otf',
+      path: './fonts/truenobdol.otf',
       weight: '700',
+      style: 'italic',
+    },
+    {
+      path: './fonts/truenoexbd.otf',
+      weight: '800',
+      style: 'normal',
+    },
+    {
+      path: './fonts/truenoexbdol.otf',
+      weight: '800',
+      style: 'italic',
+    },
+    {
+      path: './fonts/truenolt.otf',
+      weight: '300',
+      style: 'normal',
+    },
+    {
+      path: './fonts/truenosbd.otf',
+      weight: '600',
+      style: 'normal',
+    },
+    {
+      path: './fonts/truenoultlt.otf',
+      weight: '200',
       style: 'normal',
     },
   ],
@@ -61,7 +81,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={helveticaNeue.variable}>
+    <html lang="en" className={trueno.variable}>
       <head>
         <link rel="apple-touch-icon" href="/img/instacard.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -69,7 +89,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
 
-      <body className={`${helveticaNeue.className} overflow-hidden`} style={{ height: '100vh', minHeight: '100%' }}>
+      <body className={`${trueno.className} overflow-hidden`} style={{ height: '100vh', minHeight: '100%' }}>
         <ReduxProvider>
           <AuthProvider>
             <div className="flex flex-col h-full" style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '100vh' }}>

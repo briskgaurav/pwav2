@@ -111,7 +111,7 @@ export function GreetingBar({
       >
         <div className="flex items-center gap-2 justify-center">
           <div className='w-fit'>
-            <Plus className='w-5 h-5 text-[#fff] mb-1' />
+            <Plus className='w-5 h-5 text-[#fff]' />
           </div>
           <p className="text-[#fff] text-sm font-medium">Add {mode === 'virtual' ? 'Virtual Card' : 'Universal Card'}</p>
         </div>
