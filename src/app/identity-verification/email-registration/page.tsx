@@ -93,7 +93,9 @@ export default function EmailRegistrationPage() {
         {/* Step Content */}
         <div className="flex-1 flex items-center justify-center">
           {loading ? (
-            <SpinnerLoader />
+            <div className='w-full flex items-center justify-center h-full'>
+              <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+            </div>
           ) : error ? (
             <div className="flex flex-col items-center justify-center h-full gap-3 px-6">
               <p className="text-red-500 text-sm">Failed to load user</p>

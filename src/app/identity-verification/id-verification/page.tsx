@@ -28,10 +28,10 @@ export default function IdVerificationPage() {
 
   const userInfo: UserInfo | null = userData
     ? {
-        id: Number(userId),
-        email: userData.data.email ?? '',
-        phone_number: userData.data.phone_number ?? '',
-      }
+      id: Number(userId),
+      email: userData.data.email ?? '',
+      phone_number: userData.data.phone_number ?? '',
+    }
     : null
 
   const userDetails: UserData['data'] | null = userData ? userData.data : null
@@ -98,7 +98,11 @@ export default function IdVerificationPage() {
         {/* Step Content */}
         <div className="flex-1">
           {loading ? (
-            <SpinnerLoader />
+            <div className='w-full flex items-center justify-center h-full'>
+
+              <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+            </div>
+
           ) : error ? (
             <div className="flex flex-col items-center justify-center h-full gap-3 px-6">
               <p className="text-red-500 text-sm">Failed to load user</p>

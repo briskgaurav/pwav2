@@ -1,18 +1,37 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { User, Sun, Eye, Camera } from 'lucide-react'
 import ButtonComponent from '../../../ui/ButtonComponent'
 import Image from 'next/image'
 
 export default function Introduction({ getButtonText, handleContinue }: { getButtonText: () => string, handleContinue: () => void }) {
+  const [isImageLoading, setIsImageLoading] = useState(true)
+
   return (
     <div className="h-full text-sm bg-white space-y-8 flex w-full flex-col overflow-hidden" style={{ backgroundColor: '#FFFFFF', minHeight: '100%' }}>
-      <div className='w-[50vw] mx-auto h-auto pt-10 '>
-        <Image src='/svg/face.svg' alt='Introduction' width={100} height={100} className='h-full w-full object-contain' />
+      <div className='w-[50vw] mx-auto h-auto pt-10 relative'>
+        {/* Loading indicator */}
+        {isImageLoading && (
+          <div className="absolute inset-0 flex items-center justify-center rounded-lg">
+            <div className="flex gap-1">
+              <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+              <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+              <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+            </div>
+          </div>
+        )}
+        <Image
+          src='/svg/face.svg'
+          alt='Introduction'
+          width={100}
+          height={100}
+          className={`h-full w-full object-contain transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
+          onLoad={() => setIsImageLoading(false)}
+        />
       </div>
 
       <div className='text-center'>
         <p className='text-text-primary text-xl mb-2  font-medium'>Verify your Identity</p>
-        <p className='text-text-secondary '>Take a quick photo to confirm it’s you.</p>
+        <p className='text-text-secondary '>Take a quick photo to confirm it's you.</p>
       </div>
 
       <div className='w-full px-[10%] space-y-4'>

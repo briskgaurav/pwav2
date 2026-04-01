@@ -15,6 +15,11 @@ function normalizePhoneDigits(value: string) {
   return value.replace(/\D/g, '')
 }
 
+function isValidEmail(value: string) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(value.trim())
+}
+
 const MAX_PHONE_DIGITS = 13 // e.g. +234 + 10 digits
 const COUNTRY_CODE_LENGTH = 3 // e.g. 234
 
@@ -74,7 +79,7 @@ export default function VerificationConfirmScreen({
     }
   }, [method, maskedEmail, maskedMobile])
 
-  const canSubmit = inputValue.trim().length > 0 && (method === 'phone' ? normalizePhoneDigits(inputValue).length >= 10 : true)
+  const canSubmit = inputValue.trim().length > 0 && (method === 'phone' ? normalizePhoneDigits(inputValue).length >= 10 : isValidEmail(inputValue))
   const showError = !!errorText
 
   return (
@@ -113,7 +118,9 @@ export default function VerificationConfirmScreen({
       </div>
 
       <ButtonComponent
+      
         title={sending ? 'Sending...' : getButtonText()}
+        
         onClick={async () => {
           if (!method || method === 'bvn') return
           try {

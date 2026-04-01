@@ -245,7 +245,7 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
           </p>
           {isDetectionLoading ? (
           <>
-          <p>Loading</p>
+          <p className='text-white text-sm'>Loading</p>
           </>
           ) : !isCameraReady ? (
             <div className="bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">

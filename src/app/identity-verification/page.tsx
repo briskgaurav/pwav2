@@ -51,7 +51,7 @@ export default async function IdentityVerificationPage({
   searchParams?: { id?: string }
 }) {
 
-  const id = searchParams?.id ?? '5'
+  const id = searchParams?.id ?? '1'
 
   // If KYC already completed, skip the entire flow.
   // Fetch from our own API (server-side) so this is stateful and consistent.
