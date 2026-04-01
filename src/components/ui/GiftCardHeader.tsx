@@ -10,7 +10,7 @@ export function GiftCardHeader() {
       <p className="text-text-primary text-sm pt-5 translate-y-5 ml-4">
         Your Instacard Gift Card is Ready for Activation.
       </p>
-      <CardMockup imageSrc={imageSrc} maskedNumber={maskedNumber} isclickable={false} showActions={false} showNumber={true} />
+      <CardMockup imageSrc={imageSrc || '/img/gift.png'} maskedNumber={maskedNumber} isclickable={false} showActions={false} showNumber={true} />
       <div className="text-sm">
         <p className="ml-1">
           KYC Tier : <span className="text-orange font-medium">KYC Level 1</span>

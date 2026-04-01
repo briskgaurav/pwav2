@@ -7,15 +7,17 @@ import ButtonComponent from '@/components/ui/ButtonComponent'
 
 type Choice = 'current' | 'new'
 
-const CURRENT_EMAIL = 'nird***malik@gmail.com'
+type ConfirmYourEmailScreenProps = {
+  currentEmailMasked: string
+  getButtonText: () => string
+  onContinue: (payload: { choice: Choice; newEmail?: string }) => void
+}
 
 export default function ConfirmYourEmailScreen({
+  currentEmailMasked,
   getButtonText,
-  handleContinue,
-}: {
-  getButtonText: () => string,
-  handleContinue: () => void,
-}) {
+  onContinue,
+}: ConfirmYourEmailScreenProps) {
   const [choice, setChoice] = useState<Choice | null>(null)
   const [newEmail, setNewEmail] = useState('')
 
@@ -37,7 +39,7 @@ export default function ConfirmYourEmailScreen({
 
         <div className="space-y-3">
           <RadioOption
-            label={`Continue with ${CURRENT_EMAIL}`}
+            label={`Continue with ${currentEmailMasked || 'your existing email'}`}
             selected={choice === 'current'}
             onSelect={() => setChoice('current')}
             IconComponent={Mail}
@@ -72,7 +74,10 @@ export default function ConfirmYourEmailScreen({
 
       <ButtonComponent
         title={getButtonText()}
-        onClick={handleContinue}
+        onClick={() => {
+          if (!choice) return
+          onContinue({ choice, newEmail: choice === 'new' ? newEmail : undefined })
+        }}
         disabled={!canContinue}
       />
     </div>

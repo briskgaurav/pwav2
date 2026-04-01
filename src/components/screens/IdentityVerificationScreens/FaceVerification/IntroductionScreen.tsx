@@ -11,7 +11,7 @@ export default function Introduction({ getButtonText, handleContinue }: { getBut
       </div>
 
       <div className='text-center'>
-        <p className='text-text-primary  font-medium'>Verify your Identity</p>
+        <p className='text-text-primary text-xl mb-2  font-medium'>Verify your Identity</p>
         <p className='text-text-secondary '>Take a quick photo to confirm it’s you.</p>
       </div>
 

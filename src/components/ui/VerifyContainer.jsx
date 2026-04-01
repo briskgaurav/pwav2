@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'
 import { useVerifyFlow } from './hooks/useVerifyFlow';
 import { useVerifyProgress } from './VerifyProgressContext';
 import { saveToSession } from './utils/imageProcessing';

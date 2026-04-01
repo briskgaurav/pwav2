@@ -1,15 +1,16 @@
 export type UserData = {
-  id?: string
+  id?: number
   status: boolean
   message: string
   code: number
   data: {
-    bvn: string | null
-    nin: string | null
-    first_name: string
-    middle_name: string
-    last_name: string
-    date_of_birth: string
+    name: string
+    LivenessVerified: boolean
+    kyc_completed?: boolean
+    bvn_details: { number: string; name: string; address: string } | null
+    nin_details: { number: string; name: string; address: string } | null
+    bank_details: { bank_name: 'FCMB'; user_name: string; account_number: string; address: string }
+    date_of_birth: string | null
     gender: string
     phone_number: string
     email: string

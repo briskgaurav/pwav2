@@ -33,10 +33,12 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
   } = useFaceDetection(videoRef, isCameraReady && !useFallback);
 
   const [isCapturing, setIsCapturing] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   // All hooks must be called before any conditional returns
   const handleCapture = useCallback(() => {
     setIsCapturing(true);
+    setIsVerifying(true);
     try {
       const videoEl = videoRef.current as HTMLVideoElement | null;
       if (videoEl && videoEl.videoWidth > 0 && videoEl.videoHeight > 0) {
@@ -45,24 +47,31 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
       }
     } catch (e) {
       console.error('Failed to capture face image:', e);
-    } finally {
-      setIsCapturing(false);
-      handleContinue();
     }
+    
+    setTimeout(() => {
+      setIsCapturing(false);
+      setIsVerifying(false);
+      handleContinue();
+    }, 2000);
   }, [handleContinue, videoRef]);
 
   // Handle capture from fallback mode (file input)
   const handleFallbackCapture = useCallback(() => {
     if (capturedImage) {
       setIsCapturing(true);
+      setIsVerifying(true);
       try {
         saveToSession(capturedImage);
       } catch (e) {
         console.error('Failed to save captured image:', e);
-      } finally {
-        setIsCapturing(false);
-        handleContinue();
       }
+      
+      setTimeout(() => {
+        setIsCapturing(false);
+        setIsVerifying(false);
+        handleContinue();
+      }, 2000);
     }
   }, [capturedImage, handleContinue]);
 
@@ -155,6 +164,25 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
               >
                 Retake
               </button>
+              
+              {/* Verifying overlay */}
+              {isVerifying && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <div className="bg-white/90 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
+                    <div className="flex items-center justify-center gap-3 text-gray-600">
+                      <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      <span>Stay Still Verifying...</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             // Show camera placeholder
@@ -175,7 +203,7 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
 
         {/* Button */}
         <ButtonComponent
-          title={capturedImage ? getButtonText() : 'Open Camera'}
+          title={isVerifying ? 'Verifying...' : (capturedImage ? getButtonText() : 'Open Camera')}
           onClick={capturedImage ? handleFallbackCapture : triggerFileCapture}
           disabled={isCapturing}
         />
@@ -191,15 +219,12 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
         <CameraView ref={videoRef} />
         <FaceGuide isValid={allPass} />
 
-        {/* Validation status */}
-        <div className="absolute bottom-[25%] left-1/2 -translate-x-1/2 z-10 flex flex-col items-center space-y-2">
-          <p className="text-white text-sm text-center">
-            {allPass ? 'Ready to capture' : 'Position your face'}
-          </p>
-          {isDetectionLoading ? (
-            <div className="bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
-              <div className="flex items-center justify-center gap-2 text-gray-500 text-sm">
-                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+        {/* Verifying overlay */}
+        {isVerifying && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-20">
+            <div className="bg-white/90 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
+              <div className="flex items-center justify-center gap-3 text-gray-600">
+                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path
                     className="opacity-75"
@@ -207,9 +232,21 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                <span>Initializing face detection...</span>
+                <span>Verifying...</span>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Validation status */}
+        <div className="absolute bottom-[25%] left-1/2 -translate-x-1/2 z-10 flex flex-col items-center space-y-2">
+          <p className="text-white text-sm text-center">
+            {allPass ? 'Ready to capture' : 'Position your face'}
+          </p>
+          {isDetectionLoading ? (
+          <>
+          <p>Loading</p>
+          </>
           ) : !isCameraReady ? (
             <div className="bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
               <div className="flex items-center justify-center gap-2 text-gray-500 text-sm">
@@ -235,7 +272,7 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
       </div>
 
       {/* Continue Button */}
-      <ButtonComponent title={getButtonText()} onClick={handleCapture} disabled={!allPass || isCapturing} />
+      <ButtonComponent title={isVerifying ? 'Verifying...' : getButtonText()} onClick={handleCapture} disabled={!allPass || isCapturing} />
     </div>
   );
 }

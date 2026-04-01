@@ -18,15 +18,17 @@ import { useAppSelector } from '@/store/redux/hooks'
 
 interface ProfileContentProps {
   userName?: string
+  userEmail?: string
   onClose: () => void
 }
 
 export function ProfileContent({
   userName = 'User',
+  userEmail = 'user@example.com',
   onClose,
 }: ProfileContentProps) {
   const { t, i18n } = useTranslation()
-  const userEmail = useAppSelector((s) => s.user.email)
+  // const userEmail = useAppSelector((s) => s.user.email)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
   const selectedLang = i18n.language?.split('-')[0] ?? 'en'
@@ -330,10 +332,17 @@ function MenuRow({
   isRTL = false,
 }: MenuRowProps) {
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onPress}
-      className="flex items-center gap-3 w-full py-4 px-4 text-left transition-colors"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onPress()
+        }
+      }}
+      className="flex items-center gap-3 w-full py-4 px-4 text-left transition-colors cursor-pointer"
     >
       <span
         className={`flex items-center justify-center w-9 h-9 rounded-[10px] ${danger ? 'bg-error/10' : 'bg-light-gray'
@@ -349,6 +358,6 @@ function MenuRow({
       </span>
       {rightElement}
       {showChevron && <ChevronRight className={`w-[18px] h-[18px] text-text-secondary ${isRTL ? 'rotate-180' : ''}`} />}
-    </button>
+    </div>
   )
 }

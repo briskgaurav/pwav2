@@ -15,6 +15,7 @@ import { setPendingCardForm } from '@/store/redux/slices/cardWalletSlice'
 import LeftSideDrawer from '@/components/LeftSideDrawer'
 import { ProfileContent } from '@/components/screens/Drawers/ProfileContent'
 import FloatingBottomBarLayoutClient from './FloatingBottomBarLayoutClient'
+import { getUserDetailsFromLocal } from '@/hooks/getUserDetailsFromLocal'
 
 
 
@@ -121,8 +122,9 @@ export default function MainInstacardScreen() {
   }, [cardMode, router, dispatch])
 
   const { isDarkMode } = useAuth();
-  const firstName = useAppSelector((s) => s.user.firstName);
-  const fullName = useAppSelector((s) => s.user.fullName);
+
+
+  const { name: firstName, email: userEmail, phone: userPhone, dateOfBirth, gender, nationality, stateOfOrigin, lga, residentialAddress, registrationDate, enrollmentBank, photo, livenessVerified, kycCompleted, watchListed, bankDetails, bvnDetails, ninDetails } = getUserDetailsFromLocal()
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -187,7 +189,8 @@ export default function MainInstacardScreen() {
         onClose={() => setLeftDrawerVisible(false)}
       >
         <ProfileContent
-          userName={fullName}
+          userName={firstName}
+          userEmail={userEmail}
           onClose={() => setLeftDrawerVisible(false)}
         />
       </LeftSideDrawer>

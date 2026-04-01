@@ -11,6 +11,7 @@ import { CARD_CONFIG } from '@/lib/card-config'
 import PullToRefresh from '@/components/ui/PullToRefresh'
 import { useManagingCard } from '@/hooks/useManagingCard'
 import LayoutSheet from '../../ui/LayoutSheet'
+import FloatingBottomBarLayoutClient from '../InstacardScreens/FloatingBottomBarLayoutClient'
 
 export default function MakeOnlinePaymentScreen() {
   const dispatch = useAppDispatch()
@@ -43,7 +44,7 @@ export default function MakeOnlinePaymentScreen() {
   return (
     <LayoutSheet needPadding={false} routeTitle="Make Online Payments">
         <PullToRefresh onRefresh={() => { dispatch(setRefreshStart()); setTimeout(() => dispatch(refreshData()), 1500) }}>
-          <div className="h-full overflow-y-auto pb-10">
+          <div className="h-full overflow-y-auto pb-[20%]">
             {/* Card section */}
             <div className="px-5 pt-10">
               <VirtualCardDetails cardImageSrc={imageSrc ?? config.image} maskedNumber={maskedNumber ?? cardDetails.maskedNumber} cardNumber={cardNumber ?? cardDetails.pan} />
@@ -57,6 +58,8 @@ export default function MakeOnlinePaymentScreen() {
             </div>
           </div>
         </PullToRefresh>
+      <FloatingBottomBarLayoutClient hidescan={true} />
+
     </LayoutSheet>
   )
 }

@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { SheetContainer, Button, CardMockup } from '@/components/ui';
 import { notifyNavigation } from '@/lib/bridge';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
 import { useAppSelector } from '@/store/redux/hooks';

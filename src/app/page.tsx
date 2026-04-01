@@ -9,15 +9,31 @@ export default function HomePage() {
   const [checking, setChecking] = useState(false)
 
   const handleClick = () => {
-    const hasSavedUser =
-      localStorage.getItem('kyc_completed') === 'true' ||
-      !!localStorage.getItem('user')
-
-    if (hasSavedUser) {
-      router.push(routes.instacard)
-    } else {
-      router.push(routes.identityRegistrationProcess)
+    let activeId = '1'
+    try {
+      activeId = localStorage.getItem('active_user_id') ?? '1'
+      localStorage.setItem('active_user_id', activeId)
+    } catch {
+      // ignore
     }
+
+    const isCompleted = (() => {
+      try {
+        return (
+          localStorage.getItem(`kyc_completed_${activeId}`) === 'true' ||
+          localStorage.getItem('kyc_completed') === 'true'
+        )
+      } catch {
+        return false
+      }
+    })()
+
+    if (isCompleted) {
+      router.push(routes.instacard)
+      return
+    }
+
+    router.push(`${routes.identityRegistrationProcess}?id=${encodeURIComponent(activeId)}`)
   }
 
   return (

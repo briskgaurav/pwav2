@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
-export type LivenessStep = 'splash' | 'bvnNinEntry' | 'facescan' | 'review' | 'verifydone' | 'nameMismatch'
+export type LivenessStep = 'splash' | 'bvnNinEntry' | 'facescan' | 'review'
 
 type LivenessState = {
   currentStep: LivenessStep
@@ -37,9 +37,6 @@ const livenessSlice = createSlice({
           break
         case 'facescan':
           state.currentStep = 'review'
-          break
-        case 'review':
-          state.currentStep = 'verifydone'
           break
         default:
           break

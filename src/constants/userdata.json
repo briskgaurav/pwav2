@@ -1,101 +1,246 @@
 {
   "users": [
     {
-      "id": "user_bvn_only",
+      "id": 1,
       "status": true,
       "message": "BVN verified successfully",
       "code": 200,
       "data": {
-        "bvn": "22134567890",
-        "nin": null,
-        "first_name": "Gaurav",
-        "middle_name": "ADE",
-        "last_name": "OKAFOR",
+        "name": "Gaurav ADE OKAFOR",
+        "LivenessVerified": true,
+        "kyc_completed": false,
+        "bvn_details": {
+          "number": "22134567890",
+          "name": "Gaurav ADE OKAFOR",
+          "address": "12 Ade Street, Ikeja, Lagos"
+        },
+        "nin_details": null,
+        "bank_details": {
+          "bank_name": "FCMB",
+          "user_name": "Gaurav ADE OKAFOR",
+          "account_number": "0123456781",
+          "address": "12 Ade Street, Ikeja, Lagos"
+        },
         "date_of_birth": "1994-05-21",
         "gender": "Male",
-        "phone_number": "08034567891",
+        "phone_number": "00000000001",
         "email": "gaurav@email.com",
         "nationality": "Nigerian",
         "state_of_origin": "Lagos",
         "lga": "Ikeja",
         "residential_address": "12 Ade Street, Ikeja, Lagos",
         "photo": "https://api.example.com/images/bvn/22134567890.jpg",
-        "enrollment_bank": "First Bank",
+        "enrollment_bank": "FCMB",
         "registration_date": "2019-08-14",
         "watch_listed": false
       }
     },
     {
-      "id": "user_nin_only",
+      "id": 2,
       "status": true,
       "message": "NIN verified successfully",
       "code": 200,
       "data": {
-        "bvn": null,
-        "nin": "12345678901",
-        "first_name": "Saurav",
-        "middle_name": "ADE",
-        "last_name": "OKAFOR",
+        "name": "Saurav ADE OKAFOR",
+        "LivenessVerified": true,
+        "kyc_completed": false,
+        "bvn_details": null,
+        "nin_details": {
+          "number": "12345678901",
+          "name": "Saurav ADE OKAFOR",
+          "address": "15 Ade Street, Ikeja, Lagos"
+        },
+        "bank_details": {
+          "bank_name": "FCMB",
+          "user_name": "Saurav ADE OKAFOR",
+          "account_number": "0123456782",
+          "address": "15 Ade Street, Ikeja, Lagos"
+        },
         "date_of_birth": "1994-05-21",
         "gender": "Male",
-        "phone_number": "08034567892",
+        "phone_number": "00000000002",
         "email": "saurav@email.com",
         "nationality": "Nigerian",
         "state_of_origin": "Lagos",
         "lga": "Ikeja",
         "residential_address": "15 Ade Street, Ikeja, Lagos",
         "photo": "https://api.example.com/images/nin/12345678901.jpg",
-        "enrollment_bank": null,
+        "enrollment_bank": "FCMB",
         "registration_date": "2020-03-10",
         "watch_listed": false
       }
     },
     {
-      "id": "user_both",
+      "id": 3,
       "status": true,
       "message": "Verification successful",
       "code": 200,
       "data": {
-        "bvn": "22134567892",
-        "nin": "12345678902",
-        "first_name": "Hemant",
-        "middle_name": "ADE",
-        "last_name": "OKAFOR",
+        "name": "Hemant ADE OKAFOR",
+        "LivenessVerified": true,
+        "kyc_completed": false,
+        "bvn_details": {
+          "number": "22134567892",
+          "name": "Hemant ADE OKAFOR",
+          "address": "20 Ade Street, Ikeja, Lagos"
+        },
+        "nin_details": {
+          "number": "12345678902",
+          "name": "Hemant ADE OKAFOR",
+          "address": "20 Ade Street, Ikeja, Lagos"
+        },
+        "bank_details": {
+          "bank_name": "FCMB",
+          "user_name": "Hemant ADE OKAFOR",
+          "account_number": "0123456783",
+          "address": "20 Ade Street, Ikeja, Lagos"
+        },
         "date_of_birth": "1994-05-21",
         "gender": "Male",
-        "phone_number": "08034567893",
+        "phone_number": "00000000003",
         "email": "hemant@email.com",
         "nationality": "Nigerian",
         "state_of_origin": "Lagos",
         "lga": "Ikeja",
         "residential_address": "20 Ade Street, Ikeja, Lagos",
         "photo": "https://api.example.com/images/bvn/22134567892.jpg",
-        "enrollment_bank": "GTBank",
+        "enrollment_bank": "FCMB",
         "registration_date": "2018-06-22",
         "watch_listed": false
       }
     },
     {
-      "id": "user_none",
+      "id": 4,
       "status": false,
       "message": "No verification data available",
       "code": 404,
       "data": {
-        "bvn": null,
-        "nin": null,
-        "first_name": "Rahul",
-        "middle_name": "ADE",
-        "last_name": "OKAFOR",
+        "name": "Rahul ADE OKAFOR",
+        "LivenessVerified": true,
+        "kyc_completed": false,
+        "bvn_details": null,
+        "nin_details": null,
+        "bank_details": {
+          "bank_name": "FCMB",
+          "user_name": "Rahul ADE OKAFOR",
+          "account_number": "0123456784",
+          "address": "5 Main Street, Garki, Abuja"
+        },
         "date_of_birth": "1996-08-15",
         "gender": "Male",
-        "phone_number": "08034567894",
+        "phone_number": "00000000004",
         "email": "rahul@email.com",
         "nationality": "Nigerian",
         "state_of_origin": "Abuja",
         "lga": "Garki",
         "residential_address": "5 Main Street, Garki, Abuja",
         "photo": null,
-        "enrollment_bank": null,
+        "enrollment_bank": "FCMB",
+        "registration_date": null,
+        "watch_listed": false
+      }
+    },
+    {
+      "id": 5,
+      "status": true,
+      "message": "Verification successful (name mismatch)",
+      "code": 200,
+      "data": {
+        "name": "Chidera ADE OKAFOR",
+        "LivenessVerified": true,
+        "kyc_completed": false,
+        "bvn_details": {
+          "number": "22134567895",
+          "name": "Chidera ADE OKAFOR",
+          "address": "30 Ade Street, Ikeja, Lagos"
+        },
+        "nin_details": {
+          "number": "12345678905",
+          "name": "Chidera ADE OKAFOR",
+          "address": "30 Ade Street, Ikeja, Lagos"
+        },
+        "bank_details": {
+          "bank_name": "FCMB",
+          "user_name": "John ADE OKAFOR",
+          "account_number": "0123456785",
+          "address": "30 Ade Street, Ikeja, Lagos"
+        },
+        "date_of_birth": "1995-11-09",
+        "gender": "Female",
+        "phone_number": "00000000005",
+        "email": "chidera@email.com",
+        "nationality": "Nigerian",
+        "state_of_origin": "Lagos",
+        "lga": "Ikeja",
+        "residential_address": "30 Ade Street, Ikeja, Lagos",
+        "photo": "https://api.example.com/images/bvn/22134567895.jpg",
+        "enrollment_bank": "FCMB",
+        "registration_date": "2021-01-12",
+        "watch_listed": false
+      }
+    },
+    {
+      "id": 6,
+      "status": true,
+      "message": "Liveness verification failed",
+      "code": 200,
+      "data": {
+        "name": "Amina ADE OKAFOR",
+        "LivenessVerified": false,
+        "kyc_completed": false,
+        "bvn_details": {
+          "number": "22134567896",
+          "name": "Amina ADE OKAFOR",
+          "address": "18 Ade Street, Ikeja, Lagos"
+        },
+        "nin_details": null,
+        "bank_details": {
+          "bank_name": "FCMB",
+          "user_name": "Amina ADE OKAFOR",
+          "account_number": "0123456786",
+          "address": "18 Ade Street, Ikeja, Lagos"
+        },
+        "date_of_birth": null,
+        "gender": "Female",
+        "phone_number": "00000000006",
+        "email": "amina@email.com",
+        "nationality": "Nigerian",
+        "state_of_origin": "Lagos",
+        "lga": "Ikeja",
+        "residential_address": "18 Ade Street, Ikeja, Lagos",
+        "photo": "https://api.example.com/images/bvn/22134567896.jpg",
+        "enrollment_bank": "FCMB",
+        "registration_date": "2022-02-02",
+        "watch_listed": false
+      }
+    },
+    {
+      "id": 7,
+      "status": false,
+      "message": "Missing date of birth",
+      "code": 200,
+      "data": {
+        "name": "Tomi ADE OKAFOR",
+        "LivenessVerified": true,
+        "kyc_completed": false,
+        "bvn_details": null,
+        "nin_details": null,
+        "bank_details": {
+          "bank_name": "FCMB",
+          "user_name": "Tomi ADE OKAFOR",
+          "account_number": "0123456787",
+          "address": "9 Main Street, Garki, Abuja"
+        },
+        "date_of_birth": null,
+        "gender": "Male",
+        "phone_number": "00000000007",
+        "email": "tomi@email.com",
+        "nationality": "Nigerian",
+        "state_of_origin": "Abuja",
+        "lga": "Garki",
+        "residential_address": "9 Main Street, Garki, Abuja",
+        "photo": null,
+        "enrollment_bank": "FCMB",
         "registration_date": null,
         "watch_listed": false
       }

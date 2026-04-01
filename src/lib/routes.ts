@@ -34,10 +34,10 @@ export const routes = {
   addUniversalSuccess: "/instacard/add-universal-card/success",
 
   //ADD GIFT CARD
-  giftACard: "/add-instacard/gift-a-card",
-  giftACardReadyToUse: "/add-instacard/gift-a-card/ready-to-use",
-  shareGiftCard: "/add-instacard/gift-a-card/share-gift-card",
-  giftCardActivationCode: "/add-instacard/gift-a-card/one-time-activation",
+  giftACard: "/instacard/add-instacard/gift-a-card",
+  giftACardReadyToUse: "/instacard/add-instacard/gift-a-card/ready-to-use",
+  shareGiftCard: "/instacard/add-instacard/gift-a-card/share-gift-card",
+  giftCardActivationCode: "/instacard/add-instacard/gift-a-card/one-time-activation",
 
   // MANAGE INSTACARD
   pinChange: "/instacard/manage-card/pin-change",

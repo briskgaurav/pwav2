@@ -11,6 +11,7 @@ import LayoutSheet from '../../ui/LayoutSheet'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
+import FloatingBottomBarLayoutClient from '../InstacardScreens/FloatingBottomBarLayoutClient'
 
 
 type CardDetailScreenProps = {
@@ -51,6 +52,8 @@ export default function CardDetailScreen({ cardType }: CardDetailScreenProps) {
           <TransactionHistoryItem />
         </div>
       </div>
+      <FloatingBottomBarLayoutClient hidescan={true} />
+
     </LayoutSheet>
   )
 }

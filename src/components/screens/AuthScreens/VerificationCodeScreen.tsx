@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { SheetContainer, OTPInput, OTPKeypad } from '@/components/ui'
+import { SheetContainer, OTPInput, OTPKeypad, Button } from '@/components/ui'
 import LayoutSheet from '../../ui/LayoutSheet'
 import ButtonComponent from '../../ui/ButtonComponent'
 import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
@@ -25,6 +25,7 @@ type VerificationCodeScreenProps = {
   onSuccess?: () => void
   showSuccessPopup?: boolean
   successPopupContent?: SuccessPopupContent
+  onVerify?: (code: string) => Promise<void>
 }
 
 export default function VerificationCodeScreen({
@@ -40,11 +41,13 @@ export default function VerificationCodeScreen({
     message: 'Your Payment Limits have been successfully updated',
     buttonText: 'Ok',
   },
+  onVerify,
 }: VerificationCodeScreenProps) {
   const router = useRouter()
   const [code, setCode] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
+  const [errorText, setErrorText] = useState<string | null>(null)
   const otpInputRef = useRef<HTMLDivElement>(null)
   const popupOverlayRef = useRef<HTMLDivElement>(null)
   const popupContentRef = useRef<HTMLDivElement>(null)
@@ -84,12 +87,23 @@ export default function VerificationCodeScreen({
 
   const handleContinue = async () => {
     setIsVerifying(true)
+    setErrorText(null)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      if (onVerify) {
+        await onVerify(code)
+      } else {
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 1500))
+      }
+    } catch (e) {
+      setIsVerifying(false)
+      setErrorText(e instanceof Error ? e.message : 'Something went wrong')
+      return
+    }
 
     setIsVerifying(false)
-    
+
     if (enableSuccessPopup) {
       setShowSuccessPopup(true)
     } else if (onSuccess) {
@@ -117,7 +131,7 @@ export default function VerificationCodeScreen({
 
   const renderSuccessPopup = () => {
     if (!showSuccessPopup) return null
-    
+
     return (
       <div
         ref={popupOverlayRef}
@@ -148,40 +162,52 @@ export default function VerificationCodeScreen({
     return (
       <LayoutSheet routeTitle={title} needPadding={false} hideLayerSheet={hideLayerSheet}>
 
-          {/* NEED PADDING MY INPUT BOXES NOT TAKING PADDING */}
-          <div className="flex flex-col" style={{ paddingBottom: isKeypadOpen ? keypadHeight : 0 }}>
-            <div className="flex flex-col justify-center px-5 py-10 text-center gap-3">
-              <h2 className="text-xl font-semibold text-text-primary">
-                {title}
-              </h2>
+        {/* NEED PADDING MY INPUT BOXES NOT TAKING PADDING */}
+        <div className="flex  flex-col" style={{ paddingBottom: isKeypadOpen ? keypadHeight : 0 }}>
+          <div className="flex flex-col justify-center px-5 py-10 text-center gap-3">
+            <h2 className="text-xl font-semibold text-text-primary">
+              {title}
+            </h2>
 
-              <p className="text-sm text-text-primary">
-                {subtitle}
-              </p>
+            <p className="text-sm text-text-primary">
+              {subtitle}
+            </p>
 
-              <p className="text-sm font-semibold text-text-primary">
-                {maskedValue}
-              </p>
+            <p className="text-sm font-semibold text-text-primary">
+              {maskedValue}
+            </p>
 
-              <p className="text-sm text-text-primary">
-                Please check your messages and enter it here
-              </p>
+            <p className="text-sm text-text-primary">
+              Please check your messages and enter it here
+            </p>
 
-              <div className="mt-6 mb-6 w-full" ref={otpInputRef} onClick={openKeypad}>
-                <OTPInput value={code} maxLength={MAX_CODE_LENGTH} onPress={openKeypad} />
-              </div>
+            <div className="mt-6 mb-6 w-full" ref={otpInputRef} onClick={openKeypad}>
+              <OTPInput value={code} maxLength={MAX_CODE_LENGTH} onPress={openKeypad} />
+            </div>
+            <div className='relative'>
 
-              <ButtonComponent  
+              {/* <ButtonComponent
                 title={isVerifying ? 'Verifying...' : 'Continue'}
                 onClick={handleContinue}
                 disabled={!isCodeComplete || isVerifying}
-              />
+              /> */}
+              <Button className=' bg-primary text-white rounded-full px-4 py-2 w-full h-full'
+                disabled={!isCodeComplete || isVerifying}
+                onClick={handleContinue}
+              >
+                {isVerifying ? 'Verifying...' : 'Continue'}
+              </Button>
             </div>
+            {errorText && (
+              <p className="mt-2 text-xs text-red-500">{errorText}</p>
+            )}
+
           </div>
-          <div ref={keypadRef} className="w-full fixed bottom-0 left-0 py-2 ">
-            <OTPKeypad onKeyPress={handleKeyPress} />
-          </div>
-          {renderSuccessPopup()}
+        </div>
+        <div ref={keypadRef} className="w-full fixed bottom-0 left-0 py-2 ">
+          <OTPKeypad onKeyPress={handleKeyPress} />
+        </div>
+        {renderSuccessPopup()}
       </LayoutSheet>
     )
   }
@@ -215,11 +241,11 @@ export default function VerificationCodeScreen({
             </div>
           </div>
           <div className='p-6 pb-10 text-center'>
-              <ButtonComponent  
-                title={isVerifying ? 'Verifying...' : 'Continue'}
-                onClick={handleContinue}
-                disabled={!isCodeComplete || isVerifying}
-              />
+            <ButtonComponent
+              title={isVerifying ? 'Verifying...' : 'Continue'}
+              onClick={handleContinue}
+              disabled={!isCodeComplete || isVerifying}
+            />
             <p className="mt-3 text-sm">
               Didn&apos;t receive the Code?{' '}
               <button

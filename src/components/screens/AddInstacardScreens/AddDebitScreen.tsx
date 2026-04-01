@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'
 import { SheetContainer, RadioOption, Checkbox, Button } from '@/components/ui';
 import { ICONS } from '@/constants/icons';
 import { notifyNavigation } from '@/lib/bridge';

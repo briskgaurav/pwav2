@@ -2,6 +2,8 @@
 
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import React, { useEffect, useMemo, useState } from 'react'
+import { sendIdVerificationOtp } from '@/lib/api/idVerification'
+import type { UserInfo } from '@/lib/api/idVerification'
 
 type VerificationMethod = 'email' | 'phone' | 'bvn'
 
@@ -16,22 +18,24 @@ function normalizePhoneDigits(value: string) {
 const MAX_PHONE_DIGITS = 13 // e.g. +234 + 10 digits
 const COUNTRY_CODE_LENGTH = 3 // e.g. 234
 
-// Mock data - replace with actual data source
-const mockUserData = {
-  email: 'john@example.com',
-  mobile: '+2341234567890',
-  maskedEmail: 'j***@example.com',
-  maskedMobile: '+234 *** *** 7890',
-}
-
-export default function VerificationConfirmScreen({ getButtonText, handleContinue }: { getButtonText: () => string, handleContinue: () => void }) {
-  const email = mockUserData.email
-  const mobile = mockUserData.mobile
-  const maskedEmail = mockUserData.maskedEmail
-  const maskedMobile = mockUserData.maskedMobile
+export default function VerificationConfirmScreen({
+  userInfo,
+  getButtonText,
+  handleContinue,
+}: {
+  userInfo: UserInfo
+  getButtonText: () => string
+  handleContinue: () => void
+}) {
+  const email = userInfo.email ?? ''
+  const mobile = userInfo.phone_number ?? ''
+  const maskedEmail = email ? `${email[0]}***@${email.split('@')[1] ?? ''}` : '***'
+  const digits = mobile.replace(/\D/g, '')
+  const maskedMobile = digits.length >= 4 ? `+${digits.slice(0, 3)} *** *** ${digits.slice(-4)}` : '***'
   const [method, setMethod] = useState<VerificationMethod | null>(null)
   const [inputValue, setInputValue] = useState('')
-  const [touched, setTouched] = useState(false)
+  const [errorText, setErrorText] = useState<string | null>(null)
+  const [sending, setSending] = useState(false)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -70,17 +74,8 @@ export default function VerificationConfirmScreen({ getButtonText, handleContinu
     }
   }, [method, maskedEmail, maskedMobile])
 
-  const isValid = useMemo(() => {
-    if (method === 'phone') {
-      const inputDigits = normalizePhoneDigits(inputValue)
-      const storedDigits = normalizePhoneDigits(mobile)
-      return inputDigits.length >= 10 && inputDigits === storedDigits
-    }
-    // Email validation
-    return normalizeEmail(inputValue) === normalizeEmail(email)
-  }, [method, inputValue, email, mobile])
-
-  const showError = touched && !isValid && inputValue.length > 0
+  const canSubmit = inputValue.trim().length > 0 && (method === 'phone' ? normalizePhoneDigits(inputValue).length >= 10 : true)
+  const showError = !!errorText
 
   return (
     <div className="h-fit flex flex-col">
@@ -106,23 +101,38 @@ export default function VerificationConfirmScreen({ getButtonText, handleContinu
             type={method === 'phone' ? 'tel' : 'email'}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onBlur={() => setTouched(true)}
             placeholder={inputPlaceholder}
             className={`w-full border rounded-xl p-4 text-text-primary placeholder:text-text-secondary focus:outline-none! focus:ring-0! focus:ring-primary ${
               showError ? 'border-red-500' : 'border-gray-200'
             }`}
           />
           {showError && (
-            <p className="text-xs text-red-500">
-              {method === 'phone'
-                ? 'Phone number does not match our records'
-                : 'Email address does not match our records'}
-            </p>
+            <p className="text-xs text-red-500">{errorText}</p>
           )}
         </div>
       </div>
 
-      <ButtonComponent title={getButtonText()} onClick={handleContinue} disabled={!isValid} />
+      <ButtonComponent
+        title={sending ? 'Sending...' : getButtonText()}
+        onClick={async () => {
+          if (!method || method === 'bvn') return
+          try {
+            setSending(true)
+            setErrorText(null)
+            await sendIdVerificationOtp({
+              userInfo,
+              method,
+              destination: method === 'phone' ? normalizePhoneDigits(inputValue) : normalizeEmail(inputValue),
+            })
+            handleContinue()
+          } catch (e) {
+            setErrorText(e instanceof Error ? e.message : 'Error')
+          } finally {
+            setSending(false)
+          }
+        }}
+        disabled={!canSubmit || sending || method == null}
+      />
     </div>
   )
 }

@@ -9,7 +9,8 @@ import { ChevronDown } from 'lucide-react';
 import FAQModal from '@/components/ui/FAQModal';
 import FaqIconButton from '@/components/ui/FaqIconButton';
 import type { FAQData } from '@/components/ui/FAQModal';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import CardMockup from '@/components/ui/CardMockup';
 import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
@@ -213,7 +214,7 @@ function HowToUseCardContent() {
     const config = CARD_TYPE_CONFIG[cardType];
     const cardActions = useMemo(() => getCardActions(cardType), [cardType]);
     const { mockupImageSrc, maskedNumber } = useManagingCard();
-    const userFullName = useAppSelector((s) => s.user.fullName);
+    const userFullName = useAppSelector((s) => s.user.firstName);
 
     useEffect(() => {
         notifyNavigation('how-to-use-card');

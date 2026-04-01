@@ -55,7 +55,7 @@ export default function Button({
         sizeClass,
         variantClass,
         fullWidth ? 'w-full' : '',
-        disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
+        disabled ? 'bg-disable-button cursor-not-allowed' : 'cursor-pointer',
         className,
       ].join(' ')}
     >

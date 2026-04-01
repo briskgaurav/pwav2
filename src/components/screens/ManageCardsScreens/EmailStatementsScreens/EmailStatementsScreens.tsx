@@ -7,6 +7,7 @@ import EmailStatements from '@/components/ui/EmailStatements'
 import RecentTransactions from '@/components/ui/RecentTransactions'
 import { useManagingCard } from '@/hooks/useManagingCard'
 import LayoutSheet from '../../../ui/LayoutSheet'
+import FloatingBottomBarLayoutClient from '../../InstacardScreens/FloatingBottomBarLayoutClient'
 
 type CardType = 'debit' | 'credit' | 'prepaid' | 'gift'
 
@@ -26,12 +27,13 @@ export default function EmailStatementsScreens({ cardType }: EmailStatementsScre
 
     return (
         <LayoutSheet routeTitle='Email Statements' needPadding={false}>
-            <div className="flex-1 overflow-auto pb-10 p-4 space-y-5">
+            <div className="flex-1 overflow-auto pb-[10vh] p-4 space-y-5">
                 <CardMockup imageSrc={imageSrc ?? defaultImages[cardType]} maskedNumber={maskedNumber} />
                 {cardType === 'credit' ? <CreditDueBalance /> : <Balance />}
                 <EmailStatements />
                 <RecentTransactions />
             </div>
+            <FloatingBottomBarLayoutClient hidescan={true} />
         </LayoutSheet>
     )
 }

@@ -1,55 +1,65 @@
 'use client'
 
 import LayoutSheet from '@/components/ui/LayoutSheet'
-import React, { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import React, { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { routes } from '@/lib/routes'
 import Introduction from '@/components/screens/IdentityVerificationScreens/FaceVerification/IntroductionScreen'
 import FaceScan from '@/components/screens/IdentityVerificationScreens/FaceVerification/FaceScan'
 import ReviewScreen from '@/components/screens/IdentityVerificationScreens/FaceVerification/ReviewScreen'
-import IndentityCompleted from '@/components/screens/IdentityVerificationScreens/FaceVerification/IndentityCompleted'
-import NameMismatchScreen from '@/components/screens/IdentityVerificationScreens/FaceVerification/NameMismatchScreen'
 import BvnNinEntryScreen from '@/components/screens/IdentityVerificationScreens/FaceVerification/BvnNinEntryScreen'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store/redux/store'
-import { nextStep, setStep, resetFlow, setHasBvnNin } from '@/store/redux/slices/livenessSlice'
+import { nextStep, setStep, resetFlow, setHasBvnNin, setNameMatched } from '@/store/redux/slices/livenessSlice'
 import IdentityVerificationProgress from '@/components/ui/IdentityVerificationProgress'
 import SpinnerLoader from '@/components/ui/SpinnerLoader'
 import { useUserData } from '@/hooks/apiHooks/useUserData'
 import { clearFromSession } from '@/components/Extras/utils/imageProcessing'
+import { setUserBvnNinOverride } from '@/lib/api/userdata'
 
-const SIMULATED_BANK_NAME = 'John ADE OKAFOR'
-const ALLOWED_USER_IDS = ['user_both', 'user_bvn_only', 'user_nin_only', 'user_none'] as const
+const DEFAULT_USER_ID = '1'
 
 export default function LivenessVerificationPage() {
   const dispatch = useDispatch()
   const currentStep = useSelector((state: RootState) => state.liveness.currentStep)
+  const nameMatched = useSelector((state: RootState) => state.liveness.nameMatched)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [simulateMismatch, setSimulateMismatch] = useState(false)
-  const routeTitle = currentStep === 'review' ? 'Review Photo' : 'Liveness Verification'
+  const routeTitle = 'Liveness Verification'
 
-  const userId = (() => {
-    const raw = searchParams.get('id')
-    if (raw && (ALLOWED_USER_IDS as readonly string[]).includes(raw)) return raw
-    return 'user_none'
-  })()
+  // Source of truth: URL `?id=`. Only defaults when param is missing.
+  const userId = searchParams.get('id') ?? DEFAULT_USER_ID
 
   const { data: userData, loading, error } = useUserData(userId)
 
+  // Avoid flashing back to the splash screen during navigation.
+  // Reset when leaving this route (unmount), not immediately on click.
+  useEffect(() => {
+    return () => {
+      dispatch(resetFlow())
+    }
+  }, [dispatch])
+
   useEffect(() => {
     if (!userData) return
-    const hasBvnNin = userData.data.bvn !== null || userData.data.nin !== null
+    const hasBvnNin = userData.data.bvn_details?.number != null || userData.data.nin_details?.number != null
     dispatch(setHasBvnNin(hasBvnNin))
   }, [dispatch, userData])
 
-  const ninBvnName = userData
-    ? `${userData.data.first_name} ${userData.data.middle_name} ${userData.data.last_name}`
-    : ''
+  const ninBvnName = userData?.data.bvn_details?.name ?? userData?.data.nin_details?.name ?? userData?.data.name ?? ''
+  const bankFullName = userData?.data.bank_details?.user_name ?? ''
+  const livenessVerified = userData?.data.LivenessVerified ?? true
+  const dobRaw = userData?.data.date_of_birth
+  const needsDob =
+    dobRaw == null ||
+    dobRaw === '' ||
+    dobRaw === '00/00/0000' ||
+    dobRaw === '0000-00-00'
 
   const checkNameMatch = (): boolean => {
-    if (!simulateMismatch) return true
-    return SIMULATED_BANK_NAME.toLowerCase() === ninBvnName.toLowerCase()
+    if (!bankFullName || !ninBvnName) return true
+    return bankFullName.toLowerCase() === ninBvnName.toLowerCase()
   }
 
   const handleContinue = () => {
@@ -62,26 +72,31 @@ export default function LivenessVerificationPage() {
         break
       case 'facescan': {
         const namesMatch = checkNameMatch()
-        if (namesMatch) {
-          dispatch(nextStep())
-        } else {
-          dispatch(setStep('nameMismatch'))
-        }
-        break
-      }
-      case 'review':
+        dispatch(setNameMatched(namesMatch))
         dispatch(nextStep())
         break
-      case 'verifydone':
-        router.push(routes.IdVerification)
-        break
+      }
       default:
         break
     }
   }
 
-  const handleBvnNinSubmit = (type: 'bvn' | 'nin', value: string) => {
-    console.log(`${type.toUpperCase()} submitted:`, value)
+  const handleBvnNinSubmit = async ({
+    type,
+    value,
+    dob,
+  }: {
+    type: 'bvn' | 'nin'
+    value: string
+    dob?: string
+  }) => {
+    await setUserBvnNinOverride({
+      id: Number(userId),
+      bvn: type === 'bvn' ? value : undefined,
+      nin: type === 'nin' ? value : undefined,
+      ...(needsDob ? { date_of_birth: dob ?? null } : {}),
+    })
+    dispatch(setHasBvnNin(true))
     dispatch(nextStep())
   }
 
@@ -104,8 +119,6 @@ export default function LivenessVerificationPage() {
         return 'Capture'
       case 'review':
         return 'Looks Good'
-      case 'verifydone':
-        return 'Continue to ID Verification'
       default:
         return 'Continue'
     }
@@ -119,7 +132,7 @@ export default function LivenessVerificationPage() {
 
   if (error || !userData) {
     return (
-      <LayoutSheet needPadding={false} routeTitle='Liveness Verification' progressNode={<IdentityVerificationProgress /> as any}>
+      <LayoutSheet needPadding={false} routeTitle={routeTitle} progressNode={<IdentityVerificationProgress /> as any}>
         <div className="flex flex-col items-center justify-center h-full gap-4 px-6">
           <p className="text-red-500 text-sm">{error || 'Something went wrong'}</p>
           <button onClick={() => window.location.reload()} className="text-primary text-sm font-medium underline">
@@ -135,25 +148,21 @@ export default function LivenessVerificationPage() {
       case 'splash':
         return <Introduction getButtonText={getButtonText} handleContinue={handleContinue} />
       case 'bvnNinEntry':
-        return <BvnNinEntryScreen onSubmit={handleBvnNinSubmit} />
+        return <BvnNinEntryScreen needsDob={needsDob} onSubmit={handleBvnNinSubmit} />
       case 'facescan':
         return <FaceScan getButtonText={getButtonText} handleContinue={handleContinue} />
       case 'review':
         return (
           <ReviewScreen
             getButtonText={getButtonText}
-            handleContinue={handleContinue}
+            handleContinue={() => {
+              router.push(`${routes.IdVerification}?id=${encodeURIComponent(userId)}`)
+            }}
             handleRetake={handleRetakePhoto}
-          />
-        )
-      case 'verifydone':
-        return <IndentityCompleted  handleRetake={handleRetakePhoto} getButtonText={getButtonText} handleContinue={handleContinue} userData={userData} />
-      case 'nameMismatch':
-        return (
-          <NameMismatchScreen
-            bankName={SIMULATED_BANK_NAME}
+            nameMatched={nameMatched}
+            livenessVerified={livenessVerified}
+            bankName={bankFullName}
             ninBvnName={ninBvnName}
-            handleGoBack={handleGoBackToStart}
           />
         )
       default:
@@ -168,18 +177,6 @@ export default function LivenessVerificationPage() {
       progressNode={<IdentityVerificationProgress /> as any}
     >
       <div className="flex flex-col h-full">
-        {(currentStep === 'splash' || currentStep === 'facescan') && (
-          <div className="flex items-center fixed bottom-0 right-[5vw] z-9999 justify-center gap-2 px-4 pb-2">
-            <div
-              onClick={() => setSimulateMismatch(!simulateMismatch)}
-              className={`w-12 h-12 rounded-full flex items-center justify-center cursor-pointer select-none border-2 ${simulateMismatch ? 'bg-red-500 border-primary' : 'bg-white border-text-secondary'
-                }`}
-            >
-              <span className="text-xs font-medium">!Name</span>
-            </div>
-          </div>
-        )}
-
         <div className="flex-1 flex items-start justify-center">
           {renderStepContent()}
         </div>

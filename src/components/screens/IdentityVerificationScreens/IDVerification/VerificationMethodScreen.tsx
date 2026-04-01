@@ -1,20 +1,51 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { RadioOption } from '@/components/ui'
 import { LucideIcon } from 'lucide-react'
 import { ChatIcon, PhoneIcon } from '@/constants/icons'
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import type { UserInfo } from '@/lib/api/idVerification'
 
 type VerificationMethod = 'email' | 'phone' | 'bvn'
 
-export default function VerificationMethodScreen({ getButtonText, handleContinue }: { getButtonText: () => string, handleContinue: () => void }) {
+function maskEmail(email: string) {
+  const value = email.trim().toLowerCase()
+  const [local, domain] = value.split('@')
+  if (!local || !domain) return '***'
+  return `${local[0]}***@${domain}`
+}
+
+function maskPhone(phone: string) {
+  const digits = phone.replace(/\D/g, '')
+  if (digits.length < 4) return '***'
+  return `+${digits.slice(0, 3)} *** *** ${digits.slice(-4)}`
+}
+
+export default function VerificationMethodScreen({
+  userInfo,
+  getButtonText,
+  handleContinue,
+}: {
+  userInfo: UserInfo
+  getButtonText: () => string
+  handleContinue: () => void
+}) {
   const [selectedMethod, setSelectedMethod] = useState<VerificationMethod | null>(null)
 
-  const METHODS: { id: VerificationMethod; label: string; maskedValue: string; Icon: LucideIcon }[] = [
-    { id: 'email', label: 'Verify via Email', maskedValue: 'j***@example.com', Icon: ChatIcon as LucideIcon },
-    { id: 'phone', label: 'Verify via Phone Number', maskedValue: '+234 *** *** 1234', Icon: PhoneIcon as LucideIcon },
-  ]
+  useEffect(() => {
+    const stored = localStorage.getItem('kyc_verification_method') as VerificationMethod | null
+    if (stored === 'email' || stored === 'phone') setSelectedMethod(stored)
+  }, [])
+
+  const METHODS: { id: VerificationMethod; label: string; maskedValue: string; Icon: LucideIcon }[] = useMemo(() => {
+    const email = userInfo.email ?? ''
+    const phone = userInfo.phone_number ?? ''
+    return [
+      { id: 'email', label: 'Verify via Email', maskedValue: email ? maskEmail(email) : '***', Icon: ChatIcon as LucideIcon },
+      { id: 'phone', label: 'Verify via Phone Number', maskedValue: phone ? maskPhone(phone) : '***', Icon: PhoneIcon as LucideIcon },
+    ]
+  }, [userInfo])
 
   return (
     <div className="h-fit flex flex-col">
@@ -32,7 +63,12 @@ export default function VerificationMethodScreen({ getButtonText, handleContinue
               key={id}
               label={maskedValue}
               selected={selectedMethod === id}
-              onSelect={() => setSelectedMethod(id)}
+              onSelect={() => {
+                setSelectedMethod(id)
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem('kyc_verification_method', id)
+                }
+              }}
               IconComponent={Icon}
             />
           ))}

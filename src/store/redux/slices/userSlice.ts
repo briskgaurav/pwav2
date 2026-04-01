@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { getUserDetailsFromLocal } from '@/hooks/getUserDetailsFromLocal'
 
 export interface UserProfile {
   firstName: string
@@ -16,36 +17,47 @@ export interface UserProfile {
   city: string
 }
 
-function maskEmail(email: string): string {
-  const [local, domain] = email.split('@')
-  if (!local || !domain) return email
-  const visible = Math.min(4, Math.max(1, Math.floor(local.length * 0.4)))
-  return `${local.slice(0, visible)}***${local.slice(-1)}@${domain}`
+type UserState = UserProfile & {
+  fullName: string
+  initials: string
+  maskedEmail: string
+  maskedMobile: string
+  maskedBvn: string
+  maskedDob: string
 }
 
-function maskMobile(mobile: string): string {
+// Masking utilities
+const maskEmail = (email: string): string => {
+  const [local, domain] = email.split('@')
+  if (!local || !domain) return email
+  const visibleChars = Math.min(4, Math.max(1, Math.floor(local.length * 0.4)))
+  return `${local.slice(0, visibleChars)}***${local.slice(-1)}@${domain}`
+}
+
+const maskMobile = (mobile: string): string => {
   const digits = mobile.replace(/\D/g, '')
   if (digits.length < 8) return mobile
   return `+${digits.slice(0, 3)} ${digits.slice(3, 6)} **** ${digits.slice(-4)}`
 }
 
-function maskBvn(bvn: string): string {
+const maskBvn = (bvn: string): string => {
   const digits = bvn.replace(/\D/g, '')
   if (digits.length < 6) return bvn
   return `****${digits.slice(-7)}`
 }
 
-function maskDob(dob: string): string {
+const maskDob = (dob: string): string => {
   const parts = dob.split(/[-/]/)
   if (parts.length < 3) return dob
-  return `**/**/` + parts[parts.length - 1]
+  return `**/**/${parts[parts.length - 1]}`
 }
 
-function deriveFields(profile: UserProfile) {
+const deriveFields = (profile: UserProfile): Omit<UserState, keyof UserProfile> => {
   const fullName = `${profile.firstName} ${profile.lastName}`.trim()
   const initials = fullName
     .split(' ')
-    .map((n) => n[0])
+    .filter(Boolean)
+    .map((word) => word[0])
     .join('')
     .toUpperCase()
     .slice(0, 2)
@@ -60,35 +72,47 @@ function deriveFields(profile: UserProfile) {
   }
 }
 
-const DEFAULT_PROFILE: UserProfile = {
-  firstName: 'Nirdesh',
-  lastName: 'Malik',
-  middleName: 'Nirdesh',
-  email: 'nirdeshmalik@gmail.com',
-  mobile: '+2340000000000',
-  bvn: '12345678901',
-  address: 'Lagos, Nigeria',
-  dateOfBirth: '1990-06-15',
-  accountNumber: '0123456789',
-  bankName: 'FCMB',
-  gender: 'Male',
-  state: 'Lagos',
-  city: 'Ikeja',
+const createDefaultProfile = (): UserProfile => {
+  const {
+    name: firstName,
+    email: userEmail,
+    phone: userPhone,
+    dateOfBirth,
+    gender,
+    stateOfOrigin,
+    lga,
+    residentialAddress,
+    bankDetails,
+    bvnDetails,
+    ninDetails,
+  } = getUserDetailsFromLocal()
+
+  return {
+    firstName ,
+    lastName: bvnDetails?.name?.split(' ').pop() ?? '',
+    middleName: ninDetails?.name?.split(' ').slice(1, -1).join(' ') ?? '',
+    email: userEmail,
+    mobile: userPhone,
+    bvn: bvnDetails?.number ?? '',
+    address: residentialAddress,
+    dateOfBirth,
+    accountNumber: bankDetails?.accountNumber ?? '',
+    bankName: bankDetails?.bankName ?? '',
+    gender,
+    state: stateOfOrigin,
+    city: lga,
+  }
 }
 
-type UserState = UserProfile & {
-  fullName: string
-  initials: string
-  maskedEmail: string
-  maskedMobile: string
-  maskedBvn: string
-  maskedDob: string
+const createInitialState = (): UserState => {
+  const defaultProfile = createDefaultProfile()
+  return {
+    ...defaultProfile,
+    ...deriveFields(defaultProfile),
+  }
 }
 
-const initialState: UserState = {
-  ...DEFAULT_PROFILE,
-  ...deriveFields(DEFAULT_PROFILE),
-}
+const initialState: UserState = createInitialState()
 
 const userSlice = createSlice({
   name: 'user',
@@ -110,10 +134,9 @@ const userSlice = createSlice({
         state: action.payload.state ?? state.state,
         city: action.payload.city ?? state.city,
       }
-      const derived = deriveFields(updated)
-      return { ...updated, ...derived }
+      return { ...updated, ...deriveFields(updated) }
     },
-    clearUser: () => initialState,
+    clearUser: () => createInitialState(),
   },
   selectors: {
     selectFirstName: (state) => state.firstName,
