@@ -24,7 +24,7 @@ interface ProfileContentProps {
 
 export function ProfileContent({
   userName = 'User',
-  userEmail = 'user@example.com',
+  userEmail = 'User@example.com',
   onClose,
 }: ProfileContentProps) {
   const { t, i18n } = useTranslation()

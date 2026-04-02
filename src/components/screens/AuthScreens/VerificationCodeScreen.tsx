@@ -7,6 +7,7 @@ import LayoutSheet from '../../ui/LayoutSheet'
 import ButtonComponent from '../../ui/ButtonComponent'
 import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
 import gsap from 'gsap'
+import { Check } from 'lucide-react'
 
 const MAX_CODE_LENGTH = 6
 
@@ -143,16 +144,24 @@ export default function VerificationCodeScreen({
           className="bg-white/80 backdrop-blur-xl  rounded-2xl p-6 mx-8 text-center border border-white/60 min-w-[280px]"
           style={{ opacity: 0 }}
         >
-          <p className="text-text-primary text-xm mb-6">
-            {successPopupContent.message}
-          </p>
-          <button
-            onClick={handlePopupOk}
-            className="w-full py-3 rounded-full text-text-primary font-medium cursor-pointer border-none"
-            type="button"
-          >
-            {successPopupContent.buttonText || 'Ok'}
-          </button>
+          <div className='flex flex-col gap-2 items-center justify-center'>
+            <div className='p-[1vw] border-2 border-[#39D105] rounded-full w-fit aspect-square text-[#39D105]'>
+              <Check strokeWidth={2} />
+            </div>
+            <p className="text-lg text-text-primary">Success</p>
+            <p className="mt-1 text-sm text-text-secondary">
+              {successPopupContent.message}
+            </p>
+            <div className="mt-5 w-full flex gap-3">
+              <button
+                type="button"
+                className="flex-1 rounded-full bg-primary py-3 text-sm font-medium text-white"
+                onClick={handlePopupOk}
+              >
+                {successPopupContent.buttonText || 'Ok'}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     )

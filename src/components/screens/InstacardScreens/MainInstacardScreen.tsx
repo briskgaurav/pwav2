@@ -114,13 +114,6 @@ export default function MainInstacardScreen() {
     console.log('Action pressed:', actionId, 'for card:', card.name)
   }, [])
 
-  const handleAddPress = useCallback(() => {
-    if (cardMode === 'universal') {
-      dispatch(setPendingCardForm('universal'))
-      router.push(routes.addUniversalCard)
-    }
-  }, [cardMode, router, dispatch])
-
   const { isDarkMode } = useAuth();
 
 
@@ -132,12 +125,8 @@ export default function MainInstacardScreen() {
       <div className="shrink-0 relative z-10">
         <GreetingBar
           userName={firstName}
-          onSearchPress={() => { }}
-          onAddPress={handleAddPress}
           mode={cardMode}
           onAvatarPress={() => setLeftDrawerVisible(true)}
-          isDarkMode={isDarkMode}
-          onAddGiftPress={() => { }}
         />
         <FilterBar
           isDarkMode={isDarkMode}

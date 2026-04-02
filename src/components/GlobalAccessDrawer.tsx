@@ -1,6 +1,7 @@
 'use client'
 
 import { ProfileDrawer } from '@/components/ProfileDrawer'
+import { getUserDetailsFromLocal } from '@/hooks/getUserDetailsFromLocal'
 import i18n from '@/lib/i18n'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { selectAccessDrawerVisible, closeAccessDrawer } from '@/store/redux/slices/accessDrawerSlice'
@@ -50,14 +51,17 @@ const features: { id: FeatureId; Icon: React.ComponentType<{ className?: string 
 export default function GlobalAccessDrawer() {
   const dispatch = useAppDispatch()
   const visible = useAppSelector(selectAccessDrawerVisible)
-  const fullName = useAppSelector((s) => s.user.fullName)
-  const initials = useAppSelector((s) => s.user.initials)
-  const email = useAppSelector((s) => s.user.email)
   const close = () => dispatch(closeAccessDrawer())
   const router = useRouter()
   const { t } = useTranslation()
   const selectedLang = i18n.language?.split('-')[0] ?? 'en'
   const isRTL = selectedLang === 'ar'
+
+  const { name: firstName, email: userEmail, phone: userPhone, dateOfBirth, gender, nationality, stateOfOrigin, lga, residentialAddress, registrationDate, enrollmentBank, photo, livenessVerified, kycCompleted, watchListed, bankDetails, bvnDetails, ninDetails } = getUserDetailsFromLocal()
+
+  const fullName = firstName || ''
+  const initials = fullName.split(' ').map((n: string) => n.charAt(0).toUpperCase()).join('').slice(0, 2)
+  const email = userEmail || ''
 
   const handleGoBack = () => {
     close()

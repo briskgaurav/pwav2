@@ -6,18 +6,18 @@
       "message": "BVN verified successfully",
       "code": 200,
       "data": {
-        "name": "Gaurav ADE OKAFOR",
+        "name": "Gaurav ade okafor",
         "LivenessVerified": true,
         "kyc_completed": false,
         "bvn_details": {
           "number": "22134567890",
-          "name": "Gaurav ADE OKAFOR",
+          "name": "Gaurav ade okafor",
           "address": "12 Ade Street, Ikeja, Lagos"
         },
         "nin_details": null,
         "bank_details": {
           "bank_name": "FCMB",
-          "user_name": "Gaurav ADE OKAFOR",
+          "user_name": "Gaurav ade okafor",
           "account_number": "0123456781",
           "address": "12 Ade Street, Ikeja, Lagos"
         },
@@ -41,18 +41,18 @@
       "message": "NIN verified successfully",
       "code": 200,
       "data": {
-        "name": "Saurav ADE OKAFOR",
+        "name": "Saurav ade okafor",
         "LivenessVerified": true,
         "kyc_completed": false,
         "bvn_details": null,
         "nin_details": {
           "number": "12345678901",
-          "name": "Saurav ADE OKAFOR",
+          "name": "Saurav ade okafor",
           "address": "15 Ade Street, Ikeja, Lagos"
         },
         "bank_details": {
           "bank_name": "FCMB",
-          "user_name": "Saurav ADE OKAFOR",
+          "user_name": "Saurav ade okafor",
           "account_number": "0123456782",
           "address": "15 Ade Street, Ikeja, Lagos"
         },
@@ -76,22 +76,22 @@
       "message": "Verification successful",
       "code": 200,
       "data": {
-        "name": "Hemant ADE OKAFOR",
+        "name": "Hemant ade okafor",
         "LivenessVerified": true,
         "kyc_completed": false,
         "bvn_details": {
           "number": "22134567892",
-          "name": "Hemant ADE OKAFOR",
+          "name": "Hemant ade okafor",
           "address": "20 Ade Street, Ikeja, Lagos"
         },
         "nin_details": {
           "number": "12345678902",
-          "name": "Hemant ADE OKAFOR",
+          "name": "Hemant ade okafor",
           "address": "20 Ade Street, Ikeja, Lagos"
         },
         "bank_details": {
           "bank_name": "FCMB",
-          "user_name": "Hemant ADE OKAFOR",
+          "user_name": "Hemant ade okafor",
           "account_number": "0123456783",
           "address": "20 Ade Street, Ikeja, Lagos"
         },
@@ -115,14 +115,14 @@
       "message": "No verification data available",
       "code": 404,
       "data": {
-        "name": "Rahul ADE OKAFOR",
+        "name": "Rahul ade okafor",
         "LivenessVerified": true,
         "kyc_completed": false,
         "bvn_details": null,
         "nin_details": null,
         "bank_details": {
           "bank_name": "FCMB",
-          "user_name": "Rahul ADE OKAFOR",
+          "user_name": "Rahul ade okafor",
           "account_number": "0123456784",
           "address": "5 Main Street, Garki, Abuja"
         },
@@ -146,22 +146,22 @@
       "message": "Verification successful (name mismatch)",
       "code": 200,
       "data": {
-        "name": "Chidera ADE OKAFOR",
+        "name": "Chidera ade okafor",
         "LivenessVerified": true,
         "kyc_completed": false,
         "bvn_details": {
           "number": "22134567895",
-          "name": "Chidera ADE OKAFOR",
+          "name": "Chidera ade okafor",
           "address": "30 Ade Street, Ikeja, Lagos"
         },
         "nin_details": {
           "number": "12345678905",
-          "name": "Chidera ADE OKAFOR",
+          "name": "Chidera ade okafor",
           "address": "30 Ade Street, Ikeja, Lagos"
         },
         "bank_details": {
           "bank_name": "FCMB",
-          "user_name": "John ADE OKAFOR",
+          "user_name": "John ade okafor",
           "account_number": "0123456785",
           "address": "30 Ade Street, Ikeja, Lagos"
         },
@@ -185,18 +185,18 @@
       "message": "Liveness verification failed",
       "code": 200,
       "data": {
-        "name": "Amina ADE OKAFOR",
+        "name": "Amina ade okafor",
         "LivenessVerified": false,
         "kyc_completed": false,
         "bvn_details": {
           "number": "22134567896",
-          "name": "Amina ADE OKAFOR",
+          "name": "Amina ade okafor",
           "address": "18 Ade Street, Ikeja, Lagos"
         },
         "nin_details": null,
         "bank_details": {
           "bank_name": "FCMB",
-          "user_name": "Amina ADE OKAFOR",
+          "user_name": "Amina ade okafor",
           "account_number": "0123456786",
           "address": "18 Ade Street, Ikeja, Lagos"
         },
@@ -220,14 +220,14 @@
       "message": "Missing date of birth",
       "code": 200,
       "data": {
-        "name": "Tomi ADE OKAFOR",
+        "name": "Tomi ade okafor",
         "LivenessVerified": true,
         "kyc_completed": false,
         "bvn_details": null,
         "nin_details": null,
         "bank_details": {
           "bank_name": "FCMB",
-          "user_name": "Tomi ADE OKAFOR",
+          "user_name": "Tomi ade okafor",
           "account_number": "0123456787",
           "address": "9 Main Street, Garki, Abuja"
         },
