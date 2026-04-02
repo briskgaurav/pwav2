@@ -7,6 +7,7 @@ import { routes } from '@/lib/routes'
 import { useRouter } from 'next/navigation'
 import { AddCardIcon } from '@/constants/icons'
 import ButtonComponent from './ButtonComponent'
+import { useAppSelector } from '@/store/redux/hooks'
 
 type PaymentOption = 'full' | 'minimum' | 'other'
 
@@ -17,18 +18,20 @@ type BankAccount = {
   accountName: string
 }
 
-const BANK_ACCOUNTS: BankAccount[] = [
-  { id: 'sigma', bank: 'Sigma Bank', accountNumber: '1234567890', accountName: 'John Doe' },
-  { id: 'gtb', bank: 'GTBank', accountNumber: '0987654321', accountName: 'John Doe' },
-  { id: 'access', bank: 'Access Bank', accountNumber: '5678901234', accountName: 'John Doe' },
-]
+const STATIC_BANK_ACCOUNTS = [
+  { id: 'sigma', bank: 'Sigma Bank', accountNumber: '1234567890' },
+  { id: 'gtb', bank: 'GTBank', accountNumber: '0987654321' },
+  { id: 'access', bank: 'Access Bank', accountNumber: '5678901234' },
+] as const
 
 export default function MakeRepayment() {
+  const fullName = useAppSelector((s) => s.user.fullName)
+  const bankAccounts: BankAccount[] = STATIC_BANK_ACCOUNTS.map((b) => ({ ...b, accountName: fullName }))
   const [selectedOption, setSelectedOption] = useState<PaymentOption>('full')
   const router = useRouter()
 
   const [selectedBank, setSelectedBank] =
-    useState<BankAccount>(BANK_ACCOUNTS[0])
+    useState<BankAccount>(bankAccounts[0])
 
   const [amounts, setAmounts] = useState({
     full: '625,000',
@@ -64,7 +67,7 @@ export default function MakeRepayment() {
                 label="Select Bank Account"
                 placeholder="Select bank..."
                 value={selectedBank}
-                options={BANK_ACCOUNTS}
+                options={bankAccounts}
                 onChange={setSelectedBank}
                 getOptionLabel={(bank) =>
                   `${bank.bank} · ${bank.accountNumber}`

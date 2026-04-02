@@ -80,7 +80,7 @@ export function AddMoneyForm({ amount, onAmountChange, onSelectRecommended, onOp
                                     isActive ? 'border-text-primary' : 'border-border hover:border-primary/40'
                                 }`}
                             >
-                                <p className='text-text-primary text-md font-medium'>
+                                <p className='text-text-primary text-sm font-medium'>
                                     <span className='line-through'>N</span> {recommended}
                                 </p>
                             </button>

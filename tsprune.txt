@@ -1,0 +1,233 @@
+npm warn exec The following package was not found and will be installed: ts-prune@0.10.3
+next.config.ts:8 - default
+.next/types/routes.d.ts:104 - ParamsOf
+.next/types/routes.d.ts:112 - PageRoutes (used in module)
+.next/types/routes.d.ts:112 - RedirectRoutes (used in module)
+.next/types/routes.d.ts:112 - RewriteRoutes (used in module)
+src/app/layout.tsx:78 - default
+src/app/layout.tsx:55 - metadata
+src/app/layout.tsx:69 - viewport
+src/app/loading.tsx:2 - default
+src/app/page.tsx:7 - default
+src/components/ProfileDrawer.tsx:14 - ProfileDrawerSide (used in module)
+src/components/RouteTitle.tsx:95 - default
+src/constants/cameraConstant.js:83 - SCREENS
+src/constants/cardData.ts:14 - CardImages
+src/constants/cardData.ts:64 - mockCards
+src/constants/getmanageBtn.ts:111 - cardActions
+src/hooks/getUserDetailsFromLocal.ts:6 - VerifiedUserSnapshot (used in module)
+src/lib/bridge.ts:71 - sendToSDK (used in module)
+src/lib/bridge.ts:117 - notifyCardFailed
+src/lib/bridge.ts:8 - InstacardEventType (used in module)
+src/lib/bridge.ts:18 - InstacardEvent (used in module)
+src/lib/card-config.ts:3 - CardConfig (used in module)
+src/lib/fetchDataFromKotlin.ts:104 - formatPaymentShareText (used in module)
+src/lib/fetchDataFromKotlin.ts:14 - ShareTextPayload (used in module)
+src/lib/fetchDataFromKotlin.ts:95 - PaymentShareData (used in module)
+src/lib/pwa-header-context.tsx:30 - PWAHeaderProvider
+src/lib/types.ts:1 - CARD_TYPES (used in module)
+src/utils/nativeBridge.js:7 - isAndroidWebView (used in module)
+src/utils/nativeBridge.js:12 - isIOSWebView (used in module)
+src/utils/nativeBridge.js:66 - goBack (used in module)
+src/utils/nativeBridge.js:99 - getNativeEnvironment
+.next/dev/types/routes.d.ts:104 - ParamsOf
+.next/dev/types/routes.d.ts:112 - PageRoutes (used in module)
+.next/dev/types/routes.d.ts:112 - RedirectRoutes (used in module)
+.next/dev/types/routes.d.ts:112 - RewriteRoutes (used in module)
+src/app/identity-verification/page.tsx:48 - default
+src/app/instacard/page.tsx:5 - default
+src/app/registration/layout.tsx:9 - default
+src/app/registration/layout.tsx:4 - metadata
+src/app/underdev/page.tsx:5 - default
+src/components/Extras/FaceVerificationScreen.tsx:7 - default
+src/components/Extras/UniversalCameraCapture.tsx:13 - default
+src/components/Extras/UniversalFaceVerificationScreen.tsx:7 - default
+src/components/ui/AddMoneyCardsSection.tsx:41 - AddMoneyCardsSectionProps (used in module)
+src/components/ui/AddMoneyForm.tsx:12 - AddMoneyFormProps (used in module)
+src/components/ui/AddNewCardForm.tsx:9 - AddNewCardFormValues (used in module)
+src/components/ui/AddNewCardForm.tsx:17 - AddNewCardFormProps (used in module)
+src/components/ui/BottomSheetModal.tsx:13 - BottomSheetModalProps (used in module)
+src/components/ui/button.tsx:6 - ButtonVariant (used in module)
+src/components/ui/button.tsx:7 - ButtonSize (used in module)
+src/components/ui/button.tsx:9 - ButtonProps (used in module)
+src/components/ui/DatePickerModal.tsx:12 - DatePickerModalProps (used in module)
+src/components/ui/Dropdown.tsx:6 - DropdownOption (used in module)
+src/components/ui/Dropdown.tsx:11 - DropdownProps (used in module)
+src/components/ui/Dropdown.tsx:90 - default
+src/components/ui/FAQModal.tsx:18 - DEFAULT_FAQ_DATA (used in module)
+src/components/ui/index.ts:2 - Checkbox
+src/components/ui/index.ts:3 - Header
+src/components/ui/index.ts:4 - OTPInput
+src/components/ui/index.ts:5 - OTPKeypad
+src/components/ui/index.ts:6 - RadioOption
+src/components/ui/index.ts:7 - RadioOption2
+src/components/ui/index.ts:8 - SheetContainer
+src/components/ui/index.ts:9 - Dropdown
+src/components/ui/index.ts:10 - Button
+src/components/ui/index.ts:12 - Balance
+src/components/ui/index.ts:13 - CardMockup
+src/components/ui/index.ts:14 - CopyButton
+src/components/ui/index.ts:15 - CreditCardTransactions
+src/components/ui/index.ts:16 - CreditDueBalance
+src/components/ui/index.ts:17 - DatePickerModal
+src/components/ui/index.ts:18 - EmailStatements
+src/components/ui/index.ts:19 - EyeButton
+src/components/ui/index.ts:20 - FaqIconButton
+src/components/ui/index.ts:21 - InputField
+src/components/ui/index.ts:22 - MakeRepayment
+src/components/ui/index.ts:23 - OtpInput
+src/components/ui/index.ts:24 - RecentTransactions
+src/components/ui/index.ts:25 - TransactionHistoryItem
+src/components/ui/page-slide-transition.tsx:7 - PageSlideTransition
+src/lib/api/emailRegistration.ts:3 - SendEmailRegistrationOtpRequest (used in module)
+src/lib/api/emailRegistration.ts:8 - SendEmailRegistrationOtpResponse (used in module)
+src/lib/api/emailRegistration.ts:13 - VerifyEmailRegistrationOtpRequest (used in module)
+src/lib/api/emailRegistration.ts:19 - VerifyEmailRegistrationOtpResponse (used in module)
+src/lib/api/idVerification.ts:6 - SendOtpRequest (used in module)
+src/lib/api/idVerification.ts:12 - SendOtpResponse (used in module)
+src/lib/api/idVerification.ts:17 - VerifyOtpRequest (used in module)
+src/lib/api/idVerification.ts:23 - VerifyOtpResponse (used in module)
+src/lib/verification/index.ts:4 - UserInfo
+src/lib/verification/index.ts:11 - IdVerificationMethod
+src/lib/verification/index.ts:14 - UserDetails
+src/lib/verification/index.ts:2 - maskEmail
+src/lib/verification/index.ts:10 - maskNumber
+src/lib/verification/index.ts:20 - isDobMissing
+src/lib/verification/index.ts:30 - parseApiError
+src/app/api/userdata/route.ts:19 - GET
+src/app/identity-verification/email-registration/page.tsx:17 - default
+src/app/identity-verification/id-verification/page.tsx:21 - default
+src/app/identity-verification/kyc-status/page.tsx:19 - default
+src/app/identity-verification/liveness-verification/page.tsx:23 - default
+src/app/instacard/add-instacard/page.tsx:3 - default
+src/app/instacard/add-universal-card/page.tsx:4 - default
+src/app/instacard/claim-gift-card/page.tsx:3 - default
+src/app/instacard/forget-pin/page.tsx:8 - default
+src/app/instacard/help-and-support/page.tsx:4 - default
+src/app/instacard/link-universal-card/page.tsx:4 - default
+src/app/instacard/link-virtual-card/page.tsx:4 - default
+src/app/instacard/make-online-payments/page.tsx:3 - default
+src/app/instacard/scan-and-pay/page.tsx:5 - default
+src/app/registration/accept-terms/page.tsx:3 - default
+src/app/registration/continue-or-register/page.tsx:3 - default
+src/app/registration/kyc-success/page.tsx:3 - default
+src/app/registration/new-email/page.tsx:3 - default
+src/app/registration/nin-confirmation/page.tsx:28 - default
+src/app/registration/verification-confirm/page.tsx:5 - default
+src/app/registration/verification-method/page.tsx:3 - default
+src/app/registration/verification-otp/page.tsx:14 - default
+src/app/registration/verify-existing-email/page.tsx:3 - default
+src/app/registration/with-existing-email-success/page.tsx:9 - default
+src/components/Extras/utils/faceValidation.js:8 - checkSingleFace (used in module)
+src/components/Extras/utils/faceValidation.js:24 - checkCentered (used in module)
+src/components/Extras/utils/faceValidation.js:54 - checkFaceSize (used in module)
+src/components/Extras/utils/faceValidation.js:82 - checkObstruction (used in module)
+src/components/Extras/utils/faceValidation.js:139 - checkEyesOpen (used in module)
+src/components/Extras/utils/faceValidation.js:183 - checkLighting (used in module)
+src/components/Extras/utils/faceValidation.js:198 - checkBlur (used in module)
+src/components/Extras/utils/faceValidation.js:210 - checkFaceAngle (used in module)
+src/components/screens/AuthScreens/SuccessScreen.tsx:16 - SuccessScreenProps (used in module)
+src/components/screens/Drawers/AccessFeaturesDropdown.tsx:43 - AccessFeaturesDropdown
+src/components/screens/InstacardScreens/ActionDrawer.tsx:34 - ACTIONS (used in module)
+src/components/screens/InstacardScreens/CardStack.tsx:481 - default
+src/components/screens/InstacardScreens/FilterBar.tsx:12 - FilterTab
+src/components/screens/InstacardScreens/FilterBar.tsx:376 - default
+src/components/screens/InstacardScreens/FloatingBottomBar.tsx:35 - FloatingBottomBar (used in module)
+src/components/screens/InstacardScreens/FloatingBottomBarLayoutClient.tsx:6 - FloatingBottomBarLayoutClient (used in module)
+src/components/screens/InstacardScreens/greeting-bar.tsx:61 - default
+src/store/redux/slices/cardModeSlice.ts:3 - CardMode (used in module)
+src/store/redux/slices/cardModeSlice.ts:27 - selectCardMode (used in module)
+src/store/redux/slices/cardSlice.ts:29 - setPin (used in module)
+src/store/redux/slices/cardSlice.ts:29 - resetPin (used in module)
+src/store/redux/slices/cardSlice.ts:30 - selectPin (used in module)
+src/store/redux/slices/cardSlice.ts:30 - selectVerifyPin (used in module)
+src/store/redux/slices/cardWalletSlice.ts:159 - selectVerifyCardPin
+src/store/redux/slices/cardWalletSlice.ts:152 - selectCards (used in module)
+src/store/redux/slices/cardWalletSlice.ts:153 - selectPendingCardForm (used in module)
+src/store/redux/slices/cardWalletSlice.ts:154 - selectPendingPin (used in module)
+src/store/redux/slices/cardWalletSlice.ts:155 - selectManagingCardId (used in module)
+src/store/redux/slices/cardWalletSlice.ts:156 - selectPendingLinkUniversalCardId (used in module)
+src/store/redux/slices/idVerificationSlice.ts:3 - IdVerificationStep (used in module)
+src/store/redux/slices/idVerificationSlice.ts:5 - VerificationMethod (used in module)
+src/store/redux/slices/idVerificationSlice.ts:49 - setStep (used in module)
+src/store/redux/slices/idVerificationSlice.ts:49 - setVerificationMethod (used in module)
+src/store/redux/slices/limitSettingSlice.ts:27 - selectActiveTab (used in module)
+src/store/redux/slices/livenessSlice.ts:3 - LivenessStep (used in module)
+src/store/redux/slices/manageCardSlice.ts:33 - selectIsFaqOpen (used in module)
+src/store/redux/slices/manageCardSlice.ts:33 - selectFaqData (used in module)
+src/store/redux/slices/onlinePaymentSlice.ts:4 - TransactionStatus (used in module)
+src/store/redux/slices/onlinePaymentSlice.ts:20 - VirtualCardDetails (used in module)
+src/store/redux/slices/onlinePaymentSlice.ts:122 - setRefreshing (used in module)
+src/store/redux/slices/onlinePaymentSlice.ts:123 - setCvvTimeRemaining (used in module)
+src/store/redux/slices/onlinePaymentSlice.ts:131 - selectIsVerified (used in module)
+src/store/redux/slices/onlinePaymentSlice.ts:132 - selectIsCardVisible (used in module)
+src/store/redux/slices/onlinePaymentSlice.ts:133 - selectIsRefreshing (used in module)
+src/store/redux/slices/onlinePaymentSlice.ts:134 - selectCvvTimeRemaining (used in module)
+src/store/redux/slices/onlinePaymentSlice.ts:135 - selectCardDetails (used in module)
+src/store/redux/slices/onlinePaymentSlice.ts:136 - selectTransactions (used in module)
+src/store/redux/slices/profileDrawerSlice.ts:27 - openProfileDrawer (used in module)
+src/store/redux/slices/userSlice.ts:4 - UserProfile (used in module)
+src/store/redux/slices/userSlice.ts:154 - setUser (used in module)
+src/store/redux/slices/userSlice.ts:154 - clearUser (used in module)
+src/store/redux/slices/userSlice.ts:158 - selectInitials (used in module)
+src/store/redux/slices/userSlice.ts:161 - selectMaskedBvn (used in module)
+src/store/redux/slices/userSlice.ts:162 - selectMaskedDob (used in module)
+src/store/redux/slices/userSlice.ts:163 - selectUserProfile (used in module)
+src/app/api/email-registration/send-otp/route.ts:31 - POST
+src/app/api/email-registration/verify-otp/route.ts:23 - POST
+src/app/api/id-verification/send-otp/route.ts:42 - POST
+src/app/api/id-verification/verify-otp/route.ts:25 - POST
+src/app/api/userdata/override/route.ts:26 - POST
+src/app/instacard/add-instacard/credit/page.tsx:3 - default
+src/app/instacard/add-instacard/debit/page.tsx:3 - default
+src/app/instacard/add-instacard/gift/page.tsx:3 - default
+src/app/instacard/add-instacard/gift-a-card/page.tsx:4 - default
+src/app/instacard/add-instacard/how-to-use-card/page.tsx:317 - default
+src/app/instacard/add-instacard/otp/page.tsx:3 - default
+src/app/instacard/add-instacard/pin-setup/page.tsx:10 - default
+src/app/instacard/add-instacard/prepaid/page.tsx:3 - default
+src/app/instacard/add-instacard/success/page.tsx:4 - default
+src/app/instacard/add-universal-card/pin-setup/page.tsx:10 - default
+src/app/instacard/add-universal-card/success/page.tsx:4 - default
+src/app/instacard/add-universal-card/verify-email/page.tsx:7 - default
+src/app/instacard/add-universal-card/verify-mobile/page.tsx:7 - default
+src/app/instacard/card-detail/credit/page.tsx:3 - default
+src/app/instacard/card-detail/debit/page.tsx:3 - default
+src/app/instacard/card-detail/gift/page.tsx:4 - default
+src/app/instacard/card-detail/prepaid/page.tsx:3 - default
+src/app/instacard/claim-gift-card/email-verify-gift/page.tsx:7 - default
+src/app/instacard/claim-gift-card/one-time-activation/page.tsx:3 - default
+src/app/instacard/forget-pin/choose-options/page.tsx:14 - default
+src/app/instacard/forget-pin/create-pin/page.tsx:11 - default
+src/app/instacard/forget-pin/email-verification/page.tsx:7 - default
+src/app/instacard/forget-pin/phone-verification/page.tsx:7 - default
+src/app/instacard/link-universal-card/bvn-verification/page.tsx:4 - default
+src/app/instacard/link-universal-card/linked-success/page.tsx:4 - default
+src/app/instacard/link-universal-card/sigma-cards-options/page.tsx:7 - default
+src/app/instacard/link-universal-card/verify-email/page.tsx:7 - default
+src/app/instacard/link-universal-card/verify-otp/page.tsx:7 - default
+src/app/instacard/manage-card/card-status/page.tsx:3 - default
+src/app/instacard/manage-card/credit/page.tsx:7 - default
+src/app/instacard/manage-card/debit/page.tsx:7 - default
+src/app/instacard/manage-card/gift/page.tsx:7 - default
+src/app/instacard/manage-card/limit-setting/page.tsx:3 - default
+src/app/instacard/manage-card/make-repayments/page.tsx:4 - default
+src/app/instacard/manage-card/pin-change/page.tsx:8 - default
+src/app/instacard/manage-card/prepaid/page.tsx:6 - default
+src/app/instacard/scan-and-pay/make-payment/page.tsx:5 - default
+src/app/instacard/scan-and-pay/payment-success/page.tsx:27 - default
+src/app/instacard/add-instacard/gift-a-card/one-time-activation/page.tsx:12 - default
+src/app/instacard/add-instacard/gift-a-card/ready-to-use/page.tsx:17 - default
+src/app/instacard/add-instacard/gift-a-card/share-gift-card/page.tsx:15 - default
+src/app/instacard/make-online-payments/transaction/[id]/page.tsx:6 - default
+src/app/instacard/manage-card/email-statements/credit/page.tsx:4 - default
+src/app/instacard/manage-card/email-statements/debit/page.tsx:4 - default
+src/app/instacard/manage-card/email-statements/gift/page.tsx:4 - default
+src/app/instacard/manage-card/email-statements/prepaid/page.tsx:4 - default
+src/app/instacard/manage-card/limit-setting/verify-email/page.tsx:7 - default
+src/app/instacard/manage-card/make-repayments/verify-otp/page.tsx:7 - default
+src/app/instacard/manage-card/pin-change/pin-setup/page.tsx:10 - default
+src/app/instacard/manage-card/prepaid/add-money/page.tsx:4 - default
+src/app/instacard/manage-card/make-repayments/verify-otp/success/page.tsx:6 - default
+src/app/instacard/manage-card/prepaid/add-money/success/page.tsx:7 - default
+src/app/instacard/manage-card/prepaid/add-money/verify-email/page.tsx:7 - default

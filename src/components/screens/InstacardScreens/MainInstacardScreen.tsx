@@ -15,7 +15,7 @@ import { setPendingCardForm } from '@/store/redux/slices/cardWalletSlice'
 import LeftSideDrawer from '@/components/LeftSideDrawer'
 import { ProfileContent } from '@/components/screens/Drawers/ProfileContent'
 import FloatingBottomBarLayoutClient from './FloatingBottomBarLayoutClient'
-import { getUserDetailsFromLocal } from '@/hooks/getUserDetailsFromLocal'
+import { selectFirstName } from '@/store/redux/slices/userSlice'
 
 
 
@@ -24,6 +24,8 @@ export default function MainInstacardScreen() {
   const dispatch = useAppDispatch()
   const allCards = useAppSelector((s) => s.cardWallet.cards)
   const cardMode = useAppSelector((s) => s.cardMode.cardMode)
+  const userName = useAppSelector(selectFirstName)
+  const userEmail = useAppSelector((s) => s.user.email)
   const setCardMode = (mode: 'virtual' | 'universal') => dispatch(setCardModeAction(mode))
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all'])
   const [sortBy, setSortBy] = useState<SortByValue>('recent')
@@ -114,17 +116,14 @@ export default function MainInstacardScreen() {
     console.log('Action pressed:', actionId, 'for card:', card.name)
   }, [])
 
-  const { isDarkMode } = useAuth();
-
-
-  const { name: firstName, email: userEmail, phone: userPhone, dateOfBirth, gender, nationality, stateOfOrigin, lga, residentialAddress, registrationDate, enrollmentBank, photo, livenessVerified, kycCompleted, watchListed, bankDetails, bvnDetails, ninDetails } = getUserDetailsFromLocal()
+  const { isDarkMode } = useAuth()
 
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Top controls — greeting + filters */}
       <div className="shrink-0 relative z-10">
         <GreetingBar
-          userName={firstName}
+          userName={userName}
           mode={cardMode}
           onAvatarPress={() => setLeftDrawerVisible(true)}
         />
@@ -178,7 +177,7 @@ export default function MainInstacardScreen() {
         onClose={() => setLeftDrawerVisible(false)}
       >
         <ProfileContent
-          userName={firstName}
+          userName={userName}
           userEmail={userEmail}
           onClose={() => setLeftDrawerVisible(false)}
         />

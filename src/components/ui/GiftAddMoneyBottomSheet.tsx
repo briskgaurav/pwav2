@@ -7,6 +7,7 @@ import AddMoneyToggle from '@/components/ui/AddMoneyToggle';
 import { AddMoneyCardsSection, CardType } from '@/components/ui/AddMoneyCardsSection';
 import { AddNewCardForm } from '@/components/ui/AddNewCardForm';
 import { ChevronDownIcon, CheckIcon, PlusIcon } from 'lucide-react';
+import { useAppSelector } from '@/store/redux/hooks';
 
 type ModalView = 'cards' | 'addCard';
 
@@ -17,11 +18,11 @@ type BankAccount = {
   accountName: string;
 };
 
-const bankAccounts: BankAccount[] = [
-  { id: 'sigma', bank: 'Sigma Bank', accountNumber: '1234567890', accountName: 'John Doe' },
-  { id: 'gtb', bank: 'GTBank', accountNumber: '0987654321', accountName: 'John Doe' },
-  { id: 'access', bank: 'Access Bank', accountNumber: '5678901234', accountName: 'John Doe' },
-];
+const STATIC_BANK_ACCOUNTS = [
+  { id: 'sigma', bank: 'Sigma Bank', accountNumber: '1234567890' },
+  { id: 'gtb', bank: 'GTBank', accountNumber: '0987654321' },
+  { id: 'access', bank: 'Access Bank', accountNumber: '5678901234' },
+] as const;
 
 type Props = {
   amount: string;
@@ -31,6 +32,8 @@ type Props = {
 };
 
 export function GiftAddMoneyBottomSheet({ amount, visible, onClose, onConfirm }: Props) {
+  const fullName = useAppSelector((s) => s.user.fullName);
+  const bankAccounts: BankAccount[] = STATIC_BANK_ACCOUNTS.map((b) => ({ ...b, accountName: fullName }));
   const [selectedCard, setSelectedCard] = useState<CardType>('sigma');
   const [modalView, setModalView] = useState<ModalView>('cards');
   const [activeTab, setActiveTab] = useState<'cards' | 'account'>('cards');

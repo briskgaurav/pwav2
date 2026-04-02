@@ -33,7 +33,7 @@ export default function VerificationCodeScreen({
   hideLayerSheet = false,
   title,
   subtitle,
-  maskedValue = 'nird***malik@gmail.com',
+  maskedValue = '',
   successRoute,
   showKeypad = true,
   onSuccess,

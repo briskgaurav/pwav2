@@ -26,7 +26,6 @@ type UserState = UserProfile & {
   maskedDob: string
 }
 
-// Masking utilities
 const maskEmail = (email: string): string => {
   const [local, domain] = email.split('@')
   if (!local || !domain) return email
@@ -72,7 +71,7 @@ const deriveFields = (profile: UserProfile): Omit<UserState, keyof UserProfile> 
   }
 }
 
-const createDefaultProfile = (): UserProfile => {
+function buildUserProfileFromVerifiedStorage(): UserProfile {
   const {
     name: firstName,
     email: userEmail,
@@ -88,7 +87,7 @@ const createDefaultProfile = (): UserProfile => {
   } = getUserDetailsFromLocal()
 
   return {
-    firstName ,
+    firstName,
     lastName: bvnDetails?.name?.split(' ').pop() ?? '',
     middleName: ninDetails?.name?.split(' ').slice(1, -1).join(' ') ?? '',
     email: userEmail,
@@ -104,20 +103,22 @@ const createDefaultProfile = (): UserProfile => {
   }
 }
 
-const createInitialState = (): UserState => {
-  const defaultProfile = createDefaultProfile()
+function buildUserStateFromVerifiedStorage(): UserState {
+  const profile = buildUserProfileFromVerifiedStorage()
   return {
-    ...defaultProfile,
-    ...deriveFields(defaultProfile),
+    ...profile,
+    ...deriveFields(profile),
   }
 }
 
-const initialState: UserState = createInitialState()
+const initialState: UserState = buildUserStateFromVerifiedStorage()
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    /** Re-read `active_user` / `user_{id}` and replace state (e.g. after KYC completion). */
+    syncUserFromVerifiedStorage: () => buildUserStateFromVerifiedStorage(),
     setUser: (state, action: PayloadAction<Partial<UserProfile>>) => {
       const updated: UserProfile = {
         firstName: action.payload.firstName ?? state.firstName,
@@ -136,7 +137,7 @@ const userSlice = createSlice({
       }
       return { ...updated, ...deriveFields(updated) }
     },
-    clearUser: () => createInitialState(),
+    clearUser: () => buildUserStateFromVerifiedStorage(),
   },
   selectors: {
     selectFirstName: (state) => state.firstName,
@@ -150,7 +151,7 @@ const userSlice = createSlice({
   },
 })
 
-export const { setUser, clearUser } = userSlice.actions
+export const { setUser, clearUser, syncUserFromVerifiedStorage } = userSlice.actions
 export const {
   selectFirstName,
   selectFullName,

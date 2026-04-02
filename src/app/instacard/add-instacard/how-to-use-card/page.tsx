@@ -214,7 +214,7 @@ function HowToUseCardContent() {
     const config = CARD_TYPE_CONFIG[cardType];
     const cardActions = useMemo(() => getCardActions(cardType), [cardType]);
     const { mockupImageSrc, maskedNumber } = useManagingCard();
-    const userFullName = useAppSelector((s) => s.user.firstName);
+    const userFullName = useAppSelector((s) => s.user.fullName);
 
     useEffect(() => {
         notifyNavigation('how-to-use-card');

@@ -21,6 +21,7 @@ export default function ManagePrepaidCardScreen() {
   const searchParams = useSearchParams()
   const cardMode = (searchParams.get('mode') as 'virtual' | 'universal') || 'virtual'
   const dispatch = useAppDispatch()
+  const accountNumber = useAppSelector((s) => s.user.accountNumber)
   const isFaqOpen = useAppSelector((s) => s.manageCard.isFaqOpen)
   const faqData = useAppSelector((s) => s.manageCard.faqData)
   const handleCloseFaq = () => dispatch(closeFaq())
@@ -36,7 +37,7 @@ export default function ManagePrepaidCardScreen() {
         <div className='w-full flex rounded-xl mt-4 gap-2 '>
           <div className='flex-1 p-4 py-6  border border-text-primary/20 rounded-2xl  flex flex-col gap-4'>
             <p className='text-text-primary text-sm'>Wallet Account</p>
-            <p className='text-text-primary font-medium'>12344567890</p>
+            <p className='text-text-primary font-medium'>{accountNumber || '—'}</p>
           </div>
           <div className='flex-1 p-4 py-6 flex flex-col gap-4 border border-text-primary/20 rounded-2xl'>
             <p className='text-text-primary text-sm'>Balance</p>

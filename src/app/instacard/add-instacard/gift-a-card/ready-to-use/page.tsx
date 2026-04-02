@@ -12,8 +12,10 @@ import { routes } from '@/lib/routes'
 import { useAuth } from '@/lib/auth-context'
 import LayoutSheet from '@/components/ui/LayoutSheet'
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import { useAppSelector } from '@/store/redux/hooks'
 
-export default function page() {
+export default function ReadyToUsePage() {
+    const accountNumber = useAppSelector((s) => s.user.accountNumber)
     const [showBalance, setShowBalance] = useState(false)
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -63,7 +65,7 @@ export default function page() {
                 <div className='w-full flex rounded-xl gap-2 '>
                     <div className='flex-1 p-4 py-6  border border-text-primary/20 rounded-2xl  flex flex-col gap-4'>
                         <p className='text-text-primary text-sm'>Wallet Account</p>
-                        <p className='text-text-primary font-medium'>12344567890</p>
+                        <p className='text-text-primary font-medium'>{accountNumber || '—'}</p>
                     </div>
                     <div className='flex-1 p-4 py-6 flex flex-col gap-4 border border-text-primary/20 rounded-2xl'>
                         <p className='text-text-primary text-sm'>Balance</p>

@@ -1,5 +1,15 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  type PersistedState,
+} from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
 import livenessReducer from './slices/livenessSlice'
@@ -17,7 +27,16 @@ import onlinePaymentReducer from './slices/onlinePaymentSlice'
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['cardWallet', 'user'],
+  version: 2,
+  whitelist: ['cardWallet'],
+  migrate: (incomingState: unknown) => {
+    if (incomingState && typeof incomingState === 'object') {
+      const next = { ...(incomingState as Record<string, unknown>) }
+      delete next.user
+      return Promise.resolve(next as PersistedState)
+    }
+    return Promise.resolve(undefined as unknown as PersistedState)
+  },
 }
 
 const rootReducer = combineReducers({

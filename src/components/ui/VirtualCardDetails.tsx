@@ -20,6 +20,7 @@ export default function VirtualCardDetails({ cardImageSrc, maskedNumber, cardNum
 
   const dispatch = useAppDispatch()
   const cardDetails = useAppSelector((s) => s.onlinePayment.cardDetails)
+  const userFullName = useAppSelector((s) => s.user.fullName)
   const isRefreshing = useAppSelector((s) => s.onlinePayment.isRefreshing)
   const { cvvTimeRemaining } = useCvvTimer()
 
@@ -208,7 +209,7 @@ export default function VirtualCardDetails({ cardImageSrc, maskedNumber, cardNum
           >
             <div ref={frontContentRef}>
               <div className="absolute bottom-[32px] right-[34px] z-10 text-white">
-                <p className="text-sm">{cardDetails.cardholderName}</p>
+                <p className="text-sm">{userFullName.toUpperCase() || cardDetails.cardholderName}</p>
               </div>
               <div className="absolute inset-0 z-10 flex items-center justify-center gap-3 ">
                 <p className="text-2xl text-text-primary font-semibold">

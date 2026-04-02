@@ -4,16 +4,17 @@ import { useRouter } from 'next/navigation'
 import { SheetContainer, Button } from '@/components/ui'
 import { routes } from '@/lib/routes'
 import { Check, Mail, Shield, CheckCircle2 } from 'lucide-react'
-
-const EXISTING_EMAIL = 'nird***malik@gmail.com'
+import { useAppSelector } from '@/store/redux/hooks'
 
 export default function WithExistingEmailSuccessPage() {
   const router = useRouter()
+  const maskedEmail = useAppSelector((s) => s.user.maskedEmail)
+  const email = useAppSelector((s) => s.user.email)
 
   const handleFinish = () => {
     localStorage.setItem('user', 'true')
     localStorage.setItem('kyc_completed', 'true')
-    localStorage.setItem('kyc_email', EXISTING_EMAIL)
+    localStorage.setItem('kyc_email', email)
     localStorage.setItem('kyc_timestamp', new Date().toISOString())
     router.replace(routes.instacard)
   }
@@ -32,7 +33,7 @@ export default function WithExistingEmailSuccessPage() {
                 You&apos;re All Set!
               </h1>
               <p className="text-sm text-text-secondary leading-relaxed max-w-[280px] mx-auto">
-                We will use your existing email <span className="font-semibold">{EXISTING_EMAIL}</span> for all Instacard communications from now on.
+                We will use your existing email <span className="font-semibold">{maskedEmail}</span> for all Instacard communications from now on.
               </p>
             </div>
           </div>

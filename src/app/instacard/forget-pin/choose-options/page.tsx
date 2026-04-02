@@ -9,9 +9,12 @@ import { useRouter } from 'next/navigation'
 import { LucideIcon } from 'lucide-react'
 import LayoutSheet from '@/components/ui/LayoutSheet'
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import { useAppSelector } from '@/store/redux/hooks'
 
-export default function page() {
+export default function ChooseOptionsPage() {
     const router = useRouter()
+    const maskedMobile = useAppSelector((s) => s.user.maskedMobile)
+    const maskedEmail = useAppSelector((s) => s.user.maskedEmail)
     const [selectedOption, setSelectedOption] = useState<'phone' | 'email' | null>(null)
 
     const handleContinue = () => {
@@ -31,7 +34,7 @@ export default function page() {
 
                 <div className="mt-4 flex flex-col gap-3">
                     <RadioOption
-                        label="+234 *** *** 1234"
+                        label={maskedMobile}
                         selected={selectedOption === 'phone'}
                         onSelect={() => setSelectedOption('phone')}
                         accessibilityLabel="Verify with phone number"
@@ -39,7 +42,7 @@ export default function page() {
                     />
 
                     <RadioOption
-                        label="j***@example.com"
+                        label={maskedEmail}
                         selected={selectedOption === 'email'}
                         onSelect={() => setSelectedOption('email')}
                         accessibilityLabel="Verify with email"

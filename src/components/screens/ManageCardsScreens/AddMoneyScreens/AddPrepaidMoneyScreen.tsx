@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
 import { Dropdown } from '@/components/ui/Dropdown'
 import LayoutSheet from '../../../ui/LayoutSheet'
+import { useAppSelector } from '@/store/redux/hooks'
 
 type ModalView = 'cards' | 'addCard'
 
@@ -25,14 +26,16 @@ type BankAccount = {
     accountName: string
 }
 
-const bankAccounts: BankAccount[] = [
-    { id: 'sigma', bank: 'Sigma Bank', accountNumber: '1234567890', accountName: 'John Doe' },
-    { id: 'gtb', bank: 'GTBank', accountNumber: '0987654321', accountName: 'John Doe' },
-    { id: 'access', bank: 'Access Bank', accountNumber: '5678901234', accountName: 'John Doe' },
-]
+const STATIC_BANK_ACCOUNTS = [
+    { id: 'sigma', bank: 'Sigma Bank', accountNumber: '1234567890' },
+    { id: 'gtb', bank: 'GTBank', accountNumber: '0987654321' },
+    { id: 'access', bank: 'Access Bank', accountNumber: '5678901234' },
+] as const
 
 export default function AddPrepaidMoneyScreen() {
     const router = useRouter()
+    const fullName = useAppSelector((s) => s.user.fullName)
+    const bankAccounts: BankAccount[] = STATIC_BANK_ACCOUNTS.map((b) => ({ ...b, accountName: fullName }))
     const { imageSrc, maskedNumber } = useManagingCard()
     const [showBalance, setShowBalance] = useState(false)
     const [amount, setAmount] = useState('')

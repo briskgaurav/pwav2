@@ -1,15 +1,17 @@
 'use client'
 import { useState } from 'react'
 import EyeButton from './EyeButton'
+import { useAppSelector } from '@/store/redux/hooks'
 
 export default function Balance() {
+    const accountNumber = useAppSelector((s) => s.user.accountNumber)
     const [showBalance, setShowBalance] = useState(false)
 
     return (
         <div className='w-full  flex rounded-xl gap-2 '>
             <div className='flex-1 p-4 py-6  border border-text-primary/20 rounded-2xl  flex flex-col gap-4'>
                 <p className='text-text-primary text-sm'>Prepaid Account</p>
-                <p className='text-text-primary font-medium'>12344567890</p>
+                <p className='text-text-primary font-medium'>{accountNumber || '—'}</p>
             </div>
             <div className='flex-1 p-4 py-6 flex flex-col gap-4 border border-text-primary/20 rounded-2xl'>
                 <p className='text-text-primary text-sm'>Balance</p>

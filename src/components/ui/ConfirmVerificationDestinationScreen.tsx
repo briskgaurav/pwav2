@@ -61,7 +61,7 @@ export default function ConfirmVerificationDestinationScreen() {
       return {
         title: 'Verify your Phone Number',
         subtitle: 'Enter your phone number exactly as registered to receive a 6-digit code.',
-        maskedValue: maskedMobile || '+234**********',
+        maskedValue: maskedMobile || '',
         inputLabel: 'Phone Number',
         inputPlaceholder: 'Enter your phone number',
       }

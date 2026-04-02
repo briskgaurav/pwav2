@@ -65,7 +65,7 @@ export default function NinConfirmationScreen() {
             Confirm NIN Details
           </h2>
           <p className="text-sm text-text-secondary mt-2 mb-6 leading-relaxed text-center">
-            Here are your NIN details (00202374093742). <br /> Please confirm to complete KYC.
+            Here are your NIN details ({user.maskedBvn || 'N/A'}). <br /> Please confirm to complete KYC.
           </p>
 
           {/* Form Fields - Read-only prefilled appearance */}

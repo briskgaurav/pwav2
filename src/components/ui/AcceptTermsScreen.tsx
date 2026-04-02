@@ -64,7 +64,7 @@ export default function AcceptTermsScreen() {
             Confirm BVN Details
           </h2>
           <p className="text-sm text-text-secondary mt-2 mb-6 leading-relaxed text-center">
-          Here are your BVN details (+202374093742). <br /> Please confirm to complete KYC.
+          Here are your BVN details ({user.maskedBvn || 'N/A'}). <br /> Please confirm to complete KYC.
           </p>
 
           {/* Form Fields - Read-only prefilled appearance */}

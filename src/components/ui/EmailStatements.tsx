@@ -10,6 +10,7 @@ import ButtonComponent from './ButtonComponent'
 import Button from './button'
 import { routes } from '@/lib/routes'
 import { useRouter } from 'next/navigation'
+import { useAppSelector } from '@/store/redux/hooks'
 
 type StatementOption = {
   id: 'mini' | 'custom'
@@ -23,6 +24,7 @@ const statementOptions: StatementOption[] = [
 ]
 
 export default function EmailStatements() {
+  const maskedEmail = useAppSelector((s) => s.user.maskedEmail)
   const [selectedOption, setSelectedOption] = useState<'mini' | 'custom'>('custom')
   const [fromDate, setFromDate] = useState<string>('')
   const [toDate, setToDate] = useState<string>('')
@@ -210,7 +212,7 @@ export default function EmailStatements() {
         <div className='fixed inset-0 z-50 h-screen flex items-center justify-center bg-black/20'>
           <div className='bg-white/60 backdrop-blur-2xl border-white border rounded-2xl p-6 mx-6 max-w-sm w-full text-center shadow-lg'>
             <p className='text-text-primary text-base mb-6'>
-              Your Statement has been emailed to your registered Email ********@gmail.com
+              Your Statement has been emailed to your registered Email {maskedEmail}
             </p>
             <button
               type='button'

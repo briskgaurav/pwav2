@@ -5,13 +5,14 @@ import { useRouter } from 'next/navigation'
 import { SheetContainer, Button, RadioOption } from '@/components/ui'
 import { routes } from '@/lib/routes'
 import { Mail, UserPlus } from 'lucide-react'
+import { useAppSelector } from '@/store/redux/hooks'
 
 type Choice = 'current' | 'new'
 
-const CURRENT_EMAIL = 'nird***malik@gmail.com'
-
 export default function ContinueOrRegisterScreen() {
   const router = useRouter()
+  const maskedEmail = useAppSelector((s) => s.user.maskedEmail)
+  const email = useAppSelector((s) => s.user.email)
   const [choice, setChoice] = useState<Choice | null>(null)
   const [newEmail, setNewEmail] = useState('')
 
@@ -19,7 +20,7 @@ export default function ContinueOrRegisterScreen() {
     if (!choice) return
 
     if (choice === 'current') {
-      localStorage.setItem('kyc_email', CURRENT_EMAIL)
+      localStorage.setItem('kyc_email', email)
       router.replace(routes.registrationWithExistingEmailSuccess)
     } else {
       if (!newEmail.trim()) return
@@ -47,7 +48,7 @@ export default function ContinueOrRegisterScreen() {
 
           <div className="space-y-3">
             <RadioOption
-              label={`Continue with ${CURRENT_EMAIL}`}
+              label={`Continue with ${maskedEmail}`}
               selected={choice === 'current'}
               onSelect={() => setChoice('current')}
               IconComponent={Mail}

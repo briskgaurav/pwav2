@@ -1,7 +1,7 @@
 'use client'
 
 import ButtonComponent from '@/components/ui/ButtonComponent'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { sendIdVerificationOtp } from '@/lib/api/idVerification'
 import type { UserInfo } from '@/lib/api/idVerification'
 
@@ -16,12 +16,13 @@ function normalizePhoneDigits(value: string) {
 }
 
 function isValidEmail(value: string) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(value.trim())
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
 }
 
-const MAX_PHONE_DIGITS = 13 // e.g. +234 + 10 digits
-const COUNTRY_CODE_LENGTH = 3 // e.g. 234
+const MIN_PHONE_DIGITS = 10
+const MAX_PHONE_DIGITS = 14
+const COUNTRY_CODE_LENGTH = 3
+const MAX_EMAIL_LENGTH = 254
 
 export default function VerificationConfirmScreen({
   userInfo,
@@ -35,10 +36,14 @@ export default function VerificationConfirmScreen({
   const email = userInfo.email ?? ''
   const mobile = userInfo.phone_number ?? ''
   const maskedEmail = email ? `${email[0]}***@${email.split('@')[1] ?? ''}` : '***'
-  const digits = mobile.replace(/\D/g, '')
-  const maskedMobile = digits.length >= 4 ? `+${digits.slice(0, 3)} *** *** ${digits.slice(-4)}` : '***'
+  const mobileDigits = mobile.replace(/\D/g, '')
+  const maskedMobile = mobileDigits.length >= 4
+    ? `+${mobileDigits.slice(0, 3)} *** *** ${mobileDigits.slice(-4)}`
+    : '***'
+
   const [method, setMethod] = useState<VerificationMethod | null>(null)
   const [inputValue, setInputValue] = useState('')
+  const [touched, setTouched] = useState(false)
   const [errorText, setErrorText] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
 
@@ -50,11 +55,10 @@ export default function VerificationConfirmScreen({
 
   useEffect(() => {
     if (method !== 'phone') return
-    // Prefill country code (e.g. +234) by default
     setInputValue((prev) => {
       if (prev.trim().length > 0) return prev
-      const digits = normalizePhoneDigits(mobile)
-      if (digits.length >= COUNTRY_CODE_LENGTH) return `+${digits.slice(0, COUNTRY_CODE_LENGTH)} `
+      const d = normalizePhoneDigits(mobile)
+      if (d.length >= COUNTRY_CODE_LENGTH) return `+${d.slice(0, COUNTRY_CODE_LENGTH)} `
       return '+'
     })
   }, [method, mobile])
@@ -69,7 +73,6 @@ export default function VerificationConfirmScreen({
         inputPlaceholder: 'Enter your phone number',
       }
     }
-    // Default to email
     return {
       title: 'Verify your Email',
       subtitle: 'Enter your email address exactly as registered to receive a 6-digit code.',
@@ -79,8 +82,58 @@ export default function VerificationConfirmScreen({
     }
   }, [method, maskedEmail, maskedMobile])
 
-  const canSubmit = inputValue.trim().length > 0 && (method === 'phone' ? normalizePhoneDigits(inputValue).length >= 10 : isValidEmail(inputValue))
-  const showError = !!errorText
+  const validationError = useMemo<string | null>(() => {
+    if (!touched || inputValue.trim().length === 0) return null
+
+    if (method === 'phone') {
+      const digits = normalizePhoneDigits(inputValue)
+      if (digits.length < MIN_PHONE_DIGITS) return `Phone number must be at least ${MIN_PHONE_DIGITS} digits`
+      if (digits.length > MAX_PHONE_DIGITS) return `Phone number must not exceed ${MAX_PHONE_DIGITS} digits`
+      return null
+    }
+
+    const trimmed = inputValue.trim()
+    if (trimmed.length > MAX_EMAIL_LENGTH) return `Email must not exceed ${MAX_EMAIL_LENGTH} characters`
+    if (!isValidEmail(trimmed)) return 'Please enter a valid email address'
+    return null
+  }, [method, inputValue, touched])
+
+  const isValid = useMemo(() => {
+    if (method === 'phone') {
+      const digits = normalizePhoneDigits(inputValue)
+      return digits.length >= MIN_PHONE_DIGITS && digits.length <= MAX_PHONE_DIGITS
+    }
+    const trimmed = inputValue.trim()
+    return trimmed.length > 0 && trimmed.length <= MAX_EMAIL_LENGTH && isValidEmail(trimmed)
+  }, [method, inputValue])
+
+  const handlePhoneChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    let raw = e.target.value
+    raw = raw.replace(/[^\d+ ]/g, '')
+    if (raw.includes('+')) {
+      raw = '+' + raw.replace(/\+/g, '')
+    }
+    const digits = raw.replace(/\D/g, '')
+    if (digits.length < COUNTRY_CODE_LENGTH) {
+      const cc = normalizePhoneDigits(mobile).slice(0, COUNTRY_CODE_LENGTH)
+      raw = `+${cc} `
+    }
+    if (digits.length > MAX_PHONE_DIGITS) {
+      const limited = digits.slice(0, MAX_PHONE_DIGITS)
+      raw = `+${limited.slice(0, COUNTRY_CODE_LENGTH)} ${limited.slice(COUNTRY_CODE_LENGTH)}`
+    }
+    setInputValue(raw)
+  }, [mobile])
+
+  const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    if (val.length <= MAX_EMAIL_LENGTH) {
+      setInputValue(val)
+    }
+  }, [])
+
+  const displayError = validationError || errorText
+  const showError = !!displayError
 
   return (
     <div className="h-fit flex flex-col">
@@ -88,41 +141,41 @@ export default function VerificationConfirmScreen({
         <h2 className="text-xl font-semibold text-text-primary">
           {title}
         </h2>
-        <p className="text-sm text-text-secondary ">
+        <p className="text-sm text-text-secondary">
           {subtitle}
         </p>
 
-        {/* Masked value display */}
-        <div className="border border-gray-200 mt-4 rounded-xl p-4 ">
+        <div className="border border-gray-200 mt-4 rounded-xl p-4">
           <p className="text-text-primary">{maskedValue}</p>
         </div>
 
-        {/* Input field */}
         <div className="flex flex-col gap-2 mt-4">
           <label className="text-xs ml-2 text-text-secondary font-medium">
             {inputLabel}
           </label>
           <input
             type={method === 'phone' ? 'tel' : 'email'}
+            inputMode={method === 'phone' ? 'tel' : 'email'}
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={method === 'phone' ? handlePhoneChange : handleEmailChange}
+            onBlur={() => setTouched(true)}
             placeholder={inputPlaceholder}
+            maxLength={method === 'phone' ? MAX_PHONE_DIGITS + 4 : MAX_EMAIL_LENGTH}
             className={`w-full border rounded-xl p-4 text-text-primary placeholder:text-text-secondary focus:outline-none! focus:ring-0! focus:ring-primary ${
               showError ? 'border-red-500' : 'border-gray-200'
             }`}
           />
           {showError && (
-            <p className="text-xs text-red-500">{errorText}</p>
+            <p className="text-xs text-red-500">{displayError}</p>
           )}
         </div>
       </div>
 
       <ButtonComponent
-      
         title={sending ? 'Sending...' : getButtonText()}
-        
         onClick={async () => {
-          if (!method || method === 'bvn') return
+          setTouched(true)
+          if (!method || method === 'bvn' || !isValid) return
           try {
             setSending(true)
             setErrorText(null)
@@ -133,12 +186,12 @@ export default function VerificationConfirmScreen({
             })
             handleContinue()
           } catch (e) {
-            setErrorText(e instanceof Error ? e.message : 'Error')
+            setErrorText(e instanceof Error ? e.message : 'Something went wrong. Please try again.')
           } finally {
             setSending(false)
           }
         }}
-        disabled={!canSubmit || sending || method == null}
+        disabled={!isValid || sending || method == null}
       />
     </div>
   )

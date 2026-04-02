@@ -11,10 +11,13 @@ import { setUserBvnNinOverride } from '@/lib/api/userdata'
 import { maskNumber, isDobMissing } from '@/lib/verification'
 import { getFromSession } from '@/components/Extras/utils/imageProcessing'
 import { routes } from '@/lib/routes'
+import { useAppDispatch } from '@/store/redux/hooks'
+import { syncUserFromVerifiedStorage } from '@/store/redux/slices/userSlice'
 
 const DEFAULT_USER_ID = '1'
 
 export default function KycStatusPage() {
+  const dispatch = useAppDispatch()
   const router = useRouter()
   const searchParams = useSearchParams()
   const userId = searchParams.get('id') ?? DEFAULT_USER_ID
@@ -50,6 +53,7 @@ export default function KycStatusPage() {
     } catch {
       // localStorage may be unavailable in some browsers
     }
+    dispatch(syncUserFromVerifiedStorage())
     router.replace(routes.instacard)
   }
 

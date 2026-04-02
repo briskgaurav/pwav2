@@ -15,6 +15,7 @@ import { ICONS } from '@/constants/icons'
 import { useManagingCard } from '@/hooks/useManagingCard'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { linkVirtualCard as linkVirtualCardAction } from '@/store/redux/slices/cardWalletSlice'
+import { selectMaskedEmail, selectMaskedMobile } from '@/store/redux/slices/userSlice'
 
 type LinkVirtualStep = 'pin' | 'selectCard' | 'emailOtp' | 'phoneOtp' | 'success'
 
@@ -28,6 +29,8 @@ export default function LinkVirtualCardScreen() {
   const dispatch = useAppDispatch()
   const allCards = useAppSelector((s) => s.cardWallet.cards)
   const managingCardId = useAppSelector((s) => s.cardWallet.managingCardId)
+  const maskedEmail = useAppSelector(selectMaskedEmail)
+  const maskedMobile = useAppSelector(selectMaskedMobile)
 
   // Get unlinked virtual cards
   const unlinkedVirtualCards = useMemo(
@@ -217,7 +220,7 @@ export default function LinkVirtualCardScreen() {
         key="emailOtp"
         title="Verify your Registered Email"
         subtitle="We have sent you a 6-digit code to your Registered Email"
-        maskedValue="******@gmail.com"
+        maskedValue={maskedEmail}
         successRoute={routes.instacard}
         showKeypad
         onSuccess={() => setStep('phoneOtp')}
@@ -231,7 +234,7 @@ export default function LinkVirtualCardScreen() {
         key="phoneOtp"
         title="Verify your Phone Number"
         subtitle="We have sent you a 6-digit code to your Registered Phone Number"
-        maskedValue="+234802****0955"
+        maskedValue={maskedMobile}
         successRoute={routes.instacard}
         showKeypad
         onSuccess={() => {
