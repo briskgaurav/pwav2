@@ -36,10 +36,10 @@ export default function Button({
 
   const sizeClass =
     size === 'sm'
-      ? 'px-4 py-2 text-sm'
+      ? 'px-4 py-3 text-sm'
       : size === 'lg'
-        ? 'px-6 py-3 text-base'
-        : 'px-5 py-3 text-sm'
+        ? 'px-6 py-4 text-base'
+        : 'px-5 py-4 text-sm'
 
   return (
     <button

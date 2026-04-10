@@ -5,9 +5,11 @@ interface SwipeIndicatorProps {
     totalCount: number;
     onPreviousPress?: () => void;
     onNextPress?: () => void;
+    bottomPosition?: string;
   }
   
   export function SwipeIndicator({
+    bottomPosition = 'bottom-[25%]',
     currentIndex,
     totalCount,
     onPreviousPress,
@@ -50,7 +52,7 @@ interface SwipeIndicatorProps {
     };
   
     return (
-      <div className="absolute left-0 right-0 bottom-[25%] flex flex-col items-center gap-2">
+      <div className={`absolute left-0 right-0 ${bottomPosition} flex flex-col items-center gap-2`}>
         {hintText}
         <div dir="ltr" className="flex flex-row items-center justify-center gap-4 mt-2">
           <button
