@@ -5,7 +5,7 @@ import React from 'react'
 export default function page() {
   return (
     <LayoutSheet needPadding={false} routeTitle="Scan & Pay">
-     <ChooseCards />
+     <ChooseCards amount={0} message="" recipientName="" />
     </LayoutSheet>
   )
 }
