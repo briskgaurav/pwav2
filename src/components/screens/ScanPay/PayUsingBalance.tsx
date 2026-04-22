@@ -47,56 +47,53 @@ export default function PayUsingBalance() {
         </p>
       </div>
 
-      <div className="border border-border text-sm text-text-primary rounded-2xl px-6 py-6">
-        <div className="flex items-center justify-between">
-          <p className="truncate">Balance Accounts</p>
-          <p className="truncate">Convenience Fee</p>
-        </div>
 
-        <div className="mt-4 flex flex-col gap-2">
-          {BANK_ACCOUNTS.map((bank, idx) => (
-            <label
-              key={bank.id}
-              className="flex items-center justify-between pb-4 cursor-pointer py-2 relative"
-            >
-              <div className="flex items-center gap-4">
-                <input
-                  type="radio"
-                  name="balance-account"
-                  checked={selectedAccountId === bank.id}
-                  onChange={() => setSelectedAccountId(bank.id)}
-                  className="accent-primary h-5 w-5"
-                />
-                <div className="flex items-center gap-2">
-                  <span className="h-10 w-10 overflow-hidden rounded-xl bg-white flex items-center justify-center">
-                    <Image src={bank.logo} alt={bank.name} width={500} height={500} className="h-[95%] w-[95%] object-contain" />
-                  </span>
-                  <div className="flex flex-col gap-1">
-                    <p className="truncate max-w-[150px]">{bank.name}</p>
-                    <p className="text-primary truncate w-fit">{bank.checkBalanceLabel}</p>
-                  </div>
+
+      <div className="mt-4 flex  py-4 px-6 flex-col gap-2">
+        {BANK_ACCOUNTS.map((bank, idx) => (
+          <label
+            key={bank.id}
+            className="flex items-center border border-border rounded-2xl justify-between pb-4 cursor-pointer py-2 relative"
+          >
+            <div className="flex items-center gap-4">
+              <input
+                type="radio"
+                name="balance-account"
+                checked={selectedAccountId === bank.id}
+                onChange={() => setSelectedAccountId(bank.id)}
+                className="accent-primary h-5 w-5"
+              />
+              <div className="flex items-center gap-2">
+                <span className="h-10 w-10 overflow-hidden rounded-xl bg-white flex items-center justify-center">
+                  <Image src={bank.logo} alt={bank.name} width={500} height={500} className="h-[95%] w-[95%] object-contain" />
+                </span>
+                <div className="flex flex-col gap-1">
+                  <p className="truncate max-w-[150px]">{bank.name}</p>
+                  <p className="text-primary truncate w-fit">{bank.checkBalanceLabel}</p>
                 </div>
               </div>
-              <p className={`truncate ${bank.feeLabel === 'Free' ? '' : 'text-text-primary font-semibold'}`}>
-                <span className="line-through mr-.5">N</span> {bank.feeLabel}
-              </p>
-              {/* {idx !== BANK_ACCOUNTS.length - 1 && (
+            </div>
+            <p className={`truncate ${bank.feeLabel === 'Free' ? '' : 'text-text-primary font-semibold'}`}>
+              <span className="line-through mr-.5">N</span> {bank.feeLabel}
+            </p>
+            {/* {idx !== BANK_ACCOUNTS.length - 1 && (
                 <span className="w-full h-px bg-border absolute bottom-0 left-0"></span>
               )} */}
-              <span className="w-full h-px bg-border absolute bottom-0 left-0"></span>
-            </label>
-          ))}
+            <p className="truncate">Convenience Fee</p>
 
-          <div className="pt-4 w-full">
+          </label>
+        ))}
 
-
-            <Button size="lg" fullWidth>
-              Pay <span className=" mx-2 line-through">N</span> 100
-            </Button>
-          </div>
+        <div className="pt-4 w-full">
 
 
+          <Button size="lg" fullWidth>
+            Pay <span className=" mx-2 line-through">N</span> 100
+          </Button>
         </div>
+
+
+
 
       </div>
     </div>

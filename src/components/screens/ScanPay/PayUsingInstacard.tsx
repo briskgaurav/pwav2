@@ -3,16 +3,14 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { CardData } from '@/constants/cardData'
 import { CardStack, CardStackRef } from '../InstacardScreens/CardStack'
-import { CardFilterType, FilterBar, type SortByValue } from '../InstacardScreens/FilterBar'
+import { CardFilterType, ScanPayFilterBar, type SortByValue } from './ScanPayFilterBar'
 import { SwipeIndicator } from '../InstacardScreens/SwipeIndicator'
-import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
-import { setCardMode as setCardModeAction } from '@/store/redux/slices/cardModeSlice'
+import { useAppSelector } from '@/store/redux/hooks'
 import { useAuth } from '@/lib/auth-context'
+import ButtonComponent from '@/components/ui/ButtonComponent'
 
 export default function PayUsingInstacard() {
-  const dispatch = useAppDispatch()
   const allCards = useAppSelector((s) => s.cardWallet.cards)
-  const cardMode = useAppSelector((s) => s.cardMode.cardMode)
   const { isDarkMode } = useAuth()
 
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all'])
@@ -21,12 +19,6 @@ export default function PayUsingInstacard() {
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
   const cardStackRef = useRef<CardStackRef>(null)
 
-  const handleModeChange = useCallback((mode: 'virtual' | 'universal') => {
-    dispatch(setCardModeAction(mode))
-    setSelectedCardId(null)
-    setCurrentCardIndex(0)
-  }, [dispatch])
-
   const handleCardFiltersChange = useCallback((filters: CardFilterType[]) => {
     setCardFilters(filters)
     setSelectedCardId(null)
@@ -34,7 +26,7 @@ export default function PayUsingInstacard() {
   }, [])
 
   const filteredCards = useMemo(() => {
-    let cards = allCards.filter((card) => card.cardForm === cardMode)
+    let cards = allCards
 
     if (sortBy === 'recent') {
       cards = [...cards].sort((a, b) => {
@@ -50,7 +42,7 @@ export default function PayUsingInstacard() {
 
     if (cardFilters.includes('all') || cardFilters.length === 0) return cards
     return cards.filter((card) => cardFilters.includes(card.cardType as CardFilterType))
-  }, [allCards, cardFilters, cardMode, sortBy])
+  }, [allCards, cardFilters, sortBy])
 
   const handleCardPress = useCallback((card: CardData) => {
     setSelectedCardId(card.id)
@@ -58,18 +50,9 @@ export default function PayUsingInstacard() {
 
   return (
     <>
-      {/* Instruction text */}
-      <div className="py-4">
-        <p className="text-sm text-text-primary text-center">
-          Select an INSTACARD for making this Payment
-        </p>
-      </div>
-
       {/* Filter bar */}
-      <FilterBar
+      <ScanPayFilterBar
         isDarkMode={isDarkMode}
-        mode={cardMode}
-        onModeChange={handleModeChange}
         cardFilters={cardFilters}
         onCardFiltersChange={handleCardFiltersChange}
         sortBy={sortBy}
@@ -110,12 +93,7 @@ export default function PayUsingInstacard() {
 
       {/* Pay using other cards button */}
       <div className="shrink-0 px-4 pb-6 pt-2">
-        <button
-          type="button"
-          className="w-full py-3.5 rounded-full border border-primary text-primary text-sm font-medium transition active:scale-[0.98]"
-        >
-          Pay Using Other Cards
-        </button>
+       <ButtonComponent title='Pay N100' onClick={()=>{}} />
       </div>
     </>
   )
