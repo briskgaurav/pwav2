@@ -24,7 +24,12 @@ export default function EmailRegistrationPage() {
   const [pendingEmail, setPendingEmail] = useState('')
   const [maskedPendingEmail, setMaskedPendingEmail] = useState('')
 
-  const goKycStatus = () => router.push(`${routes.kycStatus}?id=${encodeURIComponent(userId)}`)
+  const goKycStatus = (email?: string) => {
+    const params = new URLSearchParams()
+    params.set('id', userId)
+    if (email) params.set('email', email)
+    router.push(`${routes.kycStatus}?${params.toString()}`)
+  }
 
   const renderStep = () => {
     if (step === 'otp') {
@@ -41,7 +46,7 @@ export default function EmailRegistrationPage() {
           onVerify={async (code) => {
             await verifyEmailRegistrationOtp({ userId: Number(userId), newEmail: pendingEmail, code })
           }}
-          onSuccess={goKycStatus}
+          onSuccess={() => goKycStatus(pendingEmail)}
         />
       )
     }

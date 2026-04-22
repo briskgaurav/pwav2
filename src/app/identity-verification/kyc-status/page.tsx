@@ -21,6 +21,7 @@ export default function KycStatusPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const userId = searchParams.get('id') ?? DEFAULT_USER_ID
+  const emailOverride = searchParams.get('email')
   const { data: userData, loading, error } = useUserData(userId)
   const [faceScanImage, setFaceScanImage] = useState<string | null>(null)
 
@@ -34,11 +35,11 @@ export default function KycStatusPage() {
     return {
       bvnNumber: d?.bvn_details?.number ?? null,
       ninNumber: d?.nin_details?.number ?? null,
-      email: d?.email ?? null,
+      email: emailOverride ?? d?.email ?? null,
       livenessVerified: d?.LivenessVerified ?? true,
       dobVerified: !isDobMissing(d?.date_of_birth),
     }
-  }, [userData])
+  }, [emailOverride, userData])
 
   const handleGetStarted = async () => {
     await setUserBvnNinOverride({ id: Number(userId), kyc_completed: true })
