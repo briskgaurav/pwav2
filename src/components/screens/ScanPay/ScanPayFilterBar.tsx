@@ -3,11 +3,12 @@
 import { useState } from 'react'
 import { BarChart2, Check, X } from 'lucide-react'
 
-export type CardFilterType = 'all' | 'debit' | 'credit' | 'prepaid' | 'gift'
+export type CardFilterType = 'all' | 'universal' | 'debit' | 'credit' | 'prepaid' | 'gift'
 export type SortByValue = 'recent' | 'most-used'
 
 const FILTER_LABELS: Record<CardFilterType, string> = {
   all: 'All Cards',
+  universal: 'Universal',
   debit: 'Debit',
   credit: 'Credit',
   prepaid: 'Pre-Paid',
@@ -36,6 +37,7 @@ const SORT_ICONS = [
 
 const FILTER_OPTIONS: { id: CardFilterType; label: string }[] = [
   { id: 'all', label: 'All Cards' },
+  { id: 'universal', label: 'Universal Card' },
   { id: 'debit', label: 'Debit Card' },
   { id: 'credit', label: 'Credit Card' },
   { id: 'prepaid', label: 'Pre-Paid Card' },

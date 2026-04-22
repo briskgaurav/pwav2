@@ -55,13 +55,13 @@ export default function QRScanScreen() {
         video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
         audio: false,
       })
-      
+
       // Check if component is still mounted before proceeding
       if (!isMountedRef.current) {
         stream.getTracks().forEach(track => track.stop())
         return
       }
-      
+
       streamRef.current = stream
 
       if (videoRef.current) {
@@ -84,7 +84,7 @@ export default function QRScanScreen() {
     } catch (error) {
       // Don't set error state if component unmounted
       if (!isMountedRef.current) return
-      
+
       console.error('Error accessing camera:', error)
       if (error instanceof DOMException && (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError')) {
         setPermissionDenied(true)
@@ -101,7 +101,7 @@ export default function QRScanScreen() {
     if (!streamRef.current) return
     const track = streamRef.current.getVideoTracks()[0]
     if (!track) return
-    
+
     const newFlashState = !flashOn
     try {
       // Use ImageCapture API for torch control on supported devices
@@ -114,10 +114,10 @@ export default function QRScanScreen() {
           return
         }
       }
-      
+
       // Fallback to applyConstraints with torch
-      await track.applyConstraints({ 
-        advanced: [{ torch: newFlashState } as MediaTrackConstraintSet] 
+      await track.applyConstraints({
+        advanced: [{ torch: newFlashState } as MediaTrackConstraintSet]
       })
       setFlashOn(newFlashState)
     } catch (err) {
@@ -269,9 +269,9 @@ export default function QRScanScreen() {
         <div className="flex-1 flex flex-col items-center justify-center gap-6">
           <div className="w-20 h-20 rounded-full bg-[#fff]/10 flex items-center justify-center mb-4">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 15.5C14.21 15.5 16 13.71 16 11.5V6C16 3.79 14.21 2 12 2C9.79 2 8 3.79 8 6V11.5C8 13.71 9.79 15.5 12 15.5Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M4.35 9.65V11.35C4.35 15.57 7.78 19 12 19C16.22 19 19.65 15.57 19.65 11.35V9.65" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 19V22" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 15.5C14.21 15.5 16 13.71 16 11.5V6C16 3.79 14.21 2 12 2C9.79 2 8 3.79 8 6V11.5C8 13.71 9.79 15.5 12 15.5Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M4.35 9.65V11.35C4.35 15.57 7.78 19 12 19C16.22 19 19.65 15.57 19.65 11.35V9.65" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M12 19V22" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
           <h2 className="text-[#fff] text-2xl font-semibold text-center">Camera Access Required</h2>
@@ -279,8 +279,8 @@ export default function QRScanScreen() {
             {cameraError}
           </p>
           {permissionDenied && (
-            <button 
-              onClick={handleRequestPermission} 
+            <button
+              onClick={handleRequestPermission}
               className="bg-primary py-4 px-10 rounded-2xl mt-4 active:scale-95 transition-transform"
             >
               <span className="text-[#fff] font-semibold">Grant Camera Permission</span>
@@ -377,17 +377,27 @@ export default function QRScanScreen() {
                 {/* Flash */}
                 <button onClick={toggleFlash} className="flex flex-col items-center gap-3 group">
                   <div className={`w-[60px] h-[60px] rounded-full backdrop-blur-md flex items-center justify-center group-active:scale-90 transition-all duration-200 border ${flashOn ? 'bg-primary border-primary/50' : 'bg-[#fff]/20 border-[#fff]/10'}`}>
-                    <Image 
-                      src={flashOn ? '/svg/thunder-on.svg' : '/svg/thunder-off.svg'} 
-                      alt="Flash" 
-                      width={16} 
-                      height={22} 
+                    <Image
+                      src={flashOn ? '/svg/thunder-on.svg' : '/svg/thunder-off.svg'}
+                      alt="Flash"
+                      width={16}
+                      height={22}
                     />
                   </div>
                   <span className="text-[#fff] text-[13px] font-medium">
                     {flashOn ? 'Flash On' : 'Flash Off'}
                   </span>
                 </button>
+              </div>
+
+              <div onClick={()=>router.push(routes.makePayment)} className='p-2 text-white mt-6 bg-white/20 backdrop-blur-md flex items-center gap-8 pr-4 border border-border/20 rounded-full'>
+                <div className='relative '>
+
+                  <div className='w-10 h-10 rounded-full bg-green-500/80 backdrop-blur-xl flex items-center justify-center'>N</div>
+                  <div className='w-10 h-10 top-1/2 -translate-y-1/2 left-[20%] z-2 absolute rounded-full bg-blue-500/80 backdrop-blur-xl flex items-center justify-center'>N</div>
+                  <div className='w-10 h-10 absolute top-1/2 -translate-y-1/2 z-3 left-[40%] rounded-full bg-red-500/80 backdrop-blur-xl flex items-center justify-center'>N</div>
+                </div>
+                <p className='text-white text-xs font-medium'>Recents</p>
               </div>
             </div>
           </div>

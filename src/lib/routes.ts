@@ -15,6 +15,9 @@ export const routes = {
   // QR PAYMENTS
   scanpay: "/instacard/scan-and-pay",
   makePayment: "/instacard/scan-and-pay/make-payment",
+  scanPaymenetMethods : "/instacard/scan-and-pay/payment-methods",
+  verifyCard : "/instacard/scan-and-pay/verify-card",
+  paymentSuccess : "/instacard/scan-and-pay/payment-success",
 
   // ADD INSTACARD
   addInstacard: "/instacard/add-instacard",

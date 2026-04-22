@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui";
+import ButtonComponent from "@/components/ui/ButtonComponent";
+import { formatAmountWithCommas } from "@/lib/format-amount";
 
+// Optional: Assign some dummy balances to be shown
 const BANK_ACCOUNTS = [
   {
     id: 1,
@@ -11,6 +13,7 @@ const BANK_ACCOUNTS = [
     name: 'Montra Account 7866836869',
     checkBalanceLabel: 'Check balance',
     feeLabel: '0',
+    balance: '₦ 12,000.80',
   },
   {
     id: 2,
@@ -18,6 +21,7 @@ const BANK_ACCOUNTS = [
     name: 'ICICI Bank **** 0632',
     checkBalanceLabel: 'Check balance',
     feeLabel: '10',
+    balance: '₦ 50,100.55',
   },
   {
     id: 3,
@@ -25,6 +29,7 @@ const BANK_ACCOUNTS = [
     name: 'HDFC Bank **** 4610',
     checkBalanceLabel: 'Check balance',
     feeLabel: '100',
+    balance: '₦ 2,890.22',
   },
   {
     id: 4,
@@ -32,69 +37,94 @@ const BANK_ACCOUNTS = [
     name: 'SBI Bank **** 8731',
     checkBalanceLabel: 'Check balance',
     feeLabel: '5',
+    balance: '₦ 720.00',
   },
 ];
 
-export default function PayUsingBalance() {
+type PayUsingBalanceProps = {
+  amount?: number
+  onPay?: (payload: { accountId: number; amount?: number }) => void
+}
+
+export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps) {
   const [selectedAccountId, setSelectedAccountId] = useState<number | null>(1);
+  const [showBalanceFor, setShowBalanceFor] = useState<number | null>(null);
+
+  function handleCheckBalance(bankId: number) {
+    setShowBalanceFor(showBalanceFor === bankId ? null : bankId);
+  }
+
+  const baseAmount = Number(amount ?? 0) || 0
+  const selectedBank = BANK_ACCOUNTS.find((b) => b.id === selectedAccountId) ?? null
+  const convenienceFee = Number(selectedBank?.feeLabel ?? 0) || 0
+  const totalPayable = baseAmount + convenienceFee
 
   return (
-    <div className="flex-1 flex flex-col space-y-4 px-4">
+    <div className="flex-1 flex flex-col  px-4">
       <div className="p-4 border border-border rounded-2xl w-full flex items-center justify-between">
         <p className="font-medium text-sm text-text-primary truncate">Total Payable</p>
         <p className="text-md font-bold truncate">
-          <span className="line-through mr-1">N</span> 100
+          <span className="line-through mr-1">N</span> {formatAmountWithCommas(totalPayable.toString())}
         </p>
       </div>
 
-
-
-      <div className="mt-4 flex  py-4 px-6 flex-col gap-2">
-        {BANK_ACCOUNTS.map((bank, idx) => (
+      <div className="flex  py-4  flex-col gap-2">
+        {BANK_ACCOUNTS.map((bank) => (
           <label
             key={bank.id}
-            className="flex items-center border border-border rounded-2xl justify-between pb-4 cursor-pointer py-2 relative"
+            className=" flex border border-border rounded-2xl items-center justify-between p-4 relative"
           >
-            <div className="flex items-center gap-4">
-              <input
-                type="radio"
-                name="balance-account"
-                checked={selectedAccountId === bank.id}
-                onChange={() => setSelectedAccountId(bank.id)}
-                className="accent-primary h-5 w-5"
-              />
-              <div className="flex items-center gap-2">
-                <span className="h-10 w-10 overflow-hidden rounded-xl bg-white flex items-center justify-center">
-                  <Image src={bank.logo} alt={bank.name} width={500} height={500} className="h-[95%] w-[95%] object-contain" />
-                </span>
-                <div className="flex flex-col gap-1">
-                  <p className="truncate max-w-[150px]">{bank.name}</p>
-                  <p className="text-primary truncate w-fit">{bank.checkBalanceLabel}</p>
+            <div className="w-full flex flex-col items-start justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <div>
+                    <span className="h-10 w-10 overflow-hidden rounded-xl bg-white flex items-center justify-center">
+                      <Image src={bank.logo} alt={bank.name} width={500} height={500} className="h-[95%] w-[95%] object-contain" />
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="truncate text-xs max-w-[150px]">{bank.name}</p>
+                    {showBalanceFor === bank.id ? (
+                      <span className="text-xs mt-1">
+                       {bank.balance}
+                      </span>
+                    ) : (
+                      <span
+                        onClick={e => {
+                          // e.stopPropagation();
+                          handleCheckBalance(bank.id);
+                        }}
+                        className="text-primary text-xs w-fit  truncate cursor-pointer p-0  border-none "
+                        tabIndex={-1}
+                      >
+                        {bank.checkBalanceLabel}
+                      </span>
+                    )}
+               
+                  </div>
                 </div>
               </div>
+              <p className="text-text-primary mt-2 ml-1 text-xs truncate w-fit">
+                Convenience Fee : <span className="line-through mr-1"> N</span>{bank.feeLabel}
+              </p>
             </div>
-            <p className={`truncate ${bank.feeLabel === 'Free' ? '' : 'text-text-primary font-semibold'}`}>
-              <span className="line-through mr-.5">N</span> {bank.feeLabel}
-            </p>
-            {/* {idx !== BANK_ACCOUNTS.length - 1 && (
-                <span className="w-full h-px bg-border absolute bottom-0 left-0"></span>
-              )} */}
-            <p className="truncate">Convenience Fee</p>
-
+            <input
+              type="radio"
+              name="balance-account"
+              checked={selectedAccountId === bank.id}
+              onChange={() => setSelectedAccountId(bank.id)}
+              className="accent-primary h-5 mr-2 w-5"
+            />
           </label>
         ))}
 
-        <div className="pt-4 w-full">
-
-
-          <Button size="lg" fullWidth>
-            Pay <span className=" mx-2 line-through">N</span> 100
-          </Button>
-        </div>
-
-
-
-
+        <ButtonComponent
+          title={`Pay Now ₦ ${formatAmountWithCommas(totalPayable.toString())}`}
+          onClick={() => {
+            if (!selectedAccountId) return
+            onPay?.({ accountId: selectedAccountId, amount: totalPayable })
+          }}
+        />
       </div>
     </div>
   );

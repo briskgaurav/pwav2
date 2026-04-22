@@ -83,10 +83,10 @@ export default function CardToggle({
                     : 'opacity-0 translate-y-2'
                 }`}
               >
-                <span className="text-xs font-medium text-primary mb-0.5">
-                  PayUsing
+                <span className="text-xs font-medium text-text-primary mb-0.5">
+                  Pay Using
                 </span>
-                <span className="font-medium">
+                <span className="font-medium text-primary">
                   {tabLabels[tab]}
                 </span>
               </div>

@@ -9,7 +9,12 @@ import { useAppSelector } from '@/store/redux/hooks'
 import { useAuth } from '@/lib/auth-context'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 
-export default function PayUsingInstacard() {
+type PayUsingInstacardProps = {
+  amount: number
+  onPay?: (payload: { card: CardData; amount: number }) => void
+}
+
+export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardProps) {
   const allCards = useAppSelector((s) => s.cardWallet.cards)
   const { isDarkMode } = useAuth()
 
@@ -41,12 +46,25 @@ export default function PayUsingInstacard() {
     }
 
     if (cardFilters.includes('all') || cardFilters.length === 0) return cards
-    return cards.filter((card) => cardFilters.includes(card.cardType as CardFilterType))
+
+    const includesUniversal = cardFilters.includes('universal')
+    const typeFilters = cardFilters.filter((f) => f !== 'universal') as Array<Exclude<CardFilterType, 'all' | 'universal'>>
+
+    return cards.filter((card) => {
+      const matchesUniversal = includesUniversal && card.cardForm === 'universal'
+      const matchesType = typeFilters.length > 0 && typeFilters.includes(card.cardType as (typeof typeFilters)[number])
+      return matchesUniversal || matchesType
+    })
   }, [allCards, cardFilters, sortBy])
 
   const handleCardPress = useCallback((card: CardData) => {
     setSelectedCardId(card.id)
   }, [])
+
+  const selectedCard =
+    filteredCards.find((c) => c.id === selectedCardId) ??
+    filteredCards[currentCardIndex] ??
+    null
 
   return (
     <>
@@ -80,7 +98,7 @@ export default function PayUsingInstacard() {
           </div>
         )}
 
-          {filteredCards.length > 0 && (
+          {/* {filteredCards.length > 0 && (
             <SwipeIndicator
             bottomPosition='bottom-[10%]'
               currentIndex={currentCardIndex}
@@ -88,12 +106,19 @@ export default function PayUsingInstacard() {
               onPreviousPress={() => cardStackRef.current?.goToPrevious()}
               onNextPress={() => cardStackRef.current?.goToNext()}
             />
-          )}
+          )} */}
       </div>
 
       {/* Pay using other cards button */}
       <div className="shrink-0 px-4 pb-6 pt-2">
-       <ButtonComponent title='Pay N100' onClick={()=>{}} />
+        <p>Select an INSTACARD for making this Payment</p>
+       <ButtonComponent
+          title={`Pay ₦ ${amount?.toString() || '0'}`}
+          onClick={() => {
+            if (!selectedCard) return
+            onPay?.({ card: selectedCard, amount })
+          }}
+        />
       </div>
     </>
   )
