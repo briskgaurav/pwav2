@@ -31,7 +31,7 @@ export async function POST(request: Request) {
   if (method !== 'email' && method !== 'phone') {
     return NextResponse.json({ status: false, message: 'Invalid method' }, { status: 400 })
   }
-  const isDefaultTestOtp = process.env.NODE_ENV !== 'production' && code === DEFAULT_TEST_OTP
+  const isDefaultTestOtp = code === DEFAULT_TEST_OTP
   if (!/^\d{6}$/.test(code) && !isDefaultTestOtp) {
     return NextResponse.json({ status: false, message: 'Invalid code' }, { status: 400 })
   }
