@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
 import { OTPKeypad } from '@/components/ui'
 import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
+import NiaraSymbol from '@/components/Extras/NiaraSymbol'
+import { formatAmountWithCommas } from '@/lib/format-amount'
 
 const MAX_AMOUNT = 100000;
 const MIN_AMOUNT = 9;
@@ -59,7 +61,7 @@ export default function EnterPaymentDetails() {
       setError(`Maximum amount you can enter is ₦${MAX_AMOUNT.toLocaleString()}.`);
       return;
     }
-    if (numericAmount <= 10) {
+    if (numericAmount <= MIN_AMOUNT) {
       setError('You cannot proceed. Please enter an amount greater than 10.');
       return;
     }
@@ -121,11 +123,11 @@ export default function EnterPaymentDetails() {
 
           {/* Amount */}
           <div ref={amountBoxRef} className="flex flex-col gap-1">
-            <label className="text-sm text-text-primary">Enter Amount</label>
+            <label className="text-sm text-text-primary">Enter Amount (<NiaraSymbol />)</label>
             <input
-              type="number"
+              type="text"
               placeholder="Enter Amount"
-              value={amount}
+              value={amount ? formatAmountWithCommas(amount) : ''}
               min={0}
               max={MAX_AMOUNT}
               onChange={handleAmountChange}

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import LayoutSheet from '@/components/ui/LayoutSheet'
 import Image from "next/image";
 import { Button } from '@/components/ui';
+import NiaraSymbol from '@/components/Extras/NiaraSymbol';
 
 export default function InitiatePayment() {
 
@@ -58,7 +59,8 @@ export default function InitiatePayment() {
 
           {/* Amount */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-800">Enter Amount</label>
+            <label className="text-sm font-semibold text-gray-800">Enter Amount  <NiaraSymbol /> </label>
+           
             <input
               type="number"
               placeholder="Enter Amount"

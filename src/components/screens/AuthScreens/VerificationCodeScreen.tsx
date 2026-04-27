@@ -2,10 +2,9 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { SheetContainer, OTPInput, OTPKeypad, Button } from '@/components/ui'
+import { SheetContainer, OTPInput, Button } from '@/components/ui'
 import LayoutSheet from '../../ui/LayoutSheet'
 import ButtonComponent from '../../ui/ButtonComponent'
-import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
 import gsap from 'gsap'
 import { Check } from 'lucide-react'
 
@@ -29,6 +28,78 @@ type VerificationCodeScreenProps = {
   onVerify?: (code: string) => Promise<void>
 }
 
+function NativeOTPInput({
+  value,
+  maxLength,
+  onChange,
+  autoFocus = true,
+  enableAutoFill = true,
+}: {
+  value: string
+  maxLength: number
+  onChange: (v: string) => void
+  autoFocus?: boolean
+  enableAutoFill?: boolean
+}) {
+  const hiddenRef = useRef<HTMLInputElement>(null)
+  const digits = Array.from({ length: maxLength }, (_, i) => value[i] || '')
+
+  const focusInput = () => hiddenRef.current?.focus()
+
+  useEffect(() => {
+    if (!autoFocus) return
+    // Mobile browsers can be picky about immediate focus on mount.
+    // A short delay improves reliability for keyboard + OTP suggestions.
+    const t = window.setTimeout(() => focusInput(), 150)
+    return () => window.clearTimeout(t)
+  }, [autoFocus])
+
+  return (
+    <div className="relative w-full">
+      <input
+        ref={hiddenRef}
+        type="tel"
+        inputMode="numeric"
+        autoComplete={enableAutoFill ? 'one-time-code' : 'off'}
+        name={enableAutoFill ? 'one-time-code' : undefined}
+        pattern="\d*"
+        enterKeyHint="done"
+        maxLength={maxLength}
+        value={value}
+        onChange={(e) => {
+          const cleaned = e.target.value.replace(/\D/g, '').slice(0, maxLength)
+          onChange(cleaned)
+        }}
+        // Keep the input out of the layout so it never blocks taps on other fields.
+        className="absolute -left-[9999px] top-0 w-px h-px opacity-0"
+      />
+
+      <div
+        className="flex gap-2.5 w-full px-5 justify-center"
+        onClick={focusInput}
+      >
+        {digits.map((digit, i) => {
+          const isCursor = i === value.length && value.length < maxLength
+          return (
+            <div
+              key={i}
+              className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${
+                isCursor
+                  ? 'border-primary'
+                  : digit
+                  ? 'border-text-primary'
+                  : 'border-border'
+              }`}
+            >
+              {digit || (isCursor ? <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" /> : '')}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 export default function VerificationCodeScreen({
   hideLayerSheet = false,
   title,
@@ -49,17 +120,11 @@ export default function VerificationCodeScreen({
   const [isVerifying, setIsVerifying] = useState(false)
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
   const [errorText, setErrorText] = useState<string | null>(null)
-  const otpInputRef = useRef<HTMLDivElement>(null)
   const popupOverlayRef = useRef<HTMLDivElement>(null)
   const popupContentRef = useRef<HTMLDivElement>(null)
 
-  const { keypadRef, isKeypadOpen, keypadHeight, openKeypad, closeKeypad } = useSlideUpKeypad({
-    insideRefs: [otpInputRef],
-  })
-
   useEffect(() => {
     if (showSuccessPopup) {
-      // Animate in
       gsap.fromTo(
         popupOverlayRef.current,
         { opacity: 0 },
@@ -73,19 +138,6 @@ export default function VerificationCodeScreen({
     }
   }, [showSuccessPopup])
 
-  const handleKeyPress = useCallback((key: string) => {
-    if (key === 'del') {
-      setCode((prev) => prev.slice(0, -1))
-      return
-    }
-    setCode((prev) => {
-      if (prev.length >= MAX_CODE_LENGTH) {
-        return prev
-      }
-      return `${prev}${key}`
-    })
-  }, [])
-
   const handleContinue = async () => {
     setIsVerifying(true)
     setErrorText(null)
@@ -94,7 +146,6 @@ export default function VerificationCodeScreen({
       if (onVerify) {
         await onVerify(code)
       } else {
-        // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 1500))
       }
     } catch (e) {
@@ -125,7 +176,6 @@ export default function VerificationCodeScreen({
 
   const handleResend = () => {
     setCode('')
-    // TODO: Implement resend OTP API call
   }
 
   const isCodeComplete = code.length === MAX_CODE_LENGTH
@@ -170,9 +220,7 @@ export default function VerificationCodeScreen({
   if (showKeypad) {
     return (
       <LayoutSheet routeTitle={title} needPadding={false} hideLayerSheet={hideLayerSheet}>
-
-        {/* NEED PADDING MY INPUT BOXES NOT TAKING PADDING */}
-        <div className="flex  flex-col" style={{ paddingBottom: isKeypadOpen ? keypadHeight : 0 }}>
+        <div className="flex flex-col">
           <div className="flex flex-col justify-center px-5 py-10 text-center gap-3">
             <h2 className="text-xl font-semibold text-text-primary">
               {title}
@@ -190,31 +238,43 @@ export default function VerificationCodeScreen({
               Please check your messages and enter it here
             </p>
 
-            <div className="mt-6 mb-6 w-full" ref={otpInputRef} onClick={openKeypad}>
-              <OTPInput value={code} maxLength={MAX_CODE_LENGTH} onPress={openKeypad} />
+            <div className="mt-6 mb-6 w-full">
+              <NativeOTPInput
+                value={code}
+                maxLength={MAX_CODE_LENGTH}
+                autoFocus={false}
+                onChange={(v) => {
+                  setCode(v)
+                  setErrorText(null)
+                }}
+              />
             </div>
-            <div className='relative'>
 
-              {/* <ButtonComponent
-                title={isVerifying ? 'Verifying...' : 'Continue'}
-                onClick={handleContinue}
-                disabled={!isCodeComplete || isVerifying}
-              /> */}
-              <Button className=' bg-primary text-white rounded-full px-4 py-2 w-full h-full'
+            <div className='relative'>
+              <Button
+                className='bg-primary text-white rounded-full px-4 py-2 w-full h-full'
                 disabled={!isCodeComplete || isVerifying}
                 onClick={handleContinue}
               >
                 {isVerifying ? 'Verifying...' : 'Continue'}
               </Button>
             </div>
+
             {errorText && (
               <p className="mt-2 text-xs text-red-500">{errorText}</p>
             )}
 
+            <p className="mt-3 text-sm">
+              Didn&apos;t receive the Code?{' '}
+              <button
+                onClick={handleResend}
+                className="bg-transparent border-none text-primary font-semibold cursor-pointer p-0 text-sm"
+                type="button"
+              >
+                Resend
+              </button>
+            </p>
           </div>
-        </div>
-        <div ref={keypadRef} className="w-full fixed bottom-0 left-0 py-2 ">
-          <OTPKeypad onKeyPress={handleKeyPress} />
         </div>
         {renderSuccessPopup()}
       </LayoutSheet>

@@ -18,7 +18,7 @@ export default function ManageBtn({ icon, title, href, fullWidth = false }: { ic
           React.createElement(icon, { className: iconClassName })
         )}
       </div>
-      <p className="text-text-primary text-xs mt-3 w-[80%] text-center line-clamp-2">{title}</p>
+      <p className="text-text-primary text-xs mt-3 w-[90%] text-center line-clamp-2">{title}</p>
     </Link>
     )
 }

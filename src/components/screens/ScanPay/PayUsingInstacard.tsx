@@ -98,21 +98,20 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
           </div>
         )}
 
-          {/* {filteredCards.length > 0 && (
+        {filteredCards.length > 0 && (
             <SwipeIndicator
-            bottomPosition='bottom-[10%]'
+            bottomPosition='bottom-[12%]'
               currentIndex={currentCardIndex}
               totalCount={filteredCards.length}
               onPreviousPress={() => cardStackRef.current?.goToPrevious()}
               onNextPress={() => cardStackRef.current?.goToNext()}
             />
-          )} */}
+          )}
       </div>
 
       {/* Pay using other cards button */}
       <div className="shrink-0 px-4 pb-6 pt-2">
-        <p>Select an INSTACARD for making this Payment</p>
-       <ButtonComponent
+        <ButtonComponent
           title={`Pay ₦ ${amount?.toString() || '0'}`}
           onClick={() => {
             if (!selectedCard) return
