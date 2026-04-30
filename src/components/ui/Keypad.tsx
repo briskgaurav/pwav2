@@ -11,18 +11,21 @@ const KEY_ROWS = [
 
 interface OTPKeypadProps {
   onKeyPress: (key: string) => void;
+  showBackground?: boolean;
+  needPadding?: boolean;
 }
 
-export function OTPKeypad({ onKeyPress }: OTPKeypadProps) {
+export function OTPKeypad({ onKeyPress, showBackground = true, needPadding = true }: OTPKeypadProps) {
   const handleKeyPress = (key: string) => {
     haptic('light');
+    
     onKeyPress(key);
   };
   return (
     <div
-      className="w-full bg-white border-t border-border rounded-t-2xl pointer-events-auto"
+      className={`w-full ${showBackground ? 'bg-white border-t border-border rounded-t-2xl' : ''} pointer-events-auto`}
       style={{
-        padding: 'clamp(12px, 4vw, 20px)',
+        padding: needPadding ? 'clamp(12px, 4vw, 20px)' : 0,
         display: 'flex',
         flexDirection: 'column',
         gap: 'clamp(8px, 2vw, 12px)',
@@ -35,7 +38,9 @@ export function OTPKeypad({ onKeyPress }: OTPKeypadProps) {
             display: 'flex',
             justifyContent: 'space-between',
             gap: 'clamp(8px, 2vw, 12px)',
+            
           }}
+         
         >
           {row.map((key, keyIndex) => {
             if (key === '') {
@@ -61,6 +66,7 @@ export function OTPKeypad({ onKeyPress }: OTPKeypadProps) {
                 onClick={() => handleKeyPress(key)}
                 aria-label={isDelete ? 'Delete' : `Number ${key}`}
                 className="btn-press"
+                
                 style={{
                   flex: 1,
                   minWidth: 0,

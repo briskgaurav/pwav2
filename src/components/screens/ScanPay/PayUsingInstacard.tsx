@@ -8,6 +8,7 @@ import { SwipeIndicator } from '../InstacardScreens/SwipeIndicator'
 import { useAppSelector } from '@/store/redux/hooks'
 import { useAuth } from '@/lib/auth-context'
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import CardPinVerificationDrawer from '../AuthScreens/CardPinVerificationDrawer'
 
 type PayUsingInstacardProps = {
   amount: number
@@ -22,6 +23,8 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
   const [sortBy, setSortBy] = useState<SortByValue>('recent')
   const [currentCardIndex, setCurrentCardIndex] = useState(0)
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
+  const [pinDrawerOpen, setPinDrawerOpen] = useState(false)
+  const [pendingCard, setPendingCard] = useState<CardData | null>(null)
   const cardStackRef = useRef<CardStackRef>(null)
 
   const handleCardFiltersChange = useCallback((filters: CardFilterType[]) => {
@@ -59,6 +62,9 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
 
   const handleCardPress = useCallback((card: CardData) => {
     setSelectedCardId(card.id)
+    setPendingCard(card)
+    console.log('[ScanPay] Opening PIN drawer for card (tap):', card)
+    setPinDrawerOpen(true)
   }, [])
 
   const selectedCard =
@@ -109,16 +115,37 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
           )}
       </div>
 
-      {/* Pay using other cards button */}
+    {/* Pay using other cards button */}
       <div className="shrink-0 px-4 pb-6 pt-2">
         <ButtonComponent
           title={`Pay ₦ ${amount?.toString() || '0'}`}
           onClick={() => {
             if (!selectedCard) return
-            onPay?.({ card: selectedCard, amount })
+            setPendingCard(selectedCard)
+            // console.log('[ScanPay] Opening PIN drawer for card (pay btn):', selectedCard, 'amount:', amount)
+            setPinDrawerOpen(true)
           }}
         />
       </div>
+
+      <CardPinVerificationDrawer
+        visible={pinDrawerOpen}
+        onClose={() => {
+          setPinDrawerOpen(false)
+          setPendingCard(null)
+        }}
+        showTitle={false}
+        title="Verify PIN"
+        subtitle="Enter PIN to use this card"
+        verifyPin={(pin) => (pendingCard ? pin === pendingCard.pin : false)}
+        onVerified={() => {
+          if (!pendingCard) return
+          setPinDrawerOpen(false)
+          // console.log('[ScanPay] Paying with selected card:', pendingCard, 'amount:', amount)
+          onPay?.({ card: pendingCard, amount })
+          setPendingCard(null)
+        }}
+      />
     </>
   )
 }

@@ -44,7 +44,7 @@ export default function CardToggle({
   }
 
   return (
-    <div className='bg-[#ECEEFF] text-sm mb-4 overflow-hidden relative text-text-primary flex w-full rounded-t-2xl'>
+    <div className='bg-[#ECEEFF] text-sm mb-4  min-h-[80px] overflow-hidden relative text-text-primary flex w-full rounded-t-2xl'>
       
       {/* ✅ Slider */}
       <div

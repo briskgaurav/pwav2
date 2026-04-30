@@ -14,17 +14,21 @@ export interface BottomSheetModalProps {
   visible: boolean;
   onClose: () => void;
   title?: string;
+  showTitle?: boolean;
   children?: React.ReactNode;
   maxHeight?: number;
   recommendedAmount?: string;
+  backdropBlur?: boolean;
 }
 
 export default function BottomSheetModal({
+  showTitle = true,
   recommendedAmount,
   visible,
   onClose,
   title,
   children,
+  backdropBlur = false,
   maxHeight = 1.0,
 }: BottomSheetModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -125,7 +129,7 @@ export default function BottomSheetModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? 'bottom-sheet-modal-title' : undefined}
-        className="relative w-full bg-white  rounded-t-[28px] border border-border overflow-hidden"
+        className={`relative w-full   rounded-t-[28px] border border-border overflow-hidden ${backdropBlur ? 'backdrop-blur-lg bg-white/64' : 'bg-white'}`}
         style={{
           maxHeight: `${maxHeightVh}vh`,
         }}
@@ -134,14 +138,14 @@ export default function BottomSheetModal({
           ref={handleRef}
           className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
         >
-          <div className="w-[42px] h-[5px] rounded-full bg-border" />
+          <div className={`w-[42px] h-[5px] rounded-full  ${backdropBlur ? 'bg-white' : 'bg-border'}`} />
         </div>
 
         <div
           className="overflow-y-auto  pb-6"
           style={{ maxHeight: `calc(${maxHeightVh}vh - 40px)` }}
         >
-          {title != null && (
+          {title != null && showTitle && (
             <>
               <div className="flex items-center px-5 justify-between">
                 <h2

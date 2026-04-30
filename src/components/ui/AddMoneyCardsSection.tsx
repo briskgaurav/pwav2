@@ -45,7 +45,7 @@ export interface AddMoneyCardsSectionProps {
 
 export function AddMoneyCardsSection({ selectedCard, onSelectCard }: AddMoneyCardsSectionProps) {
     return (
-        <div className='p-4 border border-border rounded-2xl space-y-2'>
+        <div className='p-4 border border-border rounded-2xl w-full space-y-2'>
             <div className='flex items-center justify-between'>
                 <p className='text-text-primary text-sm'>Add using Cards</p>
                 <p className='text-text-primary text-xs'>Linked cards</p>

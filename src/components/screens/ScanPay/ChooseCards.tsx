@@ -15,6 +15,16 @@ type ChooseCardsProps = {
   recipientName?: string
 }
 
+// Type for "other" Pay card param, as used in PayUsingOtherCards
+type OtherCardPayload = {
+  card: {
+    id: string
+    imageId: keyof typeof CARD_IMAGE_PATHS
+    cardNumber: string
+    // add any additional needed properties if used in PayUsingOtherCards
+  }
+}
+
 export default function ChooseCards({ amount, message = '', recipientName = '' }: ChooseCardsProps) {
     const [payMode, setPayMode] = useState<PayMode>('instacard')
     const router = useRouter()
@@ -36,23 +46,26 @@ export default function ChooseCards({ amount, message = '', recipientName = '' }
                       if (message.trim()) params.set('message', message.trim())
                       if (recipientName.trim()) params.set('recipientName', recipientName.trim())
 
-                      router.push(`${routes.verifyCard}?${params.toString()}`)
+                      router.push(`${routes.paymentSuccess}?${params.toString()}`)
                     }}
                   />
                 ) : payMode === 'other' ? (
-                  <PayUsingOtherCards />
+                  <PayUsingOtherCards 
+                    amount={amount}
+                    onPay={()=>{}}
+                 />
                 ) : (
                   <PayUsingBalance
                     amount={amount}
-                    onPay={({ accountId }) => {
+                    onPay={({ accountId, amount: finalAmount }) => {
                       const params = new URLSearchParams()
-                      params.set('amount', String(amount ?? 0))
+                      params.set('amount', String(finalAmount ?? amount ?? 0))
                       params.set('method', 'balance')
                       params.set('accountId', String(accountId))
                       if (message.trim()) params.set('message', message.trim())
                       if (recipientName.trim()) params.set('recipientName', recipientName.trim())
 
-                      router.push(`${routes.verifyCard}?${params.toString()}`)
+                      router.push(`${routes.paymentSuccess}?${params.toString()}`)
                     }}
                   />
                 )}
@@ -60,6 +73,3 @@ export default function ChooseCards({ amount, message = '', recipientName = '' }
         </div>
     )
 }
-
-
-

@@ -4,6 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import ButtonComponent from "@/components/ui/ButtonComponent";
 import { formatAmountWithCommas } from "@/lib/format-amount";
+import NiaraSymbol from "@/components/Extras/NiaraSymbol";
+import CardPinVerificationDrawer from "@/components/screens/AuthScreens/CardPinVerificationDrawer";
 
 // Optional: Assign some dummy balances to be shown
 const BANK_ACCOUNTS = [
@@ -49,6 +51,7 @@ type PayUsingBalanceProps = {
 export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps) {
   const [selectedAccountId, setSelectedAccountId] = useState<number | null>(1);
   const [showBalanceFor, setShowBalanceFor] = useState<number | null>(null);
+  const [pinDrawerOpen, setPinDrawerOpen] = useState(false)
 
   function handleCheckBalance(bankId: number) {
     setShowBalanceFor(showBalanceFor === bankId ? null : bankId);
@@ -64,7 +67,7 @@ export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps)
       <div className="p-4 border border-border rounded-2xl w-full flex items-center justify-between">
         <p className="font-medium text-sm text-text-primary truncate">Total Payable</p>
         <p className="text-md font-bold truncate">
-          <span className="line-through mr-1">N</span> {formatAmountWithCommas(totalPayable.toString())}
+          <span className="line-through mr-1"><NiaraSymbol /></span> {formatAmountWithCommas(totalPayable.toString())}
         </p>
       </div>
 
@@ -72,7 +75,7 @@ export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps)
         {BANK_ACCOUNTS.map((bank) => (
           <label
             key={bank.id}
-            className=" flex border border-border rounded-2xl items-center justify-between p-4 relative"
+            className="flex border border-border rounded-2xl items-center justify-between p-4 relative"
           >
             <div className="w-full flex flex-col items-start justify-between">
               <div className="flex items-center gap-4">
@@ -122,10 +125,22 @@ export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps)
           title={`Pay Now ₦ ${formatAmountWithCommas(totalPayable.toString())}`}
           onClick={() => {
             if (!selectedAccountId) return
-            onPay?.({ accountId: selectedAccountId, amount: totalPayable })
+            setPinDrawerOpen(true)
           }}
         />
       </div>
+
+      <CardPinVerificationDrawer
+        visible={pinDrawerOpen}
+        onClose={() => setPinDrawerOpen(false)}
+        showTitle={false}
+        subtitle="Enter Your PIN"
+        onVerified={() => {
+          if (!selectedAccountId) return
+          setPinDrawerOpen(false)
+          onPay?.({ accountId: selectedAccountId, amount: totalPayable })
+        }}
+      />
     </div>
   );
 }
