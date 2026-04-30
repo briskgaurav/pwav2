@@ -37,7 +37,7 @@ export default function PayUsingOtherCards({ amount, onPay }: PayUsingOtherCards
 
   return (
     <>
-      <div className='h-full w-full flex flex-col items-center justify-start px-4 space-y-4'>
+      <div className='h-full w-full flex flex-col overflow-y-auto pb-24 items-center justify-start px-4 space-y-4'>
         <div className="p-4 border border-border rounded-2xl w-full flex items-center justify-between">
           <p className="font-medium text-sm text-text-primary truncate">Total Payable</p>
           <p className="text-md font-bold truncate">

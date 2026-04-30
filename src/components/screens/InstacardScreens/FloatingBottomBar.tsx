@@ -15,6 +15,7 @@ interface FloatingBottomBarProps {
   onScanPress?: () => void;
   onAddPress?: () => void;
   onAddGiftPress?: () => void;
+  isFixed?: boolean;
 }
 
 // Define which paths should show the floating bottom bar
@@ -34,6 +35,7 @@ function hapticMedium() {
 
 export function FloatingBottomBar({
   hideScan = false,
+  isFixed = true,
   mode,
   onHomePress,
   onScanPress,
@@ -64,7 +66,7 @@ export function FloatingBottomBar({
   return (
     <>
       <div
-        className="fixed left-1/2 w-fit flex-col z-1 -translate-x-1/2 h-fit rounded-full flex items-center justify-center gap-2"
+        className={`${isFixed ? 'fixed' : 'absolute'} left-1/2 w-fit flex-col z-1 -translate-x-1/2 h-fit rounded-full flex items-center justify-center gap-2`}
         style={{ bottom: 'calc(2% + env(safe-area-inset-bottom, 0px))' }}
         role="navigation"
         aria-label="Bottom actions"

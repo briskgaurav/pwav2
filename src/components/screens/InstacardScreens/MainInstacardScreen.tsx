@@ -11,7 +11,6 @@ import { useAuth } from '@/lib/auth-context'
 import { routes } from '@/lib/routes'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { setCardMode as setCardModeAction } from '@/store/redux/slices/cardModeSlice'
-import { setPendingCardForm } from '@/store/redux/slices/cardWalletSlice'
 import LeftSideDrawer from '@/components/LeftSideDrawer'
 import { ProfileContent } from '@/components/screens/Drawers/ProfileContent'
 import FloatingBottomBarLayoutClient from './FloatingBottomBarLayoutClient'
@@ -193,7 +192,7 @@ export default function MainInstacardScreen() {
         setCurrentCardIndex={setCurrentCardIndex}
         isDarkMode={isDarkMode}
       />
-      <FloatingBottomBarLayoutClient hidescan={false} />
+      <FloatingBottomBarLayoutClient hidescan={false} isFixed={false} />
 
     </div>
   )

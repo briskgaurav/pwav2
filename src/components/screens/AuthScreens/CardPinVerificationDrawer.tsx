@@ -70,9 +70,9 @@ export default function CardPinVerificationDrawer({
 
     const isComplete = pin.length === PIN_LENGTH
 
-    useEffect(() => {
-        if (isComplete) handleContinue()
-    }, [handleContinue, isComplete])
+    // useEffect(() => {
+    //     if (isComplete) handleContinue()
+    // }, [handleContinue, isComplete])
 
     return (
         <BottomSheetModal showTitle={showTitle} backdropBlur={true} visible={visible} onClose={onClose} title={title} maxHeight={0.92}>

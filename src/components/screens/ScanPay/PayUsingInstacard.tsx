@@ -9,6 +9,7 @@ import { useAppSelector } from '@/store/redux/hooks'
 import { useAuth } from '@/lib/auth-context'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import CardPinVerificationDrawer from '../AuthScreens/CardPinVerificationDrawer'
+import { Button } from '@/components/ui'
 
 type PayUsingInstacardProps = {
   amount: number
@@ -73,7 +74,7 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
     null
 
   return (
-    <>
+    <div className=' min-h-[60vh] overflow-y-auto relative h-full'>
       {/* Filter bar */}
       <ScanPayFilterBar
         isDarkMode={isDarkMode}
@@ -88,7 +89,7 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
       />
 
       {/* Card stack area */}
-      <div className="flex-1 min-h-0 w-full relative">
+      <div className="min-h-[62vh]  w-full relative">
         {filteredCards.length > 0 ? (
           <CardStack
             ref={cardStackRef}
@@ -105,27 +106,24 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
         )}
 
         {filteredCards.length > 0 && (
-            <SwipeIndicator
-            bottomPosition='bottom-[12%]'
-              currentIndex={currentCardIndex}
-              totalCount={filteredCards.length}
-              onPreviousPress={() => cardStackRef.current?.goToPrevious()}
-              onNextPress={() => cardStackRef.current?.goToNext()}
-            />
-          )}
+          <SwipeIndicator
+            bottomPosition='bottom-[5%]'
+            currentIndex={currentCardIndex}
+            totalCount={filteredCards.length}
+            onPreviousPress={() => cardStackRef.current?.goToPrevious()}
+            onNextPress={() => cardStackRef.current?.goToNext()}
+          />
+        )}
       </div>
 
-    {/* Pay using other cards button */}
+      {/* Pay using other cards button */}
       <div className="shrink-0 px-4 pb-6 pt-2">
-        <ButtonComponent
-          title={`Pay ₦ ${amount?.toString() || '0'}`}
-          onClick={() => {
-            if (!selectedCard) return
-            setPendingCard(selectedCard)
-            // console.log('[ScanPay] Opening PIN drawer for card (pay btn):', selectedCard, 'amount:', amount)
-            setPinDrawerOpen(true)
-          }}
-        />
+        <Button fullWidth className='bg-primary text-white' onClick={() => {
+          if (!selectedCard) return
+          setPendingCard(selectedCard)
+          // console.log('[ScanPay] Opening PIN drawer for card (pay btn):', selectedCard, 'amount:', amount)
+          setPinDrawerOpen(true)
+        }}>Pay ₦ {amount?.toString() || '0'}</Button>
       </div>
 
       <CardPinVerificationDrawer
@@ -146,6 +144,6 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
           setPendingCard(null)
         }}
       />
-    </>
+    </div>
   )
 }

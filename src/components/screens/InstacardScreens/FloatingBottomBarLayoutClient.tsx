@@ -3,15 +3,23 @@
 import FloatingBottomBar from './FloatingBottomBar'
 import { useAppSelector } from '@/store/redux/hooks'
 
-export function FloatingBottomBarLayoutClient({hidescan = false}: {hidescan: boolean}) {
+type FloatingBottomBarLayoutClientProps = {
+  hidescan?: boolean
+  isFixed?: boolean
+}
+
+export function FloatingBottomBarLayoutClient({
+  hidescan = false,
+  isFixed = true,
+}: FloatingBottomBarLayoutClientProps) {
   const cardMode = useAppSelector((s) => s.cardMode.cardMode)
   return (
     <FloatingBottomBar
-    hideScan={hidescan}
+      isFixed={isFixed}
+      hideScan={hidescan}
       mode={cardMode}
     />
   )
 }
 
 export default FloatingBottomBarLayoutClient
-
