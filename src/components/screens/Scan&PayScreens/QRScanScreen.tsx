@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation'
 import gsap from 'gsap'
 import Image from 'next/image'
 import { routes } from '@/lib/routes'
+import { useBackRedirect } from '@/hooks/useBackRedirect'
 
 const SCANNER_SIZE = 240
 const CORNER_SIZE = 45
 
 export default function QRScanScreen() {
   const router = useRouter()
+  useBackRedirect(routes.instacard)
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)

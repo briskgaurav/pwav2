@@ -99,7 +99,7 @@ export function OTPInput({
       {digits.map((digit, index) => (
         <div
           key={index}
-          className={`${maxLength > 6 ? 'w-10 h-10 rounded-lg' : 'w-14 h-14 rounded-xl' }  border border-text-primary flex items-center justify-center text-base font-semibold text-text-primary text-center outline-none shrink-0`}
+          className={`${maxLength > 6 ? 'w-10 h-10 rounded-lg' : 'w-12 h-12 rounded-xl' }  border border-text-primary flex items-center justify-center text-base font-semibold text-text-primary text-center outline-none shrink-0`}
           style={{ position: 'relative' }}
           tabIndex={-1}
         >

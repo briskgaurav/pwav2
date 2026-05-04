@@ -15,6 +15,7 @@ type CardPinVerificationDrawerProps = {
     showTitle?: boolean
     subtitle?: string
     onVerified: () => void
+    fieldLength:number,
     /** Optional custom verifier; defaults to comparing against redux `s.card.pin` */
     verifyPin?: (pin: string) => boolean
 }
@@ -23,16 +24,23 @@ export default function CardPinVerificationDrawer({
     showTitle = true,
     visible,
     onClose,
+    fieldLength = 4,
     title = 'PIN Verification',
     subtitle = 'Enter your PIN to continue',
     onVerified,
     verifyPin,
 }: CardPinVerificationDrawerProps) {
     const globalPin = useAppSelector((s) => s.card.pin)
-    const verifier = useMemo(
-        () => verifyPin ?? ((p: string) => p === globalPin),
-        [globalPin, verifyPin]
-    )
+
+    // If requested fieldLength is 6, use 111111 as the verification pin, otherwise use normal logic
+    const pinLength = fieldLength > 0 ? fieldLength : 4;
+    const getVerifier = () => {
+        if (pinLength === 6) {
+            return verifyPin ?? ((p: string) => p === '111111');
+        }
+        return verifyPin ?? ((p: string) => p === globalPin);
+    };
+    const verifier = useMemo(getVerifier, [globalPin, verifyPin, pinLength]);
 
     const [pin, setPin] = useState('')
     const [error, setError] = useState<string | null>(null)
@@ -65,14 +73,10 @@ export default function CardPinVerificationDrawer({
             return
         }
         if (!/^\d$/.test(key)) return
-        setPin((prev) => (prev.length < PIN_LENGTH ? prev + key : prev))
-    }, [])
+        setPin((prev) => (prev.length < pinLength ? prev + key : prev))
+    }, [pinLength])
 
-    const isComplete = pin.length === PIN_LENGTH
-
-    // useEffect(() => {
-    //     if (isComplete) handleContinue()
-    // }, [handleContinue, isComplete])
+    const isComplete = pin.length === pinLength
 
     return (
         <BottomSheetModal showTitle={showTitle} backdropBlur={true} visible={visible} onClose={onClose} title={title} maxHeight={0.92}>
@@ -84,7 +88,7 @@ export default function CardPinVerificationDrawer({
                         useDots
                         resetKey={resetKey}
                         value={pin}
-                        maxLength={PIN_LENGTH}
+                        maxLength={pinLength}
                         onPress={() => {
                             // keypad is always visible in this drawer
                         }}

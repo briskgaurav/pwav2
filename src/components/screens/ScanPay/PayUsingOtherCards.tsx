@@ -84,9 +84,10 @@ export default function PayUsingOtherCards({ amount, onPay }: PayUsingOtherCards
 
       <CardPinVerificationDrawer
         visible={pinDrawerOpen}
+        fieldLength={6}
         onClose={() => setPinDrawerOpen(false)}
         showTitle={false}
-        subtitle="Enter Your PIN"
+        subtitle="Enter Your 6 Digit OTP"
         onVerified={() => {
           setPinDrawerOpen(false)
           onPay({ card: selectedCard })

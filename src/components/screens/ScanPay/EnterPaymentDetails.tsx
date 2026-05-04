@@ -10,8 +10,8 @@ import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
 import NiaraSymbol from '@/components/Extras/NiaraSymbol'
 import { formatAmountWithCommas } from '@/lib/format-amount'
 
-const MAX_AMOUNT = 100000;
-const MIN_AMOUNT = 9;
+const MAX_AMOUNT = 10000000000;
+const MIN_AMOUNT = 0;
 
 export default function EnterPaymentDetails() {
   const router = useRouter()
@@ -62,7 +62,7 @@ export default function EnterPaymentDetails() {
       return;
     }
     if (numericAmount <= MIN_AMOUNT) {
-      setError('You cannot proceed. Please enter an amount greater than 10.');
+      setError('You cannot proceed. Please enter an amount greater than 0.');
       return;
     }
 

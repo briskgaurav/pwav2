@@ -89,7 +89,7 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
       />
 
       {/* Card stack area */}
-      <div className="min-h-[62vh]  w-full relative">
+      <div className="min-h-[58vh]  w-full relative">
         {filteredCards.length > 0 ? (
           <CardStack
             ref={cardStackRef}
