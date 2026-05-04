@@ -177,10 +177,11 @@ export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps)
       </div>
 
       <CardPinVerificationDrawer
+      fieldLength={6}
         visible={pinDrawerOpen}
         onClose={() => setPinDrawerOpen(false)}
         showTitle={false}
-        subtitle="Enter Your PIN"
+        subtitle="Enter Your 6 Digit OTP"
         onVerified={() => {
           if (!selectedAccountId) return
           setPinDrawerOpen(false)
