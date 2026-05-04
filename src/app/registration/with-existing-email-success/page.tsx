@@ -1,9 +1,11 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+
+import { Check, Mail, Shield, CheckCircle2 } from 'lucide-react'
+
 import { SheetContainer, Button } from '@/components/ui'
 import { routes } from '@/lib/routes'
-import { Check, Mail, Shield, CheckCircle2 } from 'lucide-react'
 import { useAppSelector } from '@/store/redux/hooks'
 
 export default function WithExistingEmailSuccessPage() {

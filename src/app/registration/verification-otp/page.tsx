@@ -1,11 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+
 import { useRouter } from 'next/navigation'
+
+import { CheckCircle2 } from 'lucide-react'
+
 import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen'
 import { SheetContainer, Button } from '@/components/ui'
 import { routes } from '@/lib/routes'
-import { CheckCircle2 } from 'lucide-react'
 import { useAppSelector } from '@/store/redux/hooks'
 
 type VerificationMethod = 'email' | 'phone' | 'bvn'

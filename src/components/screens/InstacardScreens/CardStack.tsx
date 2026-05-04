@@ -8,8 +8,11 @@ import {
   useRef,
   useState,
 } from 'react';
+
 import gsap from 'gsap';
-import { CardData } from '../../../constants/cardData';
+
+import { type CardData } from '../../../constants/cardData';
+
 import { CardItem } from './CardItem';
 
 // Stack configuration (mirrors React Native version)
@@ -41,7 +44,7 @@ interface CardStackProps {
 }
 
 export const CardStack = forwardRef<CardStackRef, CardStackProps>(
-  function CardStack(
+  (
     {
       cards,
       onCardPress,
@@ -50,7 +53,7 @@ export const CardStack = forwardRef<CardStackRef, CardStackProps>(
       selectedCardId = null,
     },
     ref
-  ) {
+  ) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const effectiveIndexRef = useRef(0);
     const cardRefs = useRef<(HTMLDivElement | null)[]>([]);

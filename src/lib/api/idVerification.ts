@@ -1,5 +1,5 @@
-import { parseApiError } from '@/lib/verification'
-import type { UserInfo, IdVerificationMethod } from '@/lib/verification'
+import { parseApiError, type UserInfo, type IdVerificationMethod  } from '@/lib/verification'
+
 
 export type { UserInfo, IdVerificationMethod }
 

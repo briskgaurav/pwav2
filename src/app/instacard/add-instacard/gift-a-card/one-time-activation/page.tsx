@@ -1,13 +1,15 @@
 'use client'
-import CardMockup from '@/components/ui/CardMockup'
-import { useManagingCard } from '@/hooks/useManagingCard'
-import CopyButton from '@/components/ui/CopyButton'
-import { useRouter } from 'next/navigation'
 import React from 'react'
-import { notifyUserCancelled, notifyCardAdded } from '@/lib/bridge'
-import { routes } from '@/lib/routes'
-import LayoutSheet from '@/components/ui/LayoutSheet'
+
+import { useRouter } from 'next/navigation'
+
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import CardMockup from '@/components/ui/CardMockup'
+import CopyButton from '@/components/ui/CopyButton'
+import LayoutSheet from '@/components/ui/LayoutSheet'
+import { useManagingCard } from '@/hooks/useManagingCard'
+import { notifyUserCancelled } from '@/lib/bridge'
+import { routes } from '@/lib/routes'
 
 export default function page() {
     const router = useRouter()

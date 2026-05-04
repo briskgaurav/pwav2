@@ -1,11 +1,13 @@
 'use client'
 
 import { useState } from "react";
+
 import Image from "next/image";
-import ButtonComponent from "@/components/ui/ButtonComponent";
-import { formatAmountWithCommas } from "@/lib/format-amount";
+
 import NiaraSymbol from "@/components/Extras/NiaraSymbol";
 import CardPinVerificationDrawer from "@/components/screens/AuthScreens/CardPinVerificationDrawer";
+import ButtonComponent from "@/components/ui/ButtonComponent";
+import { formatAmountWithCommas } from "@/lib/format-amount";
 
 // Optional: Assign some dummy balances to be shown
 const BANK_ACCOUNTS = [

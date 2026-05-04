@@ -1,12 +1,16 @@
 'use client'
 
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
+
 import { useRouter } from 'next/navigation'
-import { SheetContainer, OTPInput, Button } from '@/components/ui'
-import LayoutSheet from '../../ui/LayoutSheet'
-import ButtonComponent from '../../ui/ButtonComponent'
+
 import gsap from 'gsap'
 import { Check } from 'lucide-react'
+
+import { SheetContainer, OTPInput, Button } from '@/components/ui'
+
+import ButtonComponent from '../../ui/ButtonComponent'
+import LayoutSheet from '../../ui/LayoutSheet'
 
 const MAX_CODE_LENGTH = 6
 

@@ -1,12 +1,13 @@
 'use client'
 
-import BottomSheetModal from '@/components/ui/BottomSheetModal'
-import { Button, OTPInput, OTPKeypad } from '@/components/ui'
-import { PIN_LENGTH } from '@/lib/types'
-import { useAppSelector } from '@/store/redux/hooks'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
 import Link from 'next/link'
+
+import { Button, OTPInput, OTPKeypad } from '@/components/ui'
+import BottomSheetModal from '@/components/ui/BottomSheetModal'
 import { routes } from '@/lib/routes'
+import { useAppSelector } from '@/store/redux/hooks'
 
 type CardPinVerificationDrawerProps = {
     visible: boolean

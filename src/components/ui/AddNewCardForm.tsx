@@ -1,11 +1,15 @@
 'use client'
 
-import { Checkbox } from '@/components/ui'
-import Image from 'next/image'
 import React, { useMemo, useState } from 'react'
-import { ICONS } from '@/constants/icons'
+
+import Image from 'next/image'
+
+
 import { Info } from 'lucide-react'
+
+import { Checkbox } from '@/components/ui'
 import FAQModal, { type FAQData } from '@/components/ui/FAQModal'
+import { ICONS } from '@/constants/icons'
 
 export interface AddNewCardFormValues {
     cardNumber: string
@@ -26,7 +30,7 @@ export interface AddNewCardFormProps {
 function validateFields(values: AddNewCardFormValues) {
     const errors: { [K in keyof AddNewCardFormValues]?: string } = {}
 
-    if (!values.cardNumber || values.cardNumber.length !== 16) {
+    if (values.cardNumber?.length !== 16) {
         errors.cardNumber = 'Invalid card number'
     }
 
@@ -104,7 +108,7 @@ export function AddNewCardForm({ initialValues, onChange, border = true, showChe
                             minLength={13}
                             value={values.cardNumber.replace(/\s+/g, '').replace(/(.{4})/g, '$1 ').trim()}
                             onChange={(e) => {
-                                let raw = e.target.value.replace(/\D/g, '').slice(0, 16)
+                                const raw = e.target.value.replace(/\D/g, '').slice(0, 16)
                                 update({ cardNumber: raw })
                             }}
                             onBlur={() => setTouched((prev) => ({ ...prev, cardNumber: true }))}

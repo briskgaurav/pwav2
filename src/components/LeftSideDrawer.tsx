@@ -1,6 +1,7 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
+
 import { ProfileDrawer } from '@/components/ProfileDrawer'
 
 type LeftSideDrawerProps = {

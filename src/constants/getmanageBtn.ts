@@ -1,7 +1,6 @@
-import React from 'react'
+import type React from 'react'
+
 import type { FAQData } from '@/components/ui/FAQModal'
-import type { CardType } from '@/lib/types'
-import { routes } from '@/lib/routes'
 import {
   AddMoneyIcon,
   BlockUnblockIcon,
@@ -10,9 +9,10 @@ import {
   PhoneIcon,
   PinIcon,
   RepaymentIcon,
-  StatementsIcon,
+  StatementsIcon 
 } from '@/constants/icons'
-import { ICONS } from '@/constants/icons'
+import { routes } from '@/lib/routes'
+import type { CardType } from '@/lib/types'
 
 type IconComponent = React.ComponentType<{ className?: string }>
 type ManageBtnIcon = IconComponent | string

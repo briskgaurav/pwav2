@@ -1,14 +1,16 @@
 'use client'
 
 import { useState, useEffect, Suspense, useRef } from 'react'
+
 import { useSearchParams } from 'next/navigation'
-import { SheetContainer, OTPInput, OTPKeypad, Button } from '@/components/ui'
-import { notifyNavigation } from '@/lib/bridge'
+
+import { OTPInput, OTPKeypad, Button } from '@/components/ui'
 import EyeButton from '@/components/ui/EyeButton'
-import { PIN_LENGTH } from '@/lib/types'
-import type { CardType } from '@/lib/types'
 import LayoutSheet from '@/components/ui/LayoutSheet'
 import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
+import { notifyNavigation } from '@/lib/bridge'
+import { PIN_LENGTH, type CardType  } from '@/lib/types'
+
 
 type PinSetupFormProps = {
   title: string

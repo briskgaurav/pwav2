@@ -1,7 +1,7 @@
 
 'use client'
 import React, { useState } from 'react'
-import TransactionHistoryItem from './TransactionHistoryItem'
+
 import { TRANSACTION_HISTORY_DATA } from '@/store/TransactionHistory'
 
 type TransactionTab = 'billed' | 'unbilled'

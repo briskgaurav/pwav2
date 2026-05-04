@@ -1,7 +1,8 @@
 'use client'
 
-import FloatingBottomBar from './FloatingBottomBar'
 import { useAppSelector } from '@/store/redux/hooks'
+
+import FloatingBottomBar from './FloatingBottomBar'
 
 type FloatingBottomBarLayoutClientProps = {
   hidescan?: boolean

@@ -1,7 +1,9 @@
 'use client';
 
-import { Check, LucideIcon } from "lucide-react";
 import Image from "next/image";
+
+import { Check, type LucideIcon } from "lucide-react";
+
 import { haptic } from "@/lib/useHaptics";
 
 interface RadioOptionProps {
@@ -55,8 +57,7 @@ export function RadioOption2({ label, selected, onSelect, accessibilityLabel, ic
             ) : (
                 <span
                     className={`w-[20px] border-2 border-text-primary h-[20px]  p-1.5 rounded-full  flex items-center justify-center transition-[border-color] duration-200 ease-in-out`}
-                >
-                </span>
+                 />
             )}
         </button>
     );

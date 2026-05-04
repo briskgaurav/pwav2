@@ -1,11 +1,12 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+
 import {
   parseSDKConfig,
   notifyReady,
   notifyError,
-  SDKConfig,
+  type SDKConfig,
   isValidToken,
   getInitialLanguage,
   listenForLanguageChanges,

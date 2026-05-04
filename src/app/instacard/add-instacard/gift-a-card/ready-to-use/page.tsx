@@ -1,17 +1,14 @@
 'use client'
 import { useState } from 'react'
-import { Button, SheetContainer } from '@/components/ui'
-import { ICONS } from '@/constants/icons'
-import Image from 'next/image'
 
-import { Copy } from 'lucide-react'
-import CardMockup from '@/components/ui/CardMockup'
-import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
-import { routes } from '@/lib/routes'
-import { useAuth } from '@/lib/auth-context'
-import LayoutSheet from '@/components/ui/LayoutSheet'
+import Image from 'next/image'
+import { useRouter, useSearchParams  } from 'next/navigation'
+
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import LayoutSheet from '@/components/ui/LayoutSheet'
+import { ICONS } from '@/constants/icons'
+import { useAuth } from '@/lib/auth-context'
+import { routes } from '@/lib/routes'
 import { useAppSelector } from '@/store/redux/hooks'
 
 export default function ReadyToUsePage() {
@@ -61,7 +58,7 @@ export default function ReadyToUsePage() {
                         </div>
                     ))}
                 </div>
-                <span className='h-px w-[90%] mx-auto bg-border block my-5'></span>
+                <span className='h-px w-[90%] mx-auto bg-border block my-5' />
                 <div className='w-full flex rounded-xl gap-2 '>
                     <div className='flex-1 p-4 py-6  border border-text-primary/20 rounded-2xl  flex flex-col gap-4'>
                         <p className='text-text-primary text-sm'>Wallet Account</p>

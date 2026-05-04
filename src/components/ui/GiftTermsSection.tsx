@@ -1,6 +1,7 @@
 'use client';
 
 import { ChevronRight } from 'lucide-react';
+
 import { Checkbox } from '@/components/ui';
 
 type Props = {

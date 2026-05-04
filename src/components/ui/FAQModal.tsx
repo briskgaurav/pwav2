@@ -1,9 +1,10 @@
 'use client'
 
-import { X, CreditCard } from 'lucide-react'
 import React, { useCallback, useEffect, useRef } from 'react'
+
 import gsap from 'gsap'
 import Draggable from 'gsap/dist/Draggable'
+import { X, CreditCard } from 'lucide-react'
 
 // Register GSAP plugin
 if (typeof window !== 'undefined') {

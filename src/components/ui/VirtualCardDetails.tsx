@@ -1,14 +1,20 @@
 'use client'
 
 import React, { useRef, useState, useEffect, useCallback } from 'react'
+
 import Image from 'next/image'
-import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
-import { toggleCardVisibility, setRefreshStart, refreshData } from '@/store/redux/slices/onlinePaymentSlice'
-import { useCvvTimer } from '../../hooks/useCvvTimer'
-import CopyButton from '@/components/ui/CopyButton'
-import { EyeIcon, EyeOffIcon, RefreshCw } from 'lucide-react'
-import { haptic } from '@/lib/useHaptics'
+
 import gsap from 'gsap'
+import { EyeIcon, EyeOffIcon, RefreshCw } from 'lucide-react'
+
+import CopyButton from '@/components/ui/CopyButton'
+import { haptic } from '@/lib/useHaptics'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { setRefreshStart, refreshData } from '@/store/redux/slices/onlinePaymentSlice'
+
+import { useCvvTimer } from '../../hooks/useCvvTimer'
+
+
 
 export default function VirtualCardDetails({ cardImageSrc, maskedNumber, cardNumber }: { cardImageSrc: string, maskedNumber: string, cardNumber: string }) {
   const cardRef = useRef<HTMLDivElement>(null)

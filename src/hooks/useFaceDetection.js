@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+
 import { runAllValidations, allValidationsPass } from '../components/Extras/utils/faceValidation';
 import { calculateBrightness, calculateBlurVariance } from '../components/Extras/utils/imageProcessing';
 

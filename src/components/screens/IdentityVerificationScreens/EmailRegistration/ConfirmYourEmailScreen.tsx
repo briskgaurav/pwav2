@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Button, RadioOption } from '@/components/ui'
+
 import { Mail, UserPlus } from 'lucide-react'
+
+import { RadioOption } from '@/components/ui'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 
 type Choice = 'current' | 'new'

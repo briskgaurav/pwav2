@@ -1,8 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import { FileQuestionMark, HelpCircle } from 'lucide-react'
+
+
 import FAQModal from '@/components/ui/FAQModal'
+
 import FaqIconButton from './FaqIconButton'
 
 type Transaction = {

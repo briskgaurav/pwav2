@@ -1,7 +1,8 @@
 'use client'
 
-import SuccessScreen from '@/components/screens/AuthScreens/SuccessScreen'
 import { useRouter } from 'next/navigation'
+
+import SuccessScreen from '@/components/screens/AuthScreens/SuccessScreen'
 import { routes } from '@/lib/routes'
 
 export default function AddMoneySuccessPage() {

@@ -1,8 +1,7 @@
 'use client';
 
+
 import { notifyUserCancelled } from '@/lib/bridge';
-import { ChevronLeft, CircleQuestionMark, Search } from 'lucide-react';
-import Image from 'next/image';
 
 interface HeaderProps {
   title?: string;

@@ -1,13 +1,14 @@
 'use client';
 
-import { useAuth } from '@/lib/auth-context';
+import Link from 'next/link';
+
+import { Plus } from 'lucide-react';
+
+import { routes } from '@/lib/routes';
 import { useAppDispatch } from '@/store/redux/hooks';
 import { setPendingCardForm } from '@/store/redux/slices/cardWalletSlice';
-import { haptic } from '@/lib/useHaptics';
-import { Gift, Plus, PlusIcon } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { routes } from '@/lib/routes';
+
+
 
 interface GreetingBarProps {
   userName: string;

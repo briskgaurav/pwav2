@@ -1,12 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+
 import { useRouter } from 'next/navigation'
+
 import { RadioOption } from '@/components/ui'
 import { notifyNavigation } from '@/lib/bridge'
-import { haptic } from '@/lib/useHaptics'
 import { routes } from '@/lib/routes'
 import type { CardType } from '@/lib/types'
+import { haptic } from '@/lib/useHaptics'
+
 import ButtonComponent from '../../ui/ButtonComponent'
 import LayoutSheet from '../../ui/LayoutSheet'
 

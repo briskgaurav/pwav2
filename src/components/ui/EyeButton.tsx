@@ -1,11 +1,14 @@
 'use client'
 
 import React, { useRef, useState } from 'react'
+
 import Image from 'next/image'
-import { ICONS } from '@/constants/icons'
+
 import gsap from 'gsap'
-import { haptic } from '@/lib/useHaptics'
+
+import { ICONS } from '@/constants/icons'
 import { useAuth } from '@/lib/auth-context'
+import { haptic } from '@/lib/useHaptics'
 
 type EyeButtonProps = {
   isVisible: boolean

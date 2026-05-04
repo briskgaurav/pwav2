@@ -1,10 +1,12 @@
 'use client'
 
 import React, { useRef, useState } from 'react'
-import { Copy, Check } from 'lucide-react'
+
 import gsap from 'gsap'
-import { haptic } from '@/lib/useHaptics'
+import { Copy, Check } from 'lucide-react'
+
 import { useAuth } from '@/lib/auth-context'
+import { haptic } from '@/lib/useHaptics'
 
 type CopyButtonProps = {
   value: string

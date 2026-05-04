@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react'
+
 import { ShieldCheck } from 'lucide-react'
-import { Checkbox, Button } from '@/components/ui'
+
+import { Checkbox } from '@/components/ui'
 import FAQModal, { type FAQData } from '@/components/ui/FAQModal'
 import type { UserData } from '@/types/userdata'
 

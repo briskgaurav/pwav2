@@ -1,6 +1,7 @@
+import React from 'react'
+
 import ChooseCards from '@/components/screens/ScanPay/ChooseCards'
 import LayoutSheet from '@/components/ui/LayoutSheet'
-import React from 'react'
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>
 

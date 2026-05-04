@@ -2,7 +2,9 @@
 
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
+
 import { VerifiedUserSync } from '@/store/redux/VerifiedUserSync'
+
 import { store, persistor } from './store'
 
 type ReduxProviderProps = {

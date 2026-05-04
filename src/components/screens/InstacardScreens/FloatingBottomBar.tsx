@@ -1,11 +1,15 @@
 'use client';
 
-import Image from 'next/image';
 import { useRef } from 'react';
-import gsap from 'gsap';
-import { LucideGift, PlusIcon } from 'lucide-react';
+
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+
+import gsap from 'gsap';
+import { LucideGift } from 'lucide-react';
+
+
 import { routes } from '@/lib/routes';
 
 interface FloatingBottomBarProps {

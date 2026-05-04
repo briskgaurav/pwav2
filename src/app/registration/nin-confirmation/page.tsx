@@ -1,12 +1,15 @@
 'use client'
 
 import { useState } from 'react'
+
 import { useRouter } from 'next/navigation'
-import { SheetContainer, Button, Checkbox } from '@/components/ui'
-import { routes } from '@/lib/routes'
+
 import { ShieldCheck } from 'lucide-react'
-import { useAppSelector } from '@/store/redux/hooks'
+
+import { SheetContainer, Button, Checkbox } from '@/components/ui'
 import FAQModal, { type FAQData } from '@/components/ui/FAQModal'
+import { routes } from '@/lib/routes'
+import { useAppSelector } from '@/store/redux/hooks'
 
 const TERMS_DATA: FAQData = {
   heading: 'Terms of Service & Privacy Policy',

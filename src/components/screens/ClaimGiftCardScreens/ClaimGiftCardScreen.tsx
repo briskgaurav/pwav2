@@ -1,13 +1,16 @@
 'use client';
 
-import { SheetContainer, Button } from '@/components/ui'
 import React, { useState, useRef, useEffect } from 'react'
-import { Check } from 'lucide-react'
-import gsap from 'gsap'
+
 import { useRouter } from 'next/navigation'
-import { routes } from '@/lib/routes' 
-import LayoutSheet from '../../ui/LayoutSheet';
+
+import gsap from 'gsap'
+import { Check } from 'lucide-react'
+
 import ButtonComponent from '@/components/ui/ButtonComponent';
+import { routes } from '@/lib/routes'
+ 
+import LayoutSheet from '../../ui/LayoutSheet';
 
 export default function ClaimGiftCardScreen() {
   const [activationCode, setActivationCode] = useState('');

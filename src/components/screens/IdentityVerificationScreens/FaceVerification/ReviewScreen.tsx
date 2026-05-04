@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { Check, ChevronLeft, CrossIcon, XIcon } from 'lucide-react'
+
+import { Check, ChevronLeft, XIcon } from 'lucide-react'
+
 import { getFromSession } from '@/components/Extras/utils/imageProcessing'
 
 type ReviewScreenProps = {

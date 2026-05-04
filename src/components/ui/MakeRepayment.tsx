@@ -1,13 +1,16 @@
 'use client'
 
 import React, { useState } from 'react'
-import Image from 'next/image'
-import { Dropdown } from './Dropdown'
-import { routes } from '@/lib/routes'
+
+
 import { useRouter } from 'next/navigation'
+
 import { AddCardIcon } from '@/constants/icons'
-import ButtonComponent from './ButtonComponent'
+import { routes } from '@/lib/routes'
 import { useAppSelector } from '@/store/redux/hooks'
+
+import ButtonComponent from './ButtonComponent'
+import { Dropdown } from './Dropdown'
 
 type PaymentOption = 'full' | 'minimum' | 'other'
 

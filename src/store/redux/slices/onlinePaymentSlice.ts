@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+
 import type { CardType } from '@/lib/types'
 
 export type TransactionStatus = 'success' | 'failed' | 'pending'

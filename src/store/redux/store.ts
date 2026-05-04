@@ -12,17 +12,17 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
-import livenessReducer from './slices/livenessSlice'
-import idVerificationReducer from './slices/idVerificationSlice'
-import cardReducer from './slices/cardSlice'
-import cardModeReducer from './slices/cardModeSlice'
-import cardWalletReducer from './slices/cardWalletSlice'
-import userReducer from './slices/userSlice'
-import profileDrawerReducer from './slices/profileDrawerSlice'
 import accessDrawerReducer from './slices/accessDrawerSlice'
-import manageCardReducer from './slices/manageCardSlice'
+import cardModeReducer from './slices/cardModeSlice'
+import cardReducer from './slices/cardSlice'
+import cardWalletReducer from './slices/cardWalletSlice'
+import idVerificationReducer from './slices/idVerificationSlice'
 import limitSettingReducer from './slices/limitSettingSlice'
+import livenessReducer from './slices/livenessSlice'
+import manageCardReducer from './slices/manageCardSlice'
 import onlinePaymentReducer from './slices/onlinePaymentSlice'
+import profileDrawerReducer from './slices/profileDrawerSlice'
+import userReducer from './slices/userSlice'
 
 const persistConfig = {
   key: 'root',

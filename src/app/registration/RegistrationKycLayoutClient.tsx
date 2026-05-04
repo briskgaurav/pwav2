@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import { usePathname } from 'next/navigation';
+
 import { VerifyProgressProvider, useVerifyProgress } from '@/components/ui/VerifyProgressContext';
 import VerifyProgressMeter from '@/components/ui/VerifyProgressMeter';
 

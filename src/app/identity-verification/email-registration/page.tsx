@@ -1,16 +1,18 @@
 'use client'
 
 import { useState } from 'react'
+
 import { useRouter, useSearchParams } from 'next/navigation'
-import LayoutSheet from '@/components/ui/LayoutSheet'
-import IdentityVerificationProgress from '@/components/ui/IdentityVerificationProgress'
-import VerificationPageShell from '@/components/ui/VerificationPageShell'
-import ConfirmYourEmailScreen from '@/components/screens/IdentityVerificationScreens/EmailRegistration/ConfirmYourEmailScreen'
+
 import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen'
+import ConfirmYourEmailScreen from '@/components/screens/IdentityVerificationScreens/EmailRegistration/ConfirmYourEmailScreen'
+import IdentityVerificationProgress from '@/components/ui/IdentityVerificationProgress'
+import LayoutSheet from '@/components/ui/LayoutSheet'
+import VerificationPageShell from '@/components/ui/VerificationPageShell'
 import { useUserData } from '@/hooks/apiHooks/useUserData'
 import { sendEmailRegistrationOtp, verifyEmailRegistrationOtp } from '@/lib/api/emailRegistration'
-import { maskEmail } from '@/lib/verification'
 import { routes } from '@/lib/routes'
+import { maskEmail } from '@/lib/verification'
 
 const DEFAULT_USER_ID = '1'
 

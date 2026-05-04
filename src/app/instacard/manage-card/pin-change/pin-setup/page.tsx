@@ -1,11 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { notifyUserCancelled } from '@/lib/bridge'
+
+import { useRouter } from 'next/navigation'
+
 import PinSetupForm from '@/components/screens/AuthScreens/PinSetupFormScreen'
 import SuccessScreen from '@/components/screens/AuthScreens/SuccessScreen'
 import { useManagingCard } from '@/hooks/useManagingCard'
-import { useRouter } from 'next/navigation'
+import { notifyUserCancelled } from '@/lib/bridge'
+
 
 export default function PinChangeSetupPage() {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)

@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useRef, useEffect, useState, useCallback } from 'react'
+
 import { useRouter } from 'next/navigation'
+
 import { routes } from '@/lib/routes'
 
 export default function FaceVerificationScreen() {
@@ -17,7 +19,7 @@ export default function FaceVerificationScreen() {
       setPermissionDenied(false)
 
       // Check if mediaDevices API is available
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      if (!navigator.mediaDevices?.getUserMedia) {
         setCameraError('Camera is not supported on this device or browser. Please use a modern browser with HTTPS.')
         return
       }

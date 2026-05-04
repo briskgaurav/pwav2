@@ -1,6 +1,7 @@
 'use client'
 
-import { ReactNode, useCallback, useEffect, useRef } from 'react'
+import { type ReactNode, useCallback, useEffect, useRef } from 'react'
+
 import gsap from 'gsap'
 import Draggable from 'gsap/dist/Draggable'
 

@@ -1,11 +1,12 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+
 import PinSetupForm from '@/components/screens/AuthScreens/PinSetupFormScreen'
 import { routes } from '@/lib/routes'
+import type { CardType } from '@/lib/types'
 import { useAppDispatch, useAppSelector } from '@/store/redux/hooks'
 import { setPendingPin, addCard } from '@/store/redux/slices/cardWalletSlice'
-import type { CardType } from '@/lib/types'
 
 export default function PinSetupPage() {
   const router = useRouter()

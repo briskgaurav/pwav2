@@ -1,6 +1,7 @@
-import LayoutSheet from '@/components/ui/LayoutSheet'
-import QRScanScreen from '@/components/screens/Scan&PayScreens/QRScanScreen'
 import React from 'react'
+
+import QRScanScreen from '@/components/screens/Scan&PayScreens/QRScanScreen'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 
 export default function page() {
   return (

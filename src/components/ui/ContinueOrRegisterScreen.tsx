@@ -1,10 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+
 import { useRouter } from 'next/navigation'
+
+import { Mail, UserPlus } from 'lucide-react'
+
 import { SheetContainer, Button, RadioOption } from '@/components/ui'
 import { routes } from '@/lib/routes'
-import { Mail, UserPlus } from 'lucide-react'
 import { useAppSelector } from '@/store/redux/hooks'
 
 type Choice = 'current' | 'new'

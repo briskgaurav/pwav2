@@ -1,16 +1,19 @@
 
 'use client'
-import Image from 'next/image'
 import React, { useState } from 'react'
-import { haptic } from '@/lib/useHaptics'
-import { ChevronDown } from 'lucide-react'
-import DatePickerModal from './DatePickerModal'
-import { StatementsIcon } from '@/constants/icons'
-import ButtonComponent from './ButtonComponent'
-import Button from './button'
-import { routes } from '@/lib/routes'
+
 import { useRouter } from 'next/navigation'
+
+import { ChevronDown } from 'lucide-react'
+
+
+import { StatementsIcon } from '@/constants/icons'
+import { routes } from '@/lib/routes'
+import { haptic } from '@/lib/useHaptics'
 import { useAppSelector } from '@/store/redux/hooks'
+
+import Button from './button'
+import DatePickerModal from './DatePickerModal'
 
 type StatementOption = {
   id: 'mini' | 'custom'
@@ -185,7 +188,7 @@ export default function EmailStatements() {
             onClose={() => setDatePickerOpen(null)}
             onSelect={(date) => handleDateSelect(date, 'from')}
             title='Select From Date'
-            selectedDate={fromDate ? new Date(fromDate + 'T12:00:00') : undefined}
+            selectedDate={fromDate ? new Date(`${fromDate  }T12:00:00`) : undefined}
             maxDate={new Date()}
           />
           <DatePickerModal
@@ -193,8 +196,8 @@ export default function EmailStatements() {
             onClose={() => setDatePickerOpen(null)}
             onSelect={(date) => handleDateSelect(date, 'to')}
             title='Select To Date'
-            selectedDate={toDate ? new Date(toDate + 'T12:00:00') : undefined}
-            minDate={fromDate ? new Date(fromDate + 'T12:00:00') : undefined}
+            selectedDate={toDate ? new Date(`${toDate  }T12:00:00`) : undefined}
+            minDate={fromDate ? new Date(`${fromDate  }T12:00:00`) : undefined}
             maxDate={new Date()}
           />
 

@@ -1,26 +1,29 @@
 'use client'
-import { SheetContainer } from '@/components/ui'
-import Image from 'next/image'
-import { ICONS } from '@/constants/icons'
+
 
 import { useState } from 'react'
-import CopyButton from '@/components/ui/CopyButton'
-import CardMockup from '@/components/ui/CardMockup'
-import ManageBtn from '../../ui/ManageBtn'
-import { getManageBtns } from '../../../constants/getmanageBtn'
-import Balance from '@/components/ui/Balance'
-import RemoveCardModal from '@/components/ui/RemoveCardModal'
-import FAQModal from '@/components/ui/FAQModal'
-import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
-import { closeFaq } from '@/store/redux/slices/manageCardSlice'
+
+import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
+
+import Balance from '@/components/ui/Balance'
+import CardMockup from '@/components/ui/CardMockup'
+import CopyButton from '@/components/ui/CopyButton'
 import EyeButton from '@/components/ui/EyeButton'
-import CardActionTiles from '../../ui/CardActionTiles'
-import { useManageCardActions } from '../../../hooks/useManageCardActions'
+import FAQModal from '@/components/ui/FAQModal'
+import RemoveCardModal from '@/components/ui/RemoveCardModal'
+import { ICONS } from '@/constants/icons'
 import { useManagingCard } from '@/hooks/useManagingCard'
 import { useAuth } from '@/lib/auth-context'
 import { shareText } from '@/lib/fetchDataFromKotlin'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { closeFaq } from '@/store/redux/slices/manageCardSlice'
+
+import { getManageBtns } from '../../../constants/getmanageBtn'
+import { useManageCardActions } from '../../../hooks/useManageCardActions'
+import CardActionTiles from '../../ui/CardActionTiles'
 import LayoutSheet from '../../ui/LayoutSheet'
+import ManageBtn from '../../ui/ManageBtn'
 
 export default function ManageGiftCardScreen() {
   const searchParams = useSearchParams()
@@ -49,7 +52,7 @@ export default function ManageGiftCardScreen() {
 
         <CardActionTiles cardMode={cardMode} onActionClick={handleCardActionClick} />
 
-        <span className='w-full h-px block my-10 bg-border'></span>
+        <span className='w-full h-px block my-10 bg-border' />
 
         <div className='w-full flex  items-center relative justify-center overflow-hidden rounded-2xl min-h-[180px]'>
           <div className={`absolute ${isDarkMode ? 'brightness-200' : ''} inset-0`}>

@@ -1,10 +1,13 @@
 'use client'
 
-import { haptic } from '@/lib/useHaptics'
-import { notifyUserCancelled } from '@/lib/bridge'
 import React, { useCallback, useEffect, useRef } from 'react'
-import gsap from 'gsap'
+
 import { useRouter } from 'next/navigation'
+
+import gsap from 'gsap'
+
+import { notifyUserCancelled } from '@/lib/bridge'
+import { haptic } from '@/lib/useHaptics'
 
 interface RemoveCardModalProps {
     visible: boolean

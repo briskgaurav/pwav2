@@ -1,12 +1,15 @@
 'use client'
 
 import React from 'react'
+
+import { useRouter } from 'next/navigation'
+
+import { ChevronRight } from 'lucide-react'
+
+import { routes } from '@/lib/routes'
+import { haptic } from '@/lib/useHaptics'
 import { useAppSelector } from '@/store/redux/hooks'
 import type { Transaction } from '@/store/redux/slices/onlinePaymentSlice'
-import { useRouter } from 'next/navigation'
-import { routes } from '@/lib/routes'
-import { ChevronRight } from 'lucide-react'
-import { haptic } from '@/lib/useHaptics'
 
 function TransactionItem({ transaction }: { transaction: Transaction }) {
   const router = useRouter()

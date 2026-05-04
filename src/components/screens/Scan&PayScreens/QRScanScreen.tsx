@@ -1,11 +1,14 @@
 'use client'
 
 import { useRef, useEffect, useState, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
-import gsap from 'gsap'
+
 import Image from 'next/image'
-import { routes } from '@/lib/routes'
+import { useRouter } from 'next/navigation'
+
+import gsap from 'gsap'
+
 import { useBackRedirect } from '@/hooks/useBackRedirect'
+import { routes } from '@/lib/routes'
 
 const SCANNER_SIZE = 240
 const CORNER_SIZE = 45
@@ -48,7 +51,7 @@ export default function QRScanScreen() {
       setCameraError(null)
       setPermissionDenied(false)
 
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      if (!navigator.mediaDevices?.getUserMedia) {
         setCameraError('Camera is not supported on this device or browser. Please use a modern browser with HTTPS.')
         return
       }

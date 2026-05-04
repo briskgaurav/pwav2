@@ -1,13 +1,17 @@
 'use client'
-import { ChevronLeft, Menu, XIcon } from 'lucide-react'
 import React, { useRef, useEffect, useState } from 'react'
+
+import Image from 'next/image'
+import { useRouter, usePathname  } from 'next/navigation'
+
 import gsap from 'gsap'
-import { useRouter } from 'next/navigation'
-import { usePathname } from 'next/navigation'
+import { ChevronLeft, Menu, XIcon } from 'lucide-react'
+
+
 import { usePWAHeader } from '@/lib/pwa-header-context'
 import { useAppDispatch } from '@/store/redux/hooks'
 import { openAccessDrawer } from '@/store/redux/slices/accessDrawerSlice'
-import Image from 'next/image'
+
 
 export default function PWAHeader() {
     const router = useRouter()

@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
-import { User, Sun, Eye, Camera } from 'lucide-react'
-import ButtonComponent from '../../../ui/ButtonComponent'
+
 import Image from 'next/image'
+
+import { Sun, Eye, Camera } from 'lucide-react'
+
+import ButtonComponent from '../../../ui/ButtonComponent'
 
 export default function Introduction({ getButtonText, handleContinue }: { getButtonText: () => string, handleContinue: () => void }) {
   const [isImageLoading, setIsImageLoading] = useState(true)
@@ -13,9 +16,9 @@ export default function Introduction({ getButtonText, handleContinue }: { getBut
         {isImageLoading && (
           <div className="absolute inset-0 flex items-center justify-center rounded-lg">
             <div className="flex gap-1">
-              <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-              <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-              <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+              <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+              <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+              <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
             </div>
           </div>
         )}

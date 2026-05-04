@@ -1,10 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
+
 import CardPinAuth from '@/components/screens/AuthScreens/CardPinAuth'
+import { useManagingCard } from '@/hooks/useManagingCard'
 import { CARD_CONFIG } from '@/lib/card-config'
 import type { CardType } from '@/lib/types'
-import { useManagingCard } from '@/hooks/useManagingCard'
 
 type ManageCardPageWrapperProps = {
   cardType: CardType

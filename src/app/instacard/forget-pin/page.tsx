@@ -1,9 +1,11 @@
 'use client'
 
 import { useRef, useEffect, useState, useCallback } from 'react'
+
 import { useRouter } from 'next/navigation'
-import { routes } from '@/lib/routes'
+
 import LayoutSheet from '@/components/ui/LayoutSheet'
+import { routes } from '@/lib/routes'
 
 export default function page() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -18,7 +20,7 @@ export default function page() {
       setPermissionDenied(false)
 
       // Check if mediaDevices API is available
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      if (!navigator.mediaDevices?.getUserMedia) {
         setCameraError('Camera is not supported on this device or browser. Please use a modern browser with HTTPS.')
         return
       }

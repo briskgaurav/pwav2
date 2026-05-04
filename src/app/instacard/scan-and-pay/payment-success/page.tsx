@@ -1,16 +1,18 @@
 'use client'
 
 import { useEffect, useRef, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
+
+import { useRouter, useSearchParams  } from 'next/navigation'
+
 import gsap from 'gsap'
 import { Check, User, AtSign, Receipt, Calendar, Share2 } from 'lucide-react'
-import { formatAmountWithCommas } from '@/lib/format-amount'
-import { sharePaymentReceipt } from '@/lib/fetchDataFromKotlin'
-import { useAppSelector } from '@/store/redux/hooks'
-import { routes } from '@/lib/routes'
-import { useBackRedirect } from '@/hooks/useBackRedirect'
+
 import LayoutSheet from '@/components/ui/LayoutSheet'
+import { useBackRedirect } from '@/hooks/useBackRedirect'
+import { sharePaymentReceipt } from '@/lib/fetchDataFromKotlin'
+import { formatAmountWithCommas } from '@/lib/format-amount'
+import { routes } from '@/lib/routes'
+import { useAppSelector } from '@/store/redux/hooks'
 
 function haptic(ms = 15) {
   if (typeof navigator !== 'undefined' && 'vibrate' in navigator) navigator.vibrate(ms)

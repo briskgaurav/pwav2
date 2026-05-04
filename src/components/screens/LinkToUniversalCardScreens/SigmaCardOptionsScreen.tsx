@@ -1,15 +1,19 @@
 'use client'
 
-import { SheetContainer } from '@/components/ui'
-import { PlusIcon } from 'lucide-react'
+import React, { useState, useRef, useMemo } from 'react'
+
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useState, useRef, useMemo } from 'react'
+
+import { PlusIcon } from 'lucide-react'
+
+
+
 import AddSigmaCardModal from '@/components/ui/AddSigmaCardModal'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 import { routes } from '@/lib/routes'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { setPendingLinkUniversalCardId } from '@/store/redux/slices/cardWalletSlice'
-import LayoutSheet from '@/components/ui/LayoutSheet'
 
 function maskCardNumber(cardNumber: string): string {
     const digits = cardNumber.replace(/\s/g, '')
@@ -115,8 +119,7 @@ export default function SigmaCardOptionsScreen() {
                                         disabled
                                         className="w-full p-4 border rounded-2xl flex items-center gap-3 transition-all border-text-primary/10 opacity-50"
                                     >
-                                        <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center border-text-primary/20">
-                                        </div>
+                                        <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center border-text-primary/20" />
                                         <div className="flex flex-col items-start">
                                             <span className="text-sm text-text-primary">
                                                 {maskCardNumber(card.cardNumber)} ( Universal Card )

@@ -1,15 +1,16 @@
 'use client'
 
 import React, { useState } from 'react'
-import { SheetContainer } from '@/components/ui'
-import { AddMoneyForm } from '@/components/ui/AddMoneyForm'
+
 import { useRouter } from 'next/navigation'
-import { routes } from '@/lib/routes'
+
+import { AddMoneyForm } from '@/components/ui/AddMoneyForm'
+import FAQModal from '@/components/ui/FAQModal'
+import { GiftAddMoneyBottomSheet } from '@/components/ui/GiftAddMoneyBottomSheet'
 import { GiftCardHeader } from '@/components/ui/GiftCardHeader'
 import { GiftRecipientDetails } from '@/components/ui/GiftRecipientDetails'
-import { GiftTermsSection } from '@/components/ui/GiftTermsSection'
-import { GiftAddMoneyBottomSheet } from '@/components/ui/GiftAddMoneyBottomSheet'
-import FAQModal from '@/components/ui/FAQModal'
+import { routes } from '@/lib/routes'
+
 import LayoutSheet from '../../ui/LayoutSheet'
 
 const TERMS_AND_CONDITIONS = {

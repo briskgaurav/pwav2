@@ -1,12 +1,15 @@
 'use client'
-import { Button, CardMockup, SheetContainer } from '@/components/ui'
-import { notifyCardAdded, notifyNavigation } from '@/lib/bridge';
-import Image from 'next/image'
 import React, { useEffect, useRef } from 'react'
+
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+
+import { Button, CardMockup, SheetContainer } from '@/components/ui'
+import { CARD_IMAGE_PATHS } from '@/constants/cardData'
+import { notifyCardAdded, notifyNavigation } from '@/lib/bridge';
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { linkVirtualCard, setPendingLinkUniversalCardId } from '@/store/redux/slices/cardWalletSlice'
-import { CARD_IMAGE_PATHS } from '@/constants/cardData'
-import { useRouter } from 'next/navigation'
+
 
 export default function UniversalLinkedSuccess() {
   const dispatch = useAppDispatch()

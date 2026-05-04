@@ -1,10 +1,12 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+
+import { type LucideIcon } from 'lucide-react'
+
 import { RadioOption } from '@/components/ui'
-import { LucideIcon } from 'lucide-react'
-import { ChatIcon, PhoneIcon } from '@/constants/icons'
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import { ChatIcon, PhoneIcon } from '@/constants/icons'
 import type { UserInfo } from '@/lib/api/idVerification'
 
 type VerificationMethod = 'email' | 'phone' | 'bvn'

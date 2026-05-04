@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+
 import { useRouter } from 'next/navigation'
+
 import { SheetContainer, Button } from '@/components/ui'
 import { routes } from '@/lib/routes'
 import { useAppSelector } from '@/store/redux/hooks'
@@ -95,7 +97,7 @@ export default function ConfirmVerificationDestinationScreen() {
     // Ensure + is only at the start
     if (sanitized.includes('+')) {
       const withoutPlus = sanitized.replace(/\+/g, '')
-      sanitized = '+' + withoutPlus
+      sanitized = `+${  withoutPlus}`
     }
     
     // Get the digits only

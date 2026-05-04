@@ -1,10 +1,11 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+
+import { verifyIdVerificationOtp, type IdVerificationMethod, type UserInfo  } from '@/lib/api/idVerification'
+
+
 import VerificationCodeScreen from '../../AuthScreens/VerificationCodeScreen'
-import { verifyIdVerificationOtp, type IdVerificationMethod } from '@/lib/api/idVerification'
-import { useEffect, useMemo, useState } from 'react'
-import type { UserInfo } from '@/lib/api/idVerification'
 
 export default function OTPVerificationScreen({
   userInfo,

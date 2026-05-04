@@ -1,16 +1,18 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+
 import { useRouter, useSearchParams } from 'next/navigation'
-import LayoutSheet from '@/components/ui/LayoutSheet'
-import IdentityVerificationProgress from '@/components/ui/IdentityVerificationProgress'
-import VerificationPageShell from '@/components/ui/VerificationPageShell'
+
+import { getFromSession } from '@/components/Extras/utils/imageProcessing'
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import IdentityVerificationProgress from '@/components/ui/IdentityVerificationProgress'
+import LayoutSheet from '@/components/ui/LayoutSheet'
+import VerificationPageShell from '@/components/ui/VerificationPageShell'
 import { useUserData } from '@/hooks/apiHooks/useUserData'
 import { setUserBvnNinOverride } from '@/lib/api/userdata'
-import { maskNumber, isDobMissing } from '@/lib/verification'
-import { getFromSession } from '@/components/Extras/utils/imageProcessing'
 import { routes } from '@/lib/routes'
+import { maskNumber, isDobMissing } from '@/lib/verification'
 import { useAppDispatch } from '@/store/redux/hooks'
 import { syncUserFromVerifiedStorage } from '@/store/redux/slices/userSlice'
 

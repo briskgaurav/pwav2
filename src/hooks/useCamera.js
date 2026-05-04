@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+
 import { CAMERA_CONSTRAINTS } from '../constants/cameraConstant';
 
 // Detect if running in a WebView environment
@@ -60,7 +61,7 @@ const detectEnvironment = () => {
     browser,
     hasGetUserMedia,
     supportsGetUserMedia,
-    userAgent: ua.substring(0, 100) + '...'
+    userAgent: `${ua.substring(0, 100)  }...`
   });
 
   return {

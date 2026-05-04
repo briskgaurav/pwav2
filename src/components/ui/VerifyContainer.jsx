@@ -1,15 +1,17 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import { useRouter } from 'next/navigation'
-import { useVerifyFlow } from './hooks/useVerifyFlow';
-import { useVerifyProgress } from './VerifyProgressContext';
-import { saveToSession } from './utils/imageProcessing';
+
 import { SCREENS } from './constants';
-import WelcomeScreen from './screens/WelcomeScreen';
+import { useVerifyFlow } from './hooks/useVerifyFlow';
 import CameraScreen from './screens/CameraScreen';
-import ReviewScreen from './screens/ReviewScreen';
 import ProcessingScreen from './screens/ProcessingScreen';
+import ReviewScreen from './screens/ReviewScreen';
+import WelcomeScreen from './screens/WelcomeScreen';
+import { saveToSession } from './utils/imageProcessing';
+import { useVerifyProgress } from './VerifyProgressContext';
 
 export default function VerifyContainer() {
   const router = useRouter();

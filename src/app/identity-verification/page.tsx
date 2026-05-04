@@ -1,6 +1,7 @@
-import { redirect } from 'next/navigation'
-import { routes } from '@/lib/routes'
 import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
+
+import { routes } from '@/lib/routes'
 
 /**
  * ID 1 - BVN Only User (Gaurav)

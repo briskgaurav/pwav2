@@ -9,7 +9,7 @@ type Body = {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
+   
   var __emailRegistrationOtpStore: Map<string, string> | undefined
 }
 

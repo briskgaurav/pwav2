@@ -1,10 +1,12 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
 import gsap from 'gsap'
 import Draggable from 'gsap/dist/Draggable'
-import { formatAmountWithCommas } from '@/lib/format-amount'
 import { ChevronDown } from 'lucide-react'
+
+import { formatAmountWithCommas } from '@/lib/format-amount'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(Draggable)

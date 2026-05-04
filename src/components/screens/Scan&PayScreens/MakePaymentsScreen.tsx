@@ -1,15 +1,18 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+
 import { useRouter } from 'next/navigation'
-import { ProfileSection } from '@/components/ui/QRPayments/ProfileSection'
-import { AmountDisplay } from '@/components/ui/QRPayments/AmountDisplay'
-import { MessageInput } from '@/components/ui/QRPayments/MessageInput'
-import { OTPKeypad } from '@/components/ui/Keypad'
-import { ProceedButton } from '@/components/ui/QRPayments/ProceedButton'
-import { BankActionsDrawer, type BankItem } from '@/components/ui/QRPayments/BankActionsDrawer'
+
 import CardPinAuth from '@/components/screens/AuthScreens/CardPinAuth'
+import { OTPKeypad } from '@/components/ui/Keypad'
+import { AmountDisplay } from '@/components/ui/QRPayments/AmountDisplay'
+import { BankActionsDrawer, type BankItem } from '@/components/ui/QRPayments/BankActionsDrawer'
+import { MessageInput } from '@/components/ui/QRPayments/MessageInput'
+import { ProceedButton } from '@/components/ui/QRPayments/ProceedButton'
+import { ProfileSection } from '@/components/ui/QRPayments/ProfileSection'
 import { useAppSelector } from '@/store/redux/hooks'
+
 import { useSlideUpKeypad } from '../../../hooks/useSlideUpKeypad'
 
 const BANKS: BankItem[] = [

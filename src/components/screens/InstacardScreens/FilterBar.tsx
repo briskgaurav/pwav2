@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { BarChart2, Check, Plus, X } from 'lucide-react';
-import Link from 'next/link';
-import { useAppDispatch } from '@/store/redux/hooks';
-import { setPendingCardForm } from '@/store/redux/slices/cardWalletSlice';
-import { routes } from '@/lib/routes';
+
+import { BarChart2, Check, X } from 'lucide-react';
+
 
 export type CardFilterType = 'all' | 'debit' | 'credit' | 'prepaid' | 'gift';
 

@@ -1,8 +1,10 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
+
+import ar from '@/locales/ar.json'
 import en from '@/locales/en.json'
 import fr from '@/locales/fr.json'
-import ar from '@/locales/ar.json'
+
 import { getInitialLanguage } from './bridge'
 
 const initialLang = typeof window !== 'undefined' ? getInitialLanguage() : 'en'

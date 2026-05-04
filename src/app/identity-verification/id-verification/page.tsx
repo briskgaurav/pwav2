@@ -1,20 +1,23 @@
 'use client'
 
 import { useEffect } from 'react'
+
 import { useRouter, useSearchParams } from 'next/navigation'
+
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/store/redux/store'
-import { nextStep, resetFlow } from '@/store/redux/slices/idVerificationSlice'
-import LayoutSheet from '@/components/ui/LayoutSheet'
-import IdentityVerificationProgress from '@/components/ui/IdentityVerificationProgress'
-import VerificationPageShell from '@/components/ui/VerificationPageShell'
-import VerificationMethodScreen from '@/components/screens/IdentityVerificationScreens/IDVerification/VerificationMethodScreen'
-import VerificationConfirmScreen from '@/components/screens/IdentityVerificationScreens/IDVerification/VerificationConfirmScreen'
-import OTPVerificationScreen from '@/components/screens/IdentityVerificationScreens/IDVerification/OTPVerificationScreen'
+
 import ConfirmBankDetailsScreen from '@/components/screens/IdentityVerificationScreens/IDVerification/ConfirmBankDetailsScreen'
+import OTPVerificationScreen from '@/components/screens/IdentityVerificationScreens/IDVerification/OTPVerificationScreen'
+import VerificationConfirmScreen from '@/components/screens/IdentityVerificationScreens/IDVerification/VerificationConfirmScreen'
+import VerificationMethodScreen from '@/components/screens/IdentityVerificationScreens/IDVerification/VerificationMethodScreen'
+import IdentityVerificationProgress from '@/components/ui/IdentityVerificationProgress'
+import LayoutSheet from '@/components/ui/LayoutSheet'
+import VerificationPageShell from '@/components/ui/VerificationPageShell'
 import { useUserData } from '@/hooks/apiHooks/useUserData'
 import { routes } from '@/lib/routes'
 import type { UserInfo, UserDetails } from '@/lib/verification'
+import { nextStep, resetFlow } from '@/store/redux/slices/idVerificationSlice'
+import { type RootState } from '@/store/redux/store'
 
 const DEFAULT_USER_ID = '1'
 

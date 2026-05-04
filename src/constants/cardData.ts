@@ -3,12 +3,14 @@
      */
 
     // Card image mapping - using static imports from public/img/cards/
-    import debitCard from "../../public/img/cards/debit.png";
+    import { type StaticImageData } from "next/image";
+
     import creditCard from "../../public/img/cards/credit.png";
-    import prepaidCard from "../../public/img/cards/prepaid.png";
+    import debitCard from "../../public/img/cards/debit.png";
     import giftCard from "../../public/img/cards/gift.png";
+    import prepaidCard from "../../public/img/cards/prepaid.png";
     import universalCard from "../../public/img/cards/universal.png";
-    import { StaticImageData } from "next/image";
+
 
     // Card image mapping
     export const CardImages: Record<number, StaticImageData> = {

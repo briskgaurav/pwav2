@@ -1,14 +1,16 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Button, RadioOption, SheetContainer } from '@/components/ui'
-import { ChatIcon, ICONS, MessageIcon } from '@/constants/icons'
-import { RadioOption2 } from '@/components/ui/RadioButton2'
-import { routes } from '@/lib/routes'
+
 import { useRouter } from 'next/navigation'
-import { LucideIcon } from 'lucide-react'
-import LayoutSheet from '@/components/ui/LayoutSheet'
+
+import { type LucideIcon } from 'lucide-react'
+
+import { RadioOption } from '@/components/ui'
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import LayoutSheet from '@/components/ui/LayoutSheet'
+import { ChatIcon, MessageIcon } from '@/constants/icons'
+import { routes } from '@/lib/routes'
 import { useAppSelector } from '@/store/redux/hooks'
 
 export default function ChooseOptionsPage() {

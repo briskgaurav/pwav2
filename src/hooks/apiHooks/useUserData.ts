@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import { fetchUserData } from '@/lib/api/userdata'
 import type { UserData } from '@/types/userdata'
 

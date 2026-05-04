@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+
 import { useAppDispatch } from '@/store/redux/hooks'
 import { syncUserFromVerifiedStorage } from '@/store/redux/slices/userSlice'
 

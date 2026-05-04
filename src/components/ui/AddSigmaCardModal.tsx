@@ -1,15 +1,18 @@
 'use client'
 
-import { haptic } from '@/lib/useHaptics'
-import { X } from 'lucide-react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+
 import gsap from 'gsap'
 import Draggable from 'gsap/dist/Draggable'
-import Image from 'next/image'
+import { X } from 'lucide-react'
+
 import { ICONS } from '@/constants/icons'
-import { useRouter } from 'next/navigation'
-import { routes } from '@/lib/routes'
 import { useAuth } from '@/lib/auth-context'
+import { routes } from '@/lib/routes'
+import { haptic } from '@/lib/useHaptics'
 
 // Register GSAP plugin
 if (typeof window !== 'undefined') {

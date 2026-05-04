@@ -1,5 +1,9 @@
 'use client'
 
+import { useCallback, useMemo, useState } from 'react'
+
+import { useRouter } from 'next/navigation'
+
 import {
   ChevronDown,
   CreditCard,
@@ -14,9 +18,8 @@ import {
   ShieldCheck,
   Smartphone,
 } from 'lucide-react'
-import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useRouter } from 'next/navigation'
+
 
 type FeatureId =
   | 'digitalAccountWallet'

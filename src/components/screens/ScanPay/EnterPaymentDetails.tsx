@@ -1,14 +1,16 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import LayoutSheet from '@/components/ui/LayoutSheet'
+
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { routes } from '@/lib/routes'
-import { OTPKeypad } from '@/components/ui'
-import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
+
 import NiaraSymbol from '@/components/Extras/NiaraSymbol'
+import { OTPKeypad } from '@/components/ui'
+import LayoutSheet from '@/components/ui/LayoutSheet'
+import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
 import { formatAmountWithCommas } from '@/lib/format-amount'
+import { routes } from '@/lib/routes'
 
 const MAX_AMOUNT = 10000000000;
 const MIN_AMOUNT = 0;

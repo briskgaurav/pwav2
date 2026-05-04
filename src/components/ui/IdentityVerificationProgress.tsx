@@ -2,6 +2,7 @@
 'use client'
 
 import React from 'react'
+
 import { usePathname } from 'next/navigation'
 
 export default function IdentityVerificationProgress() {
@@ -38,7 +39,7 @@ export default function IdentityVerificationProgress() {
         <span className={getStepClass(2)}>Email Registration</span>
       </p>
       <div className='w-full h-2 relative overflow-hidden rounded-full bg-[#E6E6E6]'>
-       <span className={`bg-primary absolute top-0 left-0 h-full ${progressWidth} rounded-full transition-all duration-300`}></span>
+       <span className={`bg-primary absolute top-0 left-0 h-full ${progressWidth} rounded-full transition-all duration-300`} />
       </div>
     </div>
   )

@@ -1,13 +1,17 @@
 'use client'
 
 import { useState, Suspense } from 'react'
-import CardToggle, { PayMode } from '@/components/ui/CardToggle'
-import PayUsingInstacard from './PayUsingInstacard'
-import PayUsingBalance from './PayUsingBalance'
-import PayUsingOtherCards from './PayUsingOtherCards'
+
 import { useRouter } from 'next/navigation'
-import { routes } from '@/lib/routes'
+
+import CardToggle, { type PayMode } from '@/components/ui/CardToggle'
 import { CARD_IMAGE_PATHS } from '@/constants/cardData'
+import { routes } from '@/lib/routes'
+
+import PayUsingBalance from './PayUsingBalance'
+import PayUsingInstacard from './PayUsingInstacard'
+import PayUsingOtherCards from './PayUsingOtherCards'
+
 
 type ChooseCardsProps = {
   amount: number

@@ -1,22 +1,25 @@
 'use client'
 
 import { useEffect } from 'react'
+
 import { useRouter, useSearchParams } from 'next/navigation'
+
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/store/redux/store'
-import { nextStep, setStep, resetFlow, setHasBvnNin, setNameMatched } from '@/store/redux/slices/livenessSlice'
-import LayoutSheet from '@/components/ui/LayoutSheet'
-import IdentityVerificationProgress from '@/components/ui/IdentityVerificationProgress'
-import VerificationPageShell from '@/components/ui/VerificationPageShell'
-import Introduction from '@/components/screens/IdentityVerificationScreens/FaceVerification/IntroductionScreen'
-import FaceScan from '@/components/screens/IdentityVerificationScreens/FaceVerification/FaceScan'
-import ReviewScreen from '@/components/screens/IdentityVerificationScreens/FaceVerification/ReviewScreen'
+
+import { clearFromSession } from '@/components/Extras/utils/imageProcessing'
 import BvnNinEntryScreen from '@/components/screens/IdentityVerificationScreens/FaceVerification/BvnNinEntryScreen'
+import FaceScan from '@/components/screens/IdentityVerificationScreens/FaceVerification/FaceScan'
+import Introduction from '@/components/screens/IdentityVerificationScreens/FaceVerification/IntroductionScreen'
+import ReviewScreen from '@/components/screens/IdentityVerificationScreens/FaceVerification/ReviewScreen'
+import IdentityVerificationProgress from '@/components/ui/IdentityVerificationProgress'
+import LayoutSheet from '@/components/ui/LayoutSheet'
+import VerificationPageShell from '@/components/ui/VerificationPageShell'
 import { useUserData } from '@/hooks/apiHooks/useUserData'
 import { setUserBvnNinOverride } from '@/lib/api/userdata'
-import { clearFromSession } from '@/components/Extras/utils/imageProcessing'
-import { isDobMissing } from '@/lib/verification'
 import { routes } from '@/lib/routes'
+import { isDobMissing } from '@/lib/verification'
+import { nextStep, setStep, resetFlow, setHasBvnNin, setNameMatched } from '@/store/redux/slices/livenessSlice'
+import { type RootState } from '@/store/redux/store'
 
 const DEFAULT_USER_ID = '1'
 

@@ -1,7 +1,8 @@
 'use client'
 
-import { Check, ChevronDown, Globe } from 'lucide-react'
 import { useCallback, useState } from 'react'
+
+import { Check, ChevronDown, Globe } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 type Language = { code: string; name: string; native: string }

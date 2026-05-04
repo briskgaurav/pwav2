@@ -1,10 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+
 import Image from 'next/image';
-import type { CardData } from '../../../constants/cardData';
-import { CARD_IMAGE_PATHS } from '../../../constants/cardData';
+
 import { maskCardNumber } from '@/hooks/useManagingCard';
+
+import { CARD_IMAGE_PATHS, type CardData  } from '../../../constants/cardData';
+
 
 interface CardItemProps {
   card: CardData;

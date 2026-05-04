@@ -1,9 +1,10 @@
 'use client'
 
-import CardPinAuth from '@/components/screens/AuthScreens/CardPinAuth'
 import { useRouter } from 'next/navigation'
-import { routes } from '@/lib/routes'
+
+import CardPinAuth from '@/components/screens/AuthScreens/CardPinAuth'
 import { useManagingCard } from '@/hooks/useManagingCard'
+import { routes } from '@/lib/routes'
 
 export default function PinChangePage() {
     const router = useRouter()

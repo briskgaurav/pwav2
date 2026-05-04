@@ -1,21 +1,25 @@
 'use client'
 
-import { Button, SheetContainer } from '@/components/ui'
-import CardMockup from '@/components/ui/CardMockup'
-import { useManagingCard } from '@/hooks/useManagingCard'
-import BottomSheetModal from '@/components/ui/BottomSheetModal'
-import AddMoneyToggle from '@/components/ui/AddMoneyToggle'
-import { AddMoneyForm } from '@/components/ui/AddMoneyForm'
-import { AddMoneyCardsSection, CardType } from '@/components/ui/AddMoneyCardsSection'
-import { AddNewCardForm } from '@/components/ui/AddNewCardForm'
 import { useCallback, useState } from 'react'
-import { PlusIcon } from 'lucide-react'
-import Balance from '@/components/ui/Balance'
+
 import { useRouter } from 'next/navigation'
-import { routes } from '@/lib/routes'
+
+import { PlusIcon } from 'lucide-react'
+
+import { Button } from '@/components/ui'
+import { AddMoneyCardsSection, type CardType } from '@/components/ui/AddMoneyCardsSection'
+import { AddMoneyForm } from '@/components/ui/AddMoneyForm'
+import AddMoneyToggle from '@/components/ui/AddMoneyToggle'
+import { AddNewCardForm } from '@/components/ui/AddNewCardForm'
+import Balance from '@/components/ui/Balance'
+import BottomSheetModal from '@/components/ui/BottomSheetModal'
+import CardMockup from '@/components/ui/CardMockup'
 import { Dropdown } from '@/components/ui/Dropdown'
-import LayoutSheet from '../../../ui/LayoutSheet'
+import { useManagingCard } from '@/hooks/useManagingCard'
+import { routes } from '@/lib/routes'
 import { useAppSelector } from '@/store/redux/hooks'
+
+import LayoutSheet from '../../../ui/LayoutSheet'
 
 type ModalView = 'cards' | 'addCard'
 

@@ -9,7 +9,7 @@ type Body = {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
+   
   var __userdataOverrides: Map<
     number,
     { bvn?: string | null; nin?: string | null; date_of_birth?: string | null; kyc_completed?: boolean }

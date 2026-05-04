@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
-import ButtonComponent from '../../../ui/ButtonComponent'
+
 import { PhoneIcon } from '@/constants/icons'
+
+import ButtonComponent from '../../../ui/ButtonComponent'
 
 type BvnNinEntryProps = {
   needsDob?: boolean

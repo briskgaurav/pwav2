@@ -1,10 +1,13 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
+
 import { useRouter } from 'next/navigation'
+
+import { CheckCircle2, Mail, Shield, Check } from 'lucide-react'
+
 import { SheetContainer, Button, OTPInput, OTPKeypad } from '@/components/ui'
 import { routes } from '@/lib/routes'
-import { CheckCircle2, Mail, Shield, Check } from 'lucide-react'
 
 const MAX_OTP_LENGTH = 6
 

@@ -1,11 +1,11 @@
 'use client'
-import { SheetContainer } from '@/components/ui'
 import Balance from '@/components/ui/Balance'
 import CardMockup from '@/components/ui/CardMockup'
 import CreditDueBalance from '@/components/ui/CreditDueBalance'
 import EmailStatements from '@/components/ui/EmailStatements'
 import RecentTransactions from '@/components/ui/RecentTransactions'
 import { useManagingCard } from '@/hooks/useManagingCard'
+
 import LayoutSheet from '../../../ui/LayoutSheet'
 import FloatingBottomBarLayoutClient from '../../InstacardScreens/FloatingBottomBarLayoutClient'
 

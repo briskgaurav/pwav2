@@ -1,19 +1,21 @@
 'use client'
 
-import FAQModal from '@/components/ui/FAQModal'
-import RemoveCardModal from '@/components/ui/RemoveCardModal'
-import ManageBtn from '../../ui/ManageBtn'
-import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
-import { closeFaq } from '@/store/redux/slices/manageCardSlice'
-import { routes } from '@/lib/routes'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+
 import CardMockup from '@/components/ui/CardMockup'
-import CardActionTiles from '../../ui/CardActionTiles'
-import { useManageCardActions } from '../../../hooks/useManageCardActions'
-import { useManagingCard } from '@/hooks/useManagingCard'
-import { RepaymentIcon, StatementsIcon } from '@/constants/icons'
+import FAQModal from '@/components/ui/FAQModal'
 import LayoutSheet from '@/components/ui/LayoutSheet'
+import RemoveCardModal from '@/components/ui/RemoveCardModal'
+import { RepaymentIcon, StatementsIcon } from '@/constants/icons'
+import { useManagingCard } from '@/hooks/useManagingCard'
+import { routes } from '@/lib/routes'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { closeFaq } from '@/store/redux/slices/manageCardSlice'
+
+import { useManageCardActions } from '../../../hooks/useManageCardActions'
+import CardActionTiles from '../../ui/CardActionTiles'
+import ManageBtn from '../../ui/ManageBtn'
 
 const creditCardDetails = [
   { label: 'Approved Credit Limit', value: '₦ 1,000,000' },

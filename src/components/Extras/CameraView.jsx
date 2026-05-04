@@ -2,7 +2,7 @@
 
 import { forwardRef } from 'react';
 
-const CameraView = forwardRef(function CameraView({ className = '' }, ref) {
+const CameraView = forwardRef(({ className = '' }, ref) => {
   return (
     <div className={`absolute inset-0 bg-black overflow-hidden ${className}`}>
       <video

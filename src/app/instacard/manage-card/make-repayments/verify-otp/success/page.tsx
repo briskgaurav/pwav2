@@ -1,7 +1,8 @@
 'use client'
+import { useRouter } from 'next/navigation'
+
 import SuccessScreen from '@/components/screens/AuthScreens/SuccessScreen'
 import { notifyUserCancelled } from '@/lib/bridge'
-import { useRouter } from 'next/navigation'
 
 export default function page() {
     const router = useRouter()

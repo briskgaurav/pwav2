@@ -1,12 +1,14 @@
 'use client';
 
-import { OTPKeypad, OTPInput } from '@/components/ui'
 import React, { useState, useRef } from 'react'
+
 import { useRouter } from 'next/navigation'
-import { routes } from '@/lib/routes'
-import LayoutSheet from '@/components/ui/LayoutSheet'
+
+import { OTPKeypad, OTPInput } from '@/components/ui'
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
+import { routes } from '@/lib/routes'
 
 export default function EnterOneTimeActivationCode() {
   const [otp, setOtp] = useState<string>('');

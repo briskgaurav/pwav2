@@ -1,14 +1,11 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
-import { SheetContainer, Button } from '@/components/ui';
-import OtpInput from '@/components/ui/OtpInput';
-import { notifyNavigation } from '@/lib/bridge';
+
+import { useRouter, useSearchParams  } from 'next/navigation'
+
+import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen';
 import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
-import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen';
 import { useAppSelector } from '@/store/redux/hooks';
 
 const MAX_CODE_LENGTH = 6;

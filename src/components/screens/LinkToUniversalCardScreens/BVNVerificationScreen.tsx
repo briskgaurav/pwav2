@@ -1,15 +1,19 @@
 'use client'
-import { SheetContainer, Button } from '@/components/ui'
-import { ICONS, MessageIcon, PhoneIcon } from '@/constants/icons'
-import { RadioOption2 } from '@/components/ui/RadioButton2'
+import React, { useState } from 'react'
+
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { routes } from '@/lib/routes'
-import React, { ComponentType, useState } from 'react'
-import { LucideIcon } from 'lucide-react'
-import { useAppSelector } from '@/store/redux/hooks'
-import LayoutSheet from '../../ui/LayoutSheet'
+
+import { type LucideIcon } from 'lucide-react'
+
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import { RadioOption2 } from '@/components/ui/RadioButton2'
+import { ICONS, MessageIcon, PhoneIcon } from '@/constants/icons'
+import { routes } from '@/lib/routes'
+import { useAppSelector } from '@/store/redux/hooks'
+
+import LayoutSheet from '../../ui/LayoutSheet'
+
 
 const VERIFICATION_OPTIONS_CONFIG = (maskedMobile: string, maskedEmail: string) => [
     { id: 'phone' as const, label: maskedMobile, Icon: PhoneIcon },

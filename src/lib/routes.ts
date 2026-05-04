@@ -1,4 +1,4 @@
-import { CardType } from "./types";
+import { type CardType } from "./types";
 
 export const routes = {
   // HOME

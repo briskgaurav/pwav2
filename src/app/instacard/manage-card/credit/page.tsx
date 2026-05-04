@@ -1,8 +1,8 @@
 'use client'
 
-import ManageCreditCardScreen from '@/components/screens/ManageCardsScreens/ManageCreditCardScreen'
-import ManageCardPageWrapper from '@/components/screens/ManageCardsScreens/ManageCardPageWrapper'
 import FloatingBottomBarLayoutClient from '@/components/screens/InstacardScreens/FloatingBottomBarLayoutClient'
+import ManageCardPageWrapper from '@/components/screens/ManageCardsScreens/ManageCardPageWrapper'
+import ManageCreditCardScreen from '@/components/screens/ManageCardsScreens/ManageCreditCardScreen'
 
 export default function ManageCreditPage() {
   return (

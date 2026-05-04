@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+
 import { DEFAULT_PIN } from '@/lib/types'
 
 type CardState = {

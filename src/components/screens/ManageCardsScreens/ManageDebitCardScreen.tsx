@@ -1,20 +1,21 @@
 'use client'
 
-import FAQModal from '@/components/ui/FAQModal'
-import RemoveCardModal from '@/components/ui/RemoveCardModal'
-import ManageBtn from '../../ui/ManageBtn'
-import { SheetContainer } from '@/components/ui'
 import React from 'react'
+
 import { useSearchParams } from 'next/navigation'
 
-import { getManageBtns } from '../../../constants/getmanageBtn'
+import CardMockup from '@/components/ui/CardMockup'
+import FAQModal from '@/components/ui/FAQModal'
+import RemoveCardModal from '@/components/ui/RemoveCardModal'
+import { useManagingCard } from '@/hooks/useManagingCard'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { closeFaq } from '@/store/redux/slices/manageCardSlice'
-import CardMockup from '@/components/ui/CardMockup'
-import CardActionTiles from '../../ui/CardActionTiles'
+
+import { getManageBtns } from '../../../constants/getmanageBtn'
 import { useManageCardActions } from '../../../hooks/useManageCardActions'
-import { useManagingCard } from '@/hooks/useManagingCard'
+import CardActionTiles from '../../ui/CardActionTiles'
 import LayoutSheet from '../../ui/LayoutSheet'
+import ManageBtn from '../../ui/ManageBtn'
 
 export default function ManageDebitCardScreen() {
   const searchParams = useSearchParams()

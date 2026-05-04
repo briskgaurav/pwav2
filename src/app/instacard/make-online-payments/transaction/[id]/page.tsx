@@ -1,7 +1,8 @@
 'use client'
 
-import TransactionReceiptScreen from '@/components/screens/MakeOnlinePaymentsScreens/TransactionReceiptScreen'
 import { useParams } from 'next/navigation'
+
+import TransactionReceiptScreen from '@/components/screens/MakeOnlinePaymentsScreens/TransactionReceiptScreen'
 
 export default function TransactionReceiptPage() {
   const params = useParams<{ id: string }>()

@@ -1,20 +1,19 @@
 'use client'
 
+import { useEffect, useState, useRef } from 'react'
+
+import { useRouter } from 'next/navigation'
+
+import gsap from 'gsap'
 import {
-  ArrowLeft,
   ChevronRight,
-  HelpCircle,
-  LogOut,
   Moon,
   Sun,
   User,
 } from 'lucide-react'
-import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { LanguageDropdown } from './LanguageDropdown'
-import { useRouter } from 'next/navigation'
-import gsap from 'gsap'
-import { useAppSelector } from '@/store/redux/hooks'
 
 interface ProfileContentProps {
   userName?: string

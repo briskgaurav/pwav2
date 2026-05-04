@@ -1,7 +1,7 @@
 'use client'
 
-import ManagePrepaidCardScreen from '@/components/screens/ManageCardsScreens/ManagePrepaidCardScreen'
 import ManageCardPageWrapper from '@/components/screens/ManageCardsScreens/ManageCardPageWrapper'
+import ManagePrepaidCardScreen from '@/components/screens/ManageCardsScreens/ManagePrepaidCardScreen'
 
 export default function ManagePrepaidPage() {
   return (

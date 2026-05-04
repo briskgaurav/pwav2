@@ -1,11 +1,12 @@
 'use client'
 
+import React from 'react'
+
 import { Button } from '@/components/ui'
 import InputField from '@/components/ui/InputField'
-import { AddCardIcon, ICONS } from '@/constants/icons'
+import { AddCardIcon } from '@/constants/icons'
 import { useAuth } from '@/lib/auth-context'
-import Image from 'next/image'
-import React from 'react'
+
 
 const RECOMMENDED_AMOUNTS = ['1,000', '2,000', '5,000', '10,000', '20,000', '50,000']
 

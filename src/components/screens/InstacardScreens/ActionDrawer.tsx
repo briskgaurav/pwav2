@@ -1,20 +1,23 @@
 'use client'
 
-import { Phone, X } from 'lucide-react'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import gsap from 'gsap'
-import Draggable from 'gsap/dist/Draggable'
+
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import type { CardData } from '../../../constants/cardData'
-import { CARD_IMAGE_PATHS } from '../../../constants/cardData'
-import type { CardType } from '@/lib/types'
-import { routes } from '@/lib/routes'
 
+import gsap from 'gsap'
+import Draggable from 'gsap/dist/Draggable'
+
+
+
+import FAQModal from '@/components/ui/FAQModal'
 import { AddCardIcon, LinkToUniversalIcon, ManageCard, PhoneIcon } from '@/constants/icons'
+import { routes } from '@/lib/routes'
+import type { CardType } from '@/lib/types'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { setManagingCardId } from '@/store/redux/slices/cardWalletSlice'
-import FAQModal from '@/components/ui/FAQModal'
+
+import { type CardData, CARD_IMAGE_PATHS  } from '../../../constants/cardData'
 
 // Register GSAP plugin
 if (typeof window !== 'undefined') {

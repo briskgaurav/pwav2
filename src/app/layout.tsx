@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from 'next';
+
 import localFont from 'next/font/local';
+
 import './globals.css';
-import { AuthProvider } from '@/lib/auth-context';
-import GlobalProfileDrawer from '@/components/GlobalProfileDrawer';
 import GlobalAccessDrawer from '@/components/GlobalAccessDrawer';
+import GlobalProfileDrawer from '@/components/GlobalProfileDrawer';
+import { AuthProvider } from '@/lib/auth-context';
 import ReduxProvider from '@/store/redux/ReduxProvider';
 
 const trueno = localFont({
@@ -85,7 +87,7 @@ export default function RootLayout({
       <head>
         <link rel="apple-touch-icon" href="/img/instacard.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
 

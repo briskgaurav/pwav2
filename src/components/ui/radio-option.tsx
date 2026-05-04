@@ -1,8 +1,10 @@
 'use client';
 
 import Image from "next/image";
+
+import { type LucideIcon } from "lucide-react";
+
 import { haptic } from "@/lib/useHaptics";
-import { LucideIcon } from "lucide-react";
 
 interface RadioOptionProps {
   label: string;

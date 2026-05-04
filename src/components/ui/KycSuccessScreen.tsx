@@ -1,9 +1,11 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+
+import { Check, Shield, CreditCard, CheckCircle2 } from 'lucide-react'
+
 import { SheetContainer, Button } from '@/components/ui'
 import { routes } from '@/lib/routes'
-import { Check, Shield, CreditCard, CheckCircle2 } from 'lucide-react'
 
 export default function KycSuccessScreen() {
   const router = useRouter()

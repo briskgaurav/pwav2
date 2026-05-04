@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+
 import { getUserDetailsFromLocal } from '@/hooks/getUserDetailsFromLocal'
 
 export interface UserProfile {

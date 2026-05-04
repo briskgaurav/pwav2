@@ -1,7 +1,9 @@
 'use client'
 import { useState } from 'react'
-import EyeButton from './EyeButton'
+
 import { useAppSelector } from '@/store/redux/hooks'
+
+import EyeButton from './EyeButton'
 
 export default function Balance() {
     const accountNumber = useAppSelector((s) => s.user.accountNumber)

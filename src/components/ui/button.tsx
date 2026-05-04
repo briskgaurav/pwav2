@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+
 import { haptic } from '@/lib/useHaptics'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'error'

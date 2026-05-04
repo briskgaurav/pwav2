@@ -1,16 +1,19 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { OTPInput, OTPKeypad, CardMockup } from '@/components/ui'
-import { useAppSelector } from '@/store/redux/hooks'
-import { PIN_LENGTH } from '@/lib/types'
+
 import { useRouter } from 'next/navigation'
+
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '@/lib/auth-context'
-import { useManagingCard } from '@/hooks/useManagingCard'
+
+import { OTPInput, OTPKeypad, CardMockup } from '@/components/ui'
 import LayoutSheet from '@/components/ui/LayoutSheet'
+import { useManagingCard } from '@/hooks/useManagingCard'
 import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
+import { useAuth } from '@/lib/auth-context'
 import { routes } from '@/lib/routes'
+import { PIN_LENGTH } from '@/lib/types'
+import { useAppSelector } from '@/store/redux/hooks'
 
 type CardPinAuthProps = {
   title?: string

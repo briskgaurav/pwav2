@@ -1,18 +1,19 @@
 'use client'
 
-import { LimitationsIcon, MerchantIcon, PhoneIcon } from '@/constants/icons'
 import React from 'react'
 
-import LimitToggle from '../../ui/LimitToggle'
+import { useRouter } from 'next/navigation'
+
+import ButtonComponent from '@/components/ui/ButtonComponent'
+import LayoutSheet from '@/components/ui/LayoutSheet'
+import { LimitationsIcon, MerchantIcon, PhoneIcon } from '@/constants/icons'
+import { routes } from '@/lib/routes'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
-import { setActiveTab } from '@/store/redux/slices/limitSettingSlice'
-import type { LimitTab } from '@/store/redux/slices/limitSettingSlice'
+import { setActiveTab, type LimitTab  } from '@/store/redux/slices/limitSettingSlice'
+
 import LimitFAQ from '../../ui/LimitFAQ'
 import LimitSetComponent from '../../ui/LimitSetComponent'
-import { useRouter } from 'next/navigation'
-import { routes } from '@/lib/routes'
-import LayoutSheet from '@/components/ui/LayoutSheet'
-import ButtonComponent from '@/components/ui/ButtonComponent'
+import LimitToggle from '../../ui/LimitToggle'
 
 
 const domesticLimitItems = [

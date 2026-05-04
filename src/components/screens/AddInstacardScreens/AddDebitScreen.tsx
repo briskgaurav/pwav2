@@ -1,11 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
 import { useRouter } from 'next/navigation'
-import { SheetContainer, RadioOption, Checkbox, Button } from '@/components/ui';
+
+import { RadioOption, Checkbox, Button } from '@/components/ui';
 import { ICONS } from '@/constants/icons';
 import { notifyNavigation } from '@/lib/bridge';
 import { routes } from '@/lib/routes';
+
 import LayoutSheet from '../../ui/LayoutSheet';
 
 const ACCOUNT_OPTIONS = [

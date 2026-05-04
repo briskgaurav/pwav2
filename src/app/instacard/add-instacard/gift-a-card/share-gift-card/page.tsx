@@ -1,16 +1,12 @@
 'use client'
-import { Button, SheetContainer } from '@/components/ui'
-import { ICONS } from '@/constants/icons'
 import Image from 'next/image'
+import { useRouter, useSearchParams  } from 'next/navigation'
 
-import { Copy } from 'lucide-react'
-import CardMockup from '@/components/ui/CardMockup'
-import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
-import { routes } from '@/lib/routes'
-import { shareText } from '@/lib/fetchDataFromKotlin'
-import LayoutSheet from '@/components/ui/LayoutSheet'
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import LayoutSheet from '@/components/ui/LayoutSheet'
+import { ICONS } from '@/constants/icons'
+import { shareText } from '@/lib/fetchDataFromKotlin'
+import { routes } from '@/lib/routes'
 
 export default function page() {
     const router = useRouter()

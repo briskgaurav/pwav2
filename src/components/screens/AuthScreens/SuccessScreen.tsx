@@ -1,17 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { SheetContainer, Button, CardMockup } from '@/components/ui';
-import { notifyNavigation } from '@/lib/bridge';
+
 import Image from 'next/image';
-import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams  } from 'next/navigation'
+
+import { CardMockup } from '@/components/ui';
+import { useManagingCard } from '@/hooks/useManagingCard';
+import { notifyNavigation } from '@/lib/bridge';
 import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
-import { useAppSelector } from '@/store/redux/hooks';
-import { useManagingCard } from '@/hooks/useManagingCard';
-import LayoutSheet from '../../ui/LayoutSheet';
+
 import ButtonComponent from '../../ui/ButtonComponent';
+import LayoutSheet from '../../ui/LayoutSheet';
 
 export type SuccessScreenProps = {
   /** Custom title (e.g. "Success!") */

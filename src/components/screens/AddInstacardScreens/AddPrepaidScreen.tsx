@@ -1,12 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
 import { useRouter } from 'next/navigation'
-import { SheetContainer, Checkbox, Button } from '@/components/ui';
+
+import { Checkbox } from '@/components/ui';
 import { notifyNavigation } from '@/lib/bridge';
 import { routes } from '@/lib/routes';
-import LayoutSheet from '../../ui/LayoutSheet';
+
 import ButtonComponent from '../../ui/ButtonComponent';
+import LayoutSheet from '../../ui/LayoutSheet';
 
 const TERMS = [
   'Issuance Fee - N 1000',

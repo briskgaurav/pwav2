@@ -1,7 +1,9 @@
 import React from 'react'
+
 import Image from 'next/image'
-import { haptic } from '@/lib/useHaptics'
+
 import { ICONS } from '@/constants/icons'
+import { haptic } from '@/lib/useHaptics'
 
 type FaqIconButtonProps = {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void

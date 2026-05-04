@@ -1,7 +1,9 @@
 'use client'
 
-import Image from 'next/image'
 import React from 'react'
+
+import Image from 'next/image'
+
 import { ICONS } from '@/constants/icons'
 
 export type CardType = 'sigma' | 'universal-1' | 'universal-2' | 'verve'

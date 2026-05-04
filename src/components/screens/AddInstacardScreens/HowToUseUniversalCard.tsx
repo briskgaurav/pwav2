@@ -1,22 +1,28 @@
 'use client'
 
-import { Button, SheetContainer } from '@/components/ui'
+import React, { useEffect, useRef, useState } from 'react'
+
+import { useRouter } from 'next/navigation'
+
+import { ChevronDown } from 'lucide-react'
+
+import ButtonComponent from '@/components/ui/ButtonComponent'
+import CardMockup from '@/components/ui/CardMockup'
+import FaqIconButton from '@/components/ui/FaqIconButton'
+import FAQModal, { type FAQData } from '@/components/ui/FAQModal'
+import { CARD_IMAGE_PATHS, type CardData } from '@/constants/cardData'
+import { ManageCard, PhoneIcon } from '@/constants/icons'
 import { notifyCardAdded, notifyNavigation } from '@/lib/bridge'
 import { routes } from '@/lib/routes'
 import { useAppDispatch, useAppSelector } from '@/store/redux/hooks'
 import { addCard, setPendingCardForm } from '@/store/redux/slices/cardWalletSlice'
-import { CARD_IMAGE_PATHS, type CardData } from '@/constants/cardData'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import React, { useEffect, useRef, useState } from 'react'
-import { ICONS, ManageCard, PhoneIcon } from '@/constants/icons'
-import { ChevronDown } from 'lucide-react'
-import FaqIconButton from '@/components/ui/FaqIconButton'
-import FAQModal from '@/components/ui/FAQModal'
-import type { FAQData } from '@/components/ui/FAQModal'
-import CardMockup from '@/components/ui/CardMockup'
+
+
+
+
+
 import LayoutSheet from '../../ui/LayoutSheet'
-import ButtonComponent from '@/components/ui/ButtonComponent'
+
 
 interface AccordionItemProps {
   title: string;

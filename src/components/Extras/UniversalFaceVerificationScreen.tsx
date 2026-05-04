@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useRef, useEffect, useState, useCallback } from 'react'
+
 import { useRouter } from 'next/navigation'
+
 import { routes } from '@/lib/routes'
 
 export default function UniversalFaceVerificationScreen() {
@@ -16,7 +18,7 @@ export default function UniversalFaceVerificationScreen() {
       setCameraError(null)
       setPermissionDenied(false)
 
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      if (!navigator.mediaDevices?.getUserMedia) {
         setCameraError('Camera is not supported on this device or browser. Please use a modern browser with HTTPS.')
         return
       }

@@ -1,11 +1,10 @@
 'use client'
 
-import { ProfileDrawer } from '@/components/ProfileDrawer'
-import i18n from '@/lib/i18n'
-import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
-import { selectAccessDrawerVisible, closeAccessDrawer } from '@/store/redux/slices/accessDrawerSlice'
-import { selectFirstName } from '@/store/redux/slices/userSlice'
-import { closeWebView, isNativeWebView } from '@/utils/nativeBridge'
+import { useMemo } from 'react'
+
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+
 import {
   CreditCard,
   HandCoins,
@@ -18,10 +17,17 @@ import {
   ShieldCheck,
   Smartphone,
 } from 'lucide-react'
-import Image from 'next/image'
-import { useMemo } from 'react'
-import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
+
+import { ProfileDrawer } from '@/components/ProfileDrawer'
+import i18n from '@/lib/i18n'
+import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
+import { selectAccessDrawerVisible, closeAccessDrawer } from '@/store/redux/slices/accessDrawerSlice'
+import { selectFirstName } from '@/store/redux/slices/userSlice'
+import { closeWebView, isNativeWebView } from '@/utils/nativeBridge'
+
+
+
 
 type FeatureId =
   | 'digitalAccountWallet'

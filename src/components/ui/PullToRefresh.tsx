@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useRef, useState, useCallback, useEffect, type ReactNode } from 'react'
-import { RefreshCw } from 'lucide-react'
+
 import gsap from 'gsap'
+import { RefreshCw } from 'lucide-react'
 
 interface PullToRefreshProps {
   children: ReactNode

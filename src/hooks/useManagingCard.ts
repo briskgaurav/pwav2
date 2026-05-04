@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
+
+import { CARD_IMAGE_PATHS, type CardImageId } from '@/constants/cardData'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { changeCardPin as changeCardPinAction } from '@/store/redux/slices/cardWalletSlice'
-import { CARD_IMAGE_PATHS, type CardImageId } from '@/constants/cardData'
 
 export function maskCardNumber(cardNumber: string): string {
   const digits = cardNumber.replace(/\s/g, '')

@@ -1,25 +1,21 @@
 'use client';
 
 import { useEffect, useState, useMemo, Suspense } from 'react';
-import Image from 'next/image';
-import { SheetContainer, Button } from '@/components/ui';
-import { ICONS, ManageCard, PhoneIcon } from '@/constants/icons';
-import { notifyNavigation, notifyCardAdded } from '@/lib/bridge';
-import { ChevronDown } from 'lucide-react';
-import FAQModal from '@/components/ui/FAQModal';
-import FaqIconButton from '@/components/ui/FaqIconButton';
-import type { FAQData } from '@/components/ui/FAQModal';
-import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
+
+import { useRouter, useSearchParams  } from 'next/navigation'
+
+import AccordionItem from '@/components/ui/AccordionItem';
+import ButtonComponent from '@/components/ui/ButtonComponent';
 import CardMockup from '@/components/ui/CardMockup';
+import FaqIconButton from '@/components/ui/FaqIconButton';
+import FAQModal, { type FAQData } from '@/components/ui/FAQModal';
+import LayoutSheet from '@/components/ui/LayoutSheet';
+import { ManageCard, PhoneIcon } from '@/constants/icons';
+import { useManagingCard } from '@/hooks/useManagingCard';
+import { notifyNavigation } from '@/lib/bridge';
 import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
-import { useManagingCard } from '@/hooks/useManagingCard';
 import { useAppSelector } from '@/store/redux/hooks';
-import Link from 'next/link';
-import LayoutSheet from '@/components/ui/LayoutSheet';
-import ButtonComponent from '@/components/ui/ButtonComponent';
-import AccordionItem from '@/components/ui/AccordionItem';
 
 const CARD_TYPE_CONFIG: Record<CardType, {
     label: string;

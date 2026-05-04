@@ -30,7 +30,7 @@ export default function UniversalCameraCapture({
   // Check if getUserMedia is available and working
   const checkCameraSupport = useCallback(async () => {
     // Check if mediaDevices API exists
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    if (!navigator.mediaDevices?.getUserMedia) {
       console.log('getUserMedia not available, using fallback')
       setCameraMode('fallback')
       return

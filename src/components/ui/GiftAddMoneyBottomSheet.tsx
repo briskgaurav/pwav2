@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui';
-import BottomSheetModal from '@/components/ui/BottomSheetModal';
-import AddMoneyToggle from '@/components/ui/AddMoneyToggle';
-import { AddMoneyCardsSection, CardType } from '@/components/ui/AddMoneyCardsSection';
-import { AddNewCardForm } from '@/components/ui/AddNewCardForm';
+
 import { ChevronDownIcon, CheckIcon, PlusIcon } from 'lucide-react';
+
+import { Button } from '@/components/ui';
+import { AddMoneyCardsSection, type CardType } from '@/components/ui/AddMoneyCardsSection';
+import AddMoneyToggle from '@/components/ui/AddMoneyToggle';
+import { AddNewCardForm } from '@/components/ui/AddNewCardForm';
+import BottomSheetModal from '@/components/ui/BottomSheetModal';
 import { useAppSelector } from '@/store/redux/hooks';
 
 type ModalView = 'cards' | 'addCard';

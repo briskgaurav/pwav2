@@ -1,9 +1,11 @@
 'use client'
 
-import { format } from 'date-fns'
 import React, { useEffect, useState } from 'react'
+
+import { format } from 'date-fns'
 import { DayPicker } from 'react-day-picker'
 import { createPortal } from 'react-dom'
+
 import { haptic } from '@/lib/useHaptics'
 
 import 'react-day-picker/style.css'

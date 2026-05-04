@@ -1,18 +1,18 @@
 'use client'
 
 import React, { useState, useRef, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
-import CardPinAuth from '@/components/screens/AuthScreens/CardPinAuth'
-import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen'
-import SuccessScreen from '@/components/screens/AuthScreens/SuccessScreen'
-import { CardMockup, SheetContainer } from '@/components/ui'
-import { routes } from '@/lib/routes'
-import Image from 'next/image'
+
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
 import { PlusIcon } from 'lucide-react'
-import AddSigmaCardModal from '@/components/ui/AddSigmaCardModal'
-import { ICONS } from '@/constants/icons'
+
+import CardPinAuth from '@/components/screens/AuthScreens/CardPinAuth'
+import SuccessScreen from '@/components/screens/AuthScreens/SuccessScreen'
+import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen'
+import { CardMockup, SheetContainer } from '@/components/ui'
 import { useManagingCard } from '@/hooks/useManagingCard'
+import { routes } from '@/lib/routes'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { linkVirtualCard as linkVirtualCardAction } from '@/store/redux/slices/cardWalletSlice'
 import { selectMaskedEmail, selectMaskedMobile } from '@/store/redux/slices/userSlice'
@@ -151,8 +151,7 @@ export default function LinkVirtualCardScreen() {
                           disabled
                           className="w-full p-4 border rounded-2xl flex items-center gap-3 transition-all border-text-primary/10 opacity-50"
                         >
-                          <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center border-text-primary/20">
-                          </div>
+                          <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center border-text-primary/20" />
                           <div className="flex flex-col items-start">
                             <span className="text-sm text-text-primary">
                               {maskCardNumber(card.cardNumber)} ( Virtual Card )

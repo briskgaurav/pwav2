@@ -1,9 +1,10 @@
 'use client'
 
-import ButtonComponent from '@/components/ui/ButtonComponent'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { sendIdVerificationOtp } from '@/lib/api/idVerification'
-import type { UserInfo } from '@/lib/api/idVerification'
+
+import ButtonComponent from '@/components/ui/ButtonComponent'
+import { sendIdVerificationOtp, type UserInfo  } from '@/lib/api/idVerification'
+
 
 type VerificationMethod = 'email' | 'phone' | 'bvn'
 
@@ -111,7 +112,7 @@ export default function VerificationConfirmScreen({
     let raw = e.target.value
     raw = raw.replace(/[^\d+ ]/g, '')
     if (raw.includes('+')) {
-      raw = '+' + raw.replace(/\+/g, '')
+      raw = `+${  raw.replace(/\+/g, '')}`
     }
     const digits = raw.replace(/\D/g, '')
     if (digits.length < COUNTRY_CODE_LENGTH) {

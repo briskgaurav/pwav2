@@ -1,5 +1,3 @@
-import Link from 'next/link'
-import { SheetContainer } from '@/components/ui/sheet-container'
 import LayoutSheet from '@/components/ui/LayoutSheet'
 
 export default function NotFound() {

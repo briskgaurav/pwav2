@@ -1,7 +1,9 @@
 'use client'
 
 import type { ReactNode } from 'react'
+
 import { usePathname, useSearchParams } from 'next/navigation'
+
 import { useIsWebView } from '@/hooks/use-is-webview'
 
 export function PageSlideTransition({ children }: { children: ReactNode }) {
