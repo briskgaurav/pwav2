@@ -8,8 +8,9 @@ import NiaraSymbol from '@/components/Extras/NiaraSymbol'
 import { formatAmountWithCommas } from '@/lib/format-amount'
 import BottomSheetModal from '@/components/ui/BottomSheetModal'
 import { AddNewCardForm, type AddNewCardFormValues } from '@/components/ui/AddNewCardForm'
-import { Button } from '@/components/ui'
+import { Button, PaymentProcessingOverlay } from '@/components/ui'
 import CardPinVerificationDrawer from '../AuthScreens/CardPinVerificationDrawer'
+import { usePaymentProcessing } from '@/hooks/usePaymentProcessing'
 
 type PayUsingOtherCardsProps = {
   amount: number
@@ -23,6 +24,7 @@ export default function PayUsingOtherCards({ amount, onPay }: PayUsingOtherCards
   const [newCardOpen, setNewCardOpen] = useState(false)
   const [newCardValues, setNewCardValues] = useState<AddNewCardFormValues | null>(null)
   const [pinDrawerOpen, setPinDrawerOpen] = useState(false)
+  const processing = usePaymentProcessing()
   const router = useRouter()
 
   const handleSelectCard = (card: CardType) => {
@@ -85,14 +87,28 @@ export default function PayUsingOtherCards({ amount, onPay }: PayUsingOtherCards
       <CardPinVerificationDrawer
         visible={pinDrawerOpen}
         fieldLength={6}
-        onClose={() => setPinDrawerOpen(false)}
+        onClose={() => {
+          if (processing.model.open) return
+          setPinDrawerOpen(false)
+        }}
         showTitle={false}
         subtitle="Enter Your 6 Digit OTP"
         onVerified={() => {
           setPinDrawerOpen(false)
-          onPay({ card: selectedCard })
-          router.push(`${routes.paymentSuccess}?amount=${amount}&method=other&cardId=${selectedCard}`)
+          processing.start({ minDurationMs: 5000 })
+          const cardToPay = selectedCard
+          processing.succeedAfterMinDuration(() => {
+            onPay({ card: cardToPay })
+            router.push(`${routes.paymentSuccess}?amount=${amount}&method=other&cardId=${cardToPay}`)
+          }, 5000)
         }}
+      />
+
+      <PaymentProcessingOverlay
+        open={processing.model.open}
+        state={processing.model.state}
+        title={processing.model.title}
+        subtitle={processing.model.subtitle}
       />
     </>
   )

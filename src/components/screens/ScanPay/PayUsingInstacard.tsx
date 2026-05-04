@@ -9,7 +9,8 @@ import { useAppSelector } from '@/store/redux/hooks'
 import { useAuth } from '@/lib/auth-context'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import CardPinVerificationDrawer from '../AuthScreens/CardPinVerificationDrawer'
-import { Button } from '@/components/ui'
+import { Button, PaymentProcessingOverlay } from '@/components/ui'
+import { usePaymentProcessing } from '@/hooks/usePaymentProcessing'
 
 type PayUsingInstacardProps = {
   amount: number
@@ -26,6 +27,7 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
   const [pinDrawerOpen, setPinDrawerOpen] = useState(false)
   const [pendingCard, setPendingCard] = useState<CardData | null>(null)
+  const processing = usePaymentProcessing()
   const cardStackRef = useRef<CardStackRef>(null)
 
   const handleCardFiltersChange = useCallback((filters: CardFilterType[]) => {
@@ -56,7 +58,7 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
 
     return cards.filter((card) => {
       const matchesUniversal = includesUniversal && card.cardForm === 'universal'
-      const matchesType = typeFilters.length > 0 
+      const matchesType = typeFilters.length > 0
         && typeFilters.includes(card.cardType as (typeof typeFilters)[number])
         && card.cardForm !== 'universal'
       return matchesUniversal || matchesType
@@ -129,9 +131,10 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
       </div>
 
       <CardPinVerificationDrawer
-      fieldLength={4}
+        fieldLength={4}
         visible={pinDrawerOpen}
         onClose={() => {
+          if (processing.model.open) return
           setPinDrawerOpen(false)
           setPendingCard(null)
         }}
@@ -139,13 +142,22 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
         title="Verify PIN"
         subtitle="Enter PIN to use this card"
         verifyPin={(pin) => (pendingCard ? pin === pendingCard.pin : false)}
+        
         onVerified={() => {
           if (!pendingCard) return
           setPinDrawerOpen(false)
-          // console.log('[ScanPay] Paying with selected card:', pendingCard, 'amount:', amount)
-          onPay?.({ card: pendingCard, amount })
+          processing.start({ minDurationMs: 5000 })
+          const cardToPay = pendingCard
           setPendingCard(null)
+          processing.succeedAfterMinDuration(() => onPay?.({ card: cardToPay, amount }), 5000)
         }}
+      />
+
+      <PaymentProcessingOverlay
+        open={processing.model.open}
+        state={processing.model.state}
+        title={processing.model.title}
+        subtitle={processing.model.subtitle}
       />
     </div>
   )

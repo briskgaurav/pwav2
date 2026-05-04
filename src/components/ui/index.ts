@@ -21,5 +21,6 @@ export { default as FaqIconButton } from "./FaqIconButton";
 export { default as InputField } from "./InputField";
 export { default as MakeRepayment } from "./MakeRepayment";
 export { default as OtpInput } from "./OtpInput";
+export { default as PaymentProcessingOverlay } from "./PaymentProcessingOverlay";
 export { default as RecentTransactions } from "./RecentTransactions";
 export { default as TransactionHistoryItem } from "./TransactionHistoryItem";

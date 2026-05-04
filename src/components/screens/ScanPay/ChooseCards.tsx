@@ -32,7 +32,7 @@ export default function ChooseCards({ amount, message = '', recipientName = '' }
     return (
         <div className="flex flex-col relative h-full">
             <CardToggle active={payMode} onChange={setPayMode} />
-            <Suspense fallback={<div className='h-4 w-4 border border-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full animate-spin' />}>
+            <Suspense fallback={<div className='h-4  w-4 border border-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full animate-spin' />}>
                 {payMode === 'instacard' ? (
                   <PayUsingInstacard
                     amount={amount}

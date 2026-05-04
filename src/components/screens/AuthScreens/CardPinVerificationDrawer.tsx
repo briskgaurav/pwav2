@@ -18,6 +18,7 @@ type CardPinVerificationDrawerProps = {
     fieldLength:number,
     /** Optional custom verifier; defaults to comparing against redux `s.card.pin` */
     verifyPin?: (pin: string) => boolean
+    onDonePressed?: () => void
 }
 
 export default function CardPinVerificationDrawer({
@@ -29,10 +30,10 @@ export default function CardPinVerificationDrawer({
     subtitle = 'Enter your PIN to continue',
     onVerified,
     verifyPin,
+    onDonePressed,
 }: CardPinVerificationDrawerProps) {
     const globalPin = useAppSelector((s) => s.card.pin)
 
-    // If requested fieldLength is 6, use 111111 as the verification pin, otherwise use normal logic
     const pinLength = fieldLength > 0 ? fieldLength : 4;
     const getVerifier = () => {
         if (pinLength === 6) {
@@ -55,26 +56,33 @@ export default function CardPinVerificationDrawer({
         }
     }, [visible])
 
-    const handleContinue = useCallback(() => {
+    const handleContinue = useCallback((): boolean => {
         const ok = verifier(pin)
         if (ok) {
+            onDonePressed?.()
             onVerified()
-            return
+            return true
         }
         setError('Incorrect PIN')
         setPin('')
         setResetKey((k) => k + 1)
-    }, [onVerified, pin, verifier])
+        return false
+    }, [onDonePressed, onVerified, pin, verifier])
 
     const handleKeypadKey = useCallback((key: string) => {
         setError(null)
+        if (key === 'done') {
+            if (pin.length !== pinLength) return
+            handleContinue()
+            return
+        }
         if (key === 'del') {
             setPin((prev) => prev.slice(0, -1))
             return
         }
         if (!/^\d$/.test(key)) return
         setPin((prev) => (prev.length < pinLength ? prev + key : prev))
-    }, [pinLength])
+    }, [handleContinue, pin.length, pinLength])
 
     const isComplete = pin.length === pinLength
 
@@ -102,7 +110,7 @@ export default function CardPinVerificationDrawer({
                 </div>
 
                 <div className="w-full pt-4 -mt-4">
-                    <OTPKeypad needPadding={false} showBackground={false} onKeyPress={handleKeypadKey} />
+                    <OTPKeypad  needPadding={false} showBackground={false} onKeyPress={handleKeypadKey} />
                 </div>
             </div>
 
