@@ -56,7 +56,9 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
 
     return cards.filter((card) => {
       const matchesUniversal = includesUniversal && card.cardForm === 'universal'
-      const matchesType = typeFilters.length > 0 && typeFilters.includes(card.cardType as (typeof typeFilters)[number])
+      const matchesType = typeFilters.length > 0 
+        && typeFilters.includes(card.cardType as (typeof typeFilters)[number])
+        && card.cardForm !== 'universal'
       return matchesUniversal || matchesType
     })
   }, [allCards, cardFilters, sortBy])
@@ -127,6 +129,7 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
       </div>
 
       <CardPinVerificationDrawer
+      fieldLength={4}
         visible={pinDrawerOpen}
         onClose={() => {
           setPinDrawerOpen(false)

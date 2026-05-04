@@ -112,7 +112,7 @@
       },
       {
         id: "card-4",
-        imageId: 3,
+        imageId: 5,
         name: "Prepaid Card",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
@@ -128,7 +128,7 @@
       },
       {
         id: "card-5",
-        imageId: 4,
+        imageId: 5,
         name: "Gift Card",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
@@ -144,7 +144,7 @@
       },
       {
         id: "card-6",
-        imageId: 2,
+        imageId: 5,
         name: "FCMB Magic",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
@@ -288,7 +288,7 @@
       },
       {
         id: "card-15",
-        imageId: 1,
+        imageId: 5,
         name: "Access Debit",
         cardHolder: "Nirdesh Malik",
         cardNumber: "0000 0000 0000 0000",
