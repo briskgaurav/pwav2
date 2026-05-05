@@ -136,31 +136,32 @@ export default function VerificationCodeScreen({
     }
   }, [showSuccessPopup])
 
-  const handleContinue = async () => {
-    setIsVerifying(true)
-    setErrorText(null)
-    try {
-      if (onVerify) {
-        await onVerify(code)
-      } else {
-        await new Promise((resolve) => setTimeout(resolve, 1500))
-      }
-    } catch (e) {
-      setIsVerifying(false)
-      setErrorText(e instanceof Error ? e.message : 'Something went wrong')
-      return
-    }
+const handleContinue = async () => {
+  setIsVerifying(true)
+  setErrorText(null)
 
-    setIsVerifying(false)
-
-    if (enableSuccessPopup) {
-      setShowSuccessPopup(true)
-    } else if (onSuccess) {
-      onSuccess()
+  try {
+    if (onVerify) {
+      await onVerify(code)
     } else {
-      router.replace(successRoute)
+      await new Promise((resolve) => setTimeout(resolve, 1500))
     }
+  } catch (e) {
+    setIsVerifying(false)
+    setErrorText(e instanceof Error ? e.message : 'Something went wrong')
+    return
   }
+
+  setIsVerifying(false)
+
+  if (enableSuccessPopup) {
+    setShowSuccessPopup(true)
+  } else if (onSuccess) {
+    onSuccess()
+  } else {
+    router.replace(successRoute)
+  }
+}
 
   const handlePopupOk = () => {
     setShowSuccessPopup(false)

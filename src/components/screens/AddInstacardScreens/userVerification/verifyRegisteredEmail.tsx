@@ -1,7 +1,8 @@
 'use client';
 
 import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen';
-import type { UserVerificationSteps } from '@/types/userVerificationSteps';
+import type { BankVerifictionMethod, UserVerificationSteps } from '@/types/userVerificationSteps';
+import { useState } from 'react';
 
 interface VerifyRegisteredEmailProps {
   onNext: (nextStep: UserVerificationSteps) => void;
@@ -10,7 +11,7 @@ interface VerifyRegisteredEmailProps {
 
 export default function VerifyRegisteredEmail({
   onNext,
-}: VerifyRegisteredEmailProps) {
+}: VerifyRegisteredEmailProps) { 
 
   const handleSuccess = () => {
     onNext('bank_verification')
@@ -35,6 +36,5 @@ export default function VerifyRegisteredEmail({
       // }}
       onSuccess={handleSuccess}
     />
-
   );
 }
