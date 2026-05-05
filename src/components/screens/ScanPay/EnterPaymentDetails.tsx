@@ -5,8 +5,6 @@ import LayoutSheet from '@/components/ui/LayoutSheet'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { routes } from '@/lib/routes'
-import { OTPKeypad } from '@/components/ui'
-import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
 import NiaraSymbol from '@/components/Extras/NiaraSymbol'
 import { formatAmountWithCommas } from '@/lib/format-amount'
 
@@ -50,19 +48,19 @@ export default function EnterPaymentDetails() {
     .toUpperCase()
     .slice(0, 2)
 
-  const amountBoxRef = useRef<HTMLDivElement | null>(null)
-  // -- Keyboard open initially (need initially keyboard open)
-  const { keypadRef, isKeypadOpen, keypadHeight, openKeypad, closeKeypad } = useSlideUpKeypad({
-    insideRefs: [amountBoxRef],
-  })
+  const amountHiddenRef = useRef<HTMLInputElement | null>(null)
 
-  // fallback for older hooks that don't support initialOpen option
+  const focusAmount = () => {
+    if (isAmountLocked) return
+    amountHiddenRef.current?.focus()
+  }
+
   useEffect(() => {
-    // Don't auto-open keypad if amount is locked from QR
-    if (!isAmountLocked && typeof openKeypad === 'function') {
-      openKeypad()
-    }
-  }, []) // open the keypad on mount
+    if (isAmountLocked) return
+    const t = window.setTimeout(() => focusAmount(), 150)
+    return () => window.clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   /**
    * Only allow numbers, remove leading zeros, allow as many digits as needed for MAX_AMOUNT.
@@ -79,35 +77,6 @@ export default function EnterPaymentDetails() {
 
     setAmount(val);
     setError(null);
-  }
-
-  /**
-   * Keypad: Only allow up to the length of MAX_AMOUNT and value <= MAX_AMOUNT.
-   */
-  const handleKeyPress = (key: string) => {
-    if (isAmountLocked) return
-    setError(null);
-
-    if (key === 'del') {
-      setAmount((prev) => prev.slice(0, -1));
-      return
-    }
-    if (key === 'done') {
-      closeKeypad();
-      return
-    }
-
-    if (!/^\d$/.test(key)) return;
-    setAmount((prev) => {
-      // Prevent leading zero
-      const next = (prev === "0" ? key : (prev || '') + key);
-      // Length check: disallow adding more digits than MAX_AMOUNT supports
-      if (next.length > MAX_AMOUNT.toString().length) return prev;
-      // Value check: disallow going past MAX_AMOUNT
-      const nextAsNumber = Number(next);
-      if (nextAsNumber > MAX_AMOUNT) return prev;
-      return next;
-    })
   }
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -144,7 +113,6 @@ export default function EnterPaymentDetails() {
     }
 
     setError(null);
-    closeKeypad()
     const params = new URLSearchParams()
     params.set('amount', amount || '0')
     if (description.trim()) params.set('message', description.trim())
@@ -159,7 +127,6 @@ export default function EnterPaymentDetails() {
     <LayoutSheet needPadding={false} routeTitle='Beneficiary Details'>
       <div
         className='flex-1 w-full flex flex-col min-h-full transition-[padding-bottom] duration-200 ease-out'
-        style={{ paddingBottom: isKeypadOpen ? keypadHeight : 0 }}
       >
 
         {/* Beneficiary Card */}
@@ -199,12 +166,12 @@ export default function EnterPaymentDetails() {
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 px-4 pt-6 pb-6 gap-4">
 
           {/* Amount */}
-          <div ref={amountBoxRef} className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1">
             <label className="text-sm text-text-primary">
               Enter Amount (<NiaraSymbol />)
             </label>
             {/* Custom input with naira symbol inside the field */}
-            <div className="relative flex items-center">
+            <div className="relative flex items-center" onClick={focusAmount}>
               <span
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-text-primary pointer-events-none"
                 style={{ zIndex: 2 }}
@@ -212,13 +179,23 @@ export default function EnterPaymentDetails() {
                 <NiaraSymbol />
               </span>
               <input
+                ref={amountHiddenRef}
+                type="tel"
+                inputMode="numeric"
+                autoComplete="off"
+                pattern="\d*"
+                enterKeyHint="done"
+                value={amount}
+                onChange={handleAmountChange}
+                className="absolute -left-[9999px] top-0 w-px h-px opacity-0"
+              />
+              <input
                 type="text"
                 placeholder="Enter Amount"
                 value={amount ? formatAmountWithCommas(amount) : ''}
                 min={0}
                 max={MAX_AMOUNT}
-                onChange={handleAmountChange}
-                onFocus={isAmountLocked ? undefined : openKeypad}
+                onFocus={focusAmount}
                 readOnly
                 inputMode="numeric"
                 className={`pl-10 w-full rounded-xl border border-border px-4 py-3 text-text-primary placeholder-text-text-secondary placeholder:text-sm focus:outline-none! focus:ring-0 ${isAmountLocked ? 'bg-success/20 opacity-70' : ''}`}
@@ -271,13 +248,6 @@ export default function EnterPaymentDetails() {
           </button>
         </form>
 
-      </div>
-
-      <div
-        ref={keypadRef}
-        className={`fixed bottom-0 h-fit left-0 right-0 transition-opacity ${isKeypadOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-      >
-        <OTPKeypad onKeyPress={handleKeyPress} />
       </div>
     </LayoutSheet>
   )
