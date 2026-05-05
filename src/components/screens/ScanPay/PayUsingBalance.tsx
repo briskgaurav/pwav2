@@ -6,7 +6,7 @@ import ButtonComponent from "@/components/ui/ButtonComponent";
 import { formatAmountWithCommas } from "@/lib/format-amount";
 import NiaraSymbol from "@/components/Extras/NiaraSymbol";
 import CardPinVerificationDrawer from "@/components/screens/AuthScreens/CardPinVerificationDrawer";
-import { PaymentProcessingOverlay } from "@/components/ui";
+import { CustomRadioBTN, PaymentProcessingOverlay } from "@/components/ui";
 import { usePaymentProcessing } from "@/hooks/usePaymentProcessing";
 
 // Optional: Assign some dummy balances to be shown
@@ -182,24 +182,15 @@ export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps)
                   Convenience Fee : <span className="line-through mr-1"> N</span>{bank.feeLabel}
                 </p>
               </div>
-              {/* Custom radio to match AddMoneyCardsSection type */}
-              <button
-                type="button"
-                tabIndex={0}
-                aria-label={`Select ${bank.name}`}
-                className="ml-5 outline-none border-none bg-transparent p-0"
-                onClick={() => setSelectedAccountId(bank.id)}
-              >
-                <span
-                  className={`flex items-center justify-center rounded-full ${
-                    isSelected
-                      ? 'w-[22px] h-[22px] border'
-                      : 'w-[22px] h-[22px] border border-text-primary'
-                  }`}
-                >
-                  {isSelected && <span className='w-[12px] h-[12px] rounded-full bg-orange' />}
-                </span>
-              </button>
+              <CustomRadioBTN
+                name="selectedAccount"
+                ariaLabel={`Select ${bank.name}`}
+                checked={isSelected}
+                onChange={() => setSelectedAccountId(bank.id)}
+                className="ml-5"
+                sizePx={22}
+              />
+        
             </label>
           )
         })}

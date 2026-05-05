@@ -1,7 +1,7 @@
 'use client'
 import { SheetContainer, Button } from '@/components/ui'
 import { ICONS, MessageIcon, PhoneIcon } from '@/constants/icons'
-import { RadioOption2 } from '@/components/ui/RadioButton2'
+import { CheckRadioOption } from '@/components/ui/RadioButton2'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
@@ -41,9 +41,9 @@ export default function BVNVerificationScreen() {
 
                 <div className='w-full space-y-4 my-5'>
                     <p>We will send an OTP to verify your identity</p>
-                    <div className='flex flex-col gap-2'>
+                    <div className='flex flex-col gap-2' role="radiogroup" aria-label="Choose OTP delivery method">
                         {VERIFICATION_OPTIONS.map((option) => (
-                            <RadioOption2
+                            <CheckRadioOption
                                 key={option.id}
                                 label={option.label}
                                 selected={selectedOption === option.id}

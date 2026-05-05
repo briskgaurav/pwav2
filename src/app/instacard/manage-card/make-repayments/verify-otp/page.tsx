@@ -12,7 +12,6 @@ export default function VerifyOtpPage() {
       subtitle="We have sent you a 6-digit code to your Registered Phone Number"
       maskedValue={maskedMobile}
       successRoute={routes.makeRepaymentsVerifyOtpSuccess}
-      showKeypad
     />
   )
 }

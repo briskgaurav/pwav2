@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import React from 'react'
 import { ICONS } from '@/constants/icons'
+import CustomRadioBTN from './CustomRadioBTN'
 
 export type CardType = 'sigma' | 'universal-1' | 'universal-2' | 'verve'
 
@@ -75,15 +76,7 @@ export function AddMoneyCardsSection({ selectedCard, onSelectCard }: AddMoneyCar
                                     <span className='text-text-primary'>({card.description})</span>
                                 </p>
                             </div>
-                            <span
-                                className={`flex items-center justify-center rounded-full ${
-                                    isSelected
-                                        ? 'w-[22px] h-[22px] border'
-                                        : 'w-[22px] h-[22px] border border-text-primary'
-                                }`}
-                            >
-                                {isSelected && <span className='w-[12px] h-[12px] rounded-full bg-orange' />}
-                            </span>
+                            <CustomRadioBTN checked={isSelected} sizePx={22} />
                         </button>
                     )
                 })}

@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Button, RadioOption, SheetContainer } from '@/components/ui'
 import { ChatIcon, ICONS, MessageIcon } from '@/constants/icons'
-import { RadioOption2 } from '@/components/ui/RadioButton2'
+import { CheckRadioOption } from '@/components/ui/RadioButton2'
 import { routes } from '@/lib/routes'
 import { useRouter } from 'next/navigation'
 import { LucideIcon } from 'lucide-react'
@@ -32,7 +32,7 @@ export default function ChooseOptionsPage() {
 
                 <p className='mt-4 text-text-primary text-sm '>We will send an OTP to verify your identity</p>
 
-                <div className="mt-4 flex flex-col gap-3">
+                <div className="mt-4 flex flex-col gap-3" role="radiogroup" aria-label="Choose verification method">
                     <RadioOption
                         label={maskedMobile}
                         selected={selectedOption === 'phone'}

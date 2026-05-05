@@ -40,7 +40,6 @@ export default function EmailRegistrationPage() {
           subtitle="We have sent you a 6-digit code to your email address"
           maskedValue={maskedPendingEmail}
           successRoute=""
-          showKeypad
           showSuccessPopup
           successPopupContent={{ message: 'Email verified successfully', buttonText: 'Continue' }}
           onVerify={async (code) => {
