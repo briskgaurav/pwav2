@@ -15,7 +15,7 @@ type CardPinVerificationDrawerProps = {
     showTitle?: boolean
     subtitle?: string
     onVerified: () => void
-    fieldLength: number,
+    fieldLength:number,
     /** Optional custom verifier; defaults to comparing against redux `s.card.pin` */
     verifyPin?: (pin: string) => boolean
     onDonePressed?: () => void
@@ -83,9 +83,11 @@ function NativePinInput({
                     return (
                         <div
                             key={i}
-                            className={`border flex items-center justify-center text-base font-semibold text-text-primary text-center outline-none shrink-0 transition-colors ${maxLength > 6 ? 'w-10 h-10 rounded-lg' : 'w-12 h-12 rounded-xl'
-                                } ${isCursor ? 'border-primary' : digit ? 'border-text-primary' : 'border-text-secondary'
-                                }`}
+                            className={`border flex items-center justify-center text-base font-semibold text-text-primary text-center outline-none shrink-0 transition-colors ${
+                                maxLength > 6 ? 'w-10 h-10 rounded-lg' : 'w-12 h-12 rounded-xl'
+                            } ${
+                                isCursor ? 'border-primary' : digit ? 'border-text-primary' : 'border-text-secondary'
+                            }`}
                             style={{ position: 'relative' }}
                         >
                             {digit ? (
@@ -206,34 +208,38 @@ export default function CardPinVerificationDrawer({
 
     return (
         <BottomSheetModal showTitle={showTitle} backdropBlur={true} visible={visible} onClose={onClose} title={title} maxHeight={0.92}>
-            <div className="" style={{ paddingBottom: keyboardInset ? keyboardInset + 12 : undefined }}>
-                <div  ref={pinInputRef} className='flex flex-col items-center gap-5'>
+            <div
+                className="flex flex-col gap-5"
+                style={{
+                    paddingBottom: keyboardInset
+                        ? Math.round(keyboardInset * 1.15) + 24
+                        : undefined,
+                }}
+            >
+                <p className="text-sm text-text-secondary pt-2 text-center">{subtitle}</p>
 
-                    <p className="text-sm text-text-secondary pt-2 text-center">{subtitle}</p>
+                <div ref={pinInputRef} className="flex flex-col items-center gap-3">
+                    <NativePinInput
+                        useDots
+                        resetKey={resetKey}
+                        value={pin}
+                        maxLength={pinLength}
+                        onChange={(v) => {
+                            setError(null)
+                            setPin(v)
+                        }}
+                        onFocus={bringIntoView}
+                        onDone={() => {
+                            if (!isComplete) return
+                            handleContinue()
+                        }}
+                    />
+                    {error && <p className="text-xs text-red-500 text-center">{error}</p>}
+                </div>
+                <div className='w-full flex flex-col items-center gap-2'>
 
-                    <div className="flex flex-col items-center gap-3">
-                        <NativePinInput
-                            useDots
-                            resetKey={resetKey}
-                            value={pin}
-                            maxLength={pinLength}
-                            onChange={(v) => {
-                                setError(null)
-                                setPin(v)
-                            }}
-                            onFocus={bringIntoView}
-                            onDone={() => {
-                                if (!isComplete) return
-                                handleContinue()
-                            }}
-                        />
-                        {error && <p className="text-xs text-red-500 text-center">{error}</p>}
-                    </div>
-                    <div className='w-full flex flex-col items-center gap-2'>
-
-                        <Button fullWidth disabled={!isComplete} onClick={handleContinue}>Continue</Button>
-                        <Link href={routes.forgetPin} className="text-sm text-text-secondary text-center">Forgot PIN?</Link>
-                    </div>
+                    <Button fullWidth disabled={!isComplete} onClick={handleContinue}>Continue</Button>
+                    <Link href={routes.forgetPin} className="text-sm text-text-secondary text-center">Forgot PIN?</Link>
                 </div>
                 {/* <div className='h-[20vh]'></div> */}
             </div>
