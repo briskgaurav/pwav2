@@ -46,7 +46,7 @@ export default function ContinueOrRegisterScreen() {
             Would you like to continue with your existing email or register a new one?
           </p>
 
-          <div className="space-y-3">
+          <div className="space-y-3" role="radiogroup" aria-label="Choose email option">
             <RadioOption
               label={`Continue with ${maskedEmail}`}
               selected={choice === 'current'}

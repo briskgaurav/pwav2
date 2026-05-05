@@ -95,14 +95,21 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
       {/* Card stack area */}
       <div className="min-h-[58vh]  w-full relative">
         {filteredCards.length > 0 ? (
-          <CardStack
-            ref={cardStackRef}
-            cards={filteredCards}
-            onCardChange={(index: number) => setCurrentCardIndex(index)}
-            onCardPress={handleCardPress}
-            isDrawerOpen={false}
-            selectedCardId={selectedCardId}
-          />
+          <div
+            className={`w-full transition-transform duration-200 ease-out ${
+              pinDrawerOpen ? 'scale-[0.6]' : 'scale-100'
+            }`}
+            style={{ transformOrigin: 'top center' }}
+          >
+            <CardStack
+              ref={cardStackRef}
+              cards={filteredCards}
+              onCardChange={(index: number) => setCurrentCardIndex(index)}
+              onCardPress={handleCardPress}
+              isDrawerOpen={pinDrawerOpen}
+              selectedCardId={selectedCardId}
+            />
+          </div>
         ) : (
           <div className="h-full flex justify-center items-center">
             <span className="text-base text-text-secondary">No card available</span>
@@ -124,6 +131,7 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
       <div className="shrink-0 px-4 pb-6 pt-2">
         <Button fullWidth className='bg-primary text-white' onClick={() => {
           if (!selectedCard) return
+          setSelectedCardId(selectedCard.id)
           setPendingCard(selectedCard)
           // console.log('[ScanPay] Opening PIN drawer for card (pay btn):', selectedCard, 'amount:', amount)
           setPinDrawerOpen(true)

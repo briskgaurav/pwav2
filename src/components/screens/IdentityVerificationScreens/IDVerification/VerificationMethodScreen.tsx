@@ -57,7 +57,7 @@ export default function VerificationMethodScreen({
           Select how you&apos;d like to verify your identity for KYC
         </p>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3" role="radiogroup" aria-label="Choose verification method">
           {METHODS.map(({ id, label, maskedValue, Icon }) => (
             <RadioOption
               key={id}

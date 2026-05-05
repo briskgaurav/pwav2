@@ -57,7 +57,6 @@ export default function VerifyBankOTP({
       title="Verify Bank OTP"
       subtitle={subtitle}
       maskedValue={destination ?? ''}
-      showKeypad={true}
       onVerify={handleVerify}
       onResend={handleResend}
       onSuccess={handleSuccess}

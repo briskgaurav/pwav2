@@ -8,6 +8,7 @@ import DatePickerModal from './DatePickerModal'
 import { StatementsIcon } from '@/constants/icons'
 import ButtonComponent from './ButtonComponent'
 import Button from './button'
+import CustomRadioBTN from './CustomRadioBTN'
 import { routes } from '@/lib/routes'
 import { useRouter } from 'next/navigation'
 import { useAppSelector } from '@/store/redux/hooks'
@@ -137,13 +138,7 @@ export default function EmailStatements() {
                 onClick={() => handleSelect(option.id)}
                 className='btn-press w-full flex items-center gap-3 cursor-pointer'
               >
-                <span
-                  className={`w-[22px] h-[22px] rounded-full border flex items-center justify-center transition-[border-color] duration-200 ease-in-out ${selectedOption === option.id ? 'border-text-primary' : 'border-border'}`}
-                >
-                  {selectedOption === option.id && (
-                    <span className='w-[10px] h-[10px] rounded-full bg-orange' />
-                  )}
-                </span>
+                <CustomRadioBTN checked={selectedOption === option.id} sizePx={22} />
                 <span className='text-[14px] text-text-primary'>
                   {option.label} {option.sublabel && <span className='text-text-secondary'>{option.sublabel}</span>}
                 </span>

@@ -1,36 +1,34 @@
-'use client'
+"use client";
 
-import { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { SheetContainer, OTPInput, Button } from '@/components/ui'
-import NativeOTPInput from '@/components/ui/NativeOTPInput'
-import ButtonComponent from '../../ui/ButtonComponent'
-import gsap from 'gsap'
-import { Check } from 'lucide-react'
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui";
+import NativeOTPInput from "@/components/ui/NativeOTPInput";
+import gsap from "gsap";
+import { Check } from "lucide-react";
 
-const MAX_CODE_LENGTH = 6
+const MAX_CODE_LENGTH = 6;
 
 type SuccessPopupContent = {
-  message: string
-  buttonText?: string
-}
+  message: string;
+  buttonText?: string;
+};
 
 type VerificationCodeScreenProps = {
-  title: string
-  subtitle: string
-  maskedValue: string
-  successRoute?: string
-  showKeypad?: boolean
-  onSuccess?: () => void
-  showSuccessPopup?: boolean
-  successPopupContent?: SuccessPopupContent
-  onVerify?: (code: string) => Promise<void>
+  title: string;
+  subtitle: string;
+  maskedValue: string;
+  successRoute?: string;
+  onSuccess?: () => void;
+  showSuccessPopup?: boolean;
+  successPopupContent?: SuccessPopupContent;
+  onVerify?: (code: string) => Promise<void>;
   /**
    * Called when the user taps "Resend". When omitted, the button only
    * clears the OTP input (legacy behaviour). When provided, the button
    * also enters a loading state and starts a cooldown after success.
    */
-  onResend?: () => Promise<void>
+  onResend?: () => Promise<void>;
   /**
    * Seconds to disable the Resend button after a successful resend.
    *
@@ -38,126 +36,118 @@ type VerificationCodeScreenProps = {
    * backend ships `resendAfterSeconds` / `nextResendAt`. Ownership of the
    * cooldown belongs server-side, not in the frontend.
    */
-  resendCooldownSeconds?: number
-}
+  resendCooldownSeconds?: number;
+};
 
-const DEFAULT_RESEND_COOLDOWN_SECONDS = 30
+const DEFAULT_RESEND_COOLDOWN_SECONDS = 30;
 
 export default function VerificationCodeScreen({
   title,
   subtitle,
-  maskedValue = '',
-  successRoute ='',
-  showKeypad = true,
+  maskedValue = "",
+  successRoute = "",
   onSuccess,
   showSuccessPopup: enableSuccessPopup = false,
   successPopupContent = {
-    message: 'Your Payment Limits have been successfully updated',
-    buttonText: 'Ok',
+    message: "Your Payment Limits have been successfully updated",
+    buttonText: "Ok",
   },
   onVerify,
   onResend,
   resendCooldownSeconds = DEFAULT_RESEND_COOLDOWN_SECONDS,
 }: VerificationCodeScreenProps) {
-  const router = useRouter()
-  const [code, setCode] = useState('')
-  const [isVerifying, setIsVerifying] = useState(false)
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false)
-  const [errorText, setErrorText] = useState<string | null>(null)
-  const [isResending, setIsResending] = useState(false)
-  const [cooldownRemaining, setCooldownRemaining] = useState(0)
-  const popupOverlayRef = useRef<HTMLDivElement>(null)
-  const popupContentRef = useRef<HTMLDivElement>(null)
+  const router = useRouter();
+  const [code, setCode] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [errorText, setErrorText] = useState<string | null>(null);
+  const [isResending, setIsResending] = useState(false);
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const popupOverlayRef = useRef<HTMLDivElement>(null);
+  const popupContentRef = useRef<HTMLDivElement>(null);
 
   // Tick down the resend cooldown one second at a time. Stops at zero.
   useEffect(() => {
-    if (cooldownRemaining <= 0) return
+    if (cooldownRemaining <= 0) return;
     const id = window.setInterval(() => {
-      setCooldownRemaining((s) => (s <= 1 ? 0 : s - 1))
-    }, 1000)
-    return () => window.clearInterval(id)
-  }, [cooldownRemaining])
+      setCooldownRemaining((s) => (s <= 1 ? 0 : s - 1));
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [cooldownRemaining]);
 
   useEffect(() => {
     if (showSuccessPopup) {
       gsap.fromTo(
         popupOverlayRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.3, ease: 'power2.out' }
-      )
+        { opacity: 1, duration: 0.3, ease: "power2.out" },
+      );
       gsap.fromTo(
         popupContentRef.current,
         { opacity: 0 },
-        { opacity: 1, duration: 0.3, ease: 'power2.out', delay: 0.1 }
-      )
+        { opacity: 1, duration: 0.3, ease: "power2.out", delay: 0.1 },
+      );
     }
-  }, [showSuccessPopup])
+  }, [showSuccessPopup]);
 
-const handleContinue = async () => {
-  setIsVerifying(true)
-  setErrorText(null)
+  const handleContinue = async () => {
+    setIsVerifying(true);
+    setErrorText(null);
 
-  try {
-    if (onVerify) {
-      await onVerify(code)
+    try {
+      if (onVerify) {
+        await onVerify(code);
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+      }
+    } catch (e) {
+      setIsVerifying(false);
+      setErrorText(e instanceof Error ? e.message : "Something went wrong");
+      return;
+    }
+
+    setIsVerifying(false);
+
+    if (enableSuccessPopup) {
+      setShowSuccessPopup(true);
+    } else if (onSuccess) {
+      onSuccess();
     } else {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      router.replace(successRoute);
     }
-  } catch (e) {
-    setIsVerifying(false)
-    setErrorText(e instanceof Error ? e.message : 'Something went wrong')
-    return
-  }
-
-  setIsVerifying(false)
-
-  if (enableSuccessPopup) {
-    setShowSuccessPopup(true)
-  } else if (onSuccess) {
-    onSuccess()
-  } else {
-    router.replace(successRoute)
-  }
-}
+  };
 
   const handlePopupOk = () => {
-    setShowSuccessPopup(false)
+    setShowSuccessPopup(false);
     if (onSuccess) {
-      onSuccess()
+      onSuccess();
     } else {
-      router.replace(successRoute)
+      router.replace(successRoute);
     }
-  }
+  };
 
   const handleResend = async () => {
-    if (isResending || cooldownRemaining > 0) return
-    setCode('')
-    setErrorText(null)
+    if (isResending || cooldownRemaining > 0) return;
+    setCode("");
+    setErrorText(null);
 
-    if (!onResend) return
+    if (!onResend) return;
 
-    setIsResending(true)
+    setIsResending(true);
     try {
-      await onResend()
-      setCooldownRemaining(resendCooldownSeconds)
+      await onResend();
+      setCooldownRemaining(resendCooldownSeconds);
     } catch (e) {
-      setErrorText(e instanceof Error ? e.message : 'Could not resend code')
+      setErrorText(e instanceof Error ? e.message : "Could not resend code");
     } finally {
-      setIsResending(false)
+      setIsResending(false);
     }
-  }
+  };
 
-  const resendDisabled = isResending || cooldownRemaining > 0
-  const resendLabel = isResending
-    ? 'Resending…'
-    : cooldownRemaining > 0
-      ? `Resend (${cooldownRemaining}s)`
-      : 'Resend'
-
-  const isCodeComplete = code.length === MAX_CODE_LENGTH
+  const isCodeComplete = code.length === MAX_CODE_LENGTH;
 
   const renderSuccessPopup = () => {
-    if (!showSuccessPopup) return null
+    if (!showSuccessPopup) return null;
 
     return (
       <div
@@ -170,8 +160,8 @@ const handleContinue = async () => {
           className="bg-white/80 backdrop-blur-xl  rounded-2xl p-6 mx-8 text-center border border-white/60 min-w-[280px]"
           style={{ opacity: 0 }}
         >
-          <div className='flex flex-col gap-2 items-center justify-center'>
-            <div className='p-[1vw] border-2 border-[#39D105] rounded-full w-fit aspect-square text-[#39D105]'>
+          <div className="flex flex-col gap-2 items-center justify-center">
+            <div className="p-[1vw] border-2 border-[#39D105] rounded-full w-fit aspect-square text-[#39D105]">
               <Check strokeWidth={2} />
             </div>
             <p className="text-lg text-text-primary">Success</p>
@@ -184,129 +174,70 @@ const handleContinue = async () => {
                 className="flex-1 rounded-full bg-primary py-3 text-sm font-medium text-white"
                 onClick={handlePopupOk}
               >
-                {successPopupContent.buttonText || 'Ok'}
+                {successPopupContent.buttonText || "Ok"}
               </button>
             </div>
           </div>
         </div>
       </div>
-    )
-  }
-
-  if (showKeypad) {
-    return (
-      <>
-        <div className="flex flex-col">
-          <div className="flex flex-col justify-center px-5 py-10 text-center gap-3">
-            <h2 className="text-xl font-semibold text-text-primary">
-              {title}
-            </h2>
-
-            <p className="text-sm text-text-primary">
-              {subtitle}
-            </p>
-
-            <p className="text-sm font-semibold text-text-primary">
-              {maskedValue}
-            </p>
-
-            <p className="text-sm text-text-primary">
-              Please check your messages and enter it here
-            </p>
-
-            <div className="mt-6 mb-6 w-full">
-              <NativeOTPInput
-                value={code}
-                maxLength={MAX_CODE_LENGTH}
-                autoFocus={false}
-                onChange={(v) => {
-                  setCode(v)
-                  setErrorText(null)
-                }}
-              />
-            </div>
-
-            <div className='relative'>
-              <Button
-                className='bg-primary text-white rounded-full px-4 py-2 w-full h-full'
-                disabled={!isCodeComplete || isVerifying}
-                onClick={handleContinue}
-              >
-                {isVerifying ? 'Verifying...' : 'Continue'}
-              </Button>
-            </div>
-
-            {errorText && (
-              <p className="mt-2 text-xs text-red-500">{errorText}</p>
-            )}
-
-            <p className="mt-3 text-sm">
-              Didn&apos;t receive the Code?{' '}
-              <button
-                onClick={handleResend}
-                disabled={resendDisabled}
-                className="bg-transparent border-none text-primary font-semibold cursor-pointer p-0 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                type="button"
-              >
-                {resendLabel}
-              </button>
-            </p>
-          </div>
-        </div>
-        {renderSuccessPopup()}
-      </>
-    )
-  }
+    );
+  };
 
   return (
-    <div className="h-fit flex flex-col">
-      <SheetContainer>
-        <div className="  flex flex-col">
-          <div className="flex flex-col items-center justify-center h-full">
-            <div className="p-6 py-10 px-5 text-center flex flex-col items-center gap-2">
-              <h2 className="text-xl font-semibold text-text-primary m-0">
-                {title}
-              </h2>
-              <p className="text-[13px] text-text-primary m-0">
-                {subtitle}
-              </p>
-              <p className="text-md leading-none font-semibold text-text-primary m-0">
-                {maskedValue}
-              </p>
-              <p className="text-[13px] text-text-primary m-0">
-                Please check your messages and enter it here
-              </p>
+    <>
+      <div className="flex flex-col">
+        <div className="flex flex-col justify-center px-5 py-10 text-center gap-3">
+          <h2 className="text-xl font-semibold text-text-primary">{title}</h2>
 
-              <div className="mt-4 mb-5">
-                <OTPInput
-                  value={code}
-                  maxLength={MAX_CODE_LENGTH}
-                  onChange={setCode}
-                />
-              </div>
-            </div>
-          </div>
-          <div className='p-6 pb-10 text-center'>
-            <ButtonComponent
-              title={isVerifying ? 'Verifying...' : 'Continue'}
-              onClick={handleContinue}
-              disabled={!isCodeComplete || isVerifying}
+          <p className="text-sm text-text-primary">{subtitle}</p>
+
+          <p className="text-sm font-semibold text-text-primary">
+            {maskedValue}
+          </p>
+
+          <p className="text-sm text-text-primary">
+            Please check your messages and enter it here
+          </p>
+
+          <div className="mt-6 mb-6 w-full">
+            <NativeOTPInput
+              value={code}
+              maxLength={MAX_CODE_LENGTH}
+              autoFocus={false}
+              onChange={(v) => {
+                setCode(v);
+                setErrorText(null);
+              }}
             />
-            <p className="mt-3 text-sm">
-              Didn&apos;t receive the Code?{' '}
-              <button
-                onClick={handleResend}
-                disabled={resendDisabled}
-                className="bg-transparent border-none text-primary font-semibold cursor-pointer p-0 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                type="button"
-              >
-                {resendLabel}
-              </button>
-            </p>
           </div>
+
+          <div className="relative">
+            <Button
+              className="bg-primary text-white rounded-full px-4 py-2 w-full h-full"
+              disabled={!isCodeComplete || isVerifying}
+              onClick={handleContinue}
+            >
+              {isVerifying ? "Verifying..." : "Continue"}
+            </Button>
+          </div>
+
+          {errorText && (
+            <p className="mt-2 text-xs text-red-500">{errorText}</p>
+          )}
+
+          <p className="mt-3 text-sm">
+            Didn&apos;t receive the Code?{" "}
+            <button
+              onClick={handleResend}
+              className="bg-transparent border-none text-primary font-semibold cursor-pointer p-0 text-sm"
+              type="button"
+            >
+              Resend
+            </button>
+          </p>
         </div>
-      </SheetContainer>
+      </div>
       {renderSuccessPopup()}
-    </div>
-  )
+    </>
+  );
 }

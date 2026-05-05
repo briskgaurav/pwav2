@@ -156,28 +156,28 @@ export default function BottomSheetModal({
                 </h2>
 
                 <div className='flex items-center gap-2'>
-             {
-              recommendedAmount && (
-                <p className='text-text-primary text-md font-medium'><span className='line-through mr-1'>N</span> {recommendedAmount}</p>
-              )
-             }
+                  {
+                    recommendedAmount && (
+                      <p className='text-text-primary text-md font-medium'><span className='line-through mr-1'>N</span> {recommendedAmount}</p>
+                    )
+                  }
 
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="w-8 h-8 flex items-center justify-center"
-                  aria-label="Close"
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    className="w-8 h-8 flex items-center justify-center"
+                    aria-label="Close"
                   >
-                  <X size={20} color={isDarkMode ? 'white' : 'text-text-secondary'} />
-                </button>
-                  </div>
+                    <X size={20} color={isDarkMode ? 'white' : 'text-text-secondary'} />
+                  </button>
+                </div>
               </div>
               <div className="h-px bg-border my-4" />
             </>
           )}
           <div className='px-5 space-y-2'>
 
-          {children}
+            {children}
           </div>
         </div>
       </div>

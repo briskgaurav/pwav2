@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import CardPinAuth from '@/components/screens/AuthScreens/CardPinAuth'
 import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen'
 import SuccessScreen from '@/components/screens/AuthScreens/SuccessScreen'
-import { CardMockup, SheetContainer } from '@/components/ui'
+import { CardMockup } from '@/components/ui'
 import { routes } from '@/lib/routes'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -16,6 +16,7 @@ import { useManagingCard } from '@/hooks/useManagingCard'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { linkVirtualCard as linkVirtualCardAction } from '@/store/redux/slices/cardWalletSlice'
 import { selectMaskedEmail, selectMaskedMobile } from '@/store/redux/slices/userSlice'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 
 type LinkVirtualStep = 'pin' | 'selectCard' | 'emailOtp' | 'phoneOtp' | 'success'
 
@@ -86,9 +87,8 @@ export default function LinkVirtualCardScreen() {
 
   if (step === 'selectCard') {
     return (
-      <div className='h-screen flex flex-col overflow-hidden'>
-        <SheetContainer>
-          <div className="flex-1 flex-col flex justify-start items-center overflow-auto pt-10 space-y-4 p-6">
+      <LayoutSheet routeTitle="Link Virtual Card" needPadding={false}>
+        <div className="flex-1 flex-col flex justify-start items-center overflow-auto pt-10 space-y-4 p-6">
             {unlinkedVirtualCards.length === 0 && linkedVirtualCards.length === 0 ? (
               <p className="text-sm text-text-secondary absolute w-1/2 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center  py-4">No virtual cards available, Please add a virtual card first!</p>
             ) : (
@@ -188,7 +188,7 @@ export default function LinkVirtualCardScreen() {
               </>
             )}
           </div>
-          <div className=" w-full p-4 space-y-2 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] flex-shrink-0">
+          <div className=" w-full p-4 space-y-2 pb-[calc(env(safe-area-inset-bottom,24px)+24px)] shrink-0">
             {/* {unlinkedVirtualCards.length > 0 && ( */}
             <Link
               href="#"
@@ -208,9 +208,7 @@ export default function LinkVirtualCardScreen() {
             </Link>
             {/* )} */}
           </div>
-        </SheetContainer>
-
-      </div>
+      </LayoutSheet>
     )
   }
 
@@ -222,7 +220,6 @@ export default function LinkVirtualCardScreen() {
         subtitle="We have sent you a 6-digit code to your Registered Email"
         maskedValue={maskedEmail}
         successRoute={routes.instacard}
-        showKeypad
         onSuccess={() => setStep('phoneOtp')}
       />
     )
@@ -236,7 +233,6 @@ export default function LinkVirtualCardScreen() {
         subtitle="We have sent you a 6-digit code to your Registered Phone Number"
         maskedValue={maskedMobile}
         successRoute={routes.instacard}
-        showKeypad
         onSuccess={() => {
           if (managingCardId && selectedCard) {
             dispatch(linkVirtualCardAction({ universalCardId: managingCardId, virtualCardId: selectedCard }))

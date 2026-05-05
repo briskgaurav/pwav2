@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { OTPInput, OTPKeypad, CardMockup } from '@/components/ui'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { CardMockup } from '@/components/ui'
 import { useAppSelector } from '@/store/redux/hooks'
 import { PIN_LENGTH } from '@/lib/types'
 import { useRouter } from 'next/navigation'
@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/lib/auth-context'
 import { useManagingCard } from '@/hooks/useManagingCard'
 import LayoutSheet from '@/components/ui/LayoutSheet'
-import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
 import { routes } from '@/lib/routes'
 
 type CardPinAuthProps = {
@@ -17,6 +16,70 @@ type CardPinAuthProps = {
   cardImageSrc: string
   maskedNumber?: string
   onVerified: () => void
+}
+
+function NativePINInput({
+  value,
+  maxLength,
+  onChange,
+  resetKey,
+}: {
+  value: string
+  maxLength: number
+  onChange: (v: string) => void
+  resetKey: string | number
+}) {
+  const hiddenRef = useRef<HTMLInputElement>(null)
+  const digits = Array.from({ length: maxLength }, (_, i) => value[i] || '')
+
+  const focusInput = () => hiddenRef.current?.focus()
+
+  useEffect(() => {
+    const t = window.setTimeout(() => focusInput(), 150)
+    return () => window.clearTimeout(t)
+  }, [resetKey])
+
+  return (
+    <div className="relative w-full">
+      <input
+        ref={hiddenRef}
+        type="tel"
+        inputMode="numeric"
+        autoComplete="off"
+        pattern="\d*"
+        enterKeyHint="done"
+        maxLength={maxLength}
+        value={value}
+        onChange={(e) => {
+          const cleaned = e.target.value.replace(/\D/g, '').slice(0, maxLength)
+          onChange(cleaned)
+        }}
+        className="absolute -left-[9999px] top-0 w-px h-px opacity-0"
+      />
+
+      <div className="flex gap-2.5 w-full px-5 justify-center" onClick={focusInput}>
+        {digits.map((digit, i) => {
+          const isCursor = i === value.length && value.length < maxLength
+          return (
+            <div
+              key={i}
+              className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${
+                isCursor ? 'border-primary' : digit ? 'border-text-primary' : 'border-border'
+              }`}
+            >
+              {digit ? (
+                <span className="w-3 h-3 rounded-full bg-text-primary" />
+              ) : isCursor ? (
+                <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" />
+              ) : (
+                ''
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
 }
 
 export default function CardPinAuth({
@@ -28,26 +91,16 @@ export default function CardPinAuth({
   const [pin, setPin] = useState('')
   const [error, setError] = useState('')
   const [resetKey, setResetKey] = useState(0)
-  const [isImageLoading, setIsImageLoading] = useState(true)
   const { verifyPin: verifyCardPin, card: managingCard } = useManagingCard()
   const globalPin = useAppSelector((s) => s.card.pin)
-  const verifyGlobalPin = (input: string) => input === globalPin
   const router = useRouter()
   const { t } = useTranslation()
   const { language } = useAuth()
   const isRtl = language === 'ar'
 
-  const pinInputRef = useRef<HTMLDivElement | null>(null)
-  const { keypadRef, isKeypadOpen, openKeypad, closeKeypad } = useSlideUpKeypad({
-    insideRefs: [pinInputRef],
-  })
-
-  useEffect(() => {
-    openKeypad()
-  }, [openKeypad])
-
-  const handleContinue = () => {
-    const isValid = managingCard ? verifyCardPin(pin) : verifyGlobalPin(pin)
+  const handleContinue = useCallback(() => {
+    const globalPinOk = pin === globalPin
+    const isValid = managingCard ? verifyCardPin(pin) : globalPinOk
     if (isValid) {
       onVerified()
     } else {
@@ -55,26 +108,14 @@ export default function CardPinAuth({
       setPin('')
       setResetKey((prev) => prev + 1)
     }
-  }
-
-  const handleKeypadKey = (key: string) => {
-    setError('')
-
-    if (key === 'del') {
-      setPin((prev) => prev.slice(0, -1))
-      return
-    }
-
-    if (!/^\d$/.test(key)) return
-    setPin((prev) => (prev.length < PIN_LENGTH ? prev + key : prev))
-  }
+  }, [globalPin, managingCard, onVerified, pin, t, verifyCardPin])
 
   const isComplete = pin.length === PIN_LENGTH
   useEffect(() => {
     if (pin.length === PIN_LENGTH) {
-      handleContinue();
+      handleContinue()
     }
-  }, [pin, handleContinue]);
+  }, [pin, handleContinue])
 
 
 
@@ -98,17 +139,18 @@ export default function CardPinAuth({
             />
           </div>
 
-          <div ref={pinInputRef} className="flex w-full flex-col items-center gap-4">
+          <div className="flex w-full flex-col items-center gap-4">
             <p className="text-md text-center text-text-primary">
               {t('cardPinAuth.enterYourPin')}
             </p>
-            <OTPInput
-              useDots
+            <NativePINInput
               resetKey={resetKey}
               value={pin}
               maxLength={PIN_LENGTH}
-              onPress={openKeypad}
-              onChange={setPin}
+              onChange={(v) => {
+                setError('')
+                setPin(v)
+              }}
             />
             <div className="h-4">
               {error && (
@@ -135,14 +177,6 @@ export default function CardPinAuth({
           </div>
 
         </div>
-
-        <div
-          ref={keypadRef}
-          className={`fixed bottom-0 h-fit left-0 right-0 transition-opacity ${isKeypadOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-        >
-          <OTPKeypad onKeyPress={handleKeypadKey} />
-        </div>
-
 
       </div>
     </LayoutSheet>

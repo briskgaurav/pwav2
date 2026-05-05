@@ -5,6 +5,7 @@ import gsap from 'gsap'
 import Draggable from 'gsap/dist/Draggable'
 import { formatAmountWithCommas } from '@/lib/format-amount'
 import { ChevronDown } from 'lucide-react'
+import CustomRadioBTN from '@/components/ui/CustomRadioBTN'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(Draggable)
@@ -106,11 +107,7 @@ function BankRow({
       </div>
 
       {/* Radio Button */}
-      <div
-        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${selected ? 'border-[#fff]' : 'border-border'}`}
-      >
-        {selected && <div className="w-2.5 h-2.5 rounded-full bg-orange" />}
-      </div>
+      <CustomRadioBTN checked={selected} sizePx={20} className="shrink-0" />
     </button>
   )
 }
