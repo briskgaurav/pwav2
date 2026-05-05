@@ -1,7 +1,7 @@
 'use client';
 
 import { X } from 'lucide-react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import Draggable from 'gsap/dist/Draggable';
 import { useAuth } from '@/lib/auth-context';
@@ -36,7 +36,6 @@ export default function BottomSheetModal({
   const handleRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<Draggable[]>([]);
   const { isDarkMode } = useAuth();
-  const [keyboardOffset, setKeyboardOffset] = useState(0);
 
   const handleClose = useCallback(() => {
     if (modalRef.current && backdropRef.current) {
@@ -82,37 +81,6 @@ export default function BottomSheetModal({
     }
   }, [handleClose]);
 
-  // ── VisualViewport keyboard avoidance ──────────────────────────────────
-  useEffect(() => {
-    if (!visible) {
-      setKeyboardOffset(0);
-      return;
-    }
-
-    const vv = window.visualViewport;
-    if (!vv) return;
-
-    const onViewportChange = () => {
-      // vv.offsetTop: how far the visual viewport has been scrolled away from the
-      // layout viewport's top (happens when keyboard pushes view up on some browsers).
-      // keyboard height = layout bottom minus visual viewport bottom.
-      const layoutBottom = window.innerHeight;
-      const visualBottom = vv.offsetTop + vv.height;
-      const kbHeight = Math.max(0, layoutBottom - visualBottom);
-      setKeyboardOffset(kbHeight);
-    };
-
-    onViewportChange();
-    vv.addEventListener('resize', onViewportChange);
-    vv.addEventListener('scroll', onViewportChange);
-
-    return () => {
-      vv.removeEventListener('resize', onViewportChange);
-      vv.removeEventListener('scroll', onViewportChange);
-    };
-  }, [visible]);
-  // ───────────────────────────────────────────────────────────────────────
-
   useEffect(() => {
     if (visible) {
       document.body.style.overflow = 'hidden';
@@ -149,16 +117,7 @@ export default function BottomSheetModal({
   const maxHeightVh = maxHeight * 100;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{
-        // Lift the entire overlay upward by the keyboard height so the sheet
-        // always sits above the software keyboard on iOS / Android.
-        bottom: keyboardOffset,
-        top: 0,
-        transition: 'bottom 0.25s ease-out',
-      }}
-    >
+    <div className="fixed inset-0 z-50 flex items-end justify-center">
       <div
         ref={backdropRef}
         className="absolute inset-0 bg-black/20"
@@ -197,28 +156,28 @@ export default function BottomSheetModal({
                 </h2>
 
                 <div className='flex items-center gap-2'>
-             {
-              recommendedAmount && (
-                <p className='text-text-primary text-md font-medium'><span className='line-through mr-1'>N</span> {recommendedAmount}</p>
-              )
-             }
+                  {
+                    recommendedAmount && (
+                      <p className='text-text-primary text-md font-medium'><span className='line-through mr-1'>N</span> {recommendedAmount}</p>
+                    )
+                  }
 
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="w-8 h-8 flex items-center justify-center"
-                  aria-label="Close"
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    className="w-8 h-8 flex items-center justify-center"
+                    aria-label="Close"
                   >
-                  <X size={20} color={isDarkMode ? 'white' : 'text-text-secondary'} />
-                </button>
-                  </div>
+                    <X size={20} color={isDarkMode ? 'white' : 'text-text-secondary'} />
+                  </button>
+                </div>
               </div>
               <div className="h-px bg-border my-4" />
             </>
           )}
           <div className='px-5 space-y-2'>
 
-          {children}
+            {children}
           </div>
         </div>
       </div>

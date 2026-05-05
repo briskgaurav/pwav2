@@ -27,6 +27,7 @@ function NativePinInput({
     onChange,
     resetKey,
     onDone,
+    onFocus,
     useDots = true,
 }: {
     value: string
@@ -34,6 +35,7 @@ function NativePinInput({
     onChange: (v: string) => void
     resetKey: number
     onDone?: () => void
+    onFocus?: () => void
     useDots?: boolean
 }) {
     const hiddenRef = useRef<HTMLInputElement | null>(null)
@@ -58,6 +60,7 @@ function NativePinInput({
                 enterKeyHint="done"
                 maxLength={maxLength}
                 value={value}
+                onFocus={() => onFocus?.()}
                 onKeyDown={(e) => {
                     if (e.key !== 'Enter') return
                     e.preventDefault()
@@ -67,7 +70,8 @@ function NativePinInput({
                     const cleaned = e.target.value.replace(/\\D/g, '').slice(0, maxLength)
                     onChange(cleaned)
                 }}
-                className="absolute -left-[9999px] top-0 w-px h-px opacity-0"
+                // Keep it *inside* the sheet so focusing scrolls correctly
+                className="absolute left-0 top-0 w-px h-px opacity-0 pointer-events-none"
             />
 
             <div
@@ -143,12 +147,21 @@ export default function CardPinVerificationDrawer({
     const [pin, setPin] = useState('')
     const [error, setError] = useState<string | null>(null)
     const [resetKey, setResetKey] = useState(0)
+    const [keyboardInset, setKeyboardInset] = useState(0)
     const pinInputRef = useRef<HTMLDivElement | null>(null)
+
+    const bringIntoView = useCallback(() => {
+        // Let the keyboard layout settle first
+        window.setTimeout(() => {
+            pinInputRef.current?.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' })
+        }, 50)
+    }, [])
 
     useEffect(() => {
         if (!visible) {
             setPin('')
             setError(null)
+            setKeyboardInset(0)
             setResetKey((k) => k + 1)
             return
         }
@@ -156,6 +169,27 @@ export default function CardPinVerificationDrawer({
         setResetKey((k) => k + 1)
     }, [visible])
 
+    useEffect(() => {
+        if (!visible) return
+
+        const vv = window.visualViewport
+        if (!vv) return
+
+        const compute = () => {
+            // Approx keyboard height in px for iOS/Android browsers that support VisualViewport
+            const inset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop)
+            setKeyboardInset(inset)
+            if (inset > 0) bringIntoView()
+        }
+
+        compute()
+        vv.addEventListener('resize', compute)
+        vv.addEventListener('scroll', compute)
+        return () => {
+            vv.removeEventListener('resize', compute)
+            vv.removeEventListener('scroll', compute)
+        }
+    }, [bringIntoView, visible])
 
     const handleContinue = useCallback((): boolean => {
         const ok = verifier(pin)
@@ -174,7 +208,7 @@ export default function CardPinVerificationDrawer({
 
     return (
         <BottomSheetModal showTitle={showTitle} backdropBlur={true} visible={visible} onClose={onClose} title={title} maxHeight={0.92}>
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-5" style={{ paddingBottom: keyboardInset ? keyboardInset + 12 : undefined }}>
                 <p className="text-sm text-text-secondary pt-2 text-center">{subtitle}</p>
 
                 <div ref={pinInputRef} className="flex flex-col items-center gap-3">
@@ -187,6 +221,7 @@ export default function CardPinVerificationDrawer({
                             setError(null)
                             setPin(v)
                         }}
+                        onFocus={bringIntoView}
                         onDone={() => {
                             if (!isComplete) return
                             handleContinue()
