@@ -35,16 +35,7 @@ export default function BottomSheetModal({
   const backdropRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<Draggable[]>([]);
-  const keyboardOffsetRef = useRef(0);
-  const minYRef = useRef(0);
   const { isDarkMode } = useAuth();
-
-  const computeKeyboardOffset = useCallback(() => {
-    const vv = window.visualViewport;
-    if (!vv) return 0;
-    // Approx keyboard height in px (accounts for iOS offsetTop)
-    return Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-  }, []);
 
   const handleClose = useCallback(() => {
     if (modalRef.current && backdropRef.current) {
@@ -54,7 +45,7 @@ export default function BottomSheetModal({
         ease: 'power2.in',
       });
       gsap.to(modalRef.current, {
-        y: window.innerHeight,
+        y: '100%',
         duration: 0.3,
         ease: 'power3.in',
         onComplete: onClose,
@@ -68,20 +59,19 @@ export default function BottomSheetModal({
     if (modalRef.current && handleRef.current) {
       const modalHeight = modalRef.current.offsetHeight;
       const threshold = modalHeight * 0.3;
-      const minY = minYRef.current;
 
       draggableRef.current = Draggable.create(modalRef.current, {
         type: 'y',
         trigger: handleRef.current,
-        bounds: { minY, maxY: window.innerHeight },
+        bounds: { minY: 0, maxY: window.innerHeight },
         inertia: true,
         onDragEnd: function () {
           const endY = this.endY ?? this.y;
-          if (endY > minY + threshold) {
+          if (endY > threshold) {
             handleClose();
           } else {
             gsap.to(modalRef.current, {
-              y: minY,
+              y: 0,
               duration: 0.3,
               ease: 'power3.out',
             });
@@ -91,49 +81,10 @@ export default function BottomSheetModal({
     }
   }, [handleClose]);
 
-  // Keep modal shifted above keyboard using GSAP y (since GSAP/Draggable controls transforms)
-  useEffect(() => {
-    if (!visible) return;
-
-    const vv = window.visualViewport;
-    if (!vv) return;
-
-    const update = () => {
-      const offset = computeKeyboardOffset();
-      keyboardOffsetRef.current = offset;
-      minYRef.current = -offset;
-
-      if (modalRef.current) {
-        gsap.to(modalRef.current, {
-          y: minYRef.current,
-          duration: 0.25,
-          ease: 'power2.out',
-        });
-      }
-
-      if (draggableRef.current.length > 0) {
-        draggableRef.current.forEach((d) => {
-          // Update bounds so snapback/drag remain correct with keyboard open
-          d.applyBounds({ minY: minYRef.current, maxY: window.innerHeight });
-        });
-      }
-    };
-
-    update();
-    vv.addEventListener('resize', update);
-    vv.addEventListener('scroll', update);
-    return () => {
-      vv.removeEventListener('resize', update);
-      vv.removeEventListener('scroll', update);
-    };
-  }, [computeKeyboardOffset, visible]);
-
   useEffect(() => {
     if (visible) {
       document.body.style.overflow = 'hidden';
       if (modalRef.current && backdropRef.current) {
-        keyboardOffsetRef.current = computeKeyboardOffset();
-        minYRef.current = -keyboardOffsetRef.current;
         gsap.fromTo(
           backdropRef.current,
           { opacity: 0 },
@@ -141,13 +92,8 @@ export default function BottomSheetModal({
         );
         gsap.fromTo(
           modalRef.current,
-          { y: window.innerHeight },
-          {
-            y: minYRef.current,
-            duration: 0.4,
-            ease: 'power3.out',
-            onComplete: initDraggable,
-          }
+          { y: '100%' },
+          { y: '0%', duration: 0.4, ease: 'power3.out', onComplete: initDraggable }
         );
       }
     } else {
@@ -164,7 +110,7 @@ export default function BottomSheetModal({
         draggableRef.current = [];
       }
     };
-  }, [computeKeyboardOffset, initDraggable, visible]);
+  }, [initDraggable, visible]);
 
   if (!visible) return null;
 
