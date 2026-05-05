@@ -8,14 +8,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { routes } from '@/lib/routes'
 
-// Utility to detect web environment (vs React Native/app)
-function isWebPlatform() {
-    // window && navigator are present, but user agent does NOT contain "ReactNative"
-    return typeof window !== 'undefined' &&
-        typeof navigator !== 'undefined' &&
-        !/ReactNative/i.test(navigator.userAgent)
-}
-
 type CardPinVerificationDrawerProps = {
     visible: boolean
     onClose: () => void
@@ -35,6 +27,7 @@ function NativePinInput({
     onChange,
     resetKey,
     onDone,
+    onFocus,
     useDots = true,
 }: {
     value: string
@@ -42,6 +35,7 @@ function NativePinInput({
     onChange: (v: string) => void
     resetKey: number
     onDone?: () => void
+    onFocus?: () => void
     useDots?: boolean
 }) {
     const hiddenRef = useRef<HTMLInputElement | null>(null)
@@ -66,6 +60,7 @@ function NativePinInput({
                 enterKeyHint="done"
                 maxLength={maxLength}
                 value={value}
+                onFocus={() => onFocus?.()}
                 onKeyDown={(e) => {
                     if (e.key !== 'Enter') return
                     e.preventDefault()
@@ -75,7 +70,8 @@ function NativePinInput({
                     const cleaned = e.target.value.replace(/\\D/g, '').slice(0, maxLength)
                     onChange(cleaned)
                 }}
-                className="absolute -left-[9999px] top-0 w-px h-px opacity-0"
+                // Keep it *inside* the sheet so focusing scrolls correctly
+                className="absolute left-0 top-0 w-px h-px opacity-0 pointer-events-none"
             />
 
             <div
@@ -154,6 +150,13 @@ export default function CardPinVerificationDrawer({
     const [keyboardInset, setKeyboardInset] = useState(0)
     const pinInputRef = useRef<HTMLDivElement | null>(null)
 
+    const bringIntoView = useCallback(() => {
+        // Let the keyboard layout settle first
+        window.setTimeout(() => {
+            pinInputRef.current?.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' })
+        }, 50)
+    }, [])
+
     useEffect(() => {
         if (!visible) {
             setPin('')
@@ -176,6 +179,7 @@ export default function CardPinVerificationDrawer({
             // Approx keyboard height in px for iOS/Android browsers that support VisualViewport
             const inset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop)
             setKeyboardInset(inset)
+            if (inset > 0) bringIntoView()
         }
 
         compute()
@@ -185,7 +189,7 @@ export default function CardPinVerificationDrawer({
             vv.removeEventListener('resize', compute)
             vv.removeEventListener('scroll', compute)
         }
-    }, [visible])
+    }, [bringIntoView, visible])
 
     const handleContinue = useCallback((): boolean => {
         const ok = verifier(pin)
@@ -217,6 +221,7 @@ export default function CardPinVerificationDrawer({
                             setError(null)
                             setPin(v)
                         }}
+                        onFocus={bringIntoView}
                         onDone={() => {
                             if (!isComplete) return
                             handleContinue()
@@ -225,13 +230,11 @@ export default function CardPinVerificationDrawer({
                     {error && <p className="text-xs text-red-500 text-center">{error}</p>}
                 </div>
                 <div className='w-full flex flex-col items-center gap-2'>
+
                     <Button fullWidth disabled={!isComplete} onClick={handleContinue}>Continue</Button>
                     <Link href={routes.forgetPin} className="text-sm text-text-secondary text-center">Forgot PIN?</Link>
                 </div>
-                {/* Only show this extra spacing on non-web (i.e., native/mobile) platforms */}
-                {/* {!isWebPlatform() && */}
-                 <div className='h-[20vh]'></div>
-                 {/* } */}
+                {/* <div className='h-[20vh]'></div> */}
             </div>
 
         </BottomSheetModal>
