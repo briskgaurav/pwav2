@@ -7,6 +7,7 @@ import { useAppSelector } from '@/store/redux/hooks'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { routes } from '@/lib/routes'
+import { useVisualViewport } from '@/hooks/useVisualViewport'
 
 type CardPinVerificationDrawerProps = {
     visible: boolean
@@ -67,7 +68,8 @@ function NativePinInput({
                     const cleaned = e.target.value.replace(/\\D/g, '').slice(0, maxLength)
                     onChange(cleaned)
                 }}
-                className="absolute -left-[9999px] top-0 w-px h-px opacity-0"
+                // Keep inside the sheet so browser can scroll it into view
+                className="absolute left-0 top-0 w-px h-px opacity-0 pointer-events-none"
             />
 
             <div
@@ -143,14 +145,19 @@ export default function CardPinVerificationDrawer({
     const [pin, setPin] = useState('')
     const [error, setError] = useState<string | null>(null)
     const [resetKey, setResetKey] = useState(0)
-    const [keyboardInset, setKeyboardInset] = useState(0)
     const pinInputRef = useRef<HTMLDivElement | null>(null)
+    const vv = useVisualViewport()
+
+    const bringIntoView = useCallback(() => {
+        window.setTimeout(() => {
+            pinInputRef.current?.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' })
+        }, 50)
+    }, [])
 
     useEffect(() => {
         if (!visible) {
             setPin('')
             setError(null)
-            setKeyboardInset(0)
             setResetKey((k) => k + 1)
             return
         }
@@ -160,24 +167,8 @@ export default function CardPinVerificationDrawer({
 
     useEffect(() => {
         if (!visible) return
-
-        const vv = window.visualViewport
-        if (!vv) return
-
-        const compute = () => {
-            // Approx keyboard height in px for iOS/Android browsers that support VisualViewport
-            const inset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop)
-            setKeyboardInset(inset)
-        }
-
-        compute()
-        vv.addEventListener('resize', compute)
-        vv.addEventListener('scroll', compute)
-        return () => {
-            vv.removeEventListener('resize', compute)
-            vv.removeEventListener('scroll', compute)
-        }
-    }, [visible])
+        if (vv.insetBottom > 0) bringIntoView()
+    }, [bringIntoView, visible, vv.insetBottom])
 
     const handleContinue = useCallback((): boolean => {
         const ok = verifier(pin)
@@ -196,7 +187,14 @@ export default function CardPinVerificationDrawer({
 
     return (
         <BottomSheetModal showTitle={showTitle} backdropBlur={true} visible={visible} onClose={onClose} title={title} maxHeight={0.92}>
-            <div className="flex flex-col gap-5" style={{ paddingBottom: keyboardInset ? keyboardInset + 12 : undefined }}>
+            <div
+                className="flex flex-col gap-5"
+                style={{
+                    paddingBottom: vv.insetBottom
+                        ? Math.round(vv.insetBottom * 1.15) + 24
+                        : undefined,
+                }}
+            >
                 <p className="text-sm text-text-secondary pt-2 text-center">{subtitle}</p>
 
                 <div ref={pinInputRef} className="flex flex-col items-center gap-3">
@@ -221,7 +219,6 @@ export default function CardPinVerificationDrawer({
                     <Button fullWidth disabled={!isComplete} onClick={handleContinue}>Continue</Button>
                     <Link href={routes.forgetPin} className="text-sm text-text-secondary text-center">Forgot PIN?</Link>
                 </div>
-                <div className='h-[55vw] w-full'></div>
             </div>
 
         </BottomSheetModal>
