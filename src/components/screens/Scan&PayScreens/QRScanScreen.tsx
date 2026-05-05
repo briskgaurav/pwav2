@@ -9,6 +9,8 @@ import gsap from 'gsap'
 
 import { useBackRedirect } from '@/hooks/useBackRedirect'
 import { routes } from '@/lib/routes'
+import { parseQRData } from '@/lib/parse-qr'
+import Toaster from '@/components/ui/Toaster'
 
 const SCANNER_SIZE = 240
 const CORNER_SIZE = 45
@@ -36,7 +38,32 @@ export default function QRScanScreen() {
   const [permissionDenied, setPermissionDenied] = useState(false)
   const [flashOn, setFlashOn] = useState(false)
   const [flashSupported, setFlashSupported] = useState(false)
+  // No UI for result state
   const [result, setResult] = useState<string | null>(null)
+  const [qrError, setQrError] = useState<string | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const processingOverlayRef = useRef<HTMLDivElement>(null)
+  const qrErrorTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // --- QR Validation ---
+  const isValidQRCode = useCallback((data: string): boolean => {
+    if (!data || data.trim().length === 0) return false
+    try {
+      const url = new URL(data)
+      if (['http:', 'https:', 'upi:'].includes(url.protocol)) return true
+    } catch { }
+    if (/^upi:\/\//i.test(data)) return true
+    if (/^\d{6,}$/.test(data.trim())) return true
+    if (data.trim().length < 4) return false
+    return true
+  }, [])
+
+  const showQrError = useCallback((msg: string) => {
+    setQrError(msg)
+    if (qrErrorTimer.current) clearTimeout(qrErrorTimer.current)
+    qrErrorTimer.current = setTimeout(() => setQrError(null), 3000)
+    if ('vibrate' in navigator) navigator.vibrate([100, 50, 100])
+  }, [])
 
   const stopCamera = useCallback(() => {
     if (streamRef.current) {
@@ -45,6 +72,30 @@ export default function QRScanScreen() {
     }
     cancelAnimationFrame(scanRafRef.current)
   }, [])
+
+  const handleValidQR = useCallback((data: string) => {
+    if (hasScanned.current) return
+    if (!isValidQRCode(data)) {
+      showQrError('Invalid QR code. Please scan a valid payment QR.')
+      return
+    }
+    hasScanned.current = true
+    if ('vibrate' in navigator) navigator.vibrate([50, 30, 50])
+    stopCamera()
+    setIsProcessing(true)
+
+    // Parse dynamic QR data and forward as search params
+    const parsed = parseQRData(data)
+    const params = new URLSearchParams()
+    if (parsed.amount) params.set('amount', parsed.amount)
+    if (parsed.merchantName) params.set('merchantName', parsed.merchantName)
+    if (parsed.description) params.set('description', parsed.description)
+    params.set('qrRaw', data)
+
+    const query = params.toString()
+    const url = query ? `${routes.makePayment}?${query}` : routes.makePayment
+    setTimeout(() => router.push(url), 2000)
+  }, [isValidQRCode, showQrError, stopCamera, router])
 
   const startCamera = useCallback(async () => {
     try {
@@ -61,7 +112,6 @@ export default function QRScanScreen() {
         audio: false,
       })
 
-      // Check if component is still mounted before proceeding
       if (!isMountedRef.current) {
         stream.getTracks().forEach(track => track.stop())
         return
@@ -74,7 +124,6 @@ export default function QRScanScreen() {
         try {
           await videoRef.current.play()
         } catch (playError) {
-          // Ignore AbortError as it happens when component unmounts during play
           if (playError instanceof DOMException && playError.name === 'AbortError') {
             console.log('Video play was aborted (component likely unmounted)')
             return
@@ -87,7 +136,6 @@ export default function QRScanScreen() {
       const caps = track.getCapabilities?.() as Record<string, unknown> | undefined
       if (caps && 'torch' in caps) setFlashSupported(true)
     } catch (error) {
-      // Don't set error state if component unmounted
       if (!isMountedRef.current) return
 
       console.error('Error accessing camera:', error)
@@ -109,7 +157,6 @@ export default function QRScanScreen() {
 
     const newFlashState = !flashOn
     try {
-      // Use ImageCapture API for torch control on supported devices
       if ('ImageCapture' in window) {
         const imageCapture = new (window as unknown as { ImageCapture: new (track: MediaStreamTrack) => { getPhotoCapabilities: () => Promise<{ fillLightMode?: string[] }>; setOptions: (opts: { fillLightMode: string }) => Promise<void> } }).ImageCapture(track)
         const capabilities = await imageCapture.getPhotoCapabilities()
@@ -119,15 +166,12 @@ export default function QRScanScreen() {
           return
         }
       }
-
-      // Fallback to applyConstraints with torch
       await track.applyConstraints({
         advanced: [{ torch: newFlashState } as MediaTrackConstraintSet]
       })
       setFlashOn(newFlashState)
     } catch (err) {
       console.error('Flash toggle failed:', err)
-      // Try alternative method
       try {
         const constraints = { torch: newFlashState } as MediaTrackConstraintSet
         await track.applyConstraints(constraints)
@@ -142,17 +186,41 @@ export default function QRScanScreen() {
     const input = document.createElement('input')
     input.type = 'file'
     input.accept = 'image/*'
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0]
-      if (file) {
-        console.log('Selected image:', file.name)
-        // Redirect to payment amount page after selecting an image
-        stopCamera()
-        router.push(routes.makePayment)
+      if (!file) return
+
+      const img = new window.Image()
+      img.src = URL.createObjectURL(file)
+      img.onload = async () => {
+        const cvs = document.createElement('canvas')
+        cvs.width = img.naturalWidth
+        cvs.height = img.naturalHeight
+        const ctx2 = cvs.getContext('2d')
+        if (!ctx2) { showQrError('Could not process image.'); return }
+        ctx2.drawImage(img, 0, 0)
+        URL.revokeObjectURL(img.src)
+
+        if ('BarcodeDetector' in window) {
+          try {
+            const detector = new (window as unknown as { BarcodeDetector: new (o: { formats: string[] }) => { detect: (s: HTMLCanvasElement) => Promise<{ rawValue: string }[]> } }).BarcodeDetector({ formats: ['qr_code'] })
+            const barcodes = await detector.detect(cvs)
+            if (barcodes.length > 0) {
+              handleValidQR(barcodes[0].rawValue)
+            } else {
+              showQrError('No QR code found in this image.')
+            }
+          } catch {
+            showQrError('QR detection is not supported on this device.')
+          }
+        } else {
+          showQrError('QR detection is not supported on this browser.')
+        }
       }
+      img.onerror = () => showQrError('Could not load the selected image.')
     }
     input.click()
-  }, [stopCamera, router])
+  }, [handleValidQR, showQrError])
 
   const handleClose = useCallback(() => {
     if ('vibrate' in navigator) navigator.vibrate(10)
@@ -197,10 +265,7 @@ export default function QRScanScreen() {
         const detector = new (window as unknown as { BarcodeDetector: new (opts: { formats: string[] }) => { detect: (source: HTMLCanvasElement) => Promise<{ rawValue: string }[]> } }).BarcodeDetector({ formats: ['qr_code'] })
         detector.detect(canvas).then((barcodes) => {
           if (barcodes.length > 0 && !hasScanned.current && isMountedRef.current) {
-            hasScanned.current = true
-            setResult(barcodes[0].rawValue)
-            if ('vibrate' in navigator) navigator.vibrate([50, 30, 50])
-            setTimeout(() => router.push(routes.makePayment), 1500)
+            handleValidQR(barcodes[0].rawValue)
           }
         }).catch(() => { /* detection unavailable */ })
       }
@@ -210,14 +275,13 @@ export default function QRScanScreen() {
 
     scanRafRef.current = requestAnimationFrame(scan)
     return () => cancelAnimationFrame(scanRafRef.current)
-  }, [cameraError, router])
+  }, [cameraError, handleValidQR])
 
   // --- GSAP animations ---
   useEffect(() => {
     if (cameraError) return
 
     const ctx = gsap.context(() => {
-      // Entrance: fade in the overlay + bottom section
       if (overlayRef.current) {
         gsap.from(overlayRef.current, { opacity: 0, duration: 0.6, ease: 'power2.out' })
       }
@@ -225,7 +289,6 @@ export default function QRScanScreen() {
         gsap.from(bottomRef.current, { y: 60, opacity: 0, duration: 0.5, delay: 0.2, ease: 'power3.out' })
       }
 
-      // Scan line — sweeps up and down
       if (scanLineRef.current) {
         gsap.to(scanLineRef.current, {
           y: SCANNER_SIZE - 48,
@@ -236,7 +299,6 @@ export default function QRScanScreen() {
         })
       }
 
-      // Breathing scale on scanner box
       if (scannerBoxRef.current) {
         gsap.to(scannerBoxRef.current, {
           scale: 1.05,
@@ -247,7 +309,6 @@ export default function QRScanScreen() {
         })
       }
 
-      // Corner bracket pulse
       const corners = [cornerTLRef, cornerTRRef, cornerBLRef, cornerBRRef]
       corners.forEach(ref => {
         if (ref.current) {
@@ -310,7 +371,6 @@ export default function QRScanScreen() {
           {/* Hidden canvas for QR detection */}
           <canvas ref={canvasRef} className="hidden" />
 
-
           {/* Scanner frame area - centered */}
           <div className="flex-1 relative z-10 flex items-start  justify-center">
             {/* Breathing wrapper */}
@@ -348,17 +408,6 @@ export default function QRScanScreen() {
                   className="absolute left-6 right-6 h-[3px] bg-[#fff] rounded-full top-6"
                   style={{ boxShadow: '0 0 12px rgba(255,255,255,1)', willChange: 'transform' }}
                 />
-
-                {/* Scanned result toast */}
-                {result && (
-                  <div className="absolute top-[110%] -left-2.5 -right-2.5 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#fff]/90 shadow-lg">
-                    <div className="px-5 py-4 text-center">
-                      <p className="text-sm font-medium text-text-primary truncate">
-                        {result.length > 40 ? `${result.substring(0, 40)}…` : result}
-                      </p>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -395,7 +444,7 @@ export default function QRScanScreen() {
                 </button>
               </div>
 
-              <div onClick={()=>router.push(routes.makePayment)} className='p-2 text-white mt-6 bg-white/20 backdrop-blur-md flex items-center gap-8 pr-4 border border-border/20 rounded-full'>
+              <div onClick={() => router.push(routes.makePayment)} className='p-2 text-white mt-6 bg-white/20 backdrop-blur-md flex items-center gap-8 pr-4 border border-border/20 rounded-full'>
                 <div className='relative '>
 
                   <div className='w-10 h-10 rounded-full bg-green-500/80 backdrop-blur-xl flex items-center justify-center'>N</div>
@@ -405,9 +454,40 @@ export default function QRScanScreen() {
                 <p className='text-white text-xs font-medium'>Recents</p>
               </div>
             </div>
+
           </div>
+          {isProcessing && (
+            <div
+              ref={processingOverlayRef}
+              className="fixed inset-0 z-50 flex flex-col items-center justify-center"
+              style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(7px)' }}
+            >
+              <div className="flex flex-col items-center gap-4">
+                {/* Animated spinner */}
+                <div className="w-20 h-20 flex items-center justify-center">
+                  <div className="animate-spin rounded-full border-8 border-primary border-t-transparent border-opacity-70 w-20 h-20" />
+                  {/* use an svg tick or similar (optional for success, not animated) */}
+                  {/* No checkmark draw animation */}
+                </div>
+                <p className="text-white text-xl font-semibold mt-2">Processing…</p>
+                <p className="text-white/60 text-base tracking-wide">Validating and redirecting</p>
+              </div>
+            </div>
+          )}
         </>
       )}
+
+      {/* ── QR Processing Overlay ── */}
+
+
+      {/* ── Invalid QR Toaster ── */}
+      <Toaster
+        visible={!!qrError}
+        message="Invalid QR Code"
+        subtitle={qrError ?? undefined}
+        onDismiss={() => { setQrError(null); hasScanned.current = false }}
+        duration={3000}
+      />
     </div>
   )
 }

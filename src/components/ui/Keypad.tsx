@@ -1,12 +1,13 @@
 'use client';
 
 import { haptic } from '@/lib/useHaptics';
+import { Check } from 'lucide-react';
 
 const KEY_ROWS = [
   ['1', '2', '3'],
   ['4', '5', '6'],
   ['7', '8', '9'],
-  ['', '0', 'del'],
+  ['done', '0', 'del'],
 ] as const;
 
 interface OTPKeypadProps {
@@ -15,12 +16,33 @@ interface OTPKeypadProps {
   needPadding?: boolean;
 }
 
+function CheckIcon({ size = 24, color = 'var(--color-primary)' }: { size?: number | string, color?: string }) {
+  return (
+    <svg
+      width={size} height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      style={{ width: typeof size === 'number' ? `${size}px` : size, height: typeof size === 'number' ? `${size}px` : size }}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="12" cy="12" r="12" fill={color} opacity="0.12" />
+      <path
+        d="M7 12.6L10.1429 15.5L17 9.5"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function OTPKeypad({ onKeyPress, showBackground = true, needPadding = true }: OTPKeypadProps) {
   const handleKeyPress = (key: string) => {
     haptic('light');
-    
     onKeyPress(key);
   };
+
   return (
     <div
       className={`w-full ${showBackground ? 'bg-white border-t border-border rounded-t-2xl' : ''} pointer-events-auto`}
@@ -38,52 +60,63 @@ export function OTPKeypad({ onKeyPress, showBackground = true, needPadding = tru
             display: 'flex',
             justifyContent: 'space-between',
             gap: 'clamp(8px, 2vw, 12px)',
-            
           }}
-         
         >
           {row.map((key, keyIndex) => {
-            if (key === '') {
+            if (key === 'done') {
+              // Done button styled like other number buttons, NOT green/accent!
               return (
-                <div
-                  key={`empty-${keyIndex}`}
+                <button
+                  key="done"
+                  type="button"
+                  onClick={() => handleKeyPress('done')}
+                  aria-label="Done"
+                  className="btn-press"
                   style={{
                     flex: 1,
                     minWidth: 0,
                     aspectRatio: '1.5 / 1',
                     maxHeight: 54,
+                    borderRadius: 'clamp(8px, 2vw, 12px)',
+                    backgroundColor: 'var(--color-light-gray)',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    fontSize: 'clamp(14px, 4vw, 18px)',
+                    color: 'var(--color-text-primary)',
                   }}
-                />
+                >
+                <Check />
+                </button>
               );
             }
-
-            const isDelete = key === 'del';
-
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => handleKeyPress(key)}
-                aria-label={isDelete ? 'Delete' : `Number ${key}`}
-                className="btn-press"
-                
-                style={{
-                  flex: 1,
-                  minWidth: 0,
-                  aspectRatio: '1.5 / 1',
-                  maxHeight: 54,
-                  borderRadius: 'clamp(8px, 2vw, 12px)',
-                  backgroundColor: isDelete ? 'var(--color-white)' : 'var(--color-light-gray)',
-                  border: isDelete ? '1px solid var(--color-border)' : 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  fontSize: 'clamp(14px, 4vw, 18px)',
-                  color: 'var(--color-text-primary)',
-                }}
-              >
-                {isDelete ? (
+            if (key === 'del') {
+              // Delete button
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => handleKeyPress(key)}
+                  aria-label="Delete"
+                  className="btn-press"
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    aspectRatio: '1.5 / 1',
+                    maxHeight: 54,
+                    borderRadius: 'clamp(8px, 2vw, 12px)',
+                    backgroundColor: 'var(--color-white)',
+                    border: '1px solid var(--color-border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    fontSize: 'clamp(14px, 4vw, 18px)',
+                    color: 'var(--color-text-primary)',
+                  }}
+                >
                   <svg
                     width="clamp(18px, 5vw, 24px)"
                     height="clamp(18px, 5vw, 24px)"
@@ -107,9 +140,34 @@ export function OTPKeypad({ onKeyPress, showBackground = true, needPadding = tru
                       strokeLinejoin="round"
                     />
                   </svg>
-                ) : (
-                  key
-                )}
+                </button>
+              );
+            }
+            // All regular number buttons
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => handleKeyPress(key)}
+                aria-label={`Number ${key}`}
+                className="btn-press"
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  aspectRatio: '1.5 / 1',
+                  maxHeight: 54,
+                  borderRadius: 'clamp(8px, 2vw, 12px)',
+                  backgroundColor: 'var(--color-light-gray)',
+                  border: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: 'clamp(14px, 4vw, 18px)',
+                  color: 'var(--color-text-primary)',
+                }}
+              >
+                {key}
               </button>
             );
           })}

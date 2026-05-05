@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from 'react'
 
-import { Button } from '@/components/ui'
+import { Button, PaymentProcessingOverlay } from '@/components/ui'
 import { type CardData } from '@/constants/cardData'
 import { useAuth } from '@/lib/auth-context'
 import { useAppSelector } from '@/store/redux/hooks'
@@ -30,6 +30,7 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
   const [pinDrawerOpen, setPinDrawerOpen] = useState(false)
   const [pendingCard, setPendingCard] = useState<CardData | null>(null)
+  const processing = usePaymentProcessing()
   const cardStackRef = useRef<CardStackRef>(null)
 
   const handleCardFiltersChange = useCallback((filters: CardFilterType[]) => {
@@ -60,7 +61,7 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
 
     return cards.filter((card) => {
       const matchesUniversal = includesUniversal && card.cardForm === 'universal'
-      const matchesType = typeFilters.length > 0 
+      const matchesType = typeFilters.length > 0
         && typeFilters.includes(card.cardType as (typeof typeFilters)[number])
         && card.cardForm !== 'universal'
       return matchesUniversal || matchesType
@@ -97,14 +98,20 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
       {/* Card stack area */}
       <div className="min-h-[58vh]  w-full relative">
         {filteredCards.length > 0 ? (
-          <CardStack
-            ref={cardStackRef}
-            cards={filteredCards}
-            onCardChange={(index: number) => setCurrentCardIndex(index)}
-            onCardPress={handleCardPress}
-            isDrawerOpen={false}
-            selectedCardId={selectedCardId}
-          />
+          <div
+            className={`w-full transition-transform duration-200 ease-out ${pinDrawerOpen ? 'scale-[0.6]' : 'scale-100'
+              }`}
+            style={{ transformOrigin: 'top center' }}
+          >
+            <CardStack
+              ref={cardStackRef}
+              cards={filteredCards}
+              onCardChange={(index: number) => setCurrentCardIndex(index)}
+              onCardPress={handleCardPress}
+              isDrawerOpen={pinDrawerOpen}
+              selectedCardId={selectedCardId}
+            />
+          </div>
         ) : (
           <div className="h-full flex justify-center items-center">
             <span className="text-base text-text-secondary">No card available</span>
@@ -126,6 +133,7 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
       <div className="shrink-0 px-4 pb-6 pt-2">
         <Button fullWidth className='bg-primary text-white' onClick={() => {
           if (!selectedCard) return
+          setSelectedCardId(selectedCard.id)
           setPendingCard(selectedCard)
           // console.log('[ScanPay] Opening PIN drawer for card (pay btn):', selectedCard, 'amount:', amount)
           setPinDrawerOpen(true)
@@ -133,9 +141,10 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
       </div>
 
       <CardPinVerificationDrawer
-      fieldLength={4}
+        fieldLength={4}
         visible={pinDrawerOpen}
         onClose={() => {
+          if (processing.model.open) return
           setPinDrawerOpen(false)
           setPendingCard(null)
         }}
@@ -143,13 +152,22 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
         title="Verify PIN"
         subtitle="Enter PIN to use this card"
         verifyPin={(pin) => (pendingCard ? pin === pendingCard.pin : false)}
+
         onVerified={() => {
           if (!pendingCard) return
           setPinDrawerOpen(false)
-          // console.log('[ScanPay] Paying with selected card:', pendingCard, 'amount:', amount)
-          onPay?.({ card: pendingCard, amount })
+          processing.start({ minDurationMs: 5000 })
+          const cardToPay = pendingCard
           setPendingCard(null)
+          processing.succeedAfterMinDuration(() => onPay?.({ card: cardToPay, amount }), 5000)
         }}
+      />
+
+      <PaymentProcessingOverlay
+        open={processing.model.open}
+        state={processing.model.state}
+        title={processing.model.title}
+        subtitle={processing.model.subtitle}
       />
     </div>
   )

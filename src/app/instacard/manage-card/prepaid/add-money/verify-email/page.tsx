@@ -12,7 +12,6 @@ export default function VerifyEmailPage() {
       subtitle="We have sent you a 6-digit code to your Registered Email"
       maskedValue={maskedEmail}
       successRoute={routes.addMoneySuccess}
-      showKeypad
     />
   )
 }

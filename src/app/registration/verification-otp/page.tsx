@@ -91,7 +91,6 @@ export default function RegistrationVerificationOtpPage() {
       subtitle={subtitle}
       maskedValue={maskedValue}
       successRoute={routes.registrationAcceptTerms}
-      showKeypad
       onSuccess={() => setStep('success')}
     />
   )

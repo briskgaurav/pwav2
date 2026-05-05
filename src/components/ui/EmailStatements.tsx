@@ -1,7 +1,6 @@
 
 'use client'
 import React, { useState } from 'react'
-
 import { useRouter } from 'next/navigation'
 
 import { ChevronDown } from 'lucide-react'
@@ -14,6 +13,7 @@ import { useAppSelector } from '@/store/redux/hooks'
 
 import Button from './button'
 import DatePickerModal from './DatePickerModal'
+import CustomRadioBTN from './CustomRadioBTN'
 
 type StatementOption = {
   id: 'mini' | 'custom'
@@ -60,16 +60,16 @@ export default function EmailStatements() {
   const handleDateSelect = (date: Date, field: 'from' | 'to') => {
     const iso = date.toISOString().split('T')[0]
     const today = new Date().toISOString().split('T')[0]
-    
+
     // Validate date is not in the future
     if (iso > today) {
       setDateError('Date cannot be in the future')
       setDatePickerOpen(null)
       return
     }
-    
+
     setDateError('')
-    
+
     if (field === 'from') {
       setFromDate(iso)
       // If toDate exists and fromDate is after toDate, reset toDate
@@ -124,7 +124,7 @@ export default function EmailStatements() {
       <div className='p-5 border border-border rounded-2xl'>
         <div className='flex items-center gap-2 mb-5'>
           <div className='w-6 h-6 flex items-center justify-center '>
-           <StatementsIcon />
+            <StatementsIcon />
           </div>
           <p className='text-text-primary text-md font-medium'>Email Statements</p>
         </div>
@@ -140,13 +140,7 @@ export default function EmailStatements() {
                 onClick={() => handleSelect(option.id)}
                 className='btn-press w-full flex items-center gap-3 cursor-pointer'
               >
-                <span
-                  className={`w-[22px] h-[22px] rounded-full border flex items-center justify-center transition-[border-color] duration-200 ease-in-out ${selectedOption === option.id ? 'border-text-primary' : 'border-border'}`}
-                >
-                  {selectedOption === option.id && (
-                    <span className='w-[10px] h-[10px] rounded-full bg-orange' />
-                  )}
-                </span>
+                <CustomRadioBTN checked={selectedOption === option.id} sizePx={22} />
                 <span className='text-[14px] text-text-primary'>
                   {option.label} {option.sublabel && <span className='text-text-secondary'>{option.sublabel}</span>}
                 </span>
@@ -188,7 +182,7 @@ export default function EmailStatements() {
             onClose={() => setDatePickerOpen(null)}
             onSelect={(date) => handleDateSelect(date, 'from')}
             title='Select From Date'
-            selectedDate={fromDate ? new Date(`${fromDate  }T12:00:00`) : undefined}
+            selectedDate={fromDate ? new Date(`${fromDate}T12:00:00`) : undefined}
             maxDate={new Date()}
           />
           <DatePickerModal
@@ -196,8 +190,8 @@ export default function EmailStatements() {
             onClose={() => setDatePickerOpen(null)}
             onSelect={(date) => handleDateSelect(date, 'to')}
             title='Select To Date'
-            selectedDate={toDate ? new Date(`${toDate  }T12:00:00`) : undefined}
-            minDate={fromDate ? new Date(`${fromDate  }T12:00:00`) : undefined}
+            selectedDate={toDate ? new Date(`${toDate}T12:00:00`) : undefined}
+            minDate={fromDate ? new Date(`${fromDate}T12:00:00`) : undefined}
             maxDate={new Date()}
           />
 
@@ -206,7 +200,7 @@ export default function EmailStatements() {
           )} */}
 
           <Button fullWidth variant='primary' size='md' className='w-full' onClick={handleSendEmail}>Send to Registered Email</Button>
-          
+
         </div>
       </div>
 

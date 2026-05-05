@@ -8,6 +8,8 @@ import NiaraSymbol from "@/components/Extras/NiaraSymbol";
 import CardPinVerificationDrawer from "@/components/screens/AuthScreens/CardPinVerificationDrawer";
 import ButtonComponent from "@/components/ui/ButtonComponent";
 import { formatAmountWithCommas } from "@/lib/format-amount";
+import { usePaymentProcessing } from "@/hooks/usePaymentProcessing";
+import { CustomRadioBTN, PaymentProcessingOverlay } from "@/components/ui";
 
 // Optional: Assign some dummy balances to be shown
 const BANK_ACCOUNTS = [
@@ -86,6 +88,41 @@ export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps)
   const [selectedAccountId, setSelectedAccountId] = useState<number | null>(1);
   const [showBalanceFor, setShowBalanceFor] = useState<number | null>(null);
   const [pinDrawerOpen, setPinDrawerOpen] = useState(false)
+  const processing = usePaymentProcessing()
+
+  function parseNairaAmount(value: string): number {
+    // Examples: "₦ 12,000.80"
+    const cleaned = value.replace(/[^\d.]/g, '')
+    const n = Number(cleaned)
+    return Number.isFinite(n) ? n : 0
+  }
+
+  async function simulateNetworkBalanceFetch(bankId: number): Promise<number> {
+    // Simulate network latency
+    await new Promise((r) => setTimeout(r, 600))
+    // Simulate occasional network error
+    if (Math.random() < 0.2) {
+      throw new Error('NETWORK_ERROR')
+    }
+    const bank = BANK_ACCOUNTS.find((b) => b.id === bankId)
+    return bank ? parseNairaAmount(bank.balance) : 0
+  }
+
+  const startPayment = async (accountId: number) => {
+    processing.start({ minDurationMs: 5000 })
+
+    try {
+      const balance = await simulateNetworkBalanceFetch(accountId)
+      if (balance < totalPayable) {
+        processing.fail('Sorry', 'Insufficient balance.')
+        return
+      }
+
+      processing.succeedAfterMinDuration(() => onPay?.({ accountId, amount: totalPayable }), 5000)
+    } catch (e) {
+      processing.fail('Network error', 'Please check your internet connection and try again.')
+    }
+  }
 
   function handleCheckBalance(bankId: number) {
     setShowBalanceFor(showBalanceFor === bankId ? null : bankId);
@@ -147,24 +184,15 @@ export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps)
                   Convenience Fee : <span className="line-through mr-1"> N</span>{bank.feeLabel}
                 </p>
               </div>
-              {/* Custom radio to match AddMoneyCardsSection type */}
-              <button
-                type="button"
-                tabIndex={0}
-                aria-label={`Select ${bank.name}`}
-                className="ml-5 outline-none border-none bg-transparent p-0"
-                onClick={() => setSelectedAccountId(bank.id)}
-              >
-                <span
-                  className={`flex items-center justify-center rounded-full ${
-                    isSelected
-                      ? 'w-[22px] h-[22px] border'
-                      : 'w-[22px] h-[22px] border border-text-primary'
-                  }`}
-                >
-                  {isSelected && <span className='w-[12px] h-[12px] rounded-full bg-orange' />}
-                </span>
-              </button>
+              <CustomRadioBTN
+                name="selectedAccount"
+                ariaLabel={`Select ${bank.name}`}
+                checked={isSelected}
+                onChange={() => setSelectedAccountId(bank.id)}
+                className="ml-5"
+                sizePx={22}
+              />
+
             </label>
           )
         })}
@@ -179,16 +207,34 @@ export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps)
       </div>
 
       <CardPinVerificationDrawer
-      fieldLength={6}
+        fieldLength={6}
         visible={pinDrawerOpen}
-        onClose={() => setPinDrawerOpen(false)}
+        onClose={() => {
+          if (processing.model.open) return
+          setPinDrawerOpen(false)
+        }}
         showTitle={false}
         subtitle="Enter Your 6 Digit OTP"
         onVerified={() => {
           if (!selectedAccountId) return
           setPinDrawerOpen(false)
-          onPay?.({ accountId: selectedAccountId, amount: totalPayable })
+          void startPayment(selectedAccountId)
         }}
+      />
+
+      <PaymentProcessingOverlay
+        open={processing.model.open}
+        state={processing.model.state}
+        title={processing.model.title}
+        subtitle={processing.model.subtitle}
+        primaryActionLabel={processing.model.state === 'error' ? 'Try again' : undefined}
+        onPrimaryAction={
+          processing.model.state === 'error' && selectedAccountId
+            ? () => void startPayment(selectedAccountId)
+            : undefined
+        }
+        secondaryActionLabel={processing.model.state === 'error' ? 'Close' : undefined}
+        onSecondaryAction={processing.model.state === 'error' ? () => processing.close() : undefined}
       />
     </div>
   );

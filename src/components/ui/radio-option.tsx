@@ -5,6 +5,7 @@ import Image from "next/image";
 import { type LucideIcon } from "lucide-react";
 
 import { haptic } from "@/lib/useHaptics";
+import CustomRadioBTN from "./CustomRadioBTN";
 
 interface RadioOptionProps {
   label: string;
@@ -46,14 +47,7 @@ export function RadioOption({ label, selected, onSelect, accessibilityLabel, ico
           {label}
         </span>
       </div>
-      <span
-        className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center transition-[border-color] duration-200 ease-in-out ${selected ? 'border-text-primary' : 'border-border'
-          }`}
-      >
-        {selected && (
-          <span className="w-[10px] h-[10px] rounded-full bg-orange" />
-        )}
-      </span>
+      <CustomRadioBTN checked={selected} sizePx={22} />
     </button>
   );
 }

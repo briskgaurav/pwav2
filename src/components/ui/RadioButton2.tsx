@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Check, type LucideIcon } from "lucide-react";
 
 import { haptic } from "@/lib/useHaptics";
+import CustomRadioBTN from "./CustomRadioBTN";
 
 interface RadioOptionProps {
     label: string;
@@ -15,7 +16,7 @@ interface RadioOptionProps {
     IconComponent?: LucideIcon;
 }
 
-export function RadioOption2({ label, selected, onSelect, accessibilityLabel, icon, IconComponent }: RadioOptionProps) {
+export function CheckRadioOption({ label, selected, onSelect, accessibilityLabel, icon, IconComponent }: RadioOptionProps) {
     const handleSelect = () => {
         haptic('light');
         onSelect();
@@ -48,17 +49,7 @@ export function RadioOption2({ label, selected, onSelect, accessibilityLabel, ic
                     {label}
                 </span>
             </div>
-            {selected ? (
-                <span
-                    className={`w-[22px] h-[22px] bg-orange p-1.5 rounded-full  flex items-center justify-center transition-[border-color] duration-200 ease-in-out`}
-                >
-                    <Check strokeWidth={3} color="white" />
-                </span>
-            ) : (
-                <span
-                    className={`w-[20px] border-2 border-text-primary h-[20px]  p-1.5 rounded-full  flex items-center justify-center transition-[border-color] duration-200 ease-in-out`}
-                 />
-            )}
-        </button>
+            <CustomRadioBTN checked={selected} sizePx={22} variant="check" />
+        </button >
     );
 }

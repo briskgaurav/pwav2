@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 import { useRouter } from 'next/navigation'
 
@@ -14,22 +14,15 @@ export default function EnterOneTimeActivationCode() {
   const [otp, setOtp] = useState<string>('');
   const [isVerifying, setIsVerifying] = useState(false);
   const router = useRouter();
-  const otpInputRef = useRef<HTMLDivElement>(null);
+  const hiddenRef = useRef<HTMLInputElement | null>(null)
   const isComplete = otp.length === 8;
 
-  const { keypadRef, isKeypadOpen, keypadHeight, openKeypad } = useSlideUpKeypad({
-    insideRefs: [otpInputRef],
-  });
+  const focusOtp = () => hiddenRef.current?.focus()
 
-  const handleKeypadKey = (key: string) => {
-    if (key === 'del') {
-      setOtp((prev) => prev.slice(0, -1))
-      return
-    }
-
-    if (!/^\d$/.test(key)) return
-    setOtp((prev) => (prev.length < 8 ? prev + key : prev))
-  }
+  useEffect(() => {
+    const t = window.setTimeout(() => focusOtp(), 150)
+    return () => window.clearTimeout(t)
+  }, [])
 
   const handleSubmit = async () => {
     setIsVerifying(true);
@@ -41,7 +34,7 @@ export default function EnterOneTimeActivationCode() {
 
   return (
     <LayoutSheet routeTitle='One-Time Gift Card Activation' needPadding={false}>
-      <div className="flex flex-col" style={{ paddingBottom: isKeypadOpen ? keypadHeight : 0 }}>
+      <div className="flex flex-col">
         <div className="flex flex-col justify-center px-5 py-10 text-center gap-3">
           <h2 className="text-xl font-semibold text-text-primary">
             Enter One-Time Gift Card Activation Code
@@ -51,8 +44,37 @@ export default function EnterOneTimeActivationCode() {
             *Ask for this code from the person who gifted this Card to you
           </p>
 
-          <div className="mt-6 mb-6 w-full" ref={otpInputRef} onClick={openKeypad}>
-            <OTPInput value={otp} maxLength={8} onPress={openKeypad} />
+          <div className="mt-6 mb-6 w-full" onClick={focusOtp}>
+            <input
+              ref={hiddenRef}
+              type="tel"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              pattern="\d*"
+              enterKeyHint="done"
+              maxLength={8}
+              value={otp}
+              onChange={(e) => {
+                const cleaned = e.target.value.replace(/\D/g, '').slice(0, 8)
+                setOtp(cleaned)
+              }}
+              className="absolute -left-[9999px] top-0 w-px h-px opacity-0"
+            />
+
+            <div className="flex flex-wrap gap-2.5 w-full px-5 justify-center max-w-[340px] mx-auto">
+              {Array.from({ length: 8 }, (_, i) => otp[i] || '').map((digit, i) => {
+                const isCursor = i === otp.length && otp.length < 8
+                return (
+                  <div
+                    key={i}
+                    className={`w-14 h-14 sm:w-12 sm:h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${isCursor ? 'border-primary' : digit ? 'border-text-primary' : 'border-border'
+                      }`}
+                  >
+                    {digit || (isCursor ? <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" /> : '')}
+                  </div>
+                )
+              })}
+            </div>
           </div>
 
           <ButtonComponent
@@ -61,9 +83,6 @@ export default function EnterOneTimeActivationCode() {
             disabled={!isComplete || isVerifying}
           />
         </div>
-      </div>
-      <div ref={keypadRef} className="w-full fixed bottom-0 left-0 py-2">
-        <OTPKeypad onKeyPress={handleKeypadKey} />
       </div>
     </LayoutSheet>
   )

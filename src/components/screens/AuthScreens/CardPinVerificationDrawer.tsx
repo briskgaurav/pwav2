@@ -16,9 +16,105 @@ type CardPinVerificationDrawerProps = {
     showTitle?: boolean
     subtitle?: string
     onVerified: () => void
-    fieldLength:number,
+    fieldLength: number,
     /** Optional custom verifier; defaults to comparing against redux `s.card.pin` */
     verifyPin?: (pin: string) => boolean
+    onDonePressed?: () => void
+}
+
+function NativePinInput({
+    value,
+    maxLength,
+    onChange,
+    resetKey,
+    onDone,
+    useDots = true,
+}: {
+    value: string
+    maxLength: number
+    onChange: (v: string) => void
+    resetKey: number
+    onDone?: () => void
+    useDots?: boolean
+}) {
+    const hiddenRef = useRef<HTMLInputElement | null>(null)
+    const digits = Array.from({ length: maxLength }, (_, i) => value[i] || '')
+
+    const focus = () => hiddenRef.current?.focus()
+
+    useEffect(() => {
+        const t = window.setTimeout(() => focus(), 150)
+        return () => window.clearTimeout(t)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resetKey])
+
+    return (
+        <div className="relative w-full" onClick={focus}>
+            <input
+                ref={hiddenRef}
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
+                pattern="\\d*"
+                enterKeyHint="done"
+                maxLength={maxLength}
+                value={value}
+                onKeyDown={(e) => {
+                    if (e.key !== 'Enter') return
+                    e.preventDefault()
+                    onDone?.()
+                }}
+                onChange={(e) => {
+                    const cleaned = e.target.value.replace(/\\D/g, '').slice(0, maxLength)
+                    onChange(cleaned)
+                }}
+                className="absolute -left-[9999px] top-0 w-px h-px opacity-0"
+            />
+
+            <div
+                className="flex w-full justify-center px-5"
+                style={{ gap: maxLength > 6 ? 6 : 10 }}
+            >
+                {digits.map((digit, i) => {
+                    const isCursor = i === value.length && value.length < maxLength
+                    return (
+                        <div
+                            key={i}
+                            className={`border flex items-center justify-center text-base font-semibold text-text-primary text-center outline-none shrink-0 transition-colors ${maxLength > 6 ? 'w-10 h-10 rounded-lg' : 'w-12 h-12 rounded-xl'
+                                } ${isCursor ? 'border-primary' : digit ? 'border-text-primary' : 'border-text-secondary'
+                                }`}
+                            style={{ position: 'relative' }}
+                        >
+                            {digit ? (
+                                useDots ? (
+                                    <span
+                                        style={{
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            width: maxLength > 6 ? 8 : 12,
+                                            height: maxLength > 6 ? 8 : 12,
+                                            background: 'currentColor',
+                                            borderRadius: '9999px',
+                                            transform: 'translate(-50%, -50%)',
+                                            display: 'block',
+                                            fontSize: 0,
+                                        }}
+                                    />
+                                ) : (
+                                    <span>{digit}</span>
+                                )
+                            ) : isCursor ? (
+                                <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" />
+                            ) : (
+                                ''
+                            )}
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+    )
 }
 
 export default function CardPinVerificationDrawer({
@@ -30,10 +126,10 @@ export default function CardPinVerificationDrawer({
     subtitle = 'Enter your PIN to continue',
     onVerified,
     verifyPin,
+    onDonePressed,
 }: CardPinVerificationDrawerProps) {
     const globalPin = useAppSelector((s) => s.card.pin)
 
-    // If requested fieldLength is 6, use 111111 as the verification pin, otherwise use normal logic
     const pinLength = fieldLength > 0 ? fieldLength : 4;
     const getVerifier = () => {
         if (pinLength === 6) {
@@ -46,52 +142,75 @@ export default function CardPinVerificationDrawer({
     const [pin, setPin] = useState('')
     const [error, setError] = useState<string | null>(null)
     const [resetKey, setResetKey] = useState(0)
+    const [keyboardInset, setKeyboardInset] = useState(0)
     const pinInputRef = useRef<HTMLDivElement | null>(null)
 
     useEffect(() => {
         if (!visible) {
             setPin('')
             setError(null)
+            setKeyboardInset(0)
             setResetKey((k) => k + 1)
+            return
+        }
+        // ensure we autofocus when opening as well
+        setResetKey((k) => k + 1)
+    }, [visible])
+
+    useEffect(() => {
+        if (!visible) return
+
+        const vv = window.visualViewport
+        if (!vv) return
+
+        const compute = () => {
+            // Approx keyboard height in px for iOS/Android browsers that support VisualViewport
+            const inset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop)
+            setKeyboardInset(inset)
+        }
+
+        compute()
+        vv.addEventListener('resize', compute)
+        vv.addEventListener('scroll', compute)
+        return () => {
+            vv.removeEventListener('resize', compute)
+            vv.removeEventListener('scroll', compute)
         }
     }, [visible])
 
-    const handleContinue = useCallback(() => {
+    const handleContinue = useCallback((): boolean => {
         const ok = verifier(pin)
         if (ok) {
+            onDonePressed?.()
             onVerified()
-            return
+            return true
         }
         setError('Incorrect PIN')
         setPin('')
         setResetKey((k) => k + 1)
-    }, [onVerified, pin, verifier])
-
-    const handleKeypadKey = useCallback((key: string) => {
-        setError(null)
-        if (key === 'del') {
-            setPin((prev) => prev.slice(0, -1))
-            return
-        }
-        if (!/^\d$/.test(key)) return
-        setPin((prev) => (prev.length < pinLength ? prev + key : prev))
-    }, [pinLength])
+        return false
+    }, [onDonePressed, onVerified, pin, verifier])
 
     const isComplete = pin.length === pinLength
 
     return (
         <BottomSheetModal showTitle={showTitle} backdropBlur={true} visible={visible} onClose={onClose} title={title} maxHeight={0.92}>
-            <div className="flex flex-col gap-5">
-                <p className="text-sm text-text-secondary pt-8 text-center">{subtitle}</p>
+            <div className="flex flex-col gap-5" style={{ paddingBottom: keyboardInset ? keyboardInset + 12 : undefined }}>
+                <p className="text-sm text-text-secondary pt-2 text-center">{subtitle}</p>
 
                 <div ref={pinInputRef} className="flex flex-col items-center gap-3">
-                    <OTPInput
+                    <NativePinInput
                         useDots
                         resetKey={resetKey}
                         value={pin}
                         maxLength={pinLength}
-                        onPress={() => {
-                            // keypad is always visible in this drawer
+                        onChange={(v) => {
+                            setError(null)
+                            setPin(v)
+                        }}
+                        onDone={() => {
+                            if (!isComplete) return
+                            handleContinue()
                         }}
                     />
                     {error && <p className="text-xs text-red-500 text-center">{error}</p>}
@@ -101,10 +220,7 @@ export default function CardPinVerificationDrawer({
                     <Button fullWidth disabled={!isComplete} onClick={handleContinue}>Continue</Button>
                     <Link href={routes.forgetPin} className="text-sm text-text-secondary text-center">Forgot PIN?</Link>
                 </div>
-
-                <div className="w-full pt-4 -mt-4">
-                    <OTPKeypad needPadding={false} showBackground={false} onKeyPress={handleKeypadKey} />
-                </div>
+                {/* <div className='h-[60vw] w-full'></div> */}
             </div>
 
         </BottomSheetModal>

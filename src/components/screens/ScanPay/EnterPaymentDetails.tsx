@@ -1,9 +1,9 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import NiaraSymbol from '@/components/Extras/NiaraSymbol'
 import { OTPKeypad } from '@/components/ui'
@@ -12,42 +12,89 @@ import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
 import { formatAmountWithCommas } from '@/lib/format-amount'
 import { routes } from '@/lib/routes'
 
-const MAX_AMOUNT = 10000000000;
+const MAX_AMOUNT = 10000000000; // 10,000,000,000
 const MIN_AMOUNT = 0;
+const MAX_DESCRIPTION_LENGTH = 225;
 
 export default function EnterPaymentDetails() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // --- Read QR data from search params ---
+  const qrAmount = searchParams.get('amount') || ''
+  const qrMerchantName = searchParams.get('merchantName') || ''
+  const qrDescription = searchParams.get('description') || ''
+  const isAmountLocked = !!qrAmount // lock amount if QR provided it
+
   const [amount, setAmount] = useState('')
   const [description, setDescription] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [descCharsLeft, setDescCharsLeft] = useState(MAX_DESCRIPTION_LENGTH)
+  const [amountFocused, setAmountFocused] = useState(false)
+  const [descFocused, setDescFocused] = useState(false)
 
-  const amountBoxRef = useRef<HTMLDivElement | null>(null)
-  const { keypadRef, isKeypadOpen, keypadHeight, openKeypad, closeKeypad } = useSlideUpKeypad({
-    insideRefs: [amountBoxRef],
-  })
+  // Pre-fill from QR data on mount
+  useEffect(() => {
+    if (qrAmount) {
+      const cleaned = qrAmount.replace(/[^0-9]/g, '')
+      setAmount(cleaned)
+    }
+    if (qrDescription) {
+      const trimmed = qrDescription.slice(0, MAX_DESCRIPTION_LENGTH)
+      setDescription(trimmed)
+      setDescCharsLeft(MAX_DESCRIPTION_LENGTH - trimmed.length)
+    }
+  }, [qrAmount, qrDescription])
 
+  const beneficiaryName = qrMerchantName || 'Ashish Rai'
+  const beneficiaryInitials = beneficiaryName
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
+
+  const amountHiddenRef = useRef<HTMLInputElement | null>(null)
+
+  const focusAmount = () => {
+    if (isAmountLocked) return
+    setAmountFocused(true)
+    amountHiddenRef.current?.focus()
+  }
+
+  useEffect(() => {
+    if (isAmountLocked) return
+    const t = window.setTimeout(() => focusAmount(), 150)
+    return () => window.clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  /**
+   * Only allow numbers, remove leading zeros, allow as many digits as needed for MAX_AMOUNT.
+   */
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    // Prevent user from entering more than 6 digits
-    if (val.length > 6) return;
+    if (isAmountLocked) return
+    let val = e.target.value.replace(/,/g, '');
+    // Remove any non-numeric character except "."
+    val = val.replace(/[^\d.]/g, '');
+    // Don't allow more numbers than the length of MAX_AMOUNT
+    if (val.length > MAX_AMOUNT.toString().length) return;
+    // Prevent multiple leading zeros
+    val = val.replace(/^0+(?=\d)/, '');
+
     setAmount(val);
     setError(null);
   }
 
-  const handleKeyPress = (key: string) => {
-    setError(null)
-
-    if (key === 'del') {
-      setAmount((prev) => prev.slice(0, -1))
-      return
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value
+    if (value.length <= MAX_DESCRIPTION_LENGTH) {
+      setDescription(value)
+      setDescCharsLeft(MAX_DESCRIPTION_LENGTH - value.length)
+    } else {
+      setDescription(value.slice(0, MAX_DESCRIPTION_LENGTH))
+      setDescCharsLeft(0)
     }
-
-    if (!/^\d$/.test(key)) return
-    setAmount((prev) => {
-      const next = (prev || '') + key
-      if (next.length > 6) return prev
-      return next
-    })
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -55,7 +102,7 @@ export default function EnterPaymentDetails() {
 
     const numericAmount = parseFloat(amount);
 
-    if (isNaN(numericAmount) || amount.trim() === "") {
+    if (isNaN(numericAmount) || amount.trim() === "" || numericAmount === 0) {
       setError('Please enter a valid amount.');
       return;
     }
@@ -67,15 +114,18 @@ export default function EnterPaymentDetails() {
       setError('You cannot proceed. Please enter an amount greater than 0.');
       return;
     }
+    if (description.length > MAX_DESCRIPTION_LENGTH) {
+      setError(`Message cannot exceed ${MAX_DESCRIPTION_LENGTH} characters.`);
+      return;
+    }
 
     setError(null);
-    closeKeypad()
     const params = new URLSearchParams()
     params.set('amount', amount || '0')
     if (description.trim()) params.set('message', description.trim())
 
-    // Temporary static beneficiary details (until QR payload is wired)
-    params.set('recipientName', 'Ashish Rai')
+    // Use merchant name from QR or fallback
+    params.set('recipientName', beneficiaryName)
 
     router.push(`${routes.scanPaymenetMethods}?${params.toString()}`)
   }
@@ -84,7 +134,6 @@ export default function EnterPaymentDetails() {
     <LayoutSheet needPadding={false} routeTitle='Beneficiary Details'>
       <div
         className='flex-1 w-full flex flex-col min-h-full transition-[padding-bottom] duration-200 ease-out'
-        style={{ paddingBottom: isKeypadOpen ? keypadHeight : 0 }}
       >
 
         {/* Beneficiary Card */}
@@ -96,7 +145,7 @@ export default function EnterPaymentDetails() {
                 className="w-16 h-16 rounded-full flex items-center justify-center text-black  text-lg"
                 style={{ backgroundColor: '#E8D5F5' }}
               >
-                AR
+                {beneficiaryInitials}
               </div>
             </div>
 
@@ -113,7 +162,7 @@ export default function EnterPaymentDetails() {
             </div>
 
             {/* Name */}
-            <p className="text-xl  text-gray-900 mb-1">Ashish Rai</p>
+            <p className="text-xl  text-gray-900 mb-1">{beneficiaryName}</p>
 
             {/* Since */}
             <p className="text-sm text-gray-500">On Montra Since May 2023</p>
@@ -124,36 +173,83 @@ export default function EnterPaymentDetails() {
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 px-4 pt-6 pb-6 gap-4">
 
           {/* Amount */}
-          <div ref={amountBoxRef} className="flex flex-col gap-1">
-            <label className="text-sm text-text-primary">Enter Amount (<NiaraSymbol />)</label>
-            <input
-              type="text"
-              placeholder="Enter Amount"
-              value={amount ? formatAmountWithCommas(amount) : ''}
-              min={0}
-              max={MAX_AMOUNT}
-              onChange={handleAmountChange}
-              onFocus={openKeypad}
-              readOnly
-              inputMode="numeric"
-              className="rounded-xl border border-border px-4 py-3 text-text-primary placeholder-text-text-secondary placeholder:text-sm focus:outline-none! focus:ring-0  "
-              required
-            />
+          <div className="flex flex-col gap-1">
+            <label className="text-sm text-text-primary">
+              Enter Amount (<NiaraSymbol />)
+            </label>
+            {/* Custom input with naira symbol inside the field */}
+            <div
+              className="relative flex items-center"
+              onClick={focusAmount}
+              onPointerDown={() => {
+                if (!isAmountLocked) setAmountFocused(true)
+              }}
+            >
+              <span
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-text-primary pointer-events-none"
+                style={{ zIndex: 2 }}
+              >
+                <NiaraSymbol />
+              </span>
+              <input
+                ref={amountHiddenRef}
+                type="tel"
+                inputMode="numeric"
+                autoComplete="off"
+                pattern="\d*"
+                enterKeyHint="done"
+                value={amount}
+                onChange={handleAmountChange}
+                onFocus={() => setAmountFocused(true)}
+                onBlur={() => setAmountFocused(false)}
+                className="absolute -left-[9999px] top-0 w-px h-px opacity-0"
+              />
+              <input
+                type="text"
+                placeholder="Enter Amount"
+                value={amount ? formatAmountWithCommas(amount) : ''}
+                min={0}
+                max={MAX_AMOUNT}
+                onFocus={() => {
+                  if (isAmountLocked) return
+                  setAmountFocused(true)
+                  focusAmount()
+                }}
+                onBlur={() => setAmountFocused(false)}
+                readOnly
+                inputMode="numeric"
+                className={`pl-10 w-full rounded-xl border px-4 py-3 text-text-primary placeholder-text-text-secondary placeholder:text-sm focus:outline-none ${amountFocused ? 'border-primary ring-2 ring-primary/20' : 'border-border'} ${isAmountLocked ? 'bg-success/20 opacity-70' : ''}`}
+                required
+                style={{ paddingLeft: '2.5rem' }}
+              />
+            </div>
             {/* <span className="text-xs text-text-secondary">Maximum allowed: ₦{MAX_AMOUNT.toLocaleString()}</span> */}
           </div>
 
           {/* Description */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-text-primary">
-              Description / Narration <span className="font-normal text-gray-400">(optional)</span>
+            <label className="text-sm text-text-primary flex flex-row items-center justify-between">
+              <span>
+                Description / Narration <span className="font-normal text-gray-400">(optional)</span>
+              </span>
+
             </label>
             <textarea
               placeholder="Write Description here"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={handleDescriptionChange}
+              onFocus={() => setDescFocused(true)}
+              onBlur={() => setDescFocused(false)}
               rows={3}
-              className="rounded-xl border border-border px-4 py-3 text-text-primary placeholder-text-text-secondary placeholder:text-sm focus:outline-none! focus:ring-0   resize-none"
+              maxLength={MAX_DESCRIPTION_LENGTH}
+              className={`rounded-xl border px-4 py-3 text-text-primary placeholder-text-text-secondary placeholder:text-sm focus:outline-none! focus:ring-0 resize-none ${descFocused ? 'border-primary ring-2 ring-primary/20' : 'border-border'}`}
             />
+            <span
+              className={` text-right text-[2.5vw]! mr-2 font-mono transition-colors ${descCharsLeft === 0 ? "text-error" : "text-gray-400"
+                }`}
+            >
+              {descCharsLeft}/225
+            </span>
           </div>
 
           {/* Error message */}
@@ -174,13 +270,6 @@ export default function EnterPaymentDetails() {
           </button>
         </form>
 
-      </div>
-
-      <div
-        ref={keypadRef}
-        className={`fixed bottom-0 h-fit left-0 right-0 transition-opacity ${isKeypadOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-      >
-        <OTPKeypad onKeyPress={handleKeyPress} />
       </div>
     </LayoutSheet>
   )

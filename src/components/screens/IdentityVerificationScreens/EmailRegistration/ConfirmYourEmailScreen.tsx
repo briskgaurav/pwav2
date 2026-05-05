@@ -39,7 +39,7 @@ export default function ConfirmYourEmailScreen({
           Would you like to continue with your existing email or register a new one?
         </p>
 
-        <div className="space-y-3">
+        <div className="space-y-3" role="radiogroup" aria-label="Choose email option">
           <RadioOption
             label={`Continue with ${currentEmailMasked || 'your existing email'}`}
             selected={choice === 'current'}

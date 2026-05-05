@@ -8,7 +8,6 @@ export default function EmailVerifyGiftPage() {
   const maskedEmail = useAppSelector((s) => s.user.maskedEmail)
   return (
     <VerificationCodeScreen
-      showKeypad
       title="Verify your Registered Email"
       subtitle="We have sent you a 6-digit code to your Registered Email"
       maskedValue={maskedEmail}

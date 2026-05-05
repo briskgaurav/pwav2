@@ -37,24 +37,23 @@ export default function OTPVerificationScreen({
   }, [method, userInfo])
 
   return (
-   <VerificationCodeScreen
-    hideLayerSheet={true}
-    title={method === 'phone' ? 'Verify your Phone Number' : 'Verify your Email'}
-    subtitle={method === 'phone'
-      ? 'We have sent you a 6-digit code to your Registered Phone Number'
-      : 'We have sent you a 6-digit code to your Registered Email'}
-    maskedValue={maskedValue}
-    successRoute={''}
-    showSuccessPopup
-    successPopupContent={{
-      message: 'Identity Verified successfully',
-      buttonText: 'Continue',
-    }}
-    onVerify={async (code) => {
-      await verifyIdVerificationOtp({ userInfo: { id: userInfo.id }, method, code })
-    }}
-    onSuccess={handleContinue}
-    showKeypad
-  />
-  ) 
+    <VerificationCodeScreen
+      hideLayerSheet={true}
+      title={method === 'phone' ? 'Verify your Phone Number' : 'Verify your Email'}
+      subtitle={method === 'phone'
+        ? 'We have sent you a 6-digit code to your Registered Phone Number'
+        : 'We have sent you a 6-digit code to your Registered Email'}
+      maskedValue={maskedValue}
+      successRoute={''}
+      showSuccessPopup
+      successPopupContent={{
+        message: 'Identity Verified successfully',
+        buttonText: 'Continue',
+      }}
+      onVerify={async (code) => {
+        await verifyIdVerificationOtp({ userInfo: { id: userInfo.id }, method, code })
+      }}
+      onSuccess={handleContinue}
+    />
+  )
 }

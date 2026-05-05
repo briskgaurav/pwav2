@@ -7,12 +7,12 @@ import { useRouter } from 'next/navigation'
 import { type LucideIcon } from 'lucide-react'
 
 import ButtonComponent from '@/components/ui/ButtonComponent'
-import { RadioOption2 } from '@/components/ui/RadioButton2'
 import { ICONS, MessageIcon, PhoneIcon } from '@/constants/icons'
 import { routes } from '@/lib/routes'
 import { useAppSelector } from '@/store/redux/hooks'
 
 import LayoutSheet from '../../ui/LayoutSheet'
+import { CheckRadioOption } from '@/components/ui'
 
 
 const VERIFICATION_OPTIONS_CONFIG = (maskedMobile: string, maskedEmail: string) => [
@@ -45,9 +45,9 @@ export default function BVNVerificationScreen() {
 
                 <div className='w-full space-y-4 my-5'>
                     <p>We will send an OTP to verify your identity</p>
-                    <div className='flex flex-col gap-2'>
+                    <div className='flex flex-col gap-2' role="radiogroup" aria-label="Choose OTP delivery method">
                         {VERIFICATION_OPTIONS.map((option) => (
-                            <RadioOption2
+                            <CheckRadioOption
                                 key={option.id}
                                 label={option.label}
                                 selected={selectedOption === option.id}
