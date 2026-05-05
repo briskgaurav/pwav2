@@ -1,14 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { SheetContainer, Button, CardMockup } from '@/components/ui';
+import { useEffect } from 'react';
+import {CardMockup } from '@/components/ui';
 import { notifyNavigation } from '@/lib/bridge';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
-import { useAppSelector } from '@/store/redux/hooks';
 import { useManagingCard } from '@/hooks/useManagingCard';
 import LayoutSheet from '../../ui/LayoutSheet';
 import ButtonComponent from '../../ui/ButtonComponent';
@@ -24,6 +23,7 @@ export type SuccessScreenProps = {
   onButtonClick?: () => void;
   /** Show card preview */
   showCardPreview?: boolean;
+  hideLayerSheet?: boolean;
 };
 
 export default function SuccessScreen({
@@ -32,10 +32,10 @@ export default function SuccessScreen({
   buttonText,
   onButtonClick,
   showCardPreview = true,
+  hideLayerSheet = false,
 }: SuccessScreenProps = {}) {
 
   const isCustom = Boolean(onButtonClick);
-  const [isImageLoading, setIsImageLoading] = useState(true);
 
   useEffect(() => {
     notifyNavigation('success');
@@ -52,10 +52,10 @@ export default function SuccessScreen({
   const handleButtonClick = onButtonClick ?? (() => router.push(routes.pinSetup(cardType)));
 
   return (
-    <LayoutSheet routeTitle="Success" needPadding={false}>
+    <LayoutSheet routeTitle="Success" needPadding={false} hideLayerSheet={hideLayerSheet}>
       {/* <Header title="Success" /> */}
 
-        <div className="flex-1 flex flex-col items-start justify-center p-6 py-10 gap-10 text-center">
+        <div className="flex-1 flex flex-col items-start justify-start p-6 py-10 gap-10 text-center">
           {/* Success checkmark animation */}
           <div className="w-full flex  relative flex-col items-center justify-start animate-scale-in">
             <Image
