@@ -1,7 +1,7 @@
 'use client';
 
 import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen';
-import type { UserVerificationSteps } from '@/types/userVerificationSteps';
+import type { UserInstaCardSteps } from '@/types/userVerificationSteps';
 import { sendBankOtp, verifyEmailOtp } from '@/lib/api/cards';
 import { useAppDispatch, useAppSelector } from '@/store/redux/hooks';
 import {
@@ -12,7 +12,7 @@ import {
 } from '@/store/redux/slices/cardRequestSlice';
 
 interface VerifyRegisteredEmailProps {
-  onNext: (nextStep: UserVerificationSteps) => void;
+  onNext: (nextStep: UserInstaCardSteps) => void;
 }
 
 export default function VerifyRegisteredEmail({

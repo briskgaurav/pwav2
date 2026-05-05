@@ -1,12 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui";
-import type { BankVerifictionMethod, UserVerificationSteps } from "@/types/userVerificationSteps";
+import type { BankVerifictionMethod, UserInstaCardSteps } from "@/types/userVerificationSteps";
 import { useState } from "react";
 import VerifyBankOTP from "./verifyBankOTP";
+import VerifyBankSoftToken from "./verifyBankSoftToken";
 
 interface BankVerificationMethodProps {
-  onNext: (step: UserVerificationSteps) => void;
+  onNext: (step: UserInstaCardSteps) => void;
 }
 
 export default function BankVerificationMethod({
@@ -20,11 +21,11 @@ export default function BankVerificationMethod({
     <>
       {selectedVerificationMethod === null && (
         <div className="flex-1 w-full flex flex-col items-center justify-center gap-4 min-h-full px-6">
-          <Button onClick={() => setSelectedVerificationMethod("soft_token")}>
+          <Button className="full" onClick={() => setSelectedVerificationMethod("soft_token")}>
             Go with Soft Token
           </Button>
 
-          <Button onClick={() => setSelectedVerificationMethod("otp")}>
+          <Button className="full" onClick={() => setSelectedVerificationMethod("otp")}>
             Go with OTP
           </Button>
         </div>
@@ -32,6 +33,12 @@ export default function BankVerificationMethod({
       {
         selectedVerificationMethod === "otp" && (
           <VerifyBankOTP onNext={onNext} />
+        )
+      }
+
+      {
+        selectedVerificationMethod === 'soft_token' && (
+          <VerifyBankSoftToken onNext={onNext} />
         )
       }
     </>

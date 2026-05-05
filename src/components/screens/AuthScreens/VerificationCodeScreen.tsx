@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { SheetContainer, OTPInput, Button } from '@/components/ui'
-import LayoutSheet from '../../ui/LayoutSheet'
+import NativeOTPInput from '@/components/ui/NativeOTPInput'
 import ButtonComponent from '../../ui/ButtonComponent'
 import gsap from 'gsap'
 import { Check } from 'lucide-react'
@@ -42,78 +42,6 @@ type VerificationCodeScreenProps = {
 }
 
 const DEFAULT_RESEND_COOLDOWN_SECONDS = 30
-
-function NativeOTPInput({
-  value,
-  maxLength,
-  onChange,
-  autoFocus = true,
-  enableAutoFill = true,
-}: {
-  value: string
-  maxLength: number
-  onChange: (v: string) => void
-  autoFocus?: boolean
-  enableAutoFill?: boolean
-}) {
-  const hiddenRef = useRef<HTMLInputElement>(null)
-  const digits = Array.from({ length: maxLength }, (_, i) => value[i] || '')
-
-  const focusInput = () => hiddenRef.current?.focus()
-
-  useEffect(() => {
-    if (!autoFocus) return
-    // Mobile browsers can be picky about immediate focus on mount.
-    // A short delay improves reliability for keyboard + OTP suggestions.
-    const t = window.setTimeout(() => focusInput(), 150)
-    return () => window.clearTimeout(t)
-  }, [autoFocus])
-
-  return (
-    <div className="relative w-full">
-      <input
-        ref={hiddenRef}
-        type="tel"
-        inputMode="numeric"
-        autoComplete={enableAutoFill ? 'one-time-code' : 'off'}
-        name={enableAutoFill ? 'one-time-code' : undefined}
-        pattern="\d*"
-        enterKeyHint="done"
-        maxLength={maxLength}
-        value={value}
-        onChange={(e) => {
-          const cleaned = e.target.value.replace(/\D/g, '').slice(0, maxLength)
-          onChange(cleaned)
-        }}
-        // Keep the input out of the layout so it never blocks taps on other fields.
-        className="absolute -left-[9999px] top-0 w-px h-px opacity-0"
-      />
-
-      <div
-        className="flex gap-2.5 w-full px-5 justify-center"
-        onClick={focusInput}
-      >
-        {digits.map((digit, i) => {
-          const isCursor = i === value.length && value.length < maxLength
-          return (
-            <div
-              key={i}
-              className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${
-                isCursor
-                  ? 'border-primary'
-                  : digit
-                  ? 'border-text-primary'
-                  : 'border-border'
-              }`}
-            >
-              {digit || (isCursor ? <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" /> : '')}
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
 
 export default function VerificationCodeScreen({
   title,

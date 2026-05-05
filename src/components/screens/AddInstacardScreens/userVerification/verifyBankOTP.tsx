@@ -1,7 +1,7 @@
 'use client';
 
 import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen';
-import type { UserVerificationSteps } from '@/types/userVerificationSteps';
+import type { UserInstaCardSteps } from '@/types/userVerificationSteps';
 import { sendBankOtp, verifyBankOtp } from '@/lib/api/cards';
 import { useAppDispatch, useAppSelector } from '@/store/redux/hooks';
 import {
@@ -13,7 +13,7 @@ import {
 } from '@/store/redux/slices/cardRequestSlice';
 
 interface VerifyBankOTPProps {
-  onNext: (nextStep: UserVerificationSteps) => void;
+  onNext: (nextStep: UserInstaCardSteps) => void;
 }
 
 export default function VerifyBankOTP({
@@ -45,8 +45,7 @@ export default function VerifyBankOTP({
   };
 
   const handleSuccess = () => {
-    // TODO: navigate to user consent step once it is added to UserVerificationSteps.
-    void onNext;
+   onNext('user_consent');
   };
 
   const subtitle = channel === 'EMAIL'

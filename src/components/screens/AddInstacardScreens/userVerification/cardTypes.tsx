@@ -8,7 +8,7 @@ import ButtonComponent from "@/components/ui/ButtonComponent"
 import { haptic } from '@/lib/useHaptics'
 
 import { CARD_TYPE_OPTIONS, type CardType } from "@/constants/cardData"
-import { UserVerificationSteps } from "@/types/userVerificationSteps"
+import { UserInstaCardSteps } from "@/types/userVerificationSteps"
 import { notifyNavigation } from "@/lib/bridge"
 import { requestCard } from "@/lib/api/cards"
 import { ApiError, AuthError } from "@/lib/api/errors"
@@ -16,7 +16,7 @@ import { useAppDispatch } from "@/store/redux/hooks"
 import { setCardRequest } from "@/store/redux/slices/cardRequestSlice"
 
 interface SelectCardTypesProps {
-  onNext: (nextStep: UserVerificationSteps) => void;
+  onNext: (nextStep: UserInstaCardSteps) => void;
 }
 
 export default function SelectCardTypes({
