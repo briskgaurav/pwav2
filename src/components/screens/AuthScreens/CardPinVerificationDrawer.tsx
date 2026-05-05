@@ -221,6 +221,7 @@ export default function CardPinVerificationDrawer({
                     <Button fullWidth disabled={!isComplete} onClick={handleContinue}>Continue</Button>
                     <Link href={routes.forgetPin} className="text-sm text-text-secondary text-center">Forgot PIN?</Link>
                 </div>
+                <div className='h-[28vw] w-full'></div>
             </div>
 
         </BottomSheetModal>
