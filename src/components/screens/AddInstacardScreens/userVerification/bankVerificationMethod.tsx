@@ -20,7 +20,7 @@ export default function BankVerificationMethod({
   return (
     <>
       {selectedVerificationMethod === null && (
-        <div className="flex-1 w-full flex flex-col items-center justify-center gap-4 min-h-full px-6">
+        <div className="flex-1 w-full flex flex-col items-stretch justify-center gap-4 min-h-full px-6">
           <Button className="full" onClick={() => setSelectedVerificationMethod("soft_token")}>
             Go with Soft Token
           </Button>
