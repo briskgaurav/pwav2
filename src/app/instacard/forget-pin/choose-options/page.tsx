@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { Button, RadioOption, SheetContainer } from '@/components/ui'
 import { ChatIcon, ICONS, MessageIcon } from '@/constants/icons'
-import { CheckRadioOption } from '@/components/ui/RadioButton2'
 import { routes } from '@/lib/routes'
 import { useRouter } from 'next/navigation'
 import { LucideIcon } from 'lucide-react'
