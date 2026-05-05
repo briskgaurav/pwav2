@@ -25,7 +25,23 @@ type VerificationCodeScreenProps = {
   showSuccessPopup?: boolean
   successPopupContent?: SuccessPopupContent
   onVerify?: (code: string) => Promise<void>
+  /**
+   * Called when the user taps "Resend". When omitted, the button only
+   * clears the OTP input (legacy behaviour). When provided, the button
+   * also enters a loading state and starts a cooldown after success.
+   */
+  onResend?: () => Promise<void>
+  /**
+   * Seconds to disable the Resend button after a successful resend.
+   *
+   * TODO: replace with a value read from the OTP-send response once the
+   * backend ships `resendAfterSeconds` / `nextResendAt`. Ownership of the
+   * cooldown belongs server-side, not in the frontend.
+   */
+  resendCooldownSeconds?: number
 }
+
+const DEFAULT_RESEND_COOLDOWN_SECONDS = 30
 
 function NativeOTPInput({
   value,
@@ -112,14 +128,27 @@ export default function VerificationCodeScreen({
     buttonText: 'Ok',
   },
   onVerify,
+  onResend,
+  resendCooldownSeconds = DEFAULT_RESEND_COOLDOWN_SECONDS,
 }: VerificationCodeScreenProps) {
   const router = useRouter()
   const [code, setCode] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
   const [errorText, setErrorText] = useState<string | null>(null)
+  const [isResending, setIsResending] = useState(false)
+  const [cooldownRemaining, setCooldownRemaining] = useState(0)
   const popupOverlayRef = useRef<HTMLDivElement>(null)
   const popupContentRef = useRef<HTMLDivElement>(null)
+
+  // Tick down the resend cooldown one second at a time. Stops at zero.
+  useEffect(() => {
+    if (cooldownRemaining <= 0) return
+    const id = window.setInterval(() => {
+      setCooldownRemaining((s) => (s <= 1 ? 0 : s - 1))
+    }, 1000)
+    return () => window.clearInterval(id)
+  }, [cooldownRemaining])
 
   useEffect(() => {
     if (showSuccessPopup) {
@@ -172,9 +201,30 @@ const handleContinue = async () => {
     }
   }
 
-  const handleResend = () => {
+  const handleResend = async () => {
+    if (isResending || cooldownRemaining > 0) return
     setCode('')
+    setErrorText(null)
+
+    if (!onResend) return
+
+    setIsResending(true)
+    try {
+      await onResend()
+      setCooldownRemaining(resendCooldownSeconds)
+    } catch (e) {
+      setErrorText(e instanceof Error ? e.message : 'Could not resend code')
+    } finally {
+      setIsResending(false)
+    }
   }
+
+  const resendDisabled = isResending || cooldownRemaining > 0
+  const resendLabel = isResending
+    ? 'Resending…'
+    : cooldownRemaining > 0
+      ? `Resend (${cooldownRemaining}s)`
+      : 'Resend'
 
   const isCodeComplete = code.length === MAX_CODE_LENGTH
 
@@ -266,10 +316,11 @@ const handleContinue = async () => {
               Didn&apos;t receive the Code?{' '}
               <button
                 onClick={handleResend}
-                className="bg-transparent border-none text-primary font-semibold cursor-pointer p-0 text-sm"
+                disabled={resendDisabled}
+                className="bg-transparent border-none text-primary font-semibold cursor-pointer p-0 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 type="button"
               >
-                Resend
+                {resendLabel}
               </button>
             </p>
           </div>
@@ -317,10 +368,11 @@ const handleContinue = async () => {
               Didn&apos;t receive the Code?{' '}
               <button
                 onClick={handleResend}
-                className="bg-transparent border-none text-primary font-semibold cursor-pointer p-0 text-sm"
+                disabled={resendDisabled}
+                className="bg-transparent border-none text-primary font-semibold cursor-pointer p-0 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 type="button"
               >
-                Resend
+                {resendLabel}
               </button>
             </p>
           </div>

@@ -1,63 +1,67 @@
 'use client';
 
-import { useState } from 'react';
-import BankVerificationMethod from './bankVerificationMethod';
 import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen';
-import type { BankVerifictionMethod, UserVerificationSteps } from '@/types/userVerificationSteps';
+import type { UserVerificationSteps } from '@/types/userVerificationSteps';
+import { sendBankOtp, verifyBankOtp } from '@/lib/api/cards';
+import { useAppDispatch, useAppSelector } from '@/store/redux/hooks';
+import {
+  selectCardRequestBankOtpChannel,
+  selectCardRequestBankOtpDestination,
+  selectCardRequestId,
+  setBankOtpSent,
+  setBankOtpVerified,
+} from '@/store/redux/slices/cardRequestSlice';
 
 interface VerifyBankOTPProps {
   onNext: (nextStep: UserVerificationSteps) => void;
 }
 
-export default function VerifyBankOTP({ onNext }: VerifyBankOTPProps) {
-  const [UIStep, set_UIStep] = useState<'select' | 'soft_token' | 'otp'> ('select');
+export default function VerifyBankOTP({
+  onNext,
+}: VerifyBankOTPProps) {
+  const dispatch = useAppDispatch();
+  const requestId = useAppSelector(selectCardRequestId);
+  const destination = useAppSelector(selectCardRequestBankOtpDestination);
+  const channel = useAppSelector(selectCardRequestBankOtpChannel);
 
-  const handleSelect = (selected: BankVerifictionMethod) => {
-    set_UIStep(selected as 'soft_token' | 'otp')
-  }
+  const handleVerify = async (code: string) => {
+    if (!requestId) {
+      throw new Error('Card request not initialised. Please restart the flow.');
+    }
+    const response = await verifyBankOtp({ requestId, otp: code });
+    dispatch(setBankOtpVerified({ bankOtpMatchStatus: response.otpMatchStatus }));
+  };
+
+  const handleResend = async () => {
+    if (!requestId) {
+      throw new Error('Card request not initialised. Please restart the flow.');
+    }
+    const response = await sendBankOtp({ requestId });
+    dispatch(setBankOtpSent({
+      bankOtpDestination: response.bankOtpDestination,
+      bankOtpChannel: response.bankOtpChannel,
+      bankOtpStatus: response.otpStatus,
+    }));
+  };
 
   const handleSuccess = () => {
-    onNext('complete')  // replace with your actual next step
-  }
+    // TODO: navigate to user consent step once it is added to UserVerificationSteps.
+    void onNext;
+  };
+
+  const subtitle = channel === 'EMAIL'
+    ? 'Your bank has sent you a 6-digit code to your email'
+    : 'Your bank has sent you a 6-digit code to your phone';
 
   return (
-    <>
-      {/* Step 0 — Choose method */}
-      {UIStep === 'select' && (
-        <BankVerificationMethod onSelect={handleSelect} />
-      )}
-
-      {/* Step 1a — Soft Token screen */}
-      {UIStep === 'soft_token' && (
-        <VerificationCodeScreen
-          title="Verify Soft Token"
-          subtitle="Enter the code from your authenticator app"
-          maskedValue=""
-          showKeypad={true}
-          onVerify={async (code) => {
-            // 🚧 TEMPORARY
-            return;
-            // TODO: call soft token verify API
-          }}
-          onSuccess={handleSuccess}
-        />
-      )}
-
-      {/* Step 1b — Bank OTP screen */}
-      {UIStep === 'otp' && (
-        <VerificationCodeScreen
-          title="Verify Bank OTP"
-          subtitle="Your bank has sent you a 6-digit code to your phone"
-          maskedValue="+918800670414"
-          showKeypad={true}
-          onVerify={async (code) => {
-            // 🚧 TEMPORARY
-            return;
-            // TODO: call bank OTP verify API
-          }}
-          onSuccess={handleSuccess}
-        />
-      )}
-    </>
+    <VerificationCodeScreen
+      title="Verify Bank OTP"
+      subtitle={subtitle}
+      maskedValue={destination ?? ''}
+      showKeypad={true}
+      onVerify={handleVerify}
+      onResend={handleResend}
+      onSuccess={handleSuccess}
+    />
   );
 }

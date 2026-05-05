@@ -15,6 +15,7 @@ import storage from 'redux-persist/lib/storage'
 import livenessReducer from './slices/livenessSlice'
 import idVerificationReducer from './slices/idVerificationSlice'
 import cardReducer from './slices/cardSlice'
+import cardRequestReducer from './slices/cardRequestSlice'
 import cardModeReducer from './slices/cardModeSlice'
 import cardWalletReducer from './slices/cardWalletSlice'
 import userReducer from './slices/userSlice'
@@ -43,6 +44,7 @@ const rootReducer = combineReducers({
   liveness: livenessReducer,
   idVerification: idVerificationReducer,
   card: cardReducer,
+  cardRequest: cardRequestReducer,
   cardMode: cardModeReducer,
   cardWallet: cardWalletReducer,
   user: userReducer,

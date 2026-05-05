@@ -10,6 +10,10 @@ import { haptic } from '@/lib/useHaptics'
 import { CARD_TYPE_OPTIONS, type CardType } from "@/constants/cardData"
 import { UserVerificationSteps } from "@/types/userVerificationSteps"
 import { notifyNavigation } from "@/lib/bridge"
+import { requestCard } from "@/lib/api/cards"
+import { ApiError, AuthError } from "@/lib/api/errors"
+import { useAppDispatch } from "@/store/redux/hooks"
+import { setCardRequest } from "@/store/redux/slices/cardRequestSlice"
 
 interface SelectCardTypesProps {
   onNext: (nextStep: UserVerificationSteps) => void;
@@ -18,19 +22,41 @@ interface SelectCardTypesProps {
 export default function SelectCardTypes({
   onNext
 }: SelectCardTypesProps) {
+  const dispatch = useAppDispatch();
   const [selectedType, setSelectedType] = useState<CardType>('debit');
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
    useEffect(() => {
     notifyNavigation('select-card-type')
   }, [])
 
-  const handleNext = () => {
+  const handleNext = async () => {
     haptic("medium");
-    const requestCardRes = true;
+    if (submitting) return;
 
-    if (requestCardRes) {
-      // do nothing
+    setErrorMessage(null);
+    setSubmitting(true);
+    try {
+      const response = await requestCard({ cardType: selectedType });
+      dispatch(setCardRequest({
+        requestId: response.requestId,
+        registeredEmail: response.registeredEmail,
+        emailOtpStatus: response.otpStatus,
+      }));
       onNext('registered_email_verification');
+    } catch (err) {
+      // AuthError is terminal — host SDK has already been notified by the
+      // session layer. Surface a generic message so the user is not stuck.
+      if (err instanceof AuthError) {
+        setErrorMessage('Your session has expired. Please reopen the app.');
+      } else if (err instanceof ApiError) {
+        setErrorMessage('Could not start your card request. Please try again.');
+      } else {
+        setErrorMessage('Something went wrong. Please try again.');
+      }
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -54,6 +80,12 @@ export default function SelectCardTypes({
             />
           ))}
         </div>
+
+        {errorMessage && (
+          <p role="alert" className="text-[3.5vw] text-red-600 mt-[4vw]">
+            {errorMessage}
+          </p>
+        )}
       </div>
 
       <div
@@ -62,7 +94,11 @@ export default function SelectCardTypes({
           paddingBottom: 'calc(env(safe-area-inset-bottom, 24px) + 24px)',
         }}
       >
-        <ButtonComponent title="Next" onClick={handleNext} />
+        <ButtonComponent
+          title={submitting ? 'Submitting…' : 'Next'}
+          onClick={handleNext}
+          disabled={submitting}
+        />
 
       </div>
     </div>

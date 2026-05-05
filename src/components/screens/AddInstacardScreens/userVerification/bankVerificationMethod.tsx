@@ -1,27 +1,39 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui';
-import type { BankVerifictionMethod } from '@/types/userVerificationSteps';
+import { Button } from "@/components/ui";
+import type { BankVerifictionMethod, UserVerificationSteps } from "@/types/userVerificationSteps";
+import { useState } from "react";
+import VerifyBankOTP from "./verifyBankOTP";
 
 interface BankVerificationMethodProps {
-  onSelect: (method: BankVerifictionMethod) => void;  // ← use the shared type
+  onNext: (step: UserVerificationSteps) => void;
 }
 
-export default function BankVerificationMethod({ onSelect }: BankVerificationMethodProps) {
-  return (
-      <div className='flex-1 w-full flex flex-col items-center justify-center gap-4 min-h-full px-6'>
-        
-        <Button
-            onClick={() => onSelect('soft_token')}    
-        >
-            Go with Soft Token
-        </Button>
+export default function BankVerificationMethod({
+  onNext
+}: BankVerificationMethodProps) {
+  // Added type to useState so it knows what values are allowed
+  const [selectedVerificationMethod, setSelectedVerificationMethod] = 
+    useState<BankVerifictionMethod | null>(null);
 
-        <Button
-          onClick={() => onSelect('otp')}
-        >
-          Go with OTP
-        </Button>
-      </div>
-  )
+  return (
+    <>
+      {selectedVerificationMethod === null && (
+        <div className="flex-1 w-full flex flex-col items-center justify-center gap-4 min-h-full px-6">
+          <Button onClick={() => setSelectedVerificationMethod("soft_token")}>
+            Go with Soft Token
+          </Button>
+
+          <Button onClick={() => setSelectedVerificationMethod("otp")}>
+            Go with OTP
+          </Button>
+        </div>
+      )}
+      {
+        selectedVerificationMethod === "otp" && (
+          <VerifyBankOTP onNext={onNext} />
+        )
+      }
+    </>
+  );
 }
