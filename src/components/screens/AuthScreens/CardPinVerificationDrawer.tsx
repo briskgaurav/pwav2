@@ -143,14 +143,12 @@ export default function CardPinVerificationDrawer({
     const [pin, setPin] = useState('')
     const [error, setError] = useState<string | null>(null)
     const [resetKey, setResetKey] = useState(0)
-    const [keyboardInset, setKeyboardInset] = useState(0)
     const pinInputRef = useRef<HTMLDivElement | null>(null)
 
     useEffect(() => {
         if (!visible) {
             setPin('')
             setError(null)
-            setKeyboardInset(0)
             setResetKey((k) => k + 1)
             return
         }
@@ -158,26 +156,6 @@ export default function CardPinVerificationDrawer({
         setResetKey((k) => k + 1)
     }, [visible])
 
-    useEffect(() => {
-        if (!visible) return
-
-        const vv = window.visualViewport
-        if (!vv) return
-
-        const compute = () => {
-            // Approx keyboard height in px for iOS/Android browsers that support VisualViewport
-            const inset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop)
-            setKeyboardInset(inset)
-        }
-
-        compute()
-        vv.addEventListener('resize', compute)
-        vv.addEventListener('scroll', compute)
-        return () => {
-            vv.removeEventListener('resize', compute)
-            vv.removeEventListener('scroll', compute)
-        }
-    }, [visible])
 
     const handleContinue = useCallback((): boolean => {
         const ok = verifier(pin)
@@ -196,7 +174,7 @@ export default function CardPinVerificationDrawer({
 
     return (
         <BottomSheetModal showTitle={showTitle} backdropBlur={true} visible={visible} onClose={onClose} title={title} maxHeight={0.92}>
-            <div className="flex flex-col gap-5" style={{ paddingBottom: keyboardInset ? keyboardInset + 100 : undefined }}>
+            <div className="flex flex-col gap-5">
                 <p className="text-sm text-text-secondary pt-2 text-center">{subtitle}</p>
 
                 <div ref={pinInputRef} className="flex flex-col items-center gap-3">
