@@ -16,11 +16,10 @@ type SuccessPopupContent = {
 }
 
 type VerificationCodeScreenProps = {
-  hideLayerSheet?: boolean
   title: string
   subtitle: string
   maskedValue: string
-  successRoute: string
+  successRoute?: string
   showKeypad?: boolean
   onSuccess?: () => void
   showSuccessPopup?: boolean
@@ -101,11 +100,10 @@ function NativeOTPInput({
 }
 
 export default function VerificationCodeScreen({
-  hideLayerSheet = false,
   title,
   subtitle,
   maskedValue = '',
-  successRoute,
+  successRoute ='',
   showKeypad = true,
   onSuccess,
   showSuccessPopup: enableSuccessPopup = false,
@@ -141,7 +139,6 @@ export default function VerificationCodeScreen({
   const handleContinue = async () => {
     setIsVerifying(true)
     setErrorText(null)
-
     try {
       if (onVerify) {
         await onVerify(code)
@@ -219,7 +216,7 @@ export default function VerificationCodeScreen({
 
   if (showKeypad) {
     return (
-      <LayoutSheet routeTitle={title} needPadding={false} hideLayerSheet={hideLayerSheet}>
+      <>
         <div className="flex flex-col">
           <div className="flex flex-col justify-center px-5 py-10 text-center gap-3">
             <h2 className="text-xl font-semibold text-text-primary">
@@ -277,7 +274,7 @@ export default function VerificationCodeScreen({
           </div>
         </div>
         {renderSuccessPopup()}
-      </LayoutSheet>
+      </>
     )
   }
 

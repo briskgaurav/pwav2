@@ -1,0 +1,1 @@
+export type UserVerificationSteps = 'select_card' | 'registered_email_verification' | 'bank_verification';
