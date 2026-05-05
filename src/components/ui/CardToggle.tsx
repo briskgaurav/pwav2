@@ -87,21 +87,20 @@ export default function CardToggle({
             return (
               <div key={tab} className="relative flex-1">
                 {/* Divider right of index 0 (shows when current=2) */}
-                {idx === 0 && (
+                {/* {idx === 0 && (
                   <div
                     ref={dividerRef0Right}
                     className="absolute top-1/2 -translate-y-1/2 right-0 z-0 w-px h-1/2 bg-primary"
                     style={{ opacity: (tabs.indexOf(current) === 2 ? 1 : 0), transition: 'opacity 0.3s' }}
                   />
                 )}
-                {/* Divider left of index 2 (shows when current=0) */}
                 {idx === 2 && (
                   <div
                     ref={dividerRef2Left}
                     className="absolute top-1/2 -translate-y-1/2 left-0 z-0 w-px h-1/2 bg-primary"
                     style={{ opacity: (tabs.indexOf(current) === 0 ? 1 : 0), transition: 'opacity 0.3s' }}
                   />
-                )}
+                )} */}
                 {/* No divider for idx 1 */}
                 <button
                   onClick={() => handleClick(tab)}
