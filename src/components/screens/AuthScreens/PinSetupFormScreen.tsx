@@ -27,6 +27,8 @@ function NativePINField({
   useDots,
   onFocusNext,
   inputRef,
+  active,
+  onActivate,
 }: {
   label: string
   value: string
@@ -34,6 +36,8 @@ function NativePINField({
   useDots: boolean
   onFocusNext?: () => void
   inputRef: React.RefObject<HTMLInputElement | null>
+  active: boolean
+  onActivate: () => void
 }) {
   const digits = Array.from({ length: PIN_LENGTH }, (_, i) => value[i] || '')
 
@@ -42,7 +46,13 @@ function NativePINField({
   return (
     <div className="mt-4 w-full">
       <p className="text-sm text-text-primary mb-2">{label}</p>
-      <div className="cursor-pointer flex items-center justify-center gap-3 relative" onClick={focus}>
+      <div
+        className="cursor-pointer flex items-center justify-center gap-3 relative"
+        onClick={() => {
+          onActivate()
+          focus()
+        }}
+      >
         <input
           ref={inputRef}
           type="tel"
@@ -52,6 +62,8 @@ function NativePINField({
           enterKeyHint="done"
           maxLength={PIN_LENGTH}
           value={value}
+          tabIndex={active ? 0 : -1}
+          onFocus={onActivate}
           onChange={(e) => {
             const cleaned = e.target.value.replace(/\D/g, '').slice(0, PIN_LENGTH)
             onChange(cleaned)
@@ -60,9 +72,9 @@ function NativePINField({
           className="absolute -left-[9999px] top-0 w-px h-px opacity-0"
         />
 
-        <div className="flex gap-2.5 w-full px-5 justify-center">
+        <div className="flex gap-2.5 w-full px-5 justify-center pr-10">
           {digits.map((d, i) => {
-            const isCursor = i === value.length && value.length < PIN_LENGTH
+            const isCursor = active && i === value.length && value.length < PIN_LENGTH
             return (
               <div
                 key={i}
@@ -108,6 +120,7 @@ function PinSetupFormContent({
   const [error, setError] = useState<string | null>(null)
   const [isPinVisible, setIsPinVisible] = useState(false)
   const [isConfirmPinVisible, setIsConfirmPinVisible] = useState(false)
+  const [activeField, setActiveField] = useState<'pin' | 'confirm'>('pin')
 
   const pinHiddenInputRef = useRef<HTMLInputElement | null>(null)
   const confirmHiddenInputRef = useRef<HTMLInputElement | null>(null)
@@ -165,13 +178,18 @@ function PinSetupFormContent({
                 value={pin}
                 useDots={!isPinVisible}
                 inputRef={pinHiddenInputRef}
-                onFocusNext={() => confirmHiddenInputRef.current?.focus()}
+                active={activeField === 'pin'}
+                onActivate={() => setActiveField('pin')}
+                onFocusNext={() => {
+                  setActiveField('confirm')
+                  confirmHiddenInputRef.current?.focus()
+                }}
                 onChange={(v) => {
                   setError(null)
                   setPin(v)
                 }}
               />
-              <div className='absolute right-[3vw] top-[50%] -translate-y-1/2'>
+              <div className='absolute right-[3vw] top-[46px]'>
                 <EyeButton
                   isVisible={isPinVisible}
                   onToggle={setIsPinVisible}
@@ -186,12 +204,14 @@ function PinSetupFormContent({
                 value={confirmPin}
                 useDots={!isConfirmPinVisible}
                 inputRef={confirmHiddenInputRef}
+                active={activeField === 'confirm'}
+                onActivate={() => setActiveField('confirm')}
                 onChange={(v) => {
                   setError(null)
                   setConfirmPin(v)
                 }}
               />
-              <div className='absolute right-[3vw] top-[50%] -translate-y-1/2'>
+              <div className='absolute right-[3vw] top-[46px]'>
                 <EyeButton
                   isVisible={isConfirmPinVisible}
                   onToggle={setIsConfirmPinVisible}

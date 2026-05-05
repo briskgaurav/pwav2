@@ -26,6 +26,8 @@ export default function EnterPaymentDetails() {
   const [description, setDescription] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [descCharsLeft, setDescCharsLeft] = useState(MAX_DESCRIPTION_LENGTH)
+  const [amountFocused, setAmountFocused] = useState(false)
+  const [descFocused, setDescFocused] = useState(false)
 
   // Pre-fill from QR data on mount
   useEffect(() => {
@@ -52,6 +54,7 @@ export default function EnterPaymentDetails() {
 
   const focusAmount = () => {
     if (isAmountLocked) return
+    setAmountFocused(true)
     amountHiddenRef.current?.focus()
   }
 
@@ -171,7 +174,13 @@ export default function EnterPaymentDetails() {
               Enter Amount (<NiaraSymbol />)
             </label>
             {/* Custom input with naira symbol inside the field */}
-            <div className="relative flex items-center" onClick={focusAmount}>
+            <div
+              className="relative flex items-center"
+              onClick={focusAmount}
+              onPointerDown={() => {
+                if (!isAmountLocked) setAmountFocused(true)
+              }}
+            >
               <span
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-text-primary pointer-events-none"
                 style={{ zIndex: 2 }}
@@ -187,6 +196,8 @@ export default function EnterPaymentDetails() {
                 enterKeyHint="done"
                 value={amount}
                 onChange={handleAmountChange}
+                onFocus={() => setAmountFocused(true)}
+                onBlur={() => setAmountFocused(false)}
                 className="absolute -left-[9999px] top-0 w-px h-px opacity-0"
               />
               <input
@@ -195,10 +206,15 @@ export default function EnterPaymentDetails() {
                 value={amount ? formatAmountWithCommas(amount) : ''}
                 min={0}
                 max={MAX_AMOUNT}
-                onFocus={focusAmount}
+                onFocus={() => {
+                  if (isAmountLocked) return
+                  setAmountFocused(true)
+                  focusAmount()
+                }}
+                onBlur={() => setAmountFocused(false)}
                 readOnly
                 inputMode="numeric"
-                className={`pl-10 w-full rounded-xl border border-border px-4 py-3 text-text-primary placeholder-text-text-secondary placeholder:text-sm focus:outline-none! focus:ring-0 ${isAmountLocked ? 'bg-success/20 opacity-70' : ''}`}
+                className={`pl-10 w-full rounded-xl border px-4 py-3 text-text-primary placeholder-text-text-secondary placeholder:text-sm focus:outline-none ${amountFocused ? 'border-primary ring-2 ring-primary/20' : 'border-border'} ${isAmountLocked ? 'bg-success/20 opacity-70' : ''}`}
                 required
                 style={{ paddingLeft: '2.5rem' }}
               />
@@ -218,9 +234,11 @@ export default function EnterPaymentDetails() {
               placeholder="Write Description here"
               value={description}
               onChange={handleDescriptionChange}
+              onFocus={() => setDescFocused(true)}
+              onBlur={() => setDescFocused(false)}
               rows={3}
               maxLength={MAX_DESCRIPTION_LENGTH}
-              className="rounded-xl border border-border px-4 py-3 text-text-primary placeholder-text-text-secondary placeholder:text-sm focus:outline-none! focus:ring-0   resize-none"
+              className={`rounded-xl border px-4 py-3 text-text-primary placeholder-text-text-secondary placeholder:text-sm focus:outline-none! focus:ring-0 resize-none ${descFocused ? 'border-primary ring-2 ring-primary/20' : 'border-border'}`}
             />
               <span
                 className={` text-right text-[2.5vw]! mr-2 font-mono transition-colors ${descCharsLeft === 0 ? "text-error" : "text-gray-400"
