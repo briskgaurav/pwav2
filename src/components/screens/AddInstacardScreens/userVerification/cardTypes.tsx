@@ -23,11 +23,11 @@ export default function SelectCardTypes({
   onNext
 }: SelectCardTypesProps) {
   const dispatch = useAppDispatch();
-  const [selectedType, setSelectedType] = useState<CardType>('debit');
+  const [selectedType, setSelectedType] = useState<CardType>('DEBIT_CARD');
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-   useEffect(() => {
+  useEffect(() => {
     notifyNavigation('select-card-type')
   }, [])
 
@@ -43,6 +43,7 @@ export default function SelectCardTypes({
         requestId: response.requestId,
         registeredEmail: response.registeredEmail,
         emailOtpStatus: response.otpStatus,
+        selectedCardType: selectedType,
       }));
       onNext('registered_email_verification');
     } catch (err) {

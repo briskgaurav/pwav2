@@ -1,4 +1,4 @@
-import { CardType } from '@/lib/types'
+import { CardType } from '@/constants/cardData'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 /**
