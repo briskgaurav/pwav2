@@ -49,6 +49,20 @@ export interface RequestCardResponse {
  * Initiate a new card request. Returns a `requestId` plus the registered
  * email and OTP status to drive the next verification step.
  */
+export async function requestCardStatus(input: RequestCardInput): Promise<RequestCardResponse> {
+  const payload: Required<RequestCardInput> = {
+    ...MOCK_HOST_CONTEXT,
+    ...input,
+    accountNumber: input.accountNumber ?? MOCK_HOST_CONTEXT.accountNumber,
+  };
+
+  return fetchWithAuth<RequestCardResponse>('/api/v1/card/request', {
+    method: 'POST',
+    json: payload,
+  });
+}
+
+
 export async function requestCard(input: RequestCardInput): Promise<RequestCardResponse> {
   const payload: Required<RequestCardInput> = {
     ...MOCK_HOST_CONTEXT,
@@ -113,6 +127,39 @@ export async function verifyEmailOtp(input: VerifyEmailOtpInput): Promise<Verify
 /** Input for `POST /api/v1/card/bank-otp/send`. */
 export interface SendBankOtpInput {
   requestId: string;
+}
+
+/** Input for `POST /api/v1/card/bank-otp/send`. */
+export interface CardActivationInput {
+  requestId: string;
+  issuerBankCode: string;
+  country: string;
+  mobileAppUserId: string;
+  customerId: string;
+  customerName: string;
+  bvn: string;
+  nin: string;
+  registeredEmail: string;
+  cardType: string;
+  vcPan: string;
+  pinRequested: string;
+}
+
+export interface CardActivationResponse {
+  requestId: string;
+  issuerBankCode: string;
+  country: string;
+  mobileAppUserId: string;
+  customerId: string;
+  customerName: string;
+  bvn: string;
+  nin: string;
+  registeredEmail: string;
+  cardType: string;
+  vcPan: string;
+  pinSetupConfirmation: string;
+  status: string;
+  message: string;
 }
 
 /**
@@ -308,6 +355,14 @@ export async function submitConsent(
   input: SubmitConsentInput,
 ): Promise<SubmitConsentResponse> {
   return fetchWithAuth<SubmitConsentResponse>('/api/v1/card-issuance/consent', {
+    method: 'POST',
+    json: { ...MOCK_HOST_CONTEXT, ...input },
+  });
+}
+
+//card activation
+export async function cardActivation(input: CardActivationInput): Promise<CardActivationResponse> {
+  return fetchWithAuth<CardActivationResponse>('/api/v1/card-issuance/virtual-card/pin', {
     method: 'POST',
     json: { ...MOCK_HOST_CONTEXT, ...input },
   });

@@ -9,6 +9,7 @@ import BankVerificationMethod from "./userVerification/bankVerificationMethod";
 import CreditCardConsent from "./CreditCardConsent";
 import type { UserInstaCardSteps } from "@/types/userVerificationSteps";
 import SuccessScreen from "../AuthScreens/SuccessScreen";
+import VCCardActivation from "./VCActivation";
 
 /**
  * Multi-step "Add Instacard" flow. Each step is rendered by a child component
@@ -36,7 +37,12 @@ export default function AddInstacardScreen() {
         return <CreditCardConsent onNext={handleNext} />;
       case 'success':
         // TODO: render the success / card-issued screen.
-        return <SuccessScreen hideLayerSheet />;
+        //return <SuccessScreen hideLayerSheet onButtonClick={handleCardActivation} />;
+        return <SuccessScreen hideLayerSheet onButtonClick={() => handleNext('card_activation')} />
+      case 'card_activation':
+        return <VCCardActivation />
+      default:
+        return null;
     }
   };
 

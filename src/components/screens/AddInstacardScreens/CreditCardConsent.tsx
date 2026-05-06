@@ -52,6 +52,7 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
   //      layer (browser shows it as "(canceled)").
   //   2. If the screen unmounts while the request is in flight (user backs
   //      out), the call is canceled and no setState fires after unmount.
+  
   useEffect(() => {
     if (!requestId) {
       setError("Card request not initialised. Please restart the flow.");

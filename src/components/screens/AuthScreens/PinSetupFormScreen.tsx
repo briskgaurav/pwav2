@@ -153,6 +153,7 @@ function PinSetupFormContent({
     setIsSubmitting(true)
     setError(null)
 
+    // card type should be handled by parent
     await onSubmit(pin, cardType)
     setIsSubmitting(false)
   }
@@ -160,7 +161,7 @@ function PinSetupFormContent({
   const titleWeightClass = titleWeight === 'medium' ? 'font-medium' : 'font-semibold'
 
   return (
-    <LayoutSheet routeTitle={title} needPadding={false}>
+    <LayoutSheet routeTitle={title} needPadding={false} hideLayerSheet={true}>
         <div className=" flex flex-col h-full justify-between overflow-hidden">
           <div 
             className=" p-6 py-10 px-5 text-center flex flex-col items-center justify-start gap-2 overflow-auto"

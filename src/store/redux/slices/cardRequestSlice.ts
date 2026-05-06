@@ -1,3 +1,4 @@
+import { CardType } from '@/lib/types'
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
 /**
@@ -26,16 +27,25 @@ export type BankOtpChannel = 'EMAIL' | 'PHONE'
 interface CardRequestState {
   requestId: string | null
   registeredEmail: string | null
+
+  /** User selected card type */
+  selectedCardType: CardType | null
+
   /** Status of the email OTP send (set by /card/request). */
   emailOtpStatus: string | null
+
   /** Match result of the email OTP verify (set by /card/email-otp/verify). */
   emailOtpMatchStatus: string | null
+
   /** Pre-masked bank OTP destination from the backend (never raw PII). */
   bankOtpDestination: string | null
+
   /** Which channel the bank OTP was sent on — drives screen copy. */
   bankOtpChannel: BankOtpChannel | null
+
   /** Status of the bank OTP send (set by /email-otp/verify or /bank-otp/send). */
   bankOtpStatus: string | null
+
   /** Match result of the bank OTP verify (set by /card/bank-otp/verify). */
   bankOtpMatchStatus: string | null
 }
@@ -43,6 +53,7 @@ interface CardRequestState {
 const initialState: CardRequestState = {
   requestId: null,
   registeredEmail: null,
+  selectedCardType: null,
   emailOtpStatus: null,
   emailOtpMatchStatus: null,
   bankOtpDestination: null,
@@ -61,16 +72,27 @@ const cardRequestSlice = createSlice({
       action: PayloadAction<{
         requestId: string
         registeredEmail: string
-        emailOtpStatus: string
+        emailOtpStatus: string,
+        selectedCardType: CardType
       }>,
     ) => {
       state.requestId = action.payload.requestId
       state.registeredEmail = action.payload.registeredEmail
       state.emailOtpStatus = action.payload.emailOtpStatus
+      state.selectedCardType = action.payload.selectedCardType
     },
+
+    /** Store the selected card type */
+    setSelectedCardType: (
+      state,
+      action: PayloadAction<CardType>,
+    ) => {
+      state.selectedCardType = action.payload
+    },
+
     /**
      * Capture the email-OTP-verify result. Bank-side fields from the same
-     * response are dispatched separately via {@link setBankOtpSent}.
+     * response are dispatched separately via setBankOtpSent.
      */
     setEmailOtpVerified: (
       state,
@@ -78,6 +100,7 @@ const cardRequestSlice = createSlice({
     ) => {
       state.emailOtpMatchStatus = action.payload.emailOtpMatchStatus
     },
+
     /**
      * Capture the bank-OTP-send result. Dispatched both from the bank-side
      * fields of `/email-otp/verify` and from the explicit `/bank-otp/send`
@@ -95,6 +118,7 @@ const cardRequestSlice = createSlice({
       state.bankOtpChannel = action.payload.bankOtpChannel
       state.bankOtpStatus = action.payload.bankOtpStatus
     },
+
     /** Capture the response from `POST /api/v1/card/bank-otp/verify`. */
     setBankOtpVerified: (
       state,
@@ -102,12 +126,15 @@ const cardRequestSlice = createSlice({
     ) => {
       state.bankOtpMatchStatus = action.payload.bankOtpMatchStatus
     },
+
     /** Reset back to the initial empty state when the flow ends or restarts. */
     clearCardRequest: () => initialState,
   },
+
   selectors: {
     selectCardRequestId: (state) => state.requestId,
     selectCardRequestEmail: (state) => state.registeredEmail,
+    selectSelectedCardType: (state) => state.selectedCardType,
     selectCardRequestBankOtpDestination: (state) => state.bankOtpDestination,
     selectCardRequestBankOtpChannel: (state) => state.bankOtpChannel,
   },
@@ -115,15 +142,19 @@ const cardRequestSlice = createSlice({
 
 export const {
   setCardRequest,
+  setSelectedCardType,
   setEmailOtpVerified,
   setBankOtpSent,
   setBankOtpVerified,
   clearCardRequest,
 } = cardRequestSlice.actions
+
 export const {
   selectCardRequestId,
   selectCardRequestEmail,
+  selectSelectedCardType,
   selectCardRequestBankOtpDestination,
   selectCardRequestBankOtpChannel,
 } = cardRequestSlice.selectors
+
 export default cardRequestSlice.reducer

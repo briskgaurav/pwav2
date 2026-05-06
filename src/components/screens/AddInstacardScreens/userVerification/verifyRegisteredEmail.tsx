@@ -66,7 +66,6 @@ export default function VerifyRegisteredEmail({
       title="Verify OTP"
       subtitle="We have sent you a 6-digit code to your"
       maskedValue={registeredEmail ?? ''}
-      showKeypad={true}
       onVerify={handleVerify}
       onResend={handleResend}
       onSuccess={handleSuccess}

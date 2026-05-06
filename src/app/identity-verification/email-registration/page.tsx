@@ -35,7 +35,6 @@ export default function EmailRegistrationPage() {
     if (step === 'otp') {
       return (
         <VerificationCodeScreen
-          hideLayerSheet
           title="Verify your Email"
           subtitle="We have sent you a 6-digit code to your email address"
           maskedValue={maskedPendingEmail}
