@@ -92,7 +92,7 @@ const onlinePaymentSlice = createSlice({
     decrementCvvTimer: (state) => {
       if (state.cvvTimeRemaining <= 0) {
         state.cvvTimeRemaining = CVV_RESET_SECONDS
-        state.cardDetails.cvv = String(Math.floor(100 + Math.random() * 900))
+        state.cardDetails.cvv = String(Math.floor(100 + (crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 900))
       } else {
         state.cvvTimeRemaining -= 1
       }
@@ -100,7 +100,7 @@ const onlinePaymentSlice = createSlice({
     refreshData: (state) => {
       state.isRefreshing = false
       state.cvvTimeRemaining = CVV_RESET_SECONDS
-      state.cardDetails.cvv = String(Math.floor(100 + Math.random() * 900))
+      state.cardDetails.cvv = String(Math.floor(100 + (crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 900))
     },
     setRefreshStart: (state) => {
       state.isRefreshing = true

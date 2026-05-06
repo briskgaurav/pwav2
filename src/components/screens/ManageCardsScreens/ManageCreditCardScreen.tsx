@@ -54,7 +54,7 @@ export default function ManageCreditCardScreen() {
 
             <div className='grid grid-cols-2 gap-2'>
               {creditCardDetails.map((detail, index) => (
-                <div key={index} className='px-4 py-3 border bg-white border-border rounded-2xl space-y-2 text-center'>
+                <div key={detail.label} className='px-4 py-3 border bg-white border-border rounded-2xl space-y-2 text-center'>
                   <p className='text-text-primary text-xs'>{detail.label}</p>
                   <p className='text-text-primary font-sm'>{detail.value}</p>
                 </div>
@@ -67,14 +67,14 @@ export default function ManageCreditCardScreen() {
               { icon: StatementsIcon, title: 'View Statements', href: routes.emailStatements('credit') },
               { icon: RepaymentIcon, title: 'Make Repayments', href: routes.makeRepayments },
             ].map((btn, index) => (
-              <ManageBtn fullWidth href={btn.href} key={index} icon={btn.icon} title={btn.title} />
+              <ManageBtn fullWidth href={btn.href} key={btn.title} icon={btn.icon} title={btn.title} />
             ))}
           </div>
 
           <CardActionTiles cardMode={cardMode} onActionClick={handleCardActionClick} />
         </div>
 
-      <FAQModal visible={isFaqOpen} onClose={handleCloseFaq} data={faqData || undefined} />
+      <FAQModal visible={isFaqOpen} onClose={handleCloseFaq} data={faqData ?? undefined} />
       <RemoveCardModal
         visible={showRemoveModal}
         onClose={() => setShowRemoveModal(false)}

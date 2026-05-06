@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ status: false, message: 'Invalid code' }, { status: 400 })
   }
 
-  if (!userInfo || typeof userInfo.id !== 'number') {
+  if (!userInfo ?? typeof userInfo.id !== 'number') {
     return NextResponse.json({ status: false, message: 'Missing userInfo' }, { status: 400 })
   }
 

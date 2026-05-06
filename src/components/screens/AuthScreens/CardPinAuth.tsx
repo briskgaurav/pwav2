@@ -1,15 +1,14 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import {  useCallback, useEffect, useRef, useState , useMemo } from 'react'
 
 import { useRouter } from 'next/navigation'
 
 import { useTranslation } from 'react-i18next'
 
-import { OTPInput, OTPKeypad, CardMockup } from '@/components/ui'
+import { CardMockup } from '@/components/ui'
 import LayoutSheet from '@/components/ui/LayoutSheet'
 import { useManagingCard } from '@/hooks/useManagingCard'
-import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
 import { useAuth } from '@/lib/auth-context'
 import { routes } from '@/lib/routes'
 import { PIN_LENGTH } from '@/lib/types'
@@ -35,6 +34,7 @@ function NativePINInput({
 }) {
   const hiddenRef = useRef<HTMLInputElement>(null)
   const digits = Array.from({ length: maxLength }, (_, i) => value[i] || '')
+  const DIGIT_KEYS = useMemo(() => Array.from({ length: maxLength }, () => crypto.randomUUID()), [maxLength])
 
   const focusInput = () => hiddenRef.current?.focus()
 
@@ -66,17 +66,12 @@ function NativePINInput({
           const isCursor = i === value.length && value.length < maxLength
           return (
             <div
-              key={i}
-              className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${isCursor ? 'border-primary' : digit ? 'border-text-primary' : 'border-border'
+              key={DIGIT_KEYS[i]}
+              className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${(isCursor && 'border-primary') || (digit && 'border-text-primary') || 'border-border'
                 }`}
             >
-              {digit ? (
-                <span className="w-3 h-3 rounded-full bg-text-primary" />
-              ) : isCursor ? (
-                <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" />
-              ) : (
-                ''
-              )}
+              {digit && <span className="w-3 h-3 rounded-full bg-text-primary" />}
+              {!digit && isCursor && <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" />}
             </div>
           )
         })}

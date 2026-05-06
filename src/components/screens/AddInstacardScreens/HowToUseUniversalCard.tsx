@@ -213,7 +213,7 @@ export default function HowToUseUniversalCard() {
               </p>
               <ul className="space-y-2 text-xs text-text-primary">
                 {section.bullets.map((bullet, i) => (
-                  <li key={i} className="flex items-start gap-2">
+                  <li key={bullet} className="flex items-start gap-2">
                     <span className="text-primary">•</span>
                     <span>{bullet}</span>
                   </li>
@@ -227,7 +227,7 @@ export default function HowToUseUniversalCard() {
         <div className="flex w-full gap-2">
           {cardActions.map((action, index) => (
             <div
-              key={index}
+              key={action.route}
               onClick={() => router.push(action.route)}
               className="w-full border flex items-start flex-col justify-between border-text-primary/20 gap-4 rounded-xl p-4"
             >

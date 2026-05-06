@@ -6,9 +6,7 @@ import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 import NiaraSymbol from '@/components/Extras/NiaraSymbol'
-import { OTPKeypad } from '@/components/ui'
 import LayoutSheet from '@/components/ui/LayoutSheet'
-import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
 import { formatAmountWithCommas } from '@/lib/format-amount'
 import { routes } from '@/lib/routes'
 
@@ -21,9 +19,9 @@ export default function EnterPaymentDetails() {
   const searchParams = useSearchParams()
 
   // --- Read QR data from search params ---
-  const qrAmount = searchParams.get('amount') || ''
-  const qrMerchantName = searchParams.get('merchantName') || ''
-  const qrDescription = searchParams.get('description') || ''
+  const qrAmount = searchParams.get('amount') ?? ''
+  const qrMerchantName = searchParams.get('merchantName') ?? ''
+  const qrDescription = searchParams.get('description') ?? ''
   const isAmountLocked = !!qrAmount // lock amount if QR provided it
 
   const [amount, setAmount] = useState('')

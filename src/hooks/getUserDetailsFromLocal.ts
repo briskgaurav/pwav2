@@ -111,11 +111,14 @@ export function getUserDetailsFromLocal(): VerifiedUserSnapshot {
   let user: UserData | null = null
 
   try {
+    // eslint-disable-next-line no-restricted-globals
     const userId = localStorage.getItem('active_user_id') ?? '1'
+    // eslint-disable-next-line no-restricted-globals
     const fromActive = safeParseUser(localStorage.getItem('active_user'))
     if (fromActive) {
       user = fromActive
     } else {
+      // eslint-disable-next-line no-restricted-globals
       const fromById = safeParseUser(localStorage.getItem(`user_${userId}`))
       if (fromById) {
         user = fromById

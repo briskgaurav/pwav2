@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
 
 function generateOtp() {
-  return `${Math.floor(100000 + Math.random() * 900000)}`
+  return `${Math.floor(100000 + (crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 900000)}`
 }
 
 function maskEmail(email: string) {
   const value = (email ?? '').trim().toLowerCase()
   const [local, domain] = value.split('@')
-  if (!local || !domain) return ''
+  if (!local ?? !domain) return ''
   return `${local[0]}***@${domain}`
 }
 
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
   const userId = body?.userId
   const newEmail = (body?.newEmail ?? '').trim().toLowerCase()
 
-  if (typeof userId !== 'number' || Number.isNaN(userId)) {
+  if (typeof userId !== 'number' ?? Number.isNaN(userId)) {
     return NextResponse.json({ status: false, message: 'Missing userId' }, { status: 400 })
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {

@@ -41,6 +41,7 @@ export function ProfileContent({
 
   // Initialize dark mode state from localStorage or default to light
   useEffect(() => {
+    // eslint-disable-next-line no-restricted-globals
     const savedTheme = localStorage.getItem('theme')
     if (savedTheme) {
       setIsDarkMode(savedTheme === 'dark')
@@ -49,6 +50,7 @@ export function ProfileContent({
       // Default to light theme and save it
       setIsDarkMode(false)
       document.documentElement.classList.remove('dark')
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('theme', 'light')
     }
   }, [])
@@ -67,6 +69,7 @@ export function ProfileContent({
     const newDarkMode = !isDarkMode
     setIsDarkMode(newDarkMode)
     document.documentElement.classList.toggle('dark', newDarkMode)
+    // eslint-disable-next-line no-restricted-globals
     localStorage.setItem('theme', newDarkMode ? 'dark' : 'light')
   }
 

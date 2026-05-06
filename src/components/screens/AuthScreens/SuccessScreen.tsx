@@ -85,7 +85,7 @@ export default function SuccessScreen({
               <div>
 
                 <CardMockup
-                  imageSrc={imageSrc || '/img/cards/DebitCard.png'}
+                  imageSrc={imageSrc ?? '/img/cards/DebitCard.png'}
                   maskedNumber={maskedNumber}
                   isclickable={false}
                   showActions={false}

@@ -52,7 +52,7 @@ const detectEnvironment = () => {
   // We'll use a timeout-based approach to detect this
   const supportsGetUserMedia = hasGetUserMedia && !isSocialMediaWebView;
 
-  console.log('[Camera] Environment detected:', {
+  console.warn('[Camera] Environment detected:', {
     isWebView,
     isAndroidWebView,
     isIOSWebView,
@@ -84,7 +84,7 @@ const testGetUserMedia = async (timeoutMs = 5000) => {
 
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      console.log('[Camera] getUserMedia timed out - likely unsupported WebView');
+      console.warn('[Camera] getUserMedia timed out - likely unsupported WebView');
       resolve({ works: false, reason: 'timeout' });
     }, timeoutMs);
 
@@ -93,12 +93,12 @@ const testGetUserMedia = async (timeoutMs = 5000) => {
         clearTimeout(timeout);
         // Stop the test stream immediately
         stream.getTracks().forEach(track => track.stop());
-        console.log('[Camera] getUserMedia test successful');
+        console.warn('[Camera] getUserMedia test successful');
         resolve({ works: true, reason: 'success' });
       })
       .catch((err) => {
         clearTimeout(timeout);
-        console.log('[Camera] getUserMedia test failed:', err.name, err.message);
+        console.warn('[Camera] getUserMedia test failed:', err.name, err.message);
         resolve({ works: false, reason: err.name, error: err });
       });
   });
@@ -123,7 +123,7 @@ export const useCamera = () => {
 
     // For social media WebViews, immediately use fallback
     if (env.isSocialMediaWebView) {
-      console.log('[Camera] Social media WebView detected, using fallback');
+      console.warn('[Camera] Social media WebView detected, using fallback');
       setUseFallback(true);
       setIsReady(true);
       setIsChecking(false);
@@ -173,7 +173,7 @@ export const useCamera = () => {
 
       // Check if camera API is available
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        console.log('[Camera] getUserMedia not available, using fallback mode');
+        console.warn('[Camera] getUserMedia not available, using fallback mode');
         setUseFallback(true);
         setIsReady(true);
         return;
@@ -194,7 +194,7 @@ export const useCamera = () => {
         const timeoutPromise = new Promise((_, reject) => {
           timeoutId = setTimeout(() => {
             if (!resolved) {
-              console.log('[Camera] getUserMedia timed out in WebView, switching to fallback');
+              console.warn('[Camera] getUserMedia timed out in WebView, switching to fallback');
               reject(new Error('TIMEOUT'));
             }
           }, TIMEOUT_MS);
@@ -214,7 +214,7 @@ export const useCamera = () => {
               if (attachStream(stream) || attempts >= maxAttempts) {
                 clearInterval(interval);
                 if (attempts >= maxAttempts && !videoRef.current) {
-                  console.log('[Camera] Failed to attach stream, using fallback');
+                  console.warn('[Camera] Failed to attach stream, using fallback');
                   stream.getTracks().forEach(track => track.stop());
                   setUseFallback(true);
                   setIsReady(true);
@@ -257,7 +257,7 @@ export const useCamera = () => {
           err.name === 'AbortError' ||
           err.message?.includes('not supported') ||
           err.message?.includes('Permission denied')) {
-        console.log('[Camera] Switching to fallback mode due to:', err.message || err.name);
+        console.warn('[Camera] Switching to fallback mode due to:', err.message || err.name);
         setUseFallback(true);
         setIsReady(true);
         setError(null);
@@ -270,7 +270,7 @@ export const useCamera = () => {
         setError('Camera is in use by another application. Please close it and try again.');
       } else {
         // For any other error, try fallback
-        console.log('[Camera] Unknown error, trying fallback mode:', err);
+        console.warn('[Camera] Unknown error, trying fallback mode:', err);
         setUseFallback(true);
         setIsReady(true);
         setError(null);

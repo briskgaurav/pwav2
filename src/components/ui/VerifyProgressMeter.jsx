@@ -21,22 +21,10 @@ export default function VerifyProgressMeter({ currentStep = 1 }) {
           return (
             <div key={label} className="flex-1 flex flex-col items-center gap-1">
               <div
-                className={`h-1.5 w-full rounded-full ${
-                  isCompleted
-                    ? 'bg-green-500'
-                    : isCurrent
-                      ? 'bg-yellow-500'
-                      : 'bg-gray-200'
-                }`}
+                className={`h-1.5 w-full rounded-full ${(isCompleted && 'bg-green-500') || (isCurrent && 'bg-yellow-500') || 'bg-gray-200'}`}
               />
               <span
-                className={`text-[10px] font-medium truncate max-w-full ${
-                  isCompleted
-                    ? 'text-green-500'
-                    : isCurrent
-                      ? 'text-yellow-500'
-                      : 'text-gray-400'
-                }`}
+                className={`text-[10px] font-medium truncate max-w-full ${(isCompleted && 'text-green-500') || (isCurrent && 'text-yellow-500') || 'text-gray-400'}`}
                 title={label}
               >
                 {label.length > 12 ? `${label.slice(0, 10)}...` : label}

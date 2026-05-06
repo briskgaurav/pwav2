@@ -58,16 +58,16 @@ export default function CustomRadioBTN({
         style={{ width: sizePx, height: sizePx }}
       >
  
-        {variant === 'check' && checked ? (
+        {variant === 'check' && checked && (
           <Check strokeWidth={3} color="white" size={Math.max(12, Math.round(sizePx * 0.7))} /> 
-        ) : checked ? (
+        )}
+        {variant !== 'check' && checked && (
           <span
             className="rounded-full bg-orange"
             style={{ width: Math.max(10, Math.round(sizePx * 0.55)), height: Math.max(10, Math.round(sizePx * 0.55)) }}
           />
-        ) : null}
+        )}
       </span>
     </span>
   )
 }
-

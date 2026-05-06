@@ -1,15 +1,14 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import {  useState, useRef, useEffect , useMemo } from 'react'
 
 import { useRouter } from 'next/navigation'
 
 import gsap from 'gsap'
 import { Check } from 'lucide-react'
 
-import { SheetContainer, OTPInput, Button } from '@/components/ui'
+import { Button } from '@/components/ui'
 
-import ButtonComponent from '../../ui/ButtonComponent'
 import LayoutSheet from '../../ui/LayoutSheet'
 
 const MAX_CODE_LENGTH = 6
@@ -45,7 +44,8 @@ function NativeOTPInput({
   enableAutoFill?: boolean
 }) {
   const hiddenRef = useRef<HTMLInputElement>(null)
-  const digits = Array.from({ length: maxLength }, (_, i) => value[i] || '')
+  const digits = Array.from({ length: maxLength }, (_, i) => value[i] ?? '')
+  const DIGIT_KEYS = useMemo(() => Array.from({ length: maxLength }, () => crypto.randomUUID()), [maxLength])
 
   const focusInput = () => hiddenRef.current?.focus()
 
@@ -85,15 +85,11 @@ function NativeOTPInput({
           const isCursor = i === value.length && value.length < maxLength
           return (
             <div
-              key={i}
-              className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${isCursor
-                  ? 'border-primary'
-                  : digit
-                    ? 'border-text-primary'
-                    : 'border-border'
+              key={DIGIT_KEYS[i]}
+              className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${(isCursor && 'border-primary') ?? (digit && 'border-text-primary') ?? 'border-border'
                 }`}
             >
-              {digit || (isCursor ? <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" /> : '')}
+              {digit ?? (isCursor ? <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" /> : '')}
             </div>
           )
         })}
@@ -209,7 +205,7 @@ export default function VerificationCodeScreen({
                 className="flex-1 rounded-full bg-primary py-3 text-sm font-medium text-white"
                 onClick={handlePopupOk}
               >
-                {successPopupContent.buttonText || 'Ok'}
+                {successPopupContent.buttonText ?? 'Ok'}
               </button>
             </div>
           </div>
@@ -253,7 +249,7 @@ export default function VerificationCodeScreen({
           <div className='relative'>
             <Button
               className='bg-primary text-white rounded-full px-4 py-2 w-full h-full'
-              disabled={!isCodeComplete || isVerifying}
+              disabled={!isCodeComplete ?? isVerifying}
               onClick={handleContinue}
             >
               {isVerifying ? 'Verifying...' : 'Continue'}

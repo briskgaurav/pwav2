@@ -1,7 +1,8 @@
 'use client';
 
-import { haptic } from '@/lib/useHaptics';
 import { Check } from 'lucide-react';
+
+import { haptic } from '@/lib/useHaptics';
 
 const KEY_ROWS = [
   ['1', '2', '3'],
@@ -55,7 +56,7 @@ export function OTPKeypad({ onKeyPress, showBackground = true, needPadding = tru
     >
       {KEY_ROWS.map((row, rowIndex) => (
         <div
-          key={rowIndex}
+          key={row.join("")}
           style={{
             display: 'flex',
             justifyContent: 'space-between',

@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useEffect, Suspense, useRef } from 'react'
+import {  useState, useEffect, Suspense, useRef , useMemo } from 'react'
 
 import { useSearchParams } from 'next/navigation'
 
-import { OTPInput, OTPKeypad, Button } from '@/components/ui'
+import { Button } from '@/components/ui'
 import EyeButton from '@/components/ui/EyeButton'
 import LayoutSheet from '@/components/ui/LayoutSheet'
-import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
 import { notifyNavigation } from '@/lib/bridge'
 import { PIN_LENGTH, type CardType } from '@/lib/types'
 
@@ -43,6 +42,7 @@ function NativePINField({
   onActivate: () => void
 }) {
   const digits = Array.from({ length: PIN_LENGTH }, (_, i) => value[i] || '')
+  const DIGIT_KEYS = useMemo(() => Array.from({ length: PIN_LENGTH }, () => crypto.randomUUID()), [])
 
   const focus = () => inputRef.current?.focus()
 
@@ -80,21 +80,13 @@ function NativePINField({
             const isCursor = active && i === value.length && value.length < PIN_LENGTH
             return (
               <div
-                key={i}
-                className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${isCursor ? 'border-primary' : d ? 'border-text-primary' : 'border-border'
+                key={DIGIT_KEYS[i]}
+                className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${(isCursor && 'border-primary') || (d && 'border-text-primary') || 'border-border'
                   }`}
               >
-                {d ? (
-                  useDots ? (
-                    <span className="w-3 h-3 rounded-full bg-text-primary" />
-                  ) : (
-                    <span>{d}</span>
-                  )
-                ) : isCursor ? (
-                  <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" />
-                ) : (
-                  ''
-                )}
+                {d && useDots && <span className="w-3 h-3 rounded-full bg-text-primary" />}
+                {d && !useDots && <span>{d}</span>}
+                {!d && isCursor && <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" />}
               </div>
             )
           })}

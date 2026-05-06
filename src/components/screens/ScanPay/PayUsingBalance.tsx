@@ -6,10 +6,10 @@ import Image from "next/image";
 
 import NiaraSymbol from "@/components/Extras/NiaraSymbol";
 import CardPinVerificationDrawer from "@/components/screens/AuthScreens/CardPinVerificationDrawer";
-import ButtonComponent from "@/components/ui/ButtonComponent";
-import { formatAmountWithCommas } from "@/lib/format-amount";
-import { usePaymentProcessing } from "@/hooks/usePaymentProcessing";
 import { CustomRadioBTN, PaymentProcessingOverlay } from "@/components/ui";
+import ButtonComponent from "@/components/ui/ButtonComponent";
+import { usePaymentProcessing } from "@/hooks/usePaymentProcessing";
+import { formatAmountWithCommas } from "@/lib/format-amount";
 
 // Optional: Assign some dummy balances to be shown
 const BANK_ACCOUNTS = [
@@ -101,7 +101,7 @@ export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps)
     // Simulate network latency
     await new Promise((r) => setTimeout(r, 600))
     // Simulate occasional network error
-    if (Math.random() < 0.2) {
+    if ((crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) < 0.2) {
       throw new Error('NETWORK_ERROR')
     }
     const bank = BANK_ACCOUNTS.find((b) => b.id === bankId)

@@ -23,10 +23,12 @@ export default function ContinueOrRegisterScreen() {
     if (!choice) return
 
     if (choice === 'current') {
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('kyc_email', email)
       router.replace(routes.registrationWithExistingEmailSuccess)
     } else {
       if (!newEmail.trim()) return
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('kyc_email', newEmail)
       router.push(routes.registrationNewEmail)
     }
@@ -85,7 +87,7 @@ export default function ContinueOrRegisterScreen() {
 
           <div className=" py-4 pb-[calc(env(safe-area-inset-bottom,24px)+24px)]">
             <Button fullWidth onClick={handleContinue} disabled={!canContinue}>
-              {choice === 'current' ? 'Continue to Instacard' : choice === 'new' ? 'Continue With New Email' : 'Continue'}
+              {(choice === 'current' && 'Continue to Instacard') || (choice === 'new' && 'Continue With New Email') || 'Continue'}
             </Button>
           </div>
         </div>

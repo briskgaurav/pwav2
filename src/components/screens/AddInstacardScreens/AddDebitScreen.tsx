@@ -95,7 +95,7 @@ export default function AddDebitScreen() {
 
             <ul className="flex mb-[2vw] flex-col gap-[6px] m-0 pl-5 list-disc">
               {TERMS.map((term, index) => (
-                <li key={index} className="text-[13px] text-text-secondary">
+                <li key={term} className="text-[13px] text-text-secondary">
                   {term}
                 </li>
               ))}

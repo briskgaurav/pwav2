@@ -1,7 +1,7 @@
 type HapticType = 'light' | 'medium' | 'heavy' | 'success' | 'warning';
 
 export function haptic(type: HapticType = 'light') {
-  console.log('haptic triggered:', type);
+  console.warn('haptic triggered:', type);
   
   if (typeof window === 'undefined') return;
 

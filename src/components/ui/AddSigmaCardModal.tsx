@@ -82,7 +82,7 @@ export default function AddSigmaCardModal({ visible, onClose, onSubmit }: AddSig
                 bounds: { minY: 0, maxY: window.innerHeight },
                 inertia: true,
                 onDragEnd: function () {
-                    const endY = this.endY || this.y
+                    const endY = this.endY ?? this.y
                     if (endY > threshold) {
                         handleClose()
                     } else {

@@ -23,7 +23,7 @@ export default function MakeRepaymentScreen() {
 
                 <div className="grid grid-cols-2 gap-3">
                     {paymentDetails.map((item, index) => (
-                        <div key={index} className="border border-border rounded-xl p-4 gap-2 flex flex-col items-center justify-center">
+                        <div key={item.label} className="border border-border rounded-xl p-4 gap-2 flex flex-col items-center justify-center">
                             <p className="text-text-primary text-sm">{item.label}</p>
                             <p className="text-text-primary text-lg font-medium">{item.value}</p>
                         </div>

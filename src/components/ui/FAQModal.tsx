@@ -68,7 +68,7 @@ export default function FAQModal({ visible, onClose, data = DEFAULT_FAQ_DATA }: 
                 bounds: { minY: 0, maxY: window.innerHeight },
                 inertia: true,
                 onDragEnd: function () {
-                    const endY = this.endY || this.y
+                    const endY = this.endY ?? this.y
                     if (endY > threshold) {
                         handleClose()
                     } else {
@@ -161,7 +161,7 @@ export default function FAQModal({ visible, onClose, data = DEFAULT_FAQ_DATA }: 
                     {/* Bullet Points */}
                     <div className="space-y-5">
                         {data.bulletPoints.map((point: string, index: number) => (
-                            <div key={index} className="flex items-start gap-2">
+                            <div key={point} className="flex items-start gap-2">
                                 <span className="text-sm block text-text-primary">•</span>
                                 <p className="text-sm leading-4 flex-1 text-text-primary">{point}</p>
                             </div>

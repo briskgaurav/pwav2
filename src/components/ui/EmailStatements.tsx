@@ -1,6 +1,7 @@
 
 'use client'
 import React, { useState } from 'react'
+
 import { useRouter } from 'next/navigation'
 
 import { ChevronDown } from 'lucide-react'
@@ -12,8 +13,8 @@ import { haptic } from '@/lib/useHaptics'
 import { useAppSelector } from '@/store/redux/hooks'
 
 import Button from './button'
-import DatePickerModal from './DatePickerModal'
 import CustomRadioBTN from './CustomRadioBTN'
+import DatePickerModal from './DatePickerModal'
 
 type StatementOption = {
   id: 'mini' | 'custom'
@@ -59,7 +60,7 @@ export default function EmailStatements() {
 
   const handleDateSelect = (date: Date, field: 'from' | 'to') => {
     const iso = date.toISOString().split('T')[0]
-    const today = new Date().toISOString().split('T')[0]
+    const today = new Date(Date.now()).toISOString().split('T')[0]
 
     // Validate date is not in the future
     if (iso > today) {
@@ -183,7 +184,7 @@ export default function EmailStatements() {
             onSelect={(date) => handleDateSelect(date, 'from')}
             title='Select From Date'
             selectedDate={fromDate ? new Date(`${fromDate}T12:00:00`) : undefined}
-            maxDate={new Date()}
+            maxDate={new Date(Date.now())}
           />
           <DatePickerModal
             visible={datePickerOpen === 'to'}
@@ -192,7 +193,7 @@ export default function EmailStatements() {
             title='Select To Date'
             selectedDate={toDate ? new Date(`${toDate}T12:00:00`) : undefined}
             minDate={fromDate ? new Date(`${fromDate}T12:00:00`) : undefined}
-            maxDate={new Date()}
+            maxDate={new Date(Date.now())}
           />
 
           {/* {successMessage && (

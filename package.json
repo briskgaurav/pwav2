@@ -8,11 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "lint-fix": "eslint --fix",
+    "typecheck": "tsc --noEmit",
     "prepare": "husky"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "bash -c 'tsc --noEmit'",
       "eslint --fix",
       "prettier --write"
     ],

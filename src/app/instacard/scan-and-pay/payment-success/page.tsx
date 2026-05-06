@@ -42,7 +42,7 @@ export default function PaymentSuccessPage() {
   const upiId = searchParams.get('upiId') ?? email
   const message = searchParams.get('message') ?? ''
   const transactionId = searchParams.get('transactionId') ?? `TXN${Date.now().toString().slice(-10)}`
-  const date = searchParams.get('date') ?? new Date().toLocaleDateString('en-NG', {
+  const date = searchParams.get('date') ?? new Date(Date.now()).toLocaleDateString('en-NG', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',

@@ -28,19 +28,9 @@ export default function Button({
   className = '',
   type = 'button',
 }: ButtonProps) {
-  const variantClass =
-    variant === 'primary'
-      ? 'bg-primary text-white'
-      : variant === 'error'
-        ? 'bg-error text-white'
-        : 'bg-white border border-border text-text-primary'
+  const variantClass = (variant === 'primary' && 'bg-primary text-white') || (variant === 'error' && 'bg-error text-white') || 'bg-white border border-border text-text-primary'
 
-  const sizeClass =
-    size === 'sm'
-      ? 'px-4 py-4 text-sm'
-      : size === 'lg'
-        ? 'px-6 py-5 text-sm'
-        : 'px-5 py-5 text-sm'
+  const sizeClass = (size === 'sm' && 'px-4 py-4 text-sm') || (size === 'lg' && 'px-6 py-5 text-sm') || 'px-5 py-5 text-sm'
 
   return (
     <button

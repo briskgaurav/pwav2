@@ -37,7 +37,7 @@ export default function ChooseCards({ amount, message = '', recipientName = '' }
         <div className="flex flex-col relative h-full">
             <CardToggle active={payMode} onChange={setPayMode} />
             <Suspense fallback={<div className='h-4  w-4 border border-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full animate-spin' />}>
-                {payMode === 'instacard' ? (
+                {payMode === 'instacard' && (
                   <PayUsingInstacard
                     amount={amount}
                     onPay={({ card }) => {
@@ -53,12 +53,14 @@ export default function ChooseCards({ amount, message = '', recipientName = '' }
                       router.push(`${routes.paymentSuccess}?${params.toString()}`)
                     }}
                   />
-                ) : payMode === 'other' ? (
+                )}
+                {payMode === 'other' && (
                   <PayUsingOtherCards 
                     amount={amount}
                     onPay={()=>{}}
                  />
-                ) : (
+                )}
+                {payMode !== 'instacard' && payMode !== 'other' && (
                   <PayUsingBalance
                     amount={amount}
                     onPay={({ accountId, amount: finalAmount }) => {

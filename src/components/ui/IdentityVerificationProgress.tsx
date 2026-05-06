@@ -19,7 +19,7 @@ export default function IdentityVerificationProgress() {
   else if (pathname.includes('/identity-verification/kyc-status')) activeIndex = 3
 
   // Calculate progress width based on active step
-  const progressWidth = activeIndex === 0 ? 'w-1/3' : activeIndex === 1 ? 'w-2/3' : 'w-full'
+  const progressWidth = (activeIndex === 0 && 'w-1/3') || (activeIndex === 1 && 'w-2/3') || 'w-full'
 
   // Helper to get text color: green if completed, primary if current, secondary otherwise
   const getStepClass = (stepIndex: number) => {

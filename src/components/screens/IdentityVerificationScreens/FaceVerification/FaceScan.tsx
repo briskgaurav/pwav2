@@ -204,7 +204,7 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
 
         {/* Button */}
         <ButtonComponent
-          title={isVerifying ? 'Verifying...' : (capturedImage ? getButtonText() : 'Open Camera')}
+          title={isVerifying ? 'Verifying...' : capturedImage ? getButtonText() : 'Open Camera'}
           onClick={capturedImage ? handleFallbackCapture : triggerFileCapture}
           disabled={isCapturing}
         />
@@ -244,11 +244,12 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
           <p className="text-white text-sm text-center">
             {allPass ? 'Ready to capture' : 'Position your face'}
           </p>
-          {isDetectionLoading ? (
+          {isDetectionLoading && (
           <>
           <p className='text-white text-sm'>Loading</p>
           </>
-          ) : !isCameraReady ? (
+          )}
+          {!isDetectionLoading && !isCameraReady && (
             <div className="bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
               <div className="flex items-center justify-center gap-2 text-gray-500 text-sm">
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -262,11 +263,13 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
                 <span>Starting camera...</span>
               </div>
             </div>
-          ) : detectionError ? (
+          )}
+          {(isDetectionLoading || isCameraReady) && detectionError && (
             <div className="bg-red-500/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
               <span className="text-white text-sm">{detectionError}</span>
             </div>
-          ) : (
+          )}
+          {(isDetectionLoading || isCameraReady) && !detectionError && (
             <ValidationStatus validations={validations} compact />
           )}
         </div>

@@ -30,7 +30,7 @@ export default function DatePickerModal({
   minDate,
   maxDate,
 }: DatePickerModalProps) {
-  const [month, setMonth] = useState<Date>(selectedDate ?? new Date())
+  const [month, setMonth] = useState<Date>(selectedDate ?? new Date(Date.now()))
   const [tempSelected, setTempSelected] = useState<Date | undefined>(selectedDate)
   const [isClosing, setIsClosing] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
@@ -40,7 +40,7 @@ export default function DatePickerModal({
       setShouldRender(true)
       setIsClosing(false)
       document.body.style.overflow = 'hidden'
-      const initial = selectedDate ?? new Date()
+      const initial = selectedDate ?? new Date(Date.now())
       setTempSelected(selectedDate)
       setMonth(initial)
     } else {

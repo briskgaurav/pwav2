@@ -75,7 +75,7 @@ export default function CardMockup({
                             { icon: <PinIcon />, title: 'PIN Change', href: routes.pinChange },
                             { icon: <BlockUnblockIcon />, title: 'Block/Unblock Card', href: routes.cardStatus },
                         ].map((item, index) => (
-                            <Link href={item.href} key={index} className='aspect-square shrink-0 flex flex-col gap-2 items-center justify-center  '>
+                            <Link href={item.href} key={item.title} className='aspect-square shrink-0 flex flex-col gap-2 items-center justify-center  '>
                                 <div className='w-16 h-16 p-4.5 flex items-center rounded-full text-text-primary justify-center aspect-square bg-background2'>
                                     {item.icon}
                                 </div>

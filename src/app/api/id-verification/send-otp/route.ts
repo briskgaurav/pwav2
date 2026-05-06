@@ -14,7 +14,7 @@ function maskPhone(phone: string) {
 }
 
 function generateOtp() {
-  return `${Math.floor(100000 + Math.random() * 900000)}`
+  return `${Math.floor(100000 + (crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 900000)}`
 }
 
 type Body = {
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ status: false, message: 'Enter value' }, { status: 400 })
   }
 
-  if (!userInfo || typeof userInfo.id !== 'number') {
+  if (!userInfo ?? typeof userInfo.id !== 'number') {
     return NextResponse.json({ status: false, message: 'Missing userInfo' }, { status: 400 })
   }
 

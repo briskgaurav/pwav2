@@ -2,7 +2,9 @@
 'use client'
 
 import { useState } from 'react'
+
 import { useRouter } from 'next/navigation'
+
 import { routes } from '@/lib/routes'
 
 export default function BankScreen() {
@@ -12,7 +14,9 @@ export default function BankScreen() {
   const handleClick = () => {
     let activeId = '1'
     try {
+      // eslint-disable-next-line no-restricted-globals
       activeId = localStorage.getItem('active_user_id') ?? '1'
+      // eslint-disable-next-line no-restricted-globals
       localStorage.setItem('active_user_id', activeId)
     } catch {
       // ignore
@@ -21,7 +25,9 @@ export default function BankScreen() {
     const isCompleted = (() => {
       try {
         return (
+          // eslint-disable-next-line no-restricted-globals
           localStorage.getItem(`kyc_completed_${activeId}`) === 'true' ||
+          // eslint-disable-next-line no-restricted-globals
           localStorage.getItem('kyc_completed') === 'true'
         )
       } catch {

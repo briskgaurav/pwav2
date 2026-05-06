@@ -10,11 +10,11 @@ import { AddMoneyCardsSection, type CardType } from '@/components/ui/AddMoneyCar
 import { AddNewCardForm, type AddNewCardFormValues } from '@/components/ui/AddNewCardForm'
 import BottomSheetModal from '@/components/ui/BottomSheetModal'
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import { usePaymentProcessing } from '@/hooks/usePaymentProcessing'
 import { formatAmountWithCommas } from '@/lib/format-amount'
 import { routes } from '@/lib/routes'
 
 import CardPinVerificationDrawer from '../AuthScreens/CardPinVerificationDrawer'
-import { usePaymentProcessing } from '@/hooks/usePaymentProcessing'
 
 type PayUsingOtherCardsProps = {
   amount: number

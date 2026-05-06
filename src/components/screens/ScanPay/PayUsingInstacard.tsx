@@ -6,6 +6,7 @@ import { Button, PaymentProcessingOverlay } from '@/components/ui'
 import { type CardData } from '@/constants/cardData'
 import { useAuth } from '@/lib/auth-context'
 import { useAppSelector } from '@/store/redux/hooks'
+import { usePaymentProcessing } from '@/hooks/usePaymentProcessing'
 
 import CardPinVerificationDrawer from '../AuthScreens/CardPinVerificationDrawer'
 import { CardStack, type CardStackRef } from '../InstacardScreens/CardStack'
@@ -71,7 +72,7 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
   const handleCardPress = useCallback((card: CardData) => {
     setSelectedCardId(card.id)
     setPendingCard(card)
-    console.log('[ScanPay] Opening PIN drawer for card (tap):', card)
+    console.warn('[ScanPay] Opening PIN drawer for card (tap):', card)
     setPinDrawerOpen(true)
   }, [])
 

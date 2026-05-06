@@ -11,10 +11,10 @@ export function useIsWebView() {
     }
 
     const userAgent =
-      navigator.userAgent ||
-      (navigator as Navigator & { vendor?: string }).vendor ||
+      navigator.userAgent ??
+      (navigator as Navigator & { vendor?: string }).vendor ??
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ((window as any).opera as string | undefined) ||
+      ((window as any).opera as string | undefined) ??
       '';
 
     const anyWindow = window as Window &

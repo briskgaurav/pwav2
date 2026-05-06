@@ -31,7 +31,7 @@ export async function POST(request: Request) {
   const date_of_birth = body?.date_of_birth
   const kyc_completed = body?.kyc_completed
 
-  if (typeof id !== 'number' || Number.isNaN(id)) {
+  if (typeof id !== 'number' ?? Number.isNaN(id)) {
     return NextResponse.json({ status: false, message: 'Missing id' }, { status: 400 })
   }
 

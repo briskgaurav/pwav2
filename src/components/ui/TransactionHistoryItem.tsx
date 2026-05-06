@@ -30,7 +30,7 @@ export default function TransactionHistoryItem() {
   return (
     <>
       {groupedTransactions.map((group, groupIndex) => (
-        <div key={`${group.label}-${groupIndex}`} className='pt-3  pb-3 border-b border-text-primary/10'>
+        <div key={group.label} className='pt-3  pb-3 border-b border-text-primary/10'>
           <p className='text-xs text-text-secondary'>{group.label}</p>
           
           {group.transactions.map((transaction) => (

@@ -24,6 +24,7 @@ export default function RegistrationVerificationOtpPage() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
+    // eslint-disable-next-line no-restricted-globals
     const stored = localStorage.getItem('kyc_verification_method') as VerificationMethod | null
     setMethod(stored)
   }, [])

@@ -22,22 +22,24 @@ interface SwipeIndicatorProps {
       .toString()
       .padStart(2, '0')}`;
   
-    const hintText = totalCount === 1
-      ? <span className="text-xs text-text-secondary text-center font-medium">
+    let hintText;
+    if (totalCount === 1) {
+      hintText = <span className="text-xs text-text-secondary text-center font-medium">
           <span className="font-semibold text-text-primary">Tap</span> to view card details
-        </span>
-      : canGoRight
-        ? <span className="text-xs text-text-secondary text-center font-medium inline-flex items-center gap-1">
-            {/* <span className="font-semibold text-text-primary">Tap</span> to view details & */}
+        </span>;
+    } else if (canGoRight) {
+      hintText = <span className="text-xs text-text-secondary text-center font-medium inline-flex items-center gap-1">
             <span className="font-semibold text-text-primary inline-flex items-center gap-0.5">
               <ArrowLeft size={20} className="mr-2" color="var(--color-primary)" /> Swipe Left
             </span> to see next cards
-          </span>
-        : <span className="text-xs text-text-secondary text-center font-medium inline-flex items-center gap-1">
+          </span>;
+    } else {
+      hintText = <span className="text-xs text-text-secondary text-center font-medium inline-flex items-center gap-1">
             <span className="font-semibold text-text-primary inline-flex items-center gap-0.5">
               Swipe Right <ArrowRight size={20} className="mx-2" color="var(--color-primary)" />
             </span> to see previous cards
           </span>;
+    }
   
     const handlePrevious = () => {
       if (canGoLeft && onPreviousPress) {

@@ -77,7 +77,7 @@ export default function LinkVirtualCardScreen() {
       <CardPinAuth
 
         title="Enter PIN for Selected Instacard"
-        cardImageSrc={imageSrc || ''}
+        cardImageSrc={imageSrc ?? ''}
         maskedNumber={maskedNumber}
         onVerified={() => setStep('selectCard')}
       />
@@ -96,7 +96,7 @@ export default function LinkVirtualCardScreen() {
               <div className='-mt-5'>
 
                 <CardMockup
-                  imageSrc={imageSrc || ''}
+                  imageSrc={imageSrc ?? ''}
                   maskedNumber={maskedNumber}
                   isclickable={false}
                   showActions={false}
@@ -169,7 +169,7 @@ export default function LinkVirtualCardScreen() {
                     className={`w-full p-2 flex items-start gap-3 ${shake ? 'animate-[shake_0.5s_ease-in-out]' : ''}`}
                     style={shake ? { animation: 'shake 0.5s ease-in-out' } : {}}
                   >
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${consentChecked ? 'border-primary bg-primary' : shake ? 'border-red-500' : 'border-text-primary/40'
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${(consentChecked && 'border-primary bg-primary') || (shake && 'border-red-500') || 'border-text-primary/40'
                       }`}>
                       {consentChecked && (
                         <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">

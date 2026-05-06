@@ -74,7 +74,7 @@ export default function NinConfirmationScreen() {
           {/* Form Fields - Read-only prefilled appearance */}
           <div className="space-y-4">
             {formFields.map((field, index) => (
-              <div key={index} className="flex flex-col gap-1.5">
+              <div key={field.label} className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-text-secondary uppercase tracking-wide">
                   {field.label}
                   {field.required && <span className="text-red-500 ml-0.5">*</span>}

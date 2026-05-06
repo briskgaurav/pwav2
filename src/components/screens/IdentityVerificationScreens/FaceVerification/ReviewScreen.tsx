@@ -99,7 +99,7 @@ export default function ReviewScreen({
         <div className="fixed inset-0 z-10000 flex items-center justify-center px-6">
           <div className="absolute inset-0 bg-black/12 " onClick={() => setShowPopup(false)} aria-hidden />
           <div role="dialog" aria-modal="true" className="relative text-center w-full max-w-sm rounded-2xl bg-white/45 backdrop-blur-sm border border-white/40 p-6 shadow-xl">
-            {popupType === 'success' ? (
+            {popupType === 'success' && (
               <div className='flex flex-col gap-2 items-center justify-center'>
                 <div className='p-[1vw] border-2 border-[#39D105] rounded-full w-fit aspect-square text-[#39D105]'>
                   <Check strokeWidth={2} />
@@ -122,7 +122,8 @@ export default function ReviewScreen({
                   </button>
                 </div>
               </div>
-            ) : popupType === 'mismatch' ? (
+            )}
+            {popupType === 'mismatch' && (
               <div className='flex flex-col gap-2 items-center justify-center'>
                 <div className='p-[1vw] border-2 border-[#EB001B] rounded-full w-fit aspect-square text-[#EB001B]'>
                   <XIcon />
@@ -156,7 +157,8 @@ export default function ReviewScreen({
                   </button>
                 </div>
               </div>
-            ) : (
+            )}
+            {popupType !== 'success' && popupType !== 'mismatch' && (
               <div className='flex flex-col gap-2 items-center justify-center'>
                 <div className='p-[1vw] border-2 border-[#EB001B] rounded-full w-fit aspect-square text-[#EB001B]'>
                   <XIcon />

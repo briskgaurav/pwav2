@@ -100,7 +100,7 @@ export default function LimitSettingScreen() {
         <LimitFAQ />
         {limitItems.map((item, index) => (
           <LimitSetComponent
-            key={index}
+            key={item.title}
             title={item.title}
             description={item.description}
             icon={item.icon}

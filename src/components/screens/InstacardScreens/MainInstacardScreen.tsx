@@ -118,7 +118,7 @@ export default function MainInstacardScreen() {
   }, [])
 
   const handleActionPress = useCallback((actionId: string, card: CardData) => {
-    console.log('Action pressed:', actionId, 'for card:', card.name)
+    console.warn('Action pressed:', actionId, 'for card:', card.name)
   }, [])
 
   const { isDarkMode } = useAuth()
@@ -143,7 +143,7 @@ export default function MainInstacardScreen() {
             setSortBy(s)
             setSelectedCardId(null)
             setCurrentCardIndex(0)
-            console.log('Sort changed:', s, 'Cards:', filteredCards)
+            console.warn('Sort changed:', s, 'Cards:', filteredCards)
           }}
         />
       </div>

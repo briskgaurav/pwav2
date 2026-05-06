@@ -201,7 +201,7 @@ export default function ActionDrawer({
                 bounds: { minY: 0, maxY: window.innerHeight },
                 inertia: true,
                 onDragEnd: function () {
-                    const endY = this.endY || this.y
+                    const endY = this.endY ?? this.y
                     if (endY > threshold) {
                         handleClose()
                     } else {
@@ -343,16 +343,14 @@ export default function ActionDrawer({
                                     action.id === 'link-physical' &&
                                     allCards.some(c => c.cardForm === 'universal' && c.linkedVirtualCardId === selectedCard?.id)
 
-                                const displayTitle =
-                                    action.id === 'link-physical'
-                                        ? cardMode === 'virtual'
-                                            ? isLinkedToUniversal
-                                                ? 'Link to Universal Card'
-                                                : 'Link to Universal Card'
-                                            : isLinkedToVirtual
-                                                ? 'Link to Virtual Card'
-                                                : 'Link to Virtual Card'
-                                        : action.title
+                                let displayTitle = action.title
+                                if (action.id === 'link-physical') {
+                                    if (cardMode === 'virtual') {
+                                        displayTitle = isLinkedToUniversal ? 'Link to Universal Card' : 'Link to Universal Card'
+                                    } else {
+                                        displayTitle = isLinkedToVirtual ? 'Link to Virtual Card' : 'Link to Virtual Card'
+                                    }
+                                }
                                 const isLastOdd =
                                     index === filteredActions.length - 1 && filteredActions.length % 2 !== 0
 

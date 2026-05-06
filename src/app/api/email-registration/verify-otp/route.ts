@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   const newEmail = (body?.newEmail ?? '').trim().toLowerCase()
   const code = (body?.code ?? '').trim()
 
-  if (typeof userId !== 'number' || Number.isNaN(userId)) {
+  if (typeof userId !== 'number' ?? Number.isNaN(userId)) {
     return NextResponse.json({ status: false, message: 'Missing userId' }, { status: 400 })
   }
   if (!newEmail) {

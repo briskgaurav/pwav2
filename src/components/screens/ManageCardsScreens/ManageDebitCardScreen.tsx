@@ -34,14 +34,14 @@ export default function ManageDebitCardScreen() {
 
           <div className="flex gap-4 overflow-x-auto">
             {getManageBtns('debit').map((btn, index) => (
-              <ManageBtn href={btn.href} key={index} icon={btn.icon} title={btn.title} />
+              <ManageBtn href={btn.href} key={btn.title} icon={btn.icon} title={btn.title} />
             ))}
           </div>
 
           <CardActionTiles cardMode={cardMode} onActionClick={handleCardActionClick} />
         </div>
 
-        <FAQModal visible={isFaqOpen} onClose={handleCloseFaq} data={faqData || undefined} />
+        <FAQModal visible={isFaqOpen} onClose={handleCloseFaq} data={faqData ?? undefined} />
         <RemoveCardModal
           visible={showRemoveModal}
           onClose={() => setShowRemoveModal(false)}

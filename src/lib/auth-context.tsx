@@ -81,8 +81,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState(() => {
     if (typeof window === 'undefined') return 'en';
     const lang = getInitialLanguage();
+    // eslint-disable-next-line no-restricted-globals
     localStorage.setItem('lang', lang);
-    console.log('[PWA] Initial language:', lang);
+    console.warn('[PWA] Initial language:', lang);
     return lang;
   });
 

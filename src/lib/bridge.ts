@@ -55,9 +55,9 @@ export function parseSDKConfig(): SDKConfig | null {
 
   return {
     userToken: token,
-    bankId: params.get('bankId') || undefined,
-    cardType: (params.get('cardType') as SDKConfig['cardType']) || undefined,
-    environment: (params.get('env') as SDKConfig['environment']) || 'production',
+    bankId: params.get('bankId') ?? undefined,
+    cardType: (params.get('cardType') as SDKConfig['cardType']) ?? undefined,
+    environment: (params.get('env') as SDKConfig['environment']) ?? 'production',
     theme: params.get('primaryColor')
       ? { primaryColor: params.get('primaryColor')! }
       : undefined,
@@ -155,6 +155,7 @@ export function getInitialLanguage(): string {
   const urlLang = new URLSearchParams(window.location.search).get('lang');
   if (urlLang) return urlLang;
 
+  // eslint-disable-next-line no-restricted-globals
   const saved = localStorage.getItem('lang');
   if (saved) return saved;
 
@@ -174,7 +175,8 @@ export function listenForLanguageChanges(
         typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
 
       if (data?.type === 'SET_LANGUAGE' && typeof data.lang === 'string') {
-        console.log('[PWA] Language received from Expo:', data.lang);
+        console.warn('[PWA] Language received from Expo:', data.lang);
+        // eslint-disable-next-line no-restricted-globals
         localStorage.setItem('lang', data.lang);
         onLanguageChange(data.lang);
       }
@@ -199,6 +201,7 @@ export function getInitialTheme(): 'light' | 'dark' {
   const urlTheme = new URLSearchParams(window.location.search).get('theme');
   if (urlTheme === 'light' || urlTheme === 'dark') return urlTheme;
 
+  // eslint-disable-next-line no-restricted-globals
   const saved = localStorage.getItem('theme');
   if (saved === 'light' || saved === 'dark') return saved;
 
@@ -220,7 +223,8 @@ export function listenForThemeChanges(
       if (data?.type === 'SET_THEME') {
         const theme = data.theme === 'dark' ? 'dark' : 'light';
         const isDarkMode = data.isDarkMode ?? theme === 'dark';
-        console.log('[PWA] Theme received from Expo:', theme, 'isDarkMode:', isDarkMode);
+        console.warn('[PWA] Theme received from Expo:', theme, 'isDarkMode:', isDarkMode);
+        // eslint-disable-next-line no-restricted-globals
         localStorage.setItem('theme', theme);
         onThemeChange(theme, isDarkMode);
       }

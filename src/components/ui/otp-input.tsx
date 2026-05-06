@@ -21,6 +21,8 @@ export function OTPInput({
 }: OTPInputProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  const DIGIT_KEYS = useMemo(() => Array.from({ length: maxLength }, () => crypto.randomUUID()), [maxLength]);
+
   const digits = useMemo(
     () =>
       Array.from({ length: maxLength }, (_, index) => value[index] || ''),
@@ -98,7 +100,7 @@ export function OTPInput({
     >
       {digits.map((digit, index) => (
         <div
-          key={index}
+          key={DIGIT_KEYS[index]}
           className={`${maxLength > 6 ? 'w-10 h-10 rounded-lg' : 'w-12 h-12 rounded-xl' }  border border-text-primary flex items-center justify-center text-base font-semibold text-text-primary text-center outline-none shrink-0`}
           style={{ position: 'relative' }}
           tabIndex={-1}

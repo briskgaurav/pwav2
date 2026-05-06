@@ -28,7 +28,7 @@ export default function CardActionTiles({ cardMode = 'virtual', onActionClick }:
     <div className="flex w-full gap-2">
       {actions.map((action, index) => (
         <div
-          key={index}
+          key={action.text || index}
           onClick={() => onActionClick(action)}
           className="w-full border flex items-start flex-col justify-between border-text-primary/20 gap-4 rounded-xl p-4 cursor-pointer"
         >

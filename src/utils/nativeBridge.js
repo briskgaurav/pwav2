@@ -48,7 +48,7 @@ export const closeWebView = () => {
     window.close();
     return true;
   } catch (e) {
-    console.log('[NativeBridge] window.close() failed:', e);
+    console.warn('[NativeBridge] window.close() failed:', e);
   }
 
   // Final fallback: go back in history

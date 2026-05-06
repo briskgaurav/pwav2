@@ -17,10 +17,10 @@ export default function ReadyToUsePage() {
     const router = useRouter()
     const searchParams = useSearchParams()
 
-    const recipientName = searchParams.get('name') || 'Gift Recipient'
-    const recipientEmail = searchParams.get('email') || 'recipient@example.com'
-    const recipientMessage = searchParams.get('message') || 'Congratulations! Wishing you joy and happiness on this special occasion. Enjoy your gift!'
-    const amount = searchParams.get('amount') || '50,000.00'
+    const recipientName = searchParams.get('name') ?? 'Gift Recipient'
+    const recipientEmail = searchParams.get('email') ?? 'recipient@example.com'
+    const recipientMessage = searchParams.get('message') ?? 'Congratulations! Wishing you joy and happiness on this special occasion. Enjoy your gift!'
+    const amount = searchParams.get('amount') ?? '50,000.00'
 
 
     const giftCardDetails = [
@@ -52,7 +52,7 @@ export default function ReadyToUsePage() {
 
                 <div className='w-full rounded-2xl mt-5 space-y-2'>
                     {giftCardDetails.map((detail, index) => (
-                        <div key={index} className='p-4 border border-border rounded-2xl'>
+                        <div key={detail.label} className='p-4 border border-border rounded-2xl'>
                             <p className='text-text-primary text-sm'>{detail.label}</p>
                             <p className='text-text-primary font-sm'>{detail.value}</p>
                         </div>

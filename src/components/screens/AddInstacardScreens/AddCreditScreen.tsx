@@ -54,7 +54,7 @@ export default function AddCreditScreen() {
 
             <ul className="flex flex-col gap-[6px] m-0 pl-5 list-disc">
               {TERMS.map((term, index) => (
-                <li key={index} className="text-sm">
+                <li key={term} className="text-sm">
                   {term}
                 </li>
               ))}

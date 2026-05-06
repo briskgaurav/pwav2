@@ -29,7 +29,7 @@ function generateId() {
 }
 
 function generateCardNumber(): string {
-  const group = () => String(Math.floor(1000 + Math.random() * 9000))
+  const group = () => String(Math.floor(1000 + (crypto.getRandomValues(new Uint32Array(1))[0] / 4294967295) * 9000))
   return `${group()} ${group()} ${group()} ${group()}`
 }
 
@@ -94,7 +94,7 @@ const cardWalletSlice = createSlice({
         cardForm,
         recentlyUsed: false,
         mostUsed: false,
-        issuedDate: new Date().toISOString().split('T')[0],
+        issuedDate: new Date(Date.now()).toISOString().split('T')[0],
         previousUsedCount: 0,
       }
       state.cards.push(newCard)

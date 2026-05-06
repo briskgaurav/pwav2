@@ -24,7 +24,7 @@ export default function PWAHeader() {
     const titleRef = useRef<HTMLParagraphElement>(null)
     const currentTitle = pathname === '/' || pathname === '/instacard'
         ? 'Instacard'
-        : (pathname.split('/').pop() || '').replace(/-/g, ' ')
+        : (pathname.split('/').pop() ?? '').replace(/-/g, ' ')
     const [displayedTitle, setDisplayedTitle] = useState(currentTitle)
     const [showExitPopup, setShowExitPopup] = useState(false)
 

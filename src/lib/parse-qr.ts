@@ -29,9 +29,9 @@ export function parseQRData(raw: string): ParsedQRData {
     try {
       const url = new URL(raw)
       const params = url.searchParams
-      result.merchantName = params.get('pn') || params.get('name') || undefined
-      result.amount = params.get('am') || params.get('amount') || undefined
-      result.description = params.get('tn') || params.get('note') || undefined
+      result.merchantName = params.get('pn') ?? params.get('name') ?? undefined
+      result.amount = params.get('am') ?? params.get('amount') ?? undefined
+      result.description = params.get('tn') ?? params.get('note') ?? undefined
       return result
     } catch { /* fall through */ }
   }
@@ -40,9 +40,9 @@ export function parseQRData(raw: string): ParsedQRData {
   if (raw.trim().startsWith('{')) {
     try {
       const json = JSON.parse(raw)
-      result.merchantName = json.merchantName || json.name || json.merchant || json.pn || undefined
-      result.amount = String(json.amount || json.am || '') || undefined
-      result.description = json.description || json.note || json.tn || json.message || undefined
+      result.merchantName = json.merchantName ?? json.name ?? json.merchant ?? json.pn ?? undefined
+      result.amount = String(json.amount ?? json.am ?? '') ?? undefined
+      result.description = json.description ?? json.note ?? json.tn ?? json.message ?? undefined
       return result
     } catch { /* fall through */ }
   }
@@ -52,9 +52,9 @@ export function parseQRData(raw: string): ParsedQRData {
     const url = new URL(raw)
     if (['http:', 'https:'].includes(url.protocol)) {
       const params = url.searchParams
-      result.merchantName = params.get('name') || params.get('merchantName') || params.get('pn') || undefined
-      result.amount = params.get('amount') || params.get('am') || undefined
-      result.description = params.get('note') || params.get('description') || params.get('tn') || params.get('message') || undefined
+      result.merchantName = params.get('name') ?? params.get('merchantName') ?? params.get('pn') ?? undefined
+      result.amount = params.get('amount') ?? params.get('am') ?? undefined
+      result.description = params.get('note') ?? params.get('description') ?? params.get('tn') ?? params.get('message') ?? undefined
       return result
     }
   } catch { /* fall through */ }

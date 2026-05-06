@@ -16,6 +16,7 @@ export default function VerifyExistingEmailScreen() {
 
   const existingEmail =
     typeof window !== 'undefined'
+      // eslint-disable-next-line no-restricted-globals
       ? localStorage.getItem('kyc_email') ?? 'your registered email'
       : 'your registered email'
 

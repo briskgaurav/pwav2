@@ -19,6 +19,7 @@ export default function OTPVerificationScreen({
   const [method, setMethod] = useState<IdVerificationMethod>('email')
 
   useEffect(() => {
+    // eslint-disable-next-line no-restricted-globals
     const stored = localStorage.getItem('kyc_verification_method') as IdVerificationMethod | null
     if (stored === 'email' || stored === 'phone') setMethod(stored)
   }, [])

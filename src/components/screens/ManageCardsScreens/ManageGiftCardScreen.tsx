@@ -46,7 +46,7 @@ export default function ManageGiftCardScreen() {
 
         <div className="flex gap-4 items-start justify-between overflow-x-auto">
           {getManageBtns('gift').map((btn, index) => (
-            <ManageBtn href={btn.href} key={index} icon={btn.icon} title={btn.title} />
+            <ManageBtn href={btn.href} key={btn.title} icon={btn.icon} title={btn.title} />
           ))}
         </div>
 
@@ -105,7 +105,7 @@ export default function ManageGiftCardScreen() {
 
       </div>
 
-      <FAQModal visible={isFaqOpen} onClose={handleCloseFaq} data={faqData || undefined} />
+      <FAQModal visible={isFaqOpen} onClose={handleCloseFaq} data={faqData ?? undefined} />
       <RemoveCardModal
         visible={showRemoveModal}
         onClose={() => setShowRemoveModal(false)}

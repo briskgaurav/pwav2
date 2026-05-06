@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import Link from 'next/link'
 
-import { Button, OTPInput, OTPKeypad } from '@/components/ui'
+import { Button } from '@/components/ui'
 import BottomSheetModal from '@/components/ui/BottomSheetModal'
 import { routes } from '@/lib/routes'
 import { useAppSelector } from '@/store/redux/hooks'
@@ -39,13 +39,14 @@ function NativePinInput({
 }) {
     const hiddenRef = useRef<HTMLInputElement | null>(null)
     const digits = Array.from({ length: maxLength }, (_, i) => value[i] || '')
+  const DIGIT_KEYS = useMemo(() => Array.from({ length: maxLength }, () => crypto.randomUUID()), [maxLength])
 
     const focus = () => hiddenRef.current?.focus()
 
     useEffect(() => {
         const t = window.setTimeout(() => focus(), 150)
         return () => window.clearTimeout(t)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [resetKey])
 
     return (
@@ -79,36 +80,30 @@ function NativePinInput({
                     const isCursor = i === value.length && value.length < maxLength
                     return (
                         <div
-                            key={i}
+                            key={DIGIT_KEYS[i]}
                             className={`border flex items-center justify-center text-base font-semibold text-text-primary text-center outline-none shrink-0 transition-colors ${maxLength > 6 ? 'w-10 h-10 rounded-lg' : 'w-12 h-12 rounded-xl'
-                                } ${isCursor ? 'border-primary' : digit ? 'border-text-primary' : 'border-text-secondary'
+                                } ${(isCursor && 'border-primary') || (digit && 'border-text-primary') || 'border-text-secondary'
                                 }`}
                             style={{ position: 'relative' }}
                         >
-                            {digit ? (
-                                useDots ? (
-                                    <span
-                                        style={{
-                                            position: 'absolute',
-                                            top: '50%',
-                                            left: '50%',
-                                            width: maxLength > 6 ? 8 : 12,
-                                            height: maxLength > 6 ? 8 : 12,
-                                            background: 'currentColor',
-                                            borderRadius: '9999px',
-                                            transform: 'translate(-50%, -50%)',
-                                            display: 'block',
-                                            fontSize: 0,
-                                        }}
-                                    />
-                                ) : (
-                                    <span>{digit}</span>
-                                )
-                            ) : isCursor ? (
-                                <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" />
-                            ) : (
-                                ''
+                            {digit && useDots && (
+                                <span
+                                    style={{
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        width: maxLength > 6 ? 8 : 12,
+                                        height: maxLength > 6 ? 8 : 12,
+                                        background: 'currentColor',
+                                        borderRadius: '9999px',
+                                        transform: 'translate(-50%, -50%)',
+                                        display: 'block',
+                                        fontSize: 0,
+                                    }}
+                                />
                             )}
+                            {digit && !useDots && <span>{digit}</span>}
+                            {!digit && isCursor && <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" />}
                         </div>
                     )
                 })}

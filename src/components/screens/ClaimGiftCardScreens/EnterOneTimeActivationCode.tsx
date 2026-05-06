@@ -1,13 +1,11 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 
 import { useRouter } from 'next/navigation'
 
-import { OTPKeypad, OTPInput } from '@/components/ui'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import LayoutSheet from '@/components/ui/LayoutSheet'
-import { useSlideUpKeypad } from '@/hooks/useSlideUpKeypad'
 import { routes } from '@/lib/routes'
 
 export default function EnterOneTimeActivationCode() {
@@ -16,6 +14,7 @@ export default function EnterOneTimeActivationCode() {
   const router = useRouter();
   const hiddenRef = useRef<HTMLInputElement | null>(null)
   const isComplete = otp.length === 8;
+  const DIGIT_KEYS = useMemo(() => Array.from({ length: 8 }, () => crypto.randomUUID()), [])
 
   const focusOtp = () => hiddenRef.current?.focus()
 
@@ -66,8 +65,8 @@ export default function EnterOneTimeActivationCode() {
                 const isCursor = i === otp.length && otp.length < 8
                 return (
                   <div
-                    key={i}
-                    className={`w-14 h-14 sm:w-12 sm:h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${isCursor ? 'border-primary' : digit ? 'border-text-primary' : 'border-border'
+                    key={DIGIT_KEYS[i]}
+                    className={`w-14 h-14 sm:w-12 sm:h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${(isCursor && 'border-primary') || (digit && 'border-text-primary') || 'border-border'
                       }`}
                   >
                     {digit || (isCursor ? <span className="w-0.5 h-5 bg-primary animate-pulse rounded-full" /> : '')}

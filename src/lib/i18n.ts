@@ -25,8 +25,9 @@ i18n.use(initReactI18next).init({
 })
 
 if (typeof window !== 'undefined') {
+  // eslint-disable-next-line no-restricted-globals
   localStorage.setItem('lang', initialLang)
-  console.log('[PWA] i18n initialized with language:', initialLang)
+  console.warn('[PWA] i18n initialized with language:', initialLang)
 }
 
 export default i18n

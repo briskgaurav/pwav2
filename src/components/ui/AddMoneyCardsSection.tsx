@@ -5,6 +5,7 @@ import React from 'react'
 import Image from 'next/image'
 
 import { ICONS } from '@/constants/icons'
+
 import CustomRadioBTN from './CustomRadioBTN'
 
 export type CardType = 'sigma' | 'universal-1' | 'universal-2' | 'verve'

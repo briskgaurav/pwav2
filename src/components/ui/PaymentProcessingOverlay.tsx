@@ -36,7 +36,7 @@ export default function PaymentProcessingOverlay({
         <p className="text-sm font-semibold text-text-primary">{title}</p>
         <p className="text-xs text-text-secondary text-center">{subtitle}</p>
 
-        {(primaryActionLabel || secondaryActionLabel) && (
+        {(primaryActionLabel ?? secondaryActionLabel) && (
           <div className="w-full pt-2 flex gap-2">
             {secondaryActionLabel && (
               <button

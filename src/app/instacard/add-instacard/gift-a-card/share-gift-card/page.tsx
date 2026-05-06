@@ -12,9 +12,9 @@ export default function page() {
     const router = useRouter()
     const searchParams = useSearchParams()
 
-    const recipientName = searchParams.get('name') || 'Gift Recipient'
-    const recipientEmail = searchParams.get('email') || 'recipient@example.com'
-    const recipientMessage = searchParams.get('message') || '🎉 Congratulations! Wishing you joy and happiness on this special occasion. Enjoy your gift!'
+    const recipientName = searchParams.get('name') ?? 'Gift Recipient'
+    const recipientEmail = searchParams.get('email') ?? 'recipient@example.com'
+    const recipientMessage = searchParams.get('message') ?? '🎉 Congratulations! Wishing you joy and happiness on this special occasion. Enjoy your gift!'
     const giftCardCode = 'DS73488QDJ738'
 
     const giftCardDetails = [
@@ -48,7 +48,7 @@ Powered by InstaCard`
 
                 <div className='w-full rounded-2xl mt-5 space-y-2'>
                     {giftCardDetails.map((detail, index) => (
-                        <div key={index} className='p-4 border border-border rounded-2xl'>
+                        <div key={detail.label} className='p-4 border border-border rounded-2xl'>
                             <p className='text-text-primary text-sm'>{detail.label}</p>
                             <p className='text-text-primary font-sm'>{detail.value}</p>
                         </div>

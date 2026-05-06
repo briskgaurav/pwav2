@@ -6,13 +6,13 @@ import { useRouter } from 'next/navigation'
 
 import { type LucideIcon } from 'lucide-react'
 
+import { CheckRadioOption } from '@/components/ui'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import { ICONS, MessageIcon, PhoneIcon } from '@/constants/icons'
 import { routes } from '@/lib/routes'
 import { useAppSelector } from '@/store/redux/hooks'
 
 import LayoutSheet from '../../ui/LayoutSheet'
-import { CheckRadioOption } from '@/components/ui'
 
 
 const VERIFICATION_OPTIONS_CONFIG = (maskedMobile: string, maskedEmail: string) => [

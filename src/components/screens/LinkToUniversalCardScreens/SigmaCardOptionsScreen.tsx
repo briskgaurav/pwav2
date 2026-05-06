@@ -138,7 +138,7 @@ export default function SigmaCardOptionsScreen() {
                                 className={`w-full p-2 flex items-start gap-3 ${shake ? 'animate-[shake_0.5s_ease-in-out]' : ''}`}
                                 style={shake ? { animation: 'shake 0.5s ease-in-out' } : {}}
                             >
-                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${consentChecked ? 'border-primary bg-primary' : shake ? 'border-red-500' : 'border-text-primary/40'
+                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${(consentChecked && 'border-primary bg-primary') || (shake && 'border-red-500') || 'border-text-primary/40'
                                     }`}>
                                     {consentChecked && (
                                         <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -179,7 +179,7 @@ export default function SigmaCardOptionsScreen() {
                 visible={showAddCardModal}
                 onClose={() => setShowAddCardModal(false)}
                 onSubmit={(cardNumber) => {
-                    console.log('Card number submitted:', cardNumber)
+                    console.warn('Card number submitted:', cardNumber)
                     // Handle the card number submission here
                 }}
             />

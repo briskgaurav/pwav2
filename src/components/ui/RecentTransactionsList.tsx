@@ -21,19 +21,9 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
 
   const status = transaction.status
 
-  const statusColor =
-    status === 'success'
-      ? 'text-success'
-      : status === 'failed'
-        ? 'text-error'
-        : 'text-orange'
+  const statusColor = (status === 'success' && 'text-success') || (status === 'failed' && 'text-error') || 'text-orange'
 
-  const statusDot =
-    status === 'success'
-      ? 'bg-success'
-      : status === 'failed'
-        ? 'bg-error'
-        : 'bg-orange'
+  const statusDot = (status === 'success' && 'bg-success') || (status === 'failed' && 'bg-error') || 'bg-orange'
 
   const isDebit = transaction.isDebit
 

@@ -7,10 +7,10 @@ import { useRouter } from 'next/navigation'
 
 import gsap from 'gsap'
 
-import { useBackRedirect } from '@/hooks/useBackRedirect'
-import { routes } from '@/lib/routes'
-import { parseQRData } from '@/lib/parse-qr'
 import Toaster from '@/components/ui/Toaster'
+import { useBackRedirect } from '@/hooks/useBackRedirect'
+import { parseQRData } from '@/lib/parse-qr'
+import { routes } from '@/lib/routes'
 
 const SCANNER_SIZE = 240
 const CORNER_SIZE = 45
@@ -125,7 +125,7 @@ export default function QRScanScreen() {
           await videoRef.current.play()
         } catch (playError) {
           if (playError instanceof DOMException && playError.name === 'AbortError') {
-            console.log('Video play was aborted (component likely unmounted)')
+            console.warn('Video play was aborted (component likely unmounted)')
             return
           }
           throw playError

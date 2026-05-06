@@ -5,8 +5,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import gsap from 'gsap'
 import Draggable from 'gsap/dist/Draggable'
 import { ChevronDown } from 'lucide-react'
-import CustomRadioBTN from '@/components/ui/CustomRadioBTN'
 
+import CustomRadioBTN from '@/components/ui/CustomRadioBTN'
 import { formatAmountWithCommas } from '@/lib/format-amount'
 
 if (typeof window !== 'undefined') {
@@ -272,7 +272,7 @@ export function BankActionsDrawer({
         bounds: { minY: 0, maxY: window.innerHeight },
         inertia: true,
         onDragEnd: function () {
-          const endY = this.endY || this.y
+          const endY = this.endY ?? this.y
           if (endY > threshold) {
             handleClose()
           } else {
