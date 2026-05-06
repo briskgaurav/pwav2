@@ -1,5 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
+
 type PaymentProcessingOverlayProps = {
   open: boolean
   state?: 'loading' | 'error'
@@ -21,10 +24,16 @@ export default function PaymentProcessingOverlay({
   secondaryActionLabel,
   onSecondaryAction,
 }: PaymentProcessingOverlayProps) {
-  if (!open) return null
+  const [mounted, setMounted] = useState(false)
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!open || !mounted || typeof document === 'undefined') return null
+
+  const content = (
+    <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/40">
       <div className="w-[92%] max-w-sm rounded-2xl bg-white border border-border px-5 py-6 flex flex-col items-center gap-3">
         {state === 'loading' ? (
           <div className="h-10 w-10 rounded-full border-2 border-border border-t-primary animate-spin" />
@@ -61,5 +70,7 @@ export default function PaymentProcessingOverlay({
       </div>
     </div>
   )
+
+  return createPortal(content, document.body)
 }
 

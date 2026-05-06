@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { BarChart2, Check, X } from 'lucide-react'
 
 export type CardFilterType = 'all' | 'universal' | 'debit' | 'credit' | 'prepaid' | 'gift'
@@ -65,6 +66,11 @@ function RecentSortIcon({ className }: { className?: string }) {
   )
 }
 
+/**
+ * ScanPayFilterBar 
+ * - Portal is used for filter/sort dropdown rendering
+ * - Overlay should be handled on route-level, so dropdowns do NOT render the overlay themselves
+ */
 export function ScanPayFilterBar({
   cardFilters = ['all'],
   onCardFiltersChange,
@@ -79,17 +85,16 @@ export function ScanPayFilterBar({
 
   return (
     <>
-      <div className="px-3 pr-4 py-2 flex items-center justify-center  space-y-3">
+      <div className="px-3 pr-4 py-2 flex items-center justify-center space-y-3">
         <div className="flex items-center border border-border rounded-full px-2 pl-4 py-2 w-fit relative z-10 justify-center gap-2">
           <div className="flex items-center gap-2 relative">
             <span className="text-sm text-text-primary mr-1">Filters</span>
-
             <button
               type="button"
               aria-label={filterLabel}
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation()
-                setFilterDropdownOpen((prev) => !prev)
+                setFilterDropdownOpen(prev => !prev)
                 setSortDropdownOpen(false)
               }}
               className="inline-flex bg items-center justify-center rounded-full border border-border bg-background2 px-3 py-2 text-sm hover:bg-black/5 active:scale-95 transition"
@@ -100,9 +105,9 @@ export function ScanPayFilterBar({
             <button
               type="button"
               aria-label={currentSort.label}
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation()
-                setSortDropdownOpen((prev) => !prev)
+                setSortDropdownOpen(prev => !prev)
                 setFilterDropdownOpen(false)
               }}
               className="inline-flex items-center justify-center rounded-full border px-3 py-2 text-sm transition active:scale-95 border-border bg-background2 p-2 hover:bg-black/5/60"
@@ -112,23 +117,32 @@ export function ScanPayFilterBar({
           </div>
         </div>
       </div>
-
-      <FilterDropdown
-        open={filterDropdownOpen}
-        onOpenChange={setFilterDropdownOpen}
-        selectedFilters={cardFilters}
-        onSelectionChange={(filters) => onCardFiltersChange?.(filters)}
-      />
-
-      <SortDropdown
-        open={sortDropdownOpen}
-        onOpenChange={setSortDropdownOpen}
-        selectedSort={sortBy}
-        onSelect={(value) => {
-          onSortChange?.(value)
-          setSortDropdownOpen(false)
-        }}
-      />
+      {/* Portaled dropdowns (no overlay, as that should be done at route-level) */}
+      {typeof window !== "undefined" && filterDropdownOpen &&
+        createPortal(
+          <FilterDropdown
+            open={filterDropdownOpen}
+            onOpenChange={setFilterDropdownOpen}
+            selectedFilters={cardFilters}
+            onSelectionChange={filters => onCardFiltersChange?.(filters)}
+          />,
+          document.body
+        )
+      }
+      {typeof window !== "undefined" && sortDropdownOpen &&
+        createPortal(
+          <SortDropdown
+            open={sortDropdownOpen}
+            onOpenChange={setSortDropdownOpen}
+            selectedSort={sortBy}
+            onSelect={value => {
+              onSortChange?.(value)
+              setSortDropdownOpen(false)
+            }}
+          />,
+          document.body
+        )
+      }
     </>
   )
 }
@@ -146,6 +160,7 @@ function FilterDropdown({
   selectedFilters,
   onSelectionChange,
 }: FilterDropdownProps) {
+  // Removed overlay responsibility from here: the background overlay should be at route-level.
   if (!open) return null
 
   const toggleFilter = (filter: CardFilterType) => {
@@ -167,12 +182,12 @@ function FilterDropdown({
   }
 
   return (
-    <div className="fixed inset-0 h-dvh bg-black/10 z-40" onClick={() => onOpenChange(false)}>
+    <div className="fixed inset-0 z-50 bg-black/20 pointer-events-none">
       <div
-        className="absolute right-4 top-[25%] backdrop-blur-md  min-w-[260px] rounded-2xl bg-white/80  border border-border overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
+        className="absolute right-4 top-[25%] backdrop-blur-md min-w-[260px] mt-10 rounded-2xl bg-white/80 border border-border overflow-hidden pointer-events-auto"
+        onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between  px-4 pt-3 pb-2 border-b border-border/40">
+        <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-border/40">
           <div className="flex items-center gap-2">
             <FilterIcon className="w-4 h-4 text-text-primary" />
             <span className="text-sm font-semibold text-text-primary">Filters</span>
@@ -213,6 +228,12 @@ function FilterDropdown({
           })}
         </div>
       </div>
+      {/* Click outside area for closing */}
+      <div
+        className="fixed inset-0 z-40"
+        style={{ pointerEvents: 'auto', background: 'transparent' }}
+        onClick={() => onOpenChange(false)}
+      />
     </div>
   )
 }
@@ -225,13 +246,14 @@ interface SortDropdownProps {
 }
 
 function SortDropdown({ open, onOpenChange, selectedSort, onSelect }: SortDropdownProps) {
+  // Removed overlay responsibility from here: the background overlay should be at route-level.
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 h-dvh bg-black/10 z-40" onClick={() => onOpenChange(false)}>
+    <div className="fixed inset-0 z-50 pointer-events-none">
       <div
-        className="absolute right-4 top-[25%] backdrop-blur-md min-w-[220px] rounded-2xl bg-white/80 border border-border overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
+        className="absolute right-4 top-[25%] backdrop-blur-md min-w-[220px] rounded-2xl bg-white/80 border border-border overflow-hidden pointer-events-auto"
+        onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-border/40">
           <span className="text-sm font-semibold text-text-primary">Sort by</span>
@@ -264,7 +286,12 @@ function SortDropdown({ open, onOpenChange, selectedSort, onSelect }: SortDropdo
           })}
         </div>
       </div>
+      {/* Click outside area for closing */}
+      <div
+        className="fixed inset-0 z-40"
+        style={{ pointerEvents: 'auto', background: 'transparent' }}
+        onClick={() => onOpenChange(false)}
+      />
     </div>
   )
 }
-

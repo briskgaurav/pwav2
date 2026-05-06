@@ -1,31 +1,39 @@
-import { AddMoneyCardsSection, CardType } from '@/components/ui/AddMoneyCardsSection'
+import { AddMoneyCardsSection, CardType, CARD_OPTIONS } from '@/components/ui/AddMoneyCardsSection'
 import { PlusIcon } from 'lucide-react'
 import React, { useState } from 'react'
-import { routes } from '@/lib/routes'
-import { useRouter } from 'next/navigation'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import NiaraSymbol from '@/components/Extras/NiaraSymbol'
 import { formatAmountWithCommas } from '@/lib/format-amount'
-import BottomSheetModal from '@/components/ui/BottomSheetModal'
-import { AddNewCardForm, type AddNewCardFormValues } from '@/components/ui/AddNewCardForm'
-import { Button, PaymentProcessingOverlay } from '@/components/ui'
+import { PaymentProcessingOverlay } from '@/components/ui'
 import CardPinVerificationDrawer from '../AuthScreens/CardPinVerificationDrawer'
 import { usePaymentProcessing } from '@/hooks/usePaymentProcessing'
+import OtherCardsNewCardSheet from './OtherCardsNewCardSheet'
 
 type PayUsingOtherCardsProps = {
   amount: number
   onPay: (payload: { card: CardType }) => void
+  openPinDrawer?: (opts: {
+    fieldLength: number
+    subtitle: string
+    payingInfo?: string
+    onVerified: () => void
+    onClose: () => void
+  }) => void
 }
 
-export default function PayUsingOtherCards({ amount, onPay }: PayUsingOtherCardsProps) {
+export default function PayUsingOtherCards({ amount, onPay, openPinDrawer }: PayUsingOtherCardsProps) {
   // Default to first card to guarantee type
   const DEFAULT_CARD: CardType = 'sigma'
   const [selectedCard, setSelectedCard] = useState<CardType>(DEFAULT_CARD)
   const [newCardOpen, setNewCardOpen] = useState(false)
-  const [newCardValues, setNewCardValues] = useState<AddNewCardFormValues | null>(null)
   const [pinDrawerOpen, setPinDrawerOpen] = useState(false)
   const processing = usePaymentProcessing()
-  const router = useRouter()
+  const [payingInfoOverride, setPayingInfoOverride] = useState<string | null>(null)
+
+  const selectedCardOption = CARD_OPTIONS.find((c) => c.id === selectedCard) ?? null
+  const payingWithLabel = selectedCardOption
+    ? `${selectedCardOption.description} ${selectedCardOption.maskedNumber}`
+    : `Card ${selectedCard}`
 
   const handleSelectCard = (card: CardType) => {
     setSelectedCard(card)
@@ -33,13 +41,39 @@ export default function PayUsingOtherCards({ amount, onPay }: PayUsingOtherCards
 
   const openAddCard = () => setNewCardOpen(true)
 
+  const openOtpFlow = (override?: { payingInfo?: string }) => {
+    // local fallback (when no root drawer provided)
+    if (!openPinDrawer) {
+      setPinDrawerOpen(true)
+      return
+    }
+
+    openPinDrawer({
+      fieldLength: 6,
+      subtitle: 'Enter Your 6 Digit OTP',
+      payingInfo: override?.payingInfo ?? payingWithLabel,
+      onClose: () => {
+        if (processing.model.open) return
+        setPinDrawerOpen(false)
+      },
+      onVerified: () => {
+        setPinDrawerOpen(false)
+        processing.start({ minDurationMs: 5000 })
+        const cardToPay = selectedCard
+        processing.succeedAfterMinDuration(() => {
+          onPay({ card: cardToPay })
+        }, 5000)
+      },
+    })
+  }
+
   const handlePayNow = () => {
-    setPinDrawerOpen(true)
+    openOtpFlow()
   }
 
   return (
     <>
-      <div className='h-full w-full flex flex-col overflow-y-auto pb-24 items-center justify-start px-4 space-y-4'>
+      <div className='h-full min-h-[75vh] w-full flex flex-col overflow-y-auto pb-24 items-center justify-start px-4 space-y-4'>
         <div className="p-4 border border-border rounded-2xl w-full flex items-center justify-between">
           <p className="font-medium text-sm text-text-primary truncate">Total Payable</p>
           <p className="text-md font-bold truncate">
@@ -60,55 +94,58 @@ export default function PayUsingOtherCards({ amount, onPay }: PayUsingOtherCards
           </span>
           <span className='text-text-primary'>Pay with new card</span>
         </button>
-        <ButtonComponent
-          title={`Pay Now ₦ ${formatAmountWithCommas(amount.toString())}`}
-          onClick={handlePayNow}
-        />
+        <div className=''>
+
+          <ButtonComponent
+            title={`Pay Now ₦ ${formatAmountWithCommas(amount.toString())}`}
+            onClick={handlePayNow}
+          />
+        </div>
       </div>
 
-      <BottomSheetModal
-        visible={newCardOpen}
-        onClose={() => setNewCardOpen(false)}
-        title="Pay with new card"
-        maxHeight={0.7}
-      >
-        <AddNewCardForm showCheckbox={false} border={false} onChange={(v) => setNewCardValues(v)} />
-        <Button 
-          fullWidth 
-          className='bg-primary text-white mt-4' 
-          onClick={() => {
-            if (!newCardValues) return
-            setNewCardOpen(false)
-            setPinDrawerOpen(true)
-          }}
-        >{`Pay Now ₦ ${formatAmountWithCommas(amount.toString())}`}</Button>
-      </BottomSheetModal>
 
-      <CardPinVerificationDrawer
-        visible={pinDrawerOpen}
-        fieldLength={6}
-        onClose={() => {
-          if (processing.model.open) return
-          setPinDrawerOpen(false)
-        }}
-        showTitle={false}
-        subtitle="Enter Your 6 Digit OTP"
-        onVerified={() => {
-          setPinDrawerOpen(false)
-          processing.start({ minDurationMs: 5000 })
-          const cardToPay = selectedCard
-          processing.succeedAfterMinDuration(() => {
-            onPay({ card: cardToPay })
-            router.push(`${routes.paymentSuccess}?amount=${amount}&method=other&cardId=${cardToPay}`)
-          }, 5000)
-        }}
-      />
+
+      {!openPinDrawer && (
+        <CardPinVerificationDrawer
+          visible={pinDrawerOpen}
+          fieldLength={6}
+          onClose={() => {
+            if (processing.model.open) return
+            setPinDrawerOpen(false)
+          }}
+          showTitle={false}
+          payingInfo={payingInfoOverride ?? payingWithLabel}
+          subtitle="Enter Your 6 Digit OTP"
+          onVerified={() => {
+            setPinDrawerOpen(false)
+            processing.start({ minDurationMs: 5000 })
+            const cardToPay = selectedCard
+            processing.succeedAfterMinDuration(() => {
+              onPay({ card: cardToPay })
+            }, 5000)
+          }}
+        />
+      )}
 
       <PaymentProcessingOverlay
         open={processing.model.open}
         state={processing.model.state}
         title={processing.model.title}
         subtitle={processing.model.subtitle}
+        primaryActionLabel={processing.model.state === 'error' ? 'Close' : undefined}
+        onPrimaryAction={processing.model.state === 'error' ? processing.close : undefined}
+        secondaryActionLabel={processing.model.state === 'error' ? 'Dismiss' : undefined}
+        onSecondaryAction={processing.model.state === 'error' ? processing.close : undefined}
+      />
+      <OtherCardsNewCardSheet
+        open={newCardOpen}
+        amount={amount}
+        onClose={() => setNewCardOpen(false)}
+        onContinue={({ payingInfo }) => {
+          setPayingInfoOverride(payingInfo)
+          setNewCardOpen(false)
+          openOtpFlow({ payingInfo })
+        }}
       />
     </>
   )

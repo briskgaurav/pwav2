@@ -1,7 +1,5 @@
-import ChooseCards from '@/components/screens/ScanPay/ChooseCards'
 import LayoutSheet from '@/components/ui/LayoutSheet'
-import React from 'react'
-
+import ChoosePayUsingMethods from '@/components/screens/Scan&PayScreens/ChoosePayUsingMethods'
 type SearchParams = Promise<Record<string, string | string[] | undefined>>
 
 export default async function page({
@@ -21,12 +19,8 @@ export default async function page({
   const recipientName = pick('recipientName') ?? ''
 
   return (
-    <LayoutSheet needPadding={false} routeTitle="Scan & Pay">
-      <ChooseCards
-        amount={amount}
-        message={message}
-        recipientName={recipientName}
-      />
+    <LayoutSheet needPadding={false} routeTitle="Choose Payment Methods" isScrollable={false}>
+      <ChoosePayUsingMethods amount={amount} message={message} recipientName={recipientName} />
     </LayoutSheet>
   )
 }

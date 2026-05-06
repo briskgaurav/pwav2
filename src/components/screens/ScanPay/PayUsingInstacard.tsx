@@ -15,9 +15,21 @@ import { usePaymentProcessing } from '@/hooks/usePaymentProcessing'
 type PayUsingInstacardProps = {
   amount: number
   onPay?: (payload: { card: CardData; amount: number }) => void
+  /**
+   * Optional: use a root-level PIN drawer (useful when parent applies CSS filter).
+   * If provided, this component won't render its own `CardPinVerificationDrawer`.
+   */
+  openPinDrawer?: (opts: {
+    fieldLength: number
+    subtitle: string
+    payingInfo?: string
+    verifyPin: (pin: string) => boolean
+    onVerified: () => void
+    onClose: () => void
+  }) => void
 }
 
-export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardProps) {
+export default function PayUsingInstacard({ amount, onPay, openPinDrawer }: PayUsingInstacardProps) {
   const allCards = useAppSelector((s) => s.cardWallet.cards)
   const { isDarkMode } = useAuth()
 
@@ -29,6 +41,45 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
   const [pendingCard, setPendingCard] = useState<CardData | null>(null)
   const processing = usePaymentProcessing()
   const cardStackRef = useRef<CardStackRef>(null)
+
+  const getPayingInfo = useCallback((card: CardData) => {
+    const digits = (card.cardNumber ?? '').replace(/\D/g, '')
+    const l4 = digits.slice(-4)
+    const suffix = l4 ? ` •••• ${l4}` : ''
+    return `${card.name ?? 'Instacard'}${suffix}`
+  }, [])
+
+  const openDrawerForCard = useCallback((card: CardData) => {
+    setSelectedCardId(card.id)
+    setPendingCard(card)
+    setPinDrawerOpen(true)
+
+    const close = () => {
+      if (processing.model.open) return
+      setPinDrawerOpen(false)
+      setPendingCard(null)
+    }
+
+    const verified = () => {
+      if (!card) return
+      setPinDrawerOpen(false)
+      processing.start({ minDurationMs: 5000 })
+      const cardToPay = card
+      setPendingCard(null)
+      processing.succeedAfterMinDuration(() => onPay?.({ card: cardToPay, amount }), 5000)
+    }
+
+    if (openPinDrawer) {
+      openPinDrawer({
+        fieldLength: 4,
+        subtitle: 'Enter PIN to use this card',
+        payingInfo: getPayingInfo(card),
+        verifyPin: (pin) => pin === card.pin,
+        onVerified: verified,
+        onClose: close,
+      })
+    }
+  }, [amount, getPayingInfo, onPay, openPinDrawer, processing.model.open, processing, setSelectedCardId])
 
   const handleCardFiltersChange = useCallback((filters: CardFilterType[]) => {
     setCardFilters(filters)
@@ -66,11 +117,9 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
   }, [allCards, cardFilters, sortBy])
 
   const handleCardPress = useCallback((card: CardData) => {
-    setSelectedCardId(card.id)
-    setPendingCard(card)
     console.log('[ScanPay] Opening PIN drawer for card (tap):', card)
-    setPinDrawerOpen(true)
-  }, [])
+    openDrawerForCard(card)
+  }, [openDrawerForCard])
 
   const selectedCard =
     filteredCards.find((c) => c.id === selectedCardId) ??
@@ -96,9 +145,8 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
       <div className="min-h-[58vh]  w-full relative">
         {filteredCards.length > 0 ? (
           <div
-            className={`w-full transition-transform duration-200 ease-out ${
-              pinDrawerOpen ? 'scale-[0.6]' : 'scale-100'
-            }`}
+            className={`w-full transition-transform duration-200 ease-out ${pinDrawerOpen ? 'scale-[1.0]' : 'scale-100'
+              }`}
             style={{ transformOrigin: 'top center' }}
           >
             <CardStack
@@ -131,41 +179,44 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
       <div className="shrink-0 px-4 pb-6 pt-2">
         <Button fullWidth className='bg-primary text-white' onClick={() => {
           if (!selectedCard) return
-          setSelectedCardId(selectedCard.id)
-          setPendingCard(selectedCard)
-          // console.log('[ScanPay] Opening PIN drawer for card (pay btn):', selectedCard, 'amount:', amount)
-          setPinDrawerOpen(true)
-        }}>Pay ₦ {amount?.toString() || '0'}</Button>
+          openDrawerForCard(selectedCard)
+        }}>Pay Now ₦ {amount?.toString() || '0'}</Button>
       </div>
 
-      <CardPinVerificationDrawer
-        fieldLength={4}
-        visible={pinDrawerOpen}
-        onClose={() => {
-          if (processing.model.open) return
-          setPinDrawerOpen(false)
-          setPendingCard(null)
-        }}
-        showTitle={false}
-        title="Verify PIN"
-        subtitle="Enter PIN to use this card"
-        verifyPin={(pin) => (pendingCard ? pin === pendingCard.pin : false)}
-        
-        onVerified={() => {
-          if (!pendingCard) return
-          setPinDrawerOpen(false)
-          processing.start({ minDurationMs: 5000 })
-          const cardToPay = pendingCard
-          setPendingCard(null)
-          processing.succeedAfterMinDuration(() => onPay?.({ card: cardToPay, amount }), 5000)
-        }}
-      />
+      {!openPinDrawer && (
+        <CardPinVerificationDrawer
+          fieldLength={4}
+          visible={pinDrawerOpen}
+          onClose={() => {
+            if (processing.model.open) return
+            setPinDrawerOpen(false)
+            setPendingCard(null)
+          }}
+          showTitle={false}
+          title="Verify PIN"
+          subtitle="Enter PIN to use this card"
+          payingInfo={pendingCard ? getPayingInfo(pendingCard) : undefined}
+          verifyPin={(pin) => (pendingCard ? pin === pendingCard.pin : false)}
+          onVerified={() => {
+            if (!pendingCard) return
+            setPinDrawerOpen(false)
+            processing.start({ minDurationMs: 5000 })
+            const cardToPay = pendingCard
+            setPendingCard(null)
+            processing.succeedAfterMinDuration(() => onPay?.({ card: cardToPay, amount }), 5000)
+          }}
+        />
+      )}
 
       <PaymentProcessingOverlay
         open={processing.model.open}
         state={processing.model.state}
         title={processing.model.title}
         subtitle={processing.model.subtitle}
+        primaryActionLabel={processing.model.state === 'error' ? 'Close' : undefined}
+        onPrimaryAction={processing.model.state === 'error' ? processing.close : undefined}
+        secondaryActionLabel={processing.model.state === 'error' ? 'Dismiss' : undefined}
+        onSecondaryAction={processing.model.state === 'error' ? processing.close : undefined}
       />
     </div>
   )

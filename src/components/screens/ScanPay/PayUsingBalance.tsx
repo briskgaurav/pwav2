@@ -43,46 +43,53 @@ const BANK_ACCOUNTS = [
     feeLabel: '5',
     balance: '₦ 720.00',
   },
-  {
-    id: 5,
-    logo: '/img/montra.png',
-    name: 'Montra Account 7866836869',
-    checkBalanceLabel: 'Check balance',
-    feeLabel: '0',
-    balance: '₦ 12,000.80',
-  },
-  {
-    id: 6,
-    logo: '/svg/access.svg',
-    name: 'ICICI Bank **** 0632',
-    checkBalanceLabel: 'Check balance',
-    feeLabel: '10',
-    balance: '₦ 50,100.55',
-  },
-  {
-    id: 7,
-    logo: '/svg/gtbank.svg',
-    name: 'HDFC Bank **** 4610',
-    checkBalanceLabel: 'Check balance',
-    feeLabel: '100',
-    balance: '₦ 2,890.22',
-  },
-  {
-    id: 8,
-    logo: '/svg/ubabank.svg',
-    name: 'SBI Bank **** 8731',
-    checkBalanceLabel: 'Check balance',
-    feeLabel: '5',
-    balance: '₦ 720.00',
-  },
+  // {
+  //   id: 5,
+  //   logo: '/img/montra.png',
+  //   name: 'Montra Account 7866836869',
+  //   checkBalanceLabel: 'Check balance',
+  //   feeLabel: '0',
+  //   balance: '₦ 12,000.80',
+  // },
+  // {
+  //   id: 6,
+  //   logo: '/svg/access.svg',
+  //   name: 'ICICI Bank **** 0632',
+  //   checkBalanceLabel: 'Check balance',
+  //   feeLabel: '10',
+  //   balance: '₦ 50,100.55',
+  // },
+  // {
+  //   id: 7,
+  //   logo: '/svg/gtbank.svg',
+  //   name: 'HDFC Bank **** 4610',
+  //   checkBalanceLabel: 'Check balance',
+  //   feeLabel: '100',
+  //   balance: '₦ 2,890.22',
+  // },
+  // {
+  //   id: 8,
+  //   logo: '/svg/ubabank.svg',
+  //   name: 'SBI Bank **** 8731',
+  //   checkBalanceLabel: 'Check balance',
+  //   feeLabel: '5',
+  //   balance: '₦ 720.00',
+  // },
 ];
 
 type PayUsingBalanceProps = {
   amount?: number
   onPay?: (payload: { accountId: number; amount?: number }) => void
+  openPinDrawer?: (opts: {
+    fieldLength: number
+    subtitle: string
+    payingInfo?: string
+    onVerified: () => void
+    onClose: () => void
+  }) => void
 }
 
-export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps) {
+export default function PayUsingBalance({ amount, onPay, openPinDrawer }: PayUsingBalanceProps) {
   const [selectedAccountId, setSelectedAccountId] = useState<number | null>(1);
   const [showBalanceFor, setShowBalanceFor] = useState<number | null>(null);
   const [pinDrawerOpen, setPinDrawerOpen] = useState(false)
@@ -132,7 +139,7 @@ export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps)
   const totalPayable = baseAmount + convenienceFee
 
   return (
-    <div className="flex-1 overflow-y-auto pb-24 flex flex-col px-4">
+    <div className="h-full min-h-[75vh] overflow-y-auto pb-24 flex flex-col px-4">
       <div className="p-4 border border-border rounded-2xl w-full flex items-center justify-between">
         <p className="font-medium text-sm text-text-primary truncate">Total Payable</p>
         <p className="text-md font-bold truncate">
@@ -200,25 +207,44 @@ export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps)
           onClick={() => {
             if (!selectedAccountId) return
             setPinDrawerOpen(true)
+            if (openPinDrawer) {
+              const accountId = selectedAccountId
+              openPinDrawer({
+                fieldLength: 6,
+                subtitle: 'Enter Your 6 Digit OTP',
+                payingInfo: selectedBank ? selectedBank.name : undefined,
+                onClose: () => {
+                  if (processing.model.open) return
+                  setPinDrawerOpen(false)
+                },
+                onVerified: () => {
+                  setPinDrawerOpen(false)
+                  void startPayment(accountId)
+                },
+              })
+            }
           }}
         />
       </div>
 
-      <CardPinVerificationDrawer
-      fieldLength={6}
-        visible={pinDrawerOpen}
-        onClose={() => {
-          if (processing.model.open) return
-          setPinDrawerOpen(false)
-        }}
-        showTitle={false}
-        subtitle="Enter Your 6 Digit OTP"
-        onVerified={() => {
-          if (!selectedAccountId) return
-          setPinDrawerOpen(false)
-          void startPayment(selectedAccountId)
-        }}
-      />
+      {!openPinDrawer && (
+        <CardPinVerificationDrawer
+          fieldLength={6}
+          visible={pinDrawerOpen}
+          onClose={() => {
+            if (processing.model.open) return
+            setPinDrawerOpen(false)
+          }}
+          showTitle={false}
+          payingInfo={selectedBank ? selectedBank.name : undefined}
+          subtitle="Enter Your 6 Digit OTP"
+          onVerified={() => {
+            if (!selectedAccountId) return
+            setPinDrawerOpen(false)
+            void startPayment(selectedAccountId)
+          }}
+        />
+      )}
 
       <PaymentProcessingOverlay
         open={processing.model.open}
@@ -232,7 +258,7 @@ export default function PayUsingBalance({ amount, onPay }: PayUsingBalanceProps)
             : undefined
         }
         secondaryActionLabel={processing.model.state === 'error' ? 'Close' : undefined}
-        onSecondaryAction={processing.model.state === 'error' ? () => processing.close() : undefined}
+        onSecondaryAction={processing.model.state === 'error' ? processing.close : undefined}
       />
     </div>
   );

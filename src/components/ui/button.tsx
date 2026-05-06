@@ -3,7 +3,7 @@
 import React from 'react'
 import { haptic } from '@/lib/useHaptics'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'error'
+export type ButtonVariant = 'primary' | 'secondary' | 'error' | 'disabled'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 
 export type ButtonProps = {
@@ -32,7 +32,9 @@ export default function Button({
       ? 'bg-primary text-white'
       : variant === 'error'
         ? 'bg-error text-white'
-        : 'bg-white border border-border text-text-primary'
+        : variant === 'disabled'
+          ? 'bg-disable-button text-white'
+          : 'bg-white border border-border text-text-primary'
 
   const sizeClass =
     size === 'sm'

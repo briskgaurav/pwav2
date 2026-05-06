@@ -14,6 +14,7 @@ type CardPinVerificationDrawerProps = {
     title?: string
     showTitle?: boolean
     subtitle?: string
+    payingInfo?: string
     onVerified: () => void
     fieldLength:number,
     /** Optional custom verifier; defaults to comparing against redux `s.card.pin` */
@@ -120,11 +121,13 @@ function NativePinInput({
 
 export default function CardPinVerificationDrawer({
     showTitle = true,
+    
     visible,
     onClose,
     fieldLength = 4,
     title = 'PIN Verification',
     subtitle = 'Enter your PIN to continue',
+    payingInfo,
     onVerified,
     verifyPin,
     onDonePressed,
@@ -195,10 +198,26 @@ export default function CardPinVerificationDrawer({
     const isComplete = pin.length === pinLength
 
     return (
-        <BottomSheetModal showTitle={showTitle} backdropBlur={true} visible={visible} onClose={onClose} title={title} maxHeight={0.92}>
+        <BottomSheetModal  showTitle={showTitle} backdropBlur={false} visible={visible} onClose={onClose} title={title} maxHeight={0.92}>
             <div className="flex flex-col gap-5" style={{ paddingBottom: keyboardInset ? keyboardInset + 12 : undefined }}>
-                <p className="text-sm text-text-secondary pt-2 text-center">{subtitle}</p>
-
+                {payingInfo && (
+                    <div className="flex items-center justify-center pt-1">
+                        <div className="inline-flex items-center gap-2 w-fit justify-center rounded-full border border-border bg-background2/60 px-2 py-1 max-w-[90%]">
+                            {/* <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
+                                i
+                            </span> */}
+                            <div className="flex items-center gap-1">
+                                <span className="text-xs text-text-secondary leading-3">
+                                    Paying with
+                                </span>
+                                <span className="text-xs font-semibold text-text-primary leading-4 truncate max-w-[200px]">
+                                {payingInfo}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                <p className="text-sm text-text-secondary text-center">{subtitle}</p>
                 <div ref={pinInputRef} className="flex flex-col items-center gap-3">
                     <NativePinInput
                         useDots

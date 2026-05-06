@@ -7,10 +7,11 @@ import PWAHeader from "@/components/PWAHeader";
  *   needPadding?: boolean,
  *   progressNode?: import('react').ReactNode,
  *   hideLayerSheet?: boolean
+ *   isScrollable?: boolean
  * }} props
  */
 export default function LayoutSheet(props) {
-  const { children, routeTitle, needPadding = true, progressNode, hideLayerSheet = false } = props
+  const { children, routeTitle, needPadding = true, progressNode, hideLayerSheet = false, isScrollable = true } = props
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '100vh', width: '100%' }}>
       {!hideLayerSheet && <PWAHeader />}
@@ -30,12 +31,12 @@ export default function LayoutSheet(props) {
 
           {/* THIS is the ONLY scroll container */}
           <div
-            className={`flex-1 overflow-y-auto bg-white rounded-t-3xl ${needPadding ? 'p-4' : ''}`}
+            className={`flex-1 ${isScrollable ? 'overflow-y-auto' : ''} bg-white rounded-t-3xl ${needPadding ? 'p-4' : ''}`}
             style={{
               backgroundColor: '#FFFFFF',
               flex: '1 1 0%',
               minHeight: 0,
-              overflowY: 'auto'
+              overflowY: isScrollable ? 'auto' : 'hidden'
             }}
           >
             {progressNode}

@@ -7,7 +7,7 @@ import CustomRadioBTN from './CustomRadioBTN'
 
 export type CardType = 'sigma' | 'universal-1' | 'universal-2' | 'verve'
 
-const CARD_OPTIONS: {
+export const CARD_OPTIONS: {
     id: CardType
     brandIcon: string
     maskedNumber: string
@@ -17,7 +17,7 @@ const CARD_OPTIONS: {
         id: 'sigma',
     brandIcon: ICONS.visa,
         maskedNumber: '*** *** *** 7872',
-        description: 'Sigma Card',
+        description: 'Virtual Card',
     },
     {
         id: 'universal-1',

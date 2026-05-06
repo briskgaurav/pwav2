@@ -1,10 +1,11 @@
 'use client';
 
 import { X } from 'lucide-react';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import Draggable from 'gsap/dist/Draggable';
 import { useAuth } from '@/lib/auth-context';
+import { createPortal } from 'react-dom';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(Draggable);
@@ -36,6 +37,11 @@ export default function BottomSheetModal({
   const handleRef = useRef<HTMLDivElement>(null);
   const draggableRef = useRef<Draggable[]>([]);
   const { isDarkMode } = useAuth();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleClose = useCallback(() => {
     if (modalRef.current && backdropRef.current) {
@@ -112,15 +118,19 @@ export default function BottomSheetModal({
     };
   }, [initDraggable, visible]);
 
-  if (!visible) return null;
+  if (!visible || !mounted || typeof document === 'undefined') return null;
 
   const maxHeightVh = maxHeight * 100;
 
-  return (
+  const content = (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
       <div
         ref={backdropRef}
-        className="absolute inset-0 bg-black/20"
+        className={`absolute inset-0 ${
+          backdropBlur
+            ? 'bg-black/20 backdrop-blur-xs supports-backdrop-filter:bg-black/20'
+            : 'bg-black/20'
+        }`}
         onClick={handleClose}
         aria-hidden
       />
@@ -129,7 +139,7 @@ export default function BottomSheetModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? 'bottom-sheet-modal-title' : undefined}
-        className={`relative w-full   rounded-t-[28px] border border-border overflow-hidden ${backdropBlur ? 'backdrop-blur-lg bg-white/64' : 'bg-white'}`}
+        className={`relative w-full   rounded-t-[28px] border border-border overflow-hidden ${backdropBlur ? 'backdrop-blur-lg bg-white/64' : ' backdrop-blur-xl bg-white/90'}`}
         style={{
           maxHeight: `${maxHeightVh}vh`,
         }}
@@ -183,4 +193,6 @@ export default function BottomSheetModal({
       </div>
     </div>
   );
+
+  return createPortal(content, document.body);
 }

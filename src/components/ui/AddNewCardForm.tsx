@@ -89,9 +89,9 @@ export function AddNewCardForm({ initialValues, onChange, border = true, showChe
     return (
         <>
             <div className={`${border ? 'border border-border rounded-2xl p-4  space-y-4' : 'space-y-4'}`}>
-                <p className='text-text-primary text-sm font-medium'>
+                {/* <p className='text-text-primary text-sm font-medium'>
                     Fill the details to continue!
-                </p>
+                </p> */}
                 {/* Card Number Input */}
                 <div className='space-y-2'>
                     <p className='text-text-primary text-sm'>Enter card number</p>
