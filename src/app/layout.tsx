@@ -5,6 +5,7 @@ import { AuthProvider } from '@/lib/auth-context';
 import GlobalProfileDrawer from '@/components/GlobalProfileDrawer';
 import GlobalAccessDrawer from '@/components/GlobalAccessDrawer';
 import ReduxProvider from '@/store/redux/ReduxProvider';
+import Toaster from '@/components/ui/Toaster';
 
 const trueno = localFont({
   src: [
@@ -98,6 +99,7 @@ export default function RootLayout({
             <GlobalProfileDrawer />
             <GlobalAccessDrawer />
           </AuthProvider>
+          <Toaster />
         </ReduxProvider>
       </body>
     </html>

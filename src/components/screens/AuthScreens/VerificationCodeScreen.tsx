@@ -7,6 +7,10 @@ import NativeOTPInput from "@/components/ui/NativeOTPInput";
 import gsap from "gsap";
 import { Check } from "lucide-react";
 
+// Add
+import { useDispatch } from "react-redux";
+import { showToast } from "@/store/redux/slices/toasterSlice";
+
 const MAX_CODE_LENGTH = 6;
 
 type SuccessPopupContent = {
@@ -37,9 +41,15 @@ type VerificationCodeScreenProps = {
    * cooldown belongs server-side, not in the frontend.
    */
   resendCooldownSeconds?: number;
+  /**
+   * When set, the Resend button starts disabled with an initial cooldown
+   * (useful because OTP is usually already sent when this screen mounts).
+   */
+  initialResendCooldownSeconds?: number;
 };
 
 const DEFAULT_RESEND_COOLDOWN_SECONDS = 30;
+const MAX_RESEND_TRIES = 3;
 
 export default function VerificationCodeScreen({
   title,
@@ -55,14 +65,17 @@ export default function VerificationCodeScreen({
   onVerify,
   onResend,
   resendCooldownSeconds = DEFAULT_RESEND_COOLDOWN_SECONDS,
+  initialResendCooldownSeconds = 0,
 }: VerificationCodeScreenProps) {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [code, setCode] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [errorText, setErrorText] = useState<string | null>(null);
   const [isResending, setIsResending] = useState(false);
-  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const [cooldownRemaining, setCooldownRemaining] = useState(initialResendCooldownSeconds);
+  const [resendTries, setResendTries] = useState(0);
   const popupOverlayRef = useRef<HTMLDivElement>(null);
   const popupContentRef = useRef<HTMLDivElement>(null);
 
@@ -89,6 +102,20 @@ export default function VerificationCodeScreen({
       );
     }
   }, [showSuccessPopup]);
+
+  // Show toaster if errorText changes (non-null)
+  useEffect(() => {
+    if (errorText) {
+      dispatch(
+        showToast({
+          message: 'Invalid OTP',
+          subtitle: "Enter the valid OTP number",
+          duration: 2000,
+          tosterType: "error",
+        })
+      );
+    }
+  }, [errorText, dispatch]);
 
   const handleContinue = async () => {
     setIsVerifying(true);
@@ -128,6 +155,7 @@ export default function VerificationCodeScreen({
 
   const handleResend = async () => {
     if (isResending || cooldownRemaining > 0) return;
+    if (resendTries >= MAX_RESEND_TRIES) return;
     setCode("");
     setErrorText(null);
 
@@ -137,6 +165,7 @@ export default function VerificationCodeScreen({
     try {
       await onResend();
       setCooldownRemaining(resendCooldownSeconds);
+      setResendTries((t) => Math.min(MAX_RESEND_TRIES, t + 1));
     } catch (e) {
       setErrorText(e instanceof Error ? e.message : "Could not resend code");
     } finally {
@@ -221,18 +250,27 @@ export default function VerificationCodeScreen({
             </Button>
           </div>
 
-          {errorText && (
-            <p className="mt-2 text-xs text-red-500">{errorText}</p>
-          )}
+          {/* {errorText && (
+            <p className="mt-2 text-xs text-error">{errorText}</p>
+          )} */}
 
           <p className="mt-3 text-sm">
             Didn&apos;t receive the Code?{" "}
             <button
               onClick={handleResend}
-              className="bg-transparent border-none text-primary font-semibold cursor-pointer p-0 text-sm"
+              className={`bg-transparent border-none text-primary ${cooldownRemaining > 0 ? 'cursor-not-allowed opacity-50' : ''} font-semibold cursor-pointer p-0 text-sm`}
               type="button"
+              disabled={
+                isResending ||
+                cooldownRemaining > 0 ||
+                resendTries >= MAX_RESEND_TRIES
+              }
             >
-              Resend
+              {resendTries >= MAX_RESEND_TRIES
+                ? "Resend limit reached"
+                : cooldownRemaining > 0
+                  ? `Resend in ${cooldownRemaining}s`
+                  : "Resend"}
             </button>
           </p>
         </div>

@@ -37,6 +37,7 @@ export default function VerifyBankOTP({
       throw new Error('Card request not initialised. Please restart the flow.');
     }
     const response = await sendBankOtp({ requestId });
+    
     dispatch(setBankOtpSent({
       bankOtpDestination: response.bankOtpDestination,
       bankOtpChannel: response.bankOtpChannel,
@@ -60,6 +61,8 @@ export default function VerifyBankOTP({
       onVerify={handleVerify}
       onResend={handleResend}
       onSuccess={handleSuccess}
+    
+
     />
   );
 }

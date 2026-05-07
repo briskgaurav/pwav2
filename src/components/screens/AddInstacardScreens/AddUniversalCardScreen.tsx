@@ -49,7 +49,7 @@ export default function AddUniversalCardScreen() {
               />
               <div className='flex items-center gap-4'>
                 <Image src={ICONS.mastercard} alt='Mastercard' width={40} height={24} className='object-contain h-4 w-auto' />
-                {/* <Image onClick={() => router.push(routes.addUniversalFaceVerification)} src={ICONS.scan} alt='scan' width={40} height={24} className='object-contain invert h-5 w-auto' /> */}
+                <Image onClick={() => {}} src={ICONS.scan} alt='scan' width={40} height={24} className='object-contain invert h-5 w-auto' />
               </div>
             </div>
           </div>

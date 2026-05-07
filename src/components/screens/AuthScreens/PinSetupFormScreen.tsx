@@ -190,7 +190,7 @@ function PinSetupFormContent({
                   setPin(v)
                 }}
               />
-              <div className='absolute right-[3vw] top-[46px]'>
+              <div className='absolute right-[8vw] top-[55px]'>
                 <EyeButton
                   isVisible={isPinVisible}
                   onToggle={setIsPinVisible}
@@ -212,7 +212,7 @@ function PinSetupFormContent({
                   setConfirmPin(v)
                 }}
               />
-              <div className='absolute right-[3vw] top-[46px]'>
+              <div className='absolute right-[8vw] top-[55px]'>
                 <EyeButton
                   isVisible={isConfirmPinVisible}
                   onToggle={setIsConfirmPinVisible}

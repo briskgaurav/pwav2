@@ -1,110 +1,146 @@
 'use client'
 
-import { useRef, useEffect, useCallback } from 'react'
+import { ICONS } from '@/constants/icons'
 import gsap from 'gsap'
+import { useEffect, useRef } from 'react'
+import { useAppDispatch, useAppSelector } from '@/store/redux/hooks'
+import { hideToast, selectToasts, ToasterType, ToastItem as IToastItem } from '@/store/redux/slices/toasterSlice'
 
-export interface ToasterProps {
-  message: string
-  subtitle?: string
-  visible: boolean
-  onDismiss: () => void
-  /** Auto-dismiss after ms. 0 = no auto-dismiss. Default 3000 */
-  duration?: number
-  /** Icon color. Default '#ef4444' */
-  iconColor?: string
+// Map toast types to their distinctive styling
+const TOASTER_STYLES: Record<
+  ToasterType,
+  {
+    iconColor: string
+    borderColor: string
+    bgColor: string
+    textColor: string
+    buttonBg: string
+    buttonBorder: string
+    buttonText: string
+    buttonHover: string
+  }
+> = {
+  success: {
+    iconColor: 'text-[#19C964]',
+    borderColor: 'border-[#19C964]/20',
+    bgColor: 'bg-white/80',
+    textColor: 'text-green-900',
+    buttonBg: 'bg-green-100',
+    buttonBorder: 'border-[#19C964]/20',
+    buttonText: 'text-green-700',
+    buttonHover: 'hover:bg-[#19C964]/20',
+  },
+  error: {
+    iconColor: 'text-red-500',
+    borderColor: 'border-error/20',
+    bgColor: 'bg-red-50/80',
+    textColor: 'text-error',
+    buttonBg: 'bg-red-100',
+    buttonBorder: 'border-error/20',
+    buttonText: 'text-red-700',
+    buttonHover: 'hover:border-error/20',
+  },
+  warning: {
+    iconColor: 'text-yellow-500',
+    borderColor: 'border-[#F6B751]/20',
+    bgColor: 'bg-white/80',
+    textColor: 'text-[#F6B751]',
+    buttonBg: 'bg-yellow-100',
+    buttonBorder: 'border-[#F6B751]/20',
+    buttonText: 'text-[#F6B751]',
+    buttonHover: 'hover:bg-[#F6B751]/20',
+  },
+  info: {
+    iconColor: 'text-primary',
+    borderColor: 'border-primary/20',
+    bgColor: 'bg-white/80',
+    textColor: 'text-[#18181B]',
+    buttonBg: 'bg-primary/10',
+    buttonBorder: 'border-primary/20',
+    buttonText: 'text-primary',
+    buttonHover: 'hover:bg-primary/20',
+  },
 }
 
-export default function Toaster({
-  message,
-  subtitle,
-  visible,
-  onDismiss,
-  duration = 3000,
-  iconColor = '#ef4444',
-}: ToasterProps) {
-  const backdropRef = useRef<HTMLDivElement>(null)
-  const cardRef = useRef<HTMLDivElement>(null)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+function ToastItem({ toast }: { toast: IToastItem }) {
+  const { id, message, subtitle, duration = 3000, tosterType = 'info' } = toast
+  const toastRef = useRef<HTMLDivElement>(null)
+  const dispatch = useAppDispatch()
 
-  const dismiss = useCallback(() => {
-    const tl = gsap.timeline({
-      onComplete: onDismiss,
-    })
-    if (cardRef.current) {
-      tl.to(cardRef.current, { y: '100%', opacity: 0, duration: 0.25, ease: 'power2.in' }, 0)
-    }
-    if (backdropRef.current) {
-      tl.to(backdropRef.current, { opacity: 0, duration: 0.2, ease: 'power2.in' }, 0.05)
-    }
-  }, [onDismiss])
-
-  // Entrance animation
   useEffect(() => {
-    if (!visible) return
+    if (!toastRef.current) return
 
-    if (backdropRef.current) {
-      gsap.fromTo(backdropRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power2.out' })
-    }
-    if (cardRef.current) {
-      gsap.fromTo(
-        cardRef.current,
-        { y: '100%', opacity: 0 },
-        { y: '0%', opacity: 1, duration: 0.35, ease: 'power3.out' }
-      )
-    }
+    gsap.fromTo(
+      toastRef.current,
+      { y: -20, opacity: 0, scale: 0.95 },
+      {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 0.4,
+        ease: 'back.out(1.7)',
+      }
+    )
 
-    // Auto-dismiss
-    if (duration > 0) {
-      timerRef.current = setTimeout(dismiss, duration)
-    }
+    const timer = setTimeout(() => {
+      handleDismiss()
+    }, duration)
 
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
-    }
-  }, [visible, duration, dismiss])
+    return () => clearTimeout(timer)
+  }, [duration])
 
-  if (!visible) return null
+  const handleDismiss = () => {
+    if (toastRef.current) {
+      gsap.to(toastRef.current, {
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.3,
+        ease: 'power2.in',
+        onComplete: () => {
+          dispatch(hideToast(id))
+        },
+      })
+    } else {
+      dispatch(hideToast(id))
+    }
+  }
+
+  const style = TOASTER_STYLES[tosterType] ?? TOASTER_STYLES.info
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center">
-      {/* Backdrop */}
-      <div
-        ref={backdropRef}
-        className="absolute inset-0 bg-black/50"
-        onClick={dismiss}
-      />
-
-      {/* Card */}
-      <div
-        ref={cardRef}
-        className="relative w-full mx-4 mb-[max(1.5rem,calc(env(safe-area-inset-bottom,0px)+1.5rem))] max-w-[400px] rounded-2xl bg-white p-6"
-      >
-        <div className="flex items-center gap-4">
-          <div
-            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-            style={{ backgroundColor: `${iconColor}10` }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M12 8v5" stroke={iconColor} strokeWidth="2" strokeLinecap="round" />
-              <circle cx="12" cy="16" r="1" fill={iconColor} />
-              <circle cx="12" cy="12" r="10" stroke={iconColor} strokeWidth="1.5" />
-            </svg>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-gray-900 text-[15px] font-medium">{message}</p>
-            {subtitle && (
-              <p className="text-gray-400 text-[13px] mt-0.5 truncate">{subtitle}</p>
-            )}
-          </div>
-          <button
-            onClick={dismiss}
-            className="text-[14px] font-semibold shrink-0 active:opacity-60 transition-opacity"
-            style={{ color: iconColor }}
-          >
-            Retry
-          </button>
+    <div
+      ref={toastRef}
+      className={`h-fit py-3 w-[90vw] max-w-[400px] px-4 ${style.bgColor} ${style.textColor} 
+        flex items-start justify-between backdrop-blur-sm 
+        border ${style.borderColor} rounded-2xl shadow-lg transition-shadow duration-300 pointer-events-auto`}
+    >
+      <div className="flex items-start justify-start gap-3">
+        <div className={`w-5 h-auto aspect-square mt-2 flex items-center justify-center ${style.iconColor}`}>
+          {ICONS[tosterType]}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium">{message}</p>
+          {subtitle && <p className="text-xs text-[#52525B] mt-0.5 line-clamp-2">{subtitle}</p>}
         </div>
       </div>
+      <button
+        className={`my-auto ml-4 ${style.buttonBg} rounded-full px-3 py-1 h-fit ${style.buttonText} text-xs font-semibold border ${style.buttonBorder} ${style.buttonHover} transition-colors shrink-0`}
+        onClick={handleDismiss}
+      >
+        Dismiss
+      </button>
+    </div>
+  )
+}
+
+export default function Toaster() {
+  const toasts = useAppSelector(selectToasts)
+
+  return (
+    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-9999 flex flex-col items-center gap-3 w-full pointer-events-none">
+      {toasts.map((toast) => (
+        <ToastItem key={toast.id} toast={toast} />
+      ))}
     </div>
   )
 }

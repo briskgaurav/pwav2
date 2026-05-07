@@ -14,6 +14,8 @@ import { requestCard } from "@/lib/api/cards"
 import { ApiError, AuthError } from "@/lib/api/errors"
 import { useAppDispatch } from "@/store/redux/hooks"
 import { setCardRequest } from "@/store/redux/slices/cardRequestSlice"
+import { showToast } from "@/store/redux/slices/toasterSlice"
+
 
 interface SelectCardTypesProps {
   onNext: (nextStep: UserInstaCardSteps) => void;
@@ -27,18 +29,23 @@ export default function SelectCardTypes({
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+
   useEffect(() => {
     notifyNavigation('select-card-type')
   }, [])
+
 
   const handleNext = async () => {
     haptic("medium");
     if (submitting) return;
 
     setErrorMessage(null);
+
     setSubmitting(true);
     try {
       const response = await requestCard({ cardType: selectedType });
+
+
       dispatch(setCardRequest({
         requestId: response.requestId,
         registeredEmail: response.registeredEmail,
@@ -59,7 +66,20 @@ export default function SelectCardTypes({
     } finally {
       setSubmitting(false);
     }
+
   }
+
+  useEffect(() => {
+    if (errorMessage) {
+      dispatch(showToast({
+        message: 'Something went wrong.',
+        subtitle: errorMessage ?? 'Something went wrong. Please try again.',
+        duration: 2000,
+        tosterType: 'error',
+      }))
+    }
+  }, [showToast, errorMessage])
+
 
   return (
     <div className="min-h-full flex flex-col">
@@ -82,11 +102,11 @@ export default function SelectCardTypes({
           ))}
         </div>
 
-        {errorMessage && (
+        {/* {errorMessage && (
           <p role="alert" className="text-[3.5vw] text-red-600 mt-[4vw]">
             {errorMessage}
           </p>
-        )}
+        )} */}
       </div>
 
       <div

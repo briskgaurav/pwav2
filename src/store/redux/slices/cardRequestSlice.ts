@@ -48,6 +48,9 @@ interface CardRequestState {
 
   /** Match result of the bank OTP verify (set by /card/bank-otp/verify). */
   bankOtpMatchStatus: string | null
+
+  /** Masked card PAN */
+  maskedCardPAN: string | null
 }
 
 const initialState: CardRequestState = {
@@ -60,6 +63,7 @@ const initialState: CardRequestState = {
   bankOtpChannel: null,
   bankOtpStatus: null,
   bankOtpMatchStatus: null,
+  maskedCardPAN: null,
 }
 
 const cardRequestSlice = createSlice({
@@ -127,6 +131,13 @@ const cardRequestSlice = createSlice({
       state.bankOtpMatchStatus = action.payload.bankOtpMatchStatus
     },
 
+    setMaskedCardPAN: (
+      state,
+      action: PayloadAction<string>,
+    ) => {
+      state.maskedCardPAN = action.payload
+    },
+
     /** Reset back to the initial empty state when the flow ends or restarts. */
     clearCardRequest: () => initialState,
   },
@@ -137,6 +148,7 @@ const cardRequestSlice = createSlice({
     selectSelectedCardType: (state) => state.selectedCardType,
     selectCardRequestBankOtpDestination: (state) => state.bankOtpDestination,
     selectCardRequestBankOtpChannel: (state) => state.bankOtpChannel,
+    selectMaskedCardPAN: (state) => state.maskedCardPAN,
   },
 })
 
@@ -147,6 +159,7 @@ export const {
   setBankOtpSent,
   setBankOtpVerified,
   clearCardRequest,
+  setMaskedCardPAN,
 } = cardRequestSlice.actions
 
 export const {
@@ -155,6 +168,7 @@ export const {
   selectSelectedCardType,
   selectCardRequestBankOtpDestination,
   selectCardRequestBankOtpChannel,
+  selectMaskedCardPAN,
 } = cardRequestSlice.selectors
 
 export default cardRequestSlice.reducer

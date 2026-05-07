@@ -1,7 +1,7 @@
 import { cardActivation } from "@/lib/api/cards";
 import SuccessScreen from "../AuthScreens/SuccessScreen";
 import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
-import { selectCardRequestEmail, selectCardRequestId, selectSelectedCardType } from "@/store/redux/slices/cardRequestSlice";
+import { selectCardRequestEmail, selectCardRequestId, selectMaskedCardPAN, selectSelectedCardType } from "@/store/redux/slices/cardRequestSlice";
 import PinSetupForm from "../AuthScreens/PinSetupFormScreen";
 import { MOCK_HOST_CONTEXT } from "@/lib/api/__mocks__/hostContext";
 import { useRouter } from 'next/navigation';
@@ -12,6 +12,8 @@ export default function VCCardActivation() {
     const requestId = useAppSelector(selectCardRequestId);
     const registeredEmail = useAppSelector(selectCardRequestEmail);
     const selectedCardType = useAppSelector(selectSelectedCardType);
+    const maskedCardPAN = useAppSelector(selectMaskedCardPAN);
+
 
     const router = useRouter();
 
@@ -24,12 +26,12 @@ export default function VCCardActivation() {
             ...MOCK_HOST_CONTEXT,
             requestId, pinRequested: pin,
             cardType: selectedCardType ?? '',
-            vcPan: '21343235',
+            vcPan: maskedCardPAN ?? '',
             registeredEmail: registeredEmail ?? ''
         });
 
-        if (response){
-             router.replace("/instacard/add-instacard/how-to-use-card")
+        if (response) {
+            router.replace("/instacard/add-instacard/how-to-use-card")
         }
     }
 
