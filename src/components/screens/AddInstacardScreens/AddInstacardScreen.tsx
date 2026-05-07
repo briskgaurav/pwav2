@@ -11,6 +11,15 @@ import type { UserInstaCardSteps } from "@/types/userVerificationSteps";
 import SuccessScreen from "../AuthScreens/SuccessScreen";
 import VCCardActivation from "./VCActivation";
 
+import { useAppSelector } from "@/store/redux/hooks";
+import { selectSelectedCardType } from "@/store/redux/slices/cardRequestSlice";
+import PrepaidCardConsent from "./PrepaidCardConsent";
+import GiftCardConsent from "./GiftCardConsent";
+import GiftACardScreen from "../ClaimGiftCardScreens/GiftACardScreen";
+import GiftACardReceipientInf from "./GiftCardReceipientInformation";
+import DebitCardConsentScreen from "./DebitCardConsentScreen";
+
+
 /**
  * Multi-step "Add Instacard" flow. Each step is rendered by a child component
  * driven by `userVerificationStep` — there are no separate routes per step.
@@ -20,8 +29,10 @@ import VCCardActivation from "./VCActivation";
 export default function AddInstacardScreen() {
   const [userVerificationStep, setUserVerificationStep] =
     useState<UserInstaCardSteps>('select_card');
+   const selectedType = useAppSelector(selectSelectedCardType);  
 
   const handleNext = (nextStep: UserInstaCardSteps) => {
+    console.log('Next step:', nextStep);
     setUserVerificationStep(nextStep);
   };
 
@@ -29,12 +40,26 @@ export default function AddInstacardScreen() {
     switch (userVerificationStep) {
       case 'select_card':
         return <SelectCardTypes onNext={handleNext} />;
+      case 'prepare_gift_card':
+        return <GiftACardReceipientInf onNext={handleNext} />;
       case 'registered_email_verification':
         return <VerifyRegisteredEmail onNext={handleNext} />;
       case 'bank_verification':
         return <BankVerificationMethod onNext={handleNext} />;
       case 'user_consent':
-        return <CreditCardConsent onNext={handleNext} />;
+        if (selectedType === "DEBIT_CARD") {
+          return <DebitCardConsentScreen onNext={handleNext} />;
+        }
+        if (selectedType === "CREDIT_CARD") {
+          return <CreditCardConsent onNext={handleNext} />;
+        }
+        if (selectedType === "PREPAID_CARD") {
+          return <PrepaidCardConsent onNext={handleNext} />;
+        }
+        if (selectedType === "GIFT_CARD") {
+          return <GiftCardConsent onNext={handleNext} />;
+        }
+        return null;
       case 'success':
         // TODO: render the success / card-issued screen.
         //return <SuccessScreen hideLayerSheet onButtonClick={handleCardActivation} />;

@@ -38,6 +38,7 @@ export default function SelectCardTypes({
     setErrorMessage(null);
     setSubmitting(true);
     try {
+
       const response = await requestCard({ cardType: selectedType });
       dispatch(setCardRequest({
         requestId: response.requestId,
@@ -45,7 +46,12 @@ export default function SelectCardTypes({
         emailOtpStatus: response.otpStatus,
         selectedCardType: selectedType,
       }));
+
+      if(selectedType == 'GIFT_CARD'){
+         return onNext('prepare_gift_card');
+      }
       onNext('registered_email_verification');
+
     } catch (err) {
       // AuthError is terminal — host SDK has already been notified by the
       // session layer. Surface a generic message so the user is not stuck.

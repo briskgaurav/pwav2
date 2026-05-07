@@ -10,6 +10,7 @@
  * spread in each call site once the backend stops asking.
  */
 
+import { CardType } from '@/constants/cardData';
 import { MOCK_HOST_CONTEXT } from './__mocks__/hostContext';
 import { fetchWithAuth } from './fetchWithAuth';
 
@@ -129,7 +130,7 @@ export interface SendBankOtpInput {
   requestId: string;
 }
 
-/** Input for `POST /api/v1/card/bank-otp/send`. */
+/** Input for `POST /api/v1/card-issuance/virtual-card/pin`. */
 export interface CardActivationInput {
   requestId: string;
   issuerBankCode: string;
@@ -266,16 +267,13 @@ export async function verifyBankSoftToken(
 
 // ─── /card-issuance/credit/underwriting ────────────────────────────────────
 
-/** Card variant accepted by the credit-underwriting endpoint. */
-export type CreditCardTypeRequest = 'CREDIT_CARD';
-
 /** Decision returned by the credit-underwriting endpoint. */
 export type UnderwritingDecision = 'APPROVED' | 'REJECTED';
 
 /** Input for `POST /api/v1/card-issuance/credit/underwriting`. */
 export interface CreditUnderwritingInput {
   requestId: string;
-  cardTypeRequest: CreditCardTypeRequest;
+  cardTypeRequest: CardType;
 }
 
 /** Response from `POST /api/v1/card-issuance/credit/underwriting`. */
@@ -288,7 +286,7 @@ export interface CreditUnderwritingResponse {
   customerName: string;
   bvn: string;
   nin: string;
-  cardTypeRequest: CreditCardTypeRequest;
+  cardTypeRequest: CardType;
   underwritingDecision: UnderwritingDecision;
   approvedCreditLimit: number;
   cardIssuanceFee: number;
@@ -324,7 +322,7 @@ export async function creditUnderwriting(
 /** Input for `POST /api/v1/card-issuance/consent`. */
 export interface SubmitConsentInput {
   requestId: string;
-  cardTypeRequest: CreditCardTypeRequest;
+  cardTypeRequest: CardType;
   consentOnTermsAndConditions: boolean;
 }
 
@@ -336,11 +334,12 @@ export interface SubmitConsentResponse {
   mobileAppUserId: string;
   customerId: string;
   customerName: string;
-  cardTypeRequest: CreditCardTypeRequest;
+  cardTypeRequest: CardType;
   currentStage: string;
   feeStatus: string;
   mirrorAccountNumber: string;
   creditCardProductGl: string;
+  maskedPan: string;
   status: string;
   message: string;
 }

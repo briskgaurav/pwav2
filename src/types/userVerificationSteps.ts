@@ -1,6 +1,7 @@
 export type UserInstaCardSteps = 
   | 'select_card' 
-  | 'registered_email_verification' 
+  | 'prepare_gift_card'
+  | 'registered_email_verification'
   | 'bank_verification'
   | 'user_consent'
   | 'success'

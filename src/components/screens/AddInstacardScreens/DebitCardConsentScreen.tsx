@@ -7,6 +7,7 @@ import { ICONS } from '@/constants/icons';
 import { notifyNavigation } from '@/lib/bridge';
 import { routes } from '@/lib/routes';
 import LayoutSheet from '../../ui/LayoutSheet';
+import { UserInstaCardSteps } from '@/types/userVerificationSteps';
 
 const ACCOUNT_OPTIONS = [
   { label: '0123456789 / NGN / Savings', icon: ICONS.fcmb },
@@ -22,7 +23,14 @@ const TERMS = [
   'You agree to pay the outstanding amount from your BVN linked accounts',
 ];
 
-export default function AddDebitScreen() {
+interface DebitCardConsentProps {
+  onNext: (nextStep: UserInstaCardSteps) => void;
+}
+
+export default function DebitCardConsentScreen({
+  onNext,
+}: DebitCardConsentProps) {
+
   const router = useRouter();
   const [selectedAccount, setSelectedAccount] = useState(ACCOUNT_OPTIONS[0]);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -121,4 +129,3 @@ export default function AddDebitScreen() {
 
   );
 }
-
