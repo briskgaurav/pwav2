@@ -4,7 +4,8 @@ export type UserInstaCardSteps =
   | 'bank_verification'
   | 'user_consent'
   | 'success'
-  | 'card_activation';             // ← add this so onNext('complete') works
+  | 'card_activation'
+  | 'how_to_use_card';        // ← add this so onNext('complete') works
 
 export type BankVerifictionMethod = 'soft_token' | 'otp';  // ← underscore, not dash
 export type UIBankStep = 'select' | BankVerifictionMethod;  // 'select' | 'soft_token' | 'otp'

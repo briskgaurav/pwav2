@@ -426,7 +426,7 @@ export interface SubmitConsentResponse {
   status: string;
   message: string;
   /** Masked card PAN */
-  maskedCardPAN: string;
+  maskedPan: string;
 }
 
 /**

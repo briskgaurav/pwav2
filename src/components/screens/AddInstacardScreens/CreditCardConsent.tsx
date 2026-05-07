@@ -9,7 +9,7 @@ import { notifyNavigation } from "@/lib/bridge";
 import { creditUnderwriting, submitConsent, type UnderwritingDecision } from "@/lib/api/cards";
 import { ApiError, AuthError } from "@/lib/api/errors";
 import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
-import { selectCardRequestId, setMaskedCardPAN } from "@/store/redux/slices/cardRequestSlice";
+import { selectCardRequestId, selectMaskedCardPAN, setMaskedCardPAN } from "@/store/redux/slices/cardRequestSlice";
 import type { UserInstaCardSteps } from "@/types/userVerificationSteps";
 
 // TODO: Replace with formatted T&C content sent by the backend in the
@@ -30,7 +30,7 @@ interface CreditCardConsentProps {
 export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
   const requestId = useAppSelector(selectCardRequestId);
   const dispatch = useAppDispatch();
-  
+
   const [decision, setDecision] = useState<UnderwritingDecision | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +53,7 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
   //      layer (browser shows it as "(canceled)").
   //   2. If the screen unmounts while the request is in flight (user backs
   //      out), the call is canceled and no setState fires after unmount.
-  
+
   useEffect(() => {
     if (!requestId) {
       setError("Card request not initialised. Please restart the flow.");
@@ -100,7 +100,7 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
         consentOnTermsAndConditions: true,
       });
       // if the follow is success
-      dispatch(setMaskedCardPAN(response.maskedCardPAN));
+      dispatch(setMaskedCardPAN(response.maskedPan));
       onNext("success");
     } catch (err) {
       if (err instanceof AuthError) {

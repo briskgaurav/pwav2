@@ -13,6 +13,7 @@ import VCCardActivation from "./VCActivation";
 import { useAppSelector } from "@/store/redux/hooks";
 import { selectSelectedCardType } from '@/store/redux/slices/cardRequestSlice'
 import DebitCardConsent from "./DebitCardConsent";
+import HowToUseInstacards from "./HowToUseInstacards";
 /**
  * Multi-step "Add Instacard" flow. Each step is rendered by a child component
  * driven by `userVerificationStep` — there are no separate routes per step.
@@ -33,6 +34,8 @@ export default function AddInstacardScreen() {
     switch (userVerificationStep) {
       case 'select_card':
         return <SelectCardTypes onNext={handleNext} />;
+      // return <HowToUseInstacards cardType={cardType} />
+
       case 'registered_email_verification':
         return <VerifyRegisteredEmail onNext={handleNext} />;
       case 'bank_verification':
@@ -47,9 +50,11 @@ export default function AddInstacardScreen() {
       case 'success':
         // TODO: render the success / card-issued screen.
         //return <SuccessScreen hideLayerSheet onButtonClick={handleCardActivation} />;
-        return <SuccessScreen cardImageUrl={SuccessCardImage}  hideLayerSheet onButtonClick={() => handleNext('card_activation')} />
+        return <SuccessScreen cardImageUrl={SuccessCardImage} hideLayerSheet onButtonClick={() => handleNext('card_activation')} />
       case 'card_activation':
-        return <VCCardActivation />
+        return <VCCardActivation onNext={handleNext} />
+      case 'how_to_use_card':
+        return <HowToUseInstacards cardType={cardType} />
       default:
         return null;
     }
