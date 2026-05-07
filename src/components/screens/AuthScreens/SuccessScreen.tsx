@@ -7,10 +7,10 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 import { routes } from '@/lib/routes';
-import type { CardType } from '@/lib/types';
 import { useManagingCard } from '@/hooks/useManagingCard';
 import LayoutSheet from '../../ui/LayoutSheet';
 import ButtonComponent from '../../ui/ButtonComponent';
+import type { CardType } from '@/constants/cardData';
 
 export type SuccessScreenProps = {
   /** Custom title (e.g. "Success!") */
@@ -49,6 +49,7 @@ export default function SuccessScreen({
     description ??
     'We have successfully collected card issuance Fee of N XXXX for the Virtual Instacard you had requested to be issued.';
   const displayButtonText = buttonText ?? 'Activate Now';
+  
   const handleButtonClick = onButtonClick ?? (() => router.push(routes.pinSetup(cardType)));
 
   return (
@@ -65,7 +66,7 @@ export default function SuccessScreen({
               height={200}
               className="w-[120px] h-auto absolute top-[10%] left-1/2 -translate-x-1/2 -translate-y-1/2 object-contain"
             />
-            <div className="w-full bg-white/60 backdrop-blur-xl rounded-2xl border-text-secondary/20 space-y-4 py-6 z-5 relative border p-4  text-center mt-4">
+            <div className="w-full bg-white/60 backdrop-blur-xl rounded-2xl border-text-secondary/20 space-y-4 py-6 z-5 relative border p-4  text-center mt-20">
               <p className="text-lg font-semibold text-text-primary">
                 {displayTitle}
               </p>

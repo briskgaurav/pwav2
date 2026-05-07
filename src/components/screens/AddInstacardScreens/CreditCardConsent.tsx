@@ -8,8 +8,8 @@ import ButtonComponent from "../../ui/ButtonComponent";
 import { notifyNavigation } from "@/lib/bridge";
 import { creditUnderwriting, submitConsent, type UnderwritingDecision } from "@/lib/api/cards";
 import { ApiError, AuthError } from "@/lib/api/errors";
-import { useAppSelector } from "@/store/redux/hooks";
-import { selectCardRequestId } from "@/store/redux/slices/cardRequestSlice";
+import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
+import { selectCardRequestId, setMaskedPan } from "@/store/redux/slices/cardRequestSlice";
 import type { UserInstaCardSteps } from "@/types/userVerificationSteps";
 
 // TODO: Replace with formatted T&C content sent by the backend in the
@@ -37,6 +37,8 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
   const [approvedCreditLimit, setApprovedCreditLimit] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+    const dispatch = useAppDispatch();
+  
 
   useEffect(() => {
     notifyNavigation("add-credit");
@@ -93,11 +95,14 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
     setSubmitError(null);
     setSubmitting(true);
     try {
-      await submitConsent({
+      const response = await submitConsent({
         requestId,
         cardTypeRequest: "CREDIT_CARD",
         consentOnTermsAndConditions: true,
-      });
+      });      
+      
+      dispatch(setMaskedPan(response.maskedPan));
+      
       onNext("success");
     } catch (err) {
       if (err instanceof AuthError) {

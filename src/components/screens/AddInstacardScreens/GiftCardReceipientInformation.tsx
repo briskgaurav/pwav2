@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { SheetContainer } from '@/components/ui'
+import { Button, SheetContainer } from '@/components/ui'
 import { AddMoneyForm } from '@/components/ui/AddMoneyForm'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/routes'
@@ -10,8 +10,9 @@ import { GiftRecipientDetails } from '@/components/ui/GiftRecipientDetails'
 import { GiftTermsSection } from '@/components/ui/GiftTermsSection'
 import { GiftAddMoneyBottomSheet } from '@/components/ui/GiftAddMoneyBottomSheet'
 import FAQModal from '@/components/ui/FAQModal'
-import LayoutSheet from '../../ui/LayoutSheet'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 import { UserInstaCardSteps } from '@/types/userVerificationSteps'
+import ButtonComponent from '@/components/ui/ButtonComponent'
 
 const TERMS_AND_CONDITIONS = {
     heading: 'Terms & Conditions',
@@ -42,19 +43,18 @@ const validateAmount = (amount: string): boolean => {
     return !isNaN(num) && num > 0
 }
 
-interface GiftACardScreenProps {
+interface GiftACardRecInfProps {
   onNext: (nextStep: UserInstaCardSteps) => void;
 }
 
-export default function GiftACardScreen({
+export default function GiftACardReceipientInf({
   onNext,
-}: GiftACardScreenProps) {
+}: GiftACardRecInfProps) {
 
     const router = useRouter()
 
-    const [agreed, setAgreed] = useState(false)
     const [amount, setAmount] = useState('')
-    const [showTermsModal, setShowTermsModal] = useState(false)
+    //const isCodeComplete = code.length === MAX_CODE_LENGTH;
 
     const [recipientName, setRecipientName] = useState('')
     const [recipientEmail, setRecipientEmail] = useState('')
@@ -118,6 +118,11 @@ export default function GiftACardScreen({
         }
     }
 
+    const handleSuccess = () => {
+        onNext('registered_email_verification');
+    };
+
+
     return (
         <LayoutSheet routeTitle='Gift a Card' needPadding={false} hideLayerSheet={true}>
             <div className="flex-1 overflow-auto pb-10 gap-4 p-4 flex flex-col">
@@ -133,38 +138,14 @@ export default function GiftACardScreen({
                     errors={errors}
                 />
 
-                <AddMoneyForm
-                    showKycTier={false}
-                    amount={amount}
-                    onAmountChange={handleAmountChange}
-                    onSelectRecommended={handleAmountChange}
-                    onOpenModal={handleOpenModal}
-                    btnTitle='Proceed to Add Money'
-                    error={errors.amount}
-                />
-
+                <Button
+                    className="bg-primary text-white rounded-full px-4 py-2 w-full h-14"
+                    onClick={handleSuccess}
+                >
+                {"Continue"}
+                </Button>
             </div>
 
-            <FAQModal
-                visible={showTermsModal}
-                onClose={() => setShowTermsModal(false)}
-                data={TERMS_AND_CONDITIONS}
-            />
-            <GiftAddMoneyBottomSheet
-                amount={amount}
-                visible={modalOpen}
-                onClose={() => setModalOpen(false)}
-                onConfirm={() => {
-                    const params = new URLSearchParams({
-                        name: recipientName,
-                        email: recipientEmail,
-                        message: recipientMessage || '',
-                        amount,
-                    })
-
-                    router.replace(`${routes.giftACardReadyToUse}?${params.toString()}`)
-                }}
-            />
         </LayoutSheet>
     )
 }

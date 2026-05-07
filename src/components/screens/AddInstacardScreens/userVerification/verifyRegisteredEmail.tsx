@@ -26,6 +26,8 @@ export default function VerifyRegisteredEmail({
     if (!requestId || !registeredEmail) {
       throw new Error('Card request not initialised. Please restart the flow.');
     }
+    console.log("requestId : ", requestId);
+    console.log("registeredEmail : ", registeredEmail);
 
     // 1) Verify the email OTP. Backend returns 400 on invalid OTP, which
     //    fetchWithAuth surfaces as an ApiError — VerificationCodeScreen

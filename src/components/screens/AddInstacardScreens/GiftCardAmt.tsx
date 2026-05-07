@@ -46,9 +46,7 @@ interface GiftACardScreenProps {
   onNext: (nextStep: UserInstaCardSteps) => void;
 }
 
-export default function GiftACardScreen({
-  onNext,
-}: GiftACardScreenProps) {
+export default function GiftAmount() {
 
     const router = useRouter()
 
@@ -122,16 +120,6 @@ export default function GiftACardScreen({
         <LayoutSheet routeTitle='Gift a Card' needPadding={false} hideLayerSheet={true}>
             <div className="flex-1 overflow-auto pb-10 gap-4 p-4 flex flex-col">
                 <GiftCardHeader />
-
-                <GiftRecipientDetails
-                    recipientName={recipientName}
-                    recipientEmail={recipientEmail}
-                    recipientMessage={recipientMessage}
-                    onRecipientNameChange={handleRecipientNameChange}
-                    onRecipientEmailChange={handleRecipientEmailChange}
-                    onRecipientMessageChange={setRecipientMessage}
-                    errors={errors}
-                />
 
                 <AddMoneyForm
                     showKycTier={false}
