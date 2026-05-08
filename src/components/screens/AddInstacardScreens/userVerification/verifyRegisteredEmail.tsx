@@ -2,7 +2,8 @@
 
 import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen';
 import type { UserInstaCardSteps } from '@/types/userVerificationSteps';
-import { sendBankOtp, verifyEmailOtp } from '@/lib/api/cards';
+import {  resendEmailOtp, sendBankOtp, verifyEmailOtp } from '@/lib/api/cards';
+import { MOCK_HOST_CONTEXT } from '@/lib/api/__mocks__/hostContext';
 import { useAppDispatch, useAppSelector } from '@/store/redux/hooks';
 import {
   selectCardRequestEmail,
@@ -10,6 +11,8 @@ import {
   setBankOtpSent,
   setEmailOtpVerified,
 } from '@/store/redux/slices/cardRequestSlice';
+import { showToast } from '@/store/redux/slices/toasterSlice';
+import { ApiError } from '@/lib/api/errors';
 
 interface VerifyRegisteredEmailProps {
   onNext: (nextStep: UserInstaCardSteps) => void;
@@ -55,10 +58,31 @@ export default function VerifyRegisteredEmail({
     onNext('bank_verification');
   };
 
-  // No backend endpoint for email-OTP resend yet — mocked.
-  // TODO: wire to real endpoint once backend ships it.
   const handleResend = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 400));
+    if (!requestId) {
+      throw new Error('Card request not initialised. Please restart the flow.');
+    }
+
+    try {
+      await resendEmailOtp({ requestId, ...MOCK_HOST_CONTEXT });
+      dispatch(showToast({
+        message: 'OTP sent successfully',
+        subtitle: 'Please check your email for the OTP',
+        duration: 2000,
+        tosterType: 'success',
+      }))
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 409) {
+        dispatch(showToast({
+          message: 'Retry after some time',
+          subtitle: 'Something went wrong!',
+          duration: 2000,
+          tosterType: 'error',
+        }))
+        return
+      }
+      throw err
+    }
   };
 
   return (
@@ -69,6 +93,7 @@ export default function VerifyRegisteredEmail({
       onVerify={handleVerify}
       onResend={handleResend}
       onSuccess={handleSuccess}
+      initialResendCooldownSeconds={30}
     />
   );
 }

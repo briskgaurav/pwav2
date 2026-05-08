@@ -6,6 +6,7 @@ import { routes } from '@/lib/routes'
 import { useAppDispatch } from '@/store/redux/hooks'
 import { setPendingPin } from '@/store/redux/slices/cardWalletSlice'
 import type { CardType } from '@/lib/types'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 
 export default function UniversalPinSetupPage() {
   const router = useRouter()
@@ -18,12 +19,15 @@ export default function UniversalPinSetupPage() {
   }
 
   return (
-    <PinSetupForm
-      title="PIN Setup"
-      subtitle="Please setup your PIN for your Universal Card"
-      pinLabel="Enter 4-digit PIN"
-      confirmPinLabel="Re-Enter PIN"
-      onSubmit={handleSubmit}
-    />
+    <LayoutSheet routeTitle='PIN Setup' needPadding={false}>
+
+      <PinSetupForm
+        title="PIN Setup"
+        subtitle="Please setup your PIN for your Universal Card"
+        pinLabel="Enter 4-digit PIN"
+        confirmPinLabel="Re-Enter PIN"
+        onSubmit={handleSubmit}
+      />
+    </LayoutSheet>
   )
 }

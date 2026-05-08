@@ -6,11 +6,14 @@ import Link from "next/link";
 import { Checkbox } from "@/components/ui";
 import ButtonComponent from "../../ui/ButtonComponent";
 import { notifyNavigation } from "@/lib/bridge";
-import { creditUnderwriting, submitConsent, type UnderwritingDecision } from "@/lib/api/cards";
+import { submitConsent } from "@/lib/api/cards";
 import { ApiError, AuthError } from "@/lib/api/errors";
-import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
-import { selectCardRequestId, selectMaskedCardPAN, setMaskedCardPAN } from "@/store/redux/slices/cardRequestSlice";
+import { useAppSelector } from "@/store/redux/hooks";
+import { selectCardRequestId } from "@/store/redux/slices/cardRequestSlice";
 import type { UserInstaCardSteps } from "@/types/userVerificationSteps";
+import { listBankAccounts, type BankAccount } from "@/lib/api/bankAccounts";
+import { ICONS } from "@/constants/icons";
+import { Button, RadioOption } from "@/components/ui";
 
 // TODO: Replace with formatted T&C content sent by the backend in the
 //       underwriting response. Once that lands, drop this constant and
@@ -23,24 +26,23 @@ const TERMS = [
   "You agree to pay the outstanding amount from your BVN linked accounts",
 ] as const;
 
-interface CreditCardConsentProps {
+interface DebitCardConsentProps {
   onNext: (nextStep: UserInstaCardSteps) => void;
 }
 
-export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
+export default function DebitCardConsent({ onNext }: DebitCardConsentProps) {
   const requestId = useAppSelector(selectCardRequestId);
-  const dispatch = useAppDispatch();
 
-  const [decision, setDecision] = useState<UnderwritingDecision | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [accounts, setAccounts] = useState<BankAccount[]>([]);
+  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [approvedCreditLimit, setApprovedCreditLimit] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
-    notifyNavigation("add-credit");
+    notifyNavigation("add-debit");
   }, []);
 
   // Run underwriting on mount. Local state only — these values are not
@@ -61,31 +63,23 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
       return;
     }
 
-    const controller = new AbortController();
-
     (async () => {
       try {
-        const response = await creditUnderwriting(
-          { requestId, cardTypeRequest: "CREDIT_CARD" },
-          { signal: controller.signal },
-        );
-        setDecision(response.underwritingDecision);
-        setApprovedCreditLimit(response.approvedCreditLimit);
+        const response = await listBankAccounts();
+        setAccounts(response);
+        setSelectedAccountId(response.find((a) => a.isPrimary)?.id ?? response[0]?.id ?? null);
       } catch (err) {
-        if (err instanceof ApiError && err.code === "ABORTED") return;
         if (err instanceof AuthError) {
           setError("Your session has expired. Please reopen the app.");
         } else if (err instanceof ApiError) {
-          setError("Could not run underwriting. Please try again.");
+          setError("Could not load bank accounts. Please try again.");
         } else {
           setError("Something went wrong. Please try again.");
         }
       } finally {
-        if (!controller.signal.aborted) setIsLoading(false);
+        setIsLoading(false);
       }
     })();
-
-    return () => controller.abort();
   }, [requestId]);
 
   const handleApply = async () => {
@@ -94,13 +88,11 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
     setSubmitError(null);
     setSubmitting(true);
     try {
-      const response = await submitConsent({
+      await submitConsent({
         requestId,
-        cardTypeRequest: "CREDIT_CARD",
+        cardTypeRequest: "DEBIT_CARD",
         consentOnTermsAndConditions: true,
       });
-      // if the follow is success
-      dispatch(setMaskedCardPAN(response.maskedPan));
       onNext("success");
     } catch (err) {
       if (err instanceof AuthError) {
@@ -131,35 +123,41 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
     );
   }
 
-  if (decision === "REJECTED") {
-    return (
-      <div className="flex-1 flex items-center justify-center p-6 text-center">
-        <div className="space-y-3">
-          <p className="text-lg font-semibold text-text-primary">
-            Application not approved
-          </p>
-          <p className="text-sm text-text-primary">
-            Sorry, we couldn&apos;t approve your application at this time.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const selectedAccount = accounts.find((a) => a.id === selectedAccountId) ?? null;
 
   return (
     <div className="flex-1 flex flex-col">
       <div className="flex-1 overflow-auto py-10 p-6">
-        {/* TODO: Replace this entire block with backend-rendered T&C content. */}
-        <div className="p-6 text-lg border bg-white space-y-6 border-text-primary/20 text-center text-text-primary rounded-2xl mb-6">
-          <p className="font-medium">Pre-approved Credit Limit</p>
-          <p className="font-semibold text-3xl">
-            <span className="line-through"> N</span> {approvedCreditLimit}
-          </p>
-        </div>
+        <p className="text-md text-text-primary mb-6">
+          Select the Bank Account you want to link with this Debit Instacard
+        </p>
+
+        {isLoading ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="w-6 h-6 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : error ? (
+          <div className="flex-1 flex items-center justify-center p-6 text-center">
+            <p role="alert" className="text-red-600">{error}</p>
+          </div>
+        ) : (
+          <div role="radiogroup" className="flex flex-col gap-3 mb-6">
+            {accounts.map((account) => (
+              <RadioOption
+                key={account.id}
+                label={account.maskedLabel}
+                icon={ICONS.fcmb}
+                selected={account.id === selectedAccountId}
+                onSelect={() => setSelectedAccountId(account.id)}
+                accessibilityLabel={`Bank account ${account.maskedLabel}`}
+              />
+            ))}
+          </div>
+        )}
 
         <div className="flex flex-col gap-5">
           <p className="text-md text-text-primary">
-            Please agree on following T&amp;C for accessing Credit Instacard
+            Please agree to Terms &amp; Conditions for getting this Instacard issued
           </p>
 
           <ul className="flex flex-col gap-[6px] m-0 pl-5 list-disc">
@@ -170,14 +168,14 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
             ))}
           </ul>
           <div className="text-md text-text-primary">
-            <p>Your can view the detailed terms here :</p>
+            {/* <p>Your can view the detailed terms here :</p>
             <Link target="_blank" className="text-blue" href="#">
               https://demo-link.com
-            </Link>
+            </Link> */}
           </div>
 
           <Checkbox
-            label="I agree to the above terms & conditions. Please process my application"
+            label="I agree the above terms & conditions. Please issue this Instacard"
             checked={acceptedTerms}
             onChange={setAcceptedTerms}
           />
@@ -191,7 +189,7 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
       <ButtonComponent
         title={submitting ? "Submitting…" : "Apply Now"}
         onClick={handleApply}
-        disabled={!acceptedTerms || submitting}
+        disabled={!acceptedTerms || submitting || !selectedAccount || isLoading || !!error}
       />
     </div>
   );

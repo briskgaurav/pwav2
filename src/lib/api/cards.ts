@@ -111,6 +111,29 @@ export interface VerifyEmailOtpResponse {
   bankOtpStatus: string;
 }
 
+export interface ResendEmailOtpResponse {
+  requestId: string;
+  issuerBankCode: string;
+  country: string;
+  mobileAppUserId: string;
+  customerId: string;
+  customerName: string;
+  bvn: string;
+  nin: string;
+  registeredEmail: string;
+  otpStatus: string;
+}
+
+export interface ResendEmailOtpInput {
+  requestId: string;
+  issuerBankCode: string;
+  country: string;
+  mobileAppUserId: string;
+  customerId: string;
+  customerName: string;
+  bvn: string;
+  nin: string;
+}
 /**
  * Verify the OTP sent to the user's registered email.
  * Throws on `400` (invalid OTP) — caller can show "Invalid code" to the user.
@@ -119,6 +142,14 @@ export async function verifyEmailOtp(input: VerifyEmailOtpInput): Promise<Verify
   return fetchWithAuth<VerifyEmailOtpResponse>('/api/v1/card/email-otp/verify', {
     method: 'POST',
     json: { ...MOCK_HOST_CONTEXT, ...input },
+  });
+}
+
+
+export async function resendEmailOtp(input: ResendEmailOtpInput): Promise<ResendEmailOtpResponse> {
+  return fetchWithAuth<ResendEmailOtpResponse>('/api/v1/card/email-otp/retry', {
+    method: 'POST',
+    json: { ...input },
   });
 }
 
@@ -180,6 +211,35 @@ export interface SendBankOtpResponse {
   bankOtpChannel: 'EMAIL' | 'PHONE';
   otpStatus: string;
 }
+/**
+ * Input for `sendBankOtp` and `resendBankOtp`.
+ */
+export interface ResendBankOtpInput {
+  requestId: string;
+  issuerBankCode: string;
+  country: string;
+  mobileAppUserId: string;
+  customerId: string;
+  customerName: string;
+  bvn: string;
+  nin: string;
+}
+export interface ResendBankOtpResponse {
+  requestId: string;
+  issuerBankCode: string;
+  country: string;
+  mobileAppUserId: string;
+  customerId: string;
+  customerName: string;
+  bvn: string;
+  nin: string;
+  bankEmail: string;
+  bankPhoneNumber: string;
+  bankOtpDestination: string;
+  bankOtpChannel: 'EMAIL';
+  otpStatus: string;
+}
+
 
 /**
  * Trigger the bank to send an OTP to the customer. Called automatically
@@ -192,6 +252,14 @@ export async function sendBankOtp(input: SendBankOtpInput): Promise<SendBankOtpR
     json: { ...MOCK_HOST_CONTEXT, ...input },
   });
 }
+export async function resendBankOtp(input: ResendBankOtpInput): Promise<SendBankOtpResponse> {
+  return fetchWithAuth<ResendBankOtpResponse>('/api/v1/card/bank-otp/send', {
+    method: 'POST',
+    json: { ...MOCK_HOST_CONTEXT, ...input },
+  });
+}
+
+
 
 // ─── /card/bank-otp/verify ─────────────────────────────────────────────────
 
@@ -269,6 +337,20 @@ export async function verifyBankSoftToken(
 /** Card variant accepted by the credit-underwriting endpoint. */
 export type CreditCardTypeRequest = 'CREDIT_CARD';
 
+/**
+ * Card variants accepted by the consent orchestration endpoint.
+ *
+ * @remarks
+ * Swagger examples show `CREDIT_CARD`, but the consent endpoint is described as
+ * the generic "resume card issuance after customer consent". We model it as a
+ * union so debit integrations can call the same endpoint when supported.
+ */
+export type CardIssuanceTypeRequest =
+  | 'CREDIT_CARD'
+  | 'DEBIT_CARD'
+  | 'PREPAID_CARD'
+  | 'GIFT_CARD';
+
 /** Decision returned by the credit-underwriting endpoint. */
 export type UnderwritingDecision = 'APPROVED' | 'REJECTED';
 
@@ -324,7 +406,7 @@ export async function creditUnderwriting(
 /** Input for `POST /api/v1/card-issuance/consent`. */
 export interface SubmitConsentInput {
   requestId: string;
-  cardTypeRequest: CreditCardTypeRequest;
+  cardTypeRequest: CardIssuanceTypeRequest;
   consentOnTermsAndConditions: boolean;
 }
 
@@ -336,13 +418,15 @@ export interface SubmitConsentResponse {
   mobileAppUserId: string;
   customerId: string;
   customerName: string;
-  cardTypeRequest: CreditCardTypeRequest;
+  cardTypeRequest: CardIssuanceTypeRequest;
   currentStage: string;
   feeStatus: string;
   mirrorAccountNumber: string;
   creditCardProductGl: string;
   status: string;
   message: string;
+  /** Masked card PAN */
+  maskedPan: string;
 }
 
 /**

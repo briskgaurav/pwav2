@@ -1,5 +1,5 @@
-import { CardType } from '@/constants/cardData'
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { CardType } from "@/constants/cardData";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 /**
  * Non-persisted state for the in-flight card request flow.
@@ -22,37 +22,45 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
  */
 
 /** Channel the bank used to deliver the bank OTP. */
-export type BankOtpChannel = 'EMAIL' | 'PHONE'
+export type BankOtpChannel = "EMAIL" | "PHONE";
 
 interface CardRequestState {
-  requestId: string | null
-  registeredEmail: string | null
+  requestId: string | null;
+  registeredEmail: string | null;
+
+  // Custormer Name
+  customerName: string | null;
 
   /** User selected card type */
-  selectedCardType: CardType | null
+  selectedCardType: CardType | null;
 
   /** Status of the email OTP send (set by /card/request). */
-  emailOtpStatus: string | null
+  emailOtpStatus: string | null;
 
   /** Match result of the email OTP verify (set by /card/email-otp/verify). */
-  emailOtpMatchStatus: string | null
+  emailOtpMatchStatus: string | null;
 
   /** Pre-masked bank OTP destination from the backend (never raw PII). */
-  bankOtpDestination: string | null
+  bankOtpDestination: string | null;
 
   /** Which channel the bank OTP was sent on — drives screen copy. */
-  bankOtpChannel: BankOtpChannel | null
+  bankOtpChannel: BankOtpChannel | null;
 
   /** Status of the bank OTP send (set by /email-otp/verify or /bank-otp/send). */
-  bankOtpStatus: string | null
+  bankOtpStatus: string | null;
 
   /** Match result of the bank OTP verify (set by /card/bank-otp/verify). */
-  bankOtpMatchStatus: string | null
+  bankOtpMatchStatus: string | null;
+
+  /** Masked card PAN */
+  maskedCardPAN: string | null;
+  pinRequested: number | null;
 }
 
 const initialState: CardRequestState = {
   requestId: null,
   registeredEmail: null,
+  customerName:null,
   selectedCardType: null,
   emailOtpStatus: null,
   emailOtpMatchStatus: null,
@@ -60,34 +68,35 @@ const initialState: CardRequestState = {
   bankOtpChannel: null,
   bankOtpStatus: null,
   bankOtpMatchStatus: null,
-}
+  maskedCardPAN: null,
+  pinRequested: null,
+};
 
 const cardRequestSlice = createSlice({
-  name: 'cardRequest',
+  name: "cardRequest",
   initialState,
   reducers: {
     /** Capture the response from `POST /api/v1/card/request`. */
     setCardRequest: (
       state,
       action: PayloadAction<{
-        requestId: string
-        registeredEmail: string
-        emailOtpStatus: string,
-        selectedCardType: CardType
+        requestId: string;
+        registeredEmail: string;
+        emailOtpStatus: string;
+        selectedCardType: CardType;
+        customerName: string;
       }>,
     ) => {
-      state.requestId = action.payload.requestId
-      state.registeredEmail = action.payload.registeredEmail
-      state.emailOtpStatus = action.payload.emailOtpStatus
-      state.selectedCardType = action.payload.selectedCardType
+      state.requestId = action.payload.requestId;
+      state.registeredEmail = action.payload.registeredEmail;
+      state.emailOtpStatus = action.payload.emailOtpStatus;
+      state.selectedCardType = action.payload.selectedCardType;
+      state.customerName = action.payload.customerName;
     },
 
     /** Store the selected card type */
-    setSelectedCardType: (
-      state,
-      action: PayloadAction<CardType>,
-    ) => {
-      state.selectedCardType = action.payload
+    setSelectedCardType: (state, action: PayloadAction<CardType>) => {
+      state.selectedCardType = action.payload;
     },
 
     /**
@@ -98,7 +107,7 @@ const cardRequestSlice = createSlice({
       state,
       action: PayloadAction<{ emailOtpMatchStatus: string }>,
     ) => {
-      state.emailOtpMatchStatus = action.payload.emailOtpMatchStatus
+      state.emailOtpMatchStatus = action.payload.emailOtpMatchStatus;
     },
 
     /**
@@ -109,14 +118,14 @@ const cardRequestSlice = createSlice({
     setBankOtpSent: (
       state,
       action: PayloadAction<{
-        bankOtpDestination: string
-        bankOtpChannel: BankOtpChannel
-        bankOtpStatus: string
+        bankOtpDestination: string;
+        bankOtpChannel: BankOtpChannel;
+        bankOtpStatus: string;
       }>,
     ) => {
-      state.bankOtpDestination = action.payload.bankOtpDestination
-      state.bankOtpChannel = action.payload.bankOtpChannel
-      state.bankOtpStatus = action.payload.bankOtpStatus
+      state.bankOtpDestination = action.payload.bankOtpDestination;
+      state.bankOtpChannel = action.payload.bankOtpChannel;
+      state.bankOtpStatus = action.payload.bankOtpStatus;
     },
 
     /** Capture the response from `POST /api/v1/card/bank-otp/verify`. */
@@ -124,7 +133,18 @@ const cardRequestSlice = createSlice({
       state,
       action: PayloadAction<{ bankOtpMatchStatus: string }>,
     ) => {
-      state.bankOtpMatchStatus = action.payload.bankOtpMatchStatus
+      state.bankOtpMatchStatus = action.payload.bankOtpMatchStatus;
+    },
+
+    setMaskedCardPAN: (state, action: PayloadAction<string>) => {
+      state.maskedCardPAN = action.payload;
+    },
+
+    setPinRequested: (state, action: PayloadAction<number>) => {
+      state.pinRequested = action.payload;
+    },
+    setCustomerName: (state, action: PayloadAction<string>) => {
+      state.customerName = action.payload;
     },
 
     /** Reset back to the initial empty state when the flow ends or restarts. */
@@ -137,8 +157,11 @@ const cardRequestSlice = createSlice({
     selectSelectedCardType: (state) => state.selectedCardType,
     selectCardRequestBankOtpDestination: (state) => state.bankOtpDestination,
     selectCardRequestBankOtpChannel: (state) => state.bankOtpChannel,
+    selectMaskedCardPAN: (state) => state.maskedCardPAN,
+    selectPinRequested: (state) => state.pinRequested,
+    selectCustomerName: (state) => state.customerName,
   },
-})
+});
 
 export const {
   setCardRequest,
@@ -147,7 +170,10 @@ export const {
   setBankOtpSent,
   setBankOtpVerified,
   clearCardRequest,
-} = cardRequestSlice.actions
+  setMaskedCardPAN,
+  setPinRequested,
+  setCustomerName,
+} = cardRequestSlice.actions;
 
 export const {
   selectCardRequestId,
@@ -155,6 +181,9 @@ export const {
   selectSelectedCardType,
   selectCardRequestBankOtpDestination,
   selectCardRequestBankOtpChannel,
-} = cardRequestSlice.selectors
+  selectMaskedCardPAN,
+  selectPinRequested,
+  selectCustomerName,
+} = cardRequestSlice.selectors;
 
-export default cardRequestSlice.reducer
+export default cardRequestSlice.reducer;

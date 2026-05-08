@@ -18,6 +18,8 @@ type PinSetupFormProps = {
   buttonText?: string
   submittingText?: string
   titleWeight?: 'semibold' | 'medium'
+  pinRequested?: number
+  setPinRequested?: (pin: number) => void
 }
 
 function NativePINField({
@@ -78,9 +80,8 @@ function NativePINField({
             return (
               <div
                 key={i}
-                className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${
-                  isCursor ? 'border-primary' : d ? 'border-text-primary' : 'border-border'
-                }`}
+                className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${isCursor ? 'border-primary' : d ? 'border-text-primary' : 'border-border'
+                  }`}
               >
                 {d ? (
                   useDots ? (
@@ -162,83 +163,83 @@ function PinSetupFormContent({
 
   return (
     <LayoutSheet routeTitle={title} needPadding={false} hideLayerSheet={true}>
-        <div className=" flex flex-col h-full justify-between overflow-hidden">
-          <div 
-            className=" p-6 py-10 px-5 text-center flex flex-col items-center justify-start gap-2 overflow-auto"
-          >
-            <h2 className={`text-xl ${titleWeightClass} text-text-primary m-0`}>
-              {title}
-            </h2>
-            <p className="text-[13px] text-text-primary m-0">
-              {subtitle}
-            </p>
+      <div className=" flex flex-col h-full justify-between overflow-hidden">
+        <div
+          className=" p-6 py-10 px-5 text-center flex flex-col items-center justify-start gap-2 overflow-auto"
+        >
+          <h2 className={`text-xl ${titleWeightClass} text-text-primary m-0`}>
+            {title}
+          </h2>
+          <p className="text-[13px] text-text-primary m-0">
+            {subtitle}
+          </p>
 
-            <div className="relative w-full">
-              <NativePINField
-                label={pinLabel}
-                value={pin}
-                useDots={!isPinVisible}
-                inputRef={pinHiddenInputRef}
-                active={activeField === 'pin'}
-                onActivate={() => setActiveField('pin')}
-                onFocusNext={() => {
-                  setActiveField('confirm')
-                  confirmHiddenInputRef.current?.focus()
-                }}
-                onChange={(v) => {
-                  setError(null)
-                  setPin(v)
-                }}
+          <div className="relative w-full">
+            <NativePINField
+              label={pinLabel}
+              value={pin}
+              useDots={!isPinVisible}
+              inputRef={pinHiddenInputRef}
+              active={activeField === 'pin'}
+              onActivate={() => setActiveField('pin')}
+              onFocusNext={() => {
+                setActiveField('confirm')
+                confirmHiddenInputRef.current?.focus()
+              }}
+              onChange={(v) => {
+                setError(null)
+                setPin(v)
+              }}
+            />
+            <div className='absolute right-[8vw] top-[55px]'>
+              <EyeButton
+                isVisible={isPinVisible}
+                onToggle={setIsPinVisible}
+                size="md"
               />
-              <div className='absolute right-[3vw] top-[46px]'>
-                <EyeButton
-                  isVisible={isPinVisible}
-                  onToggle={setIsPinVisible}
-                  size="md"
-                />
-              </div>
-            </div>
-
-            <div className="relative w-full mt-3">
-              <NativePINField
-                label={confirmPinLabel}
-                value={confirmPin}
-                useDots={!isConfirmPinVisible}
-                inputRef={confirmHiddenInputRef}
-                active={activeField === 'confirm'}
-                onActivate={() => setActiveField('confirm')}
-                onChange={(v) => {
-                  setError(null)
-                  setConfirmPin(v)
-                }}
-              />
-              <div className='absolute right-[3vw] top-[46px]'>
-                <EyeButton
-                  isVisible={isConfirmPinVisible}
-                  onToggle={setIsConfirmPinVisible}
-                  size="md"
-                />
-              </div>
-            </div>
-            <div className="my-1 min-h-[24px]">
-              {error && (
-                <p className="text-sm text-error">{error}</p>
-              )}
-            </div>
-
-
-            <div className="w-full flex flex-col items-center gap-3 pb-10 px-6">
-
-              <Button
-                fullWidth
-                onClick={handleContinue}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? submittingText : buttonText}
-              </Button>
             </div>
           </div>
+
+          <div className="relative w-full mt-3">
+            <NativePINField
+              label={confirmPinLabel}
+              value={confirmPin}
+              useDots={!isConfirmPinVisible}
+              inputRef={confirmHiddenInputRef}
+              active={activeField === 'confirm'}
+              onActivate={() => setActiveField('confirm')}
+              onChange={(v) => {
+                setError(null)
+                setConfirmPin(v)
+              }}
+            />
+            <div className='absolute right-[8vw] top-[55px]'>
+              <EyeButton
+                isVisible={isConfirmPinVisible}
+                onToggle={setIsConfirmPinVisible}
+                size="md"
+              />
+            </div>
+          </div>
+          <div className="my-1 min-h-[24px]">
+            {error && (
+              <p className="text-sm text-error">{error}</p>
+            )}
+          </div>
+
+
+          <div className="w-full flex flex-col items-center gap-3 pb-10 px-6">
+
+            <Button
+              fullWidth
+              onClick={handleContinue}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? submittingText : buttonText}
+            </Button>
+          </div>
         </div>
+      </div>
     </LayoutSheet>
   )
 }
