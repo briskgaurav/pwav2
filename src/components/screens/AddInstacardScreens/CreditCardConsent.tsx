@@ -58,6 +58,7 @@ export default function CreditCardConsent() {
     setSubmitting(true);
     try {
       await call(() => submitConsentV2(requestId, consentVersion));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       const msg = err?.errorMessage || err?.message || 'Could not submit your application. Please try again.';
       setSubmitError(msg);

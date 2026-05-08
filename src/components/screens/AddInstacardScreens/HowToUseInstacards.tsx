@@ -12,15 +12,16 @@ import FAQModal from '@/components/ui/FAQModal'
 import { CARD_DATA } from '@/lib/api/HowToUseCardsData'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import { useCardJourney } from '@/hooks/useCardJourney'
+import { getCardImage } from '@/utils/card-services'
 
 interface howToUseProps {
-    CardImagesUrl: string
     cardType: CardType | null
 }
+
 export default function HowToUseInstacards({
-    CardImagesUrl,
     cardType
 }: howToUseProps) {
+    const cardImageUrl = getCardImage(cardType ?? null);
     const config = CARD_DATA[cardType || 'CREDIT_CARD'];
     const router = useRouter()
     const { state, reset } = useCardJourney();
@@ -57,7 +58,7 @@ export default function HowToUseInstacards({
             </div>
             <CardMockup
                 isclickable={false}
-                imageSrc={CardImagesUrl}
+                imageSrc={cardImageUrl}
                 maskedNumber={maskedPan}
             />
 

@@ -15,84 +15,16 @@ import GiftCodeEntryScreen from "./GiftCodeEntryScreen";
 import ClosedScreen from "./ClosedScreen";
 import HowToUseInstacards from "./HowToUseInstacards";
 import { useCardJourney } from "@/hooks/useCardJourney";
-import { createCardRequest } from "@/lib/api/cardJourneyApi";
-import type { CardType } from "@/constants/cardData";
-import { useAppDispatch } from "@/store/redux/hooks";
-import { showToast } from "@/store/redux/slices/toasterSlice";
-import { MOCK_HOST_CONTEXT } from "@/lib/api/__mocks__/hostContext";
-import { CARD_CONFIG } from "@/lib/card-config";
+import VerifyBankOTP from "./userVerification/verifyBankOTP";
 
-/**
- * Root card-issuance flow component.
- *
- * Before any backend state exists, renders the card-type selector.
- * Once `POST /card/request` returns, the backend's `nextAction.code`
- * drives which screen to render. Every subsequent API call returns the
- * same `CardRequestStateResponse` envelope — we dispatch it into Redux
- * and the router re-renders the correct screen automatically.
- *
- * Local UI state is used for two intermediate transitions that happen
- * entirely on the client:
- *  - `activateClicked`: User saw the fee-success screen and tapped
- *    "Activate Now" — transition from SuccessScreen → PIN setup.
- *  - PIN setup success dispatches SHOW_CARD_ACTIVE → HowToUseInstacards.
- */
 export default function AddInstacardScreen() {
-  const { state, call, reset } = useCardJourney();
-  const dispatch = useAppDispatch();
-  const [submitting, setSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // Local flag: user clicked "Activate Now" on the success screen.
-  // While the backend state is still SHOW_CARD_DETAILS_AND_SET_PIN, we
-  // skip the success screen and show PIN setup instead.
+  const { state } = useCardJourney();
   const [activateClicked, setActivateClicked] = useState(false);
-
-  const startJourney = async (cardType: CardType) => {
-    setSubmitting(true);
-    setErrorMessage(null);
-    try {
-      await call(() =>
-        createCardRequest({
-          cardType,
-          selectedBankAccountNumber:
-            cardType === 'CREDIT_CARD' || cardType === 'DEBIT_CARD'
-              ? MOCK_HOST_CONTEXT.selectedBankAccountNumber
-              : undefined,
-        }),
-      );
-    } catch (err: any) {
-      const msg = err?.errorMessage || 'Could not start your card request. Please try again.';
-      setErrorMessage(msg);
-      dispatch(showToast({
-        message: 'Something went wrong',
-        subtitle: msg,
-        duration: 3000,
-        tosterType: 'error',
-      }));
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  /** Resolve the mockup image URL for the current card type. */
-  const getCardImage = (): string => {
-    const ct = state?.cardType;
-    if (ct && ct in CARD_CONFIG) {
-      return CARD_CONFIG[ct as keyof typeof CARD_CONFIG].mockupImage;
-    }
-    return '/img/debitmockup.png';
-  };
 
   const renderStep = () => {
     if (!state) {
       return (
-        <SelectCardTypes
-          onNext={() => { }}
-          overrideSubmit={startJourney}
-          submitting={submitting}
-          errorMessage={errorMessage}
-        />
+        <SelectCardTypes />
       );
     }
 
@@ -101,6 +33,8 @@ export default function AddInstacardScreen() {
         return <VerifyRegisteredEmail />;
       case 'VERIFY_BANK_OTP_OR_SOFT_TOKEN':
         return <BankVerificationMethod />;
+      case 'VERIFY_BANK_OTP':
+        return <VerifyBankOTP />
       case 'CAPTURE_RECIPIENT_DETAILS':
         return <GiftRecipientDetailsScreen />;
       case 'CAPTURE_CONSENT':
@@ -115,8 +49,8 @@ export default function AddInstacardScreen() {
               title="Payment was Successful!"
               description="We have successfully collected card issuance Fee for the Virtual Instacard you had requested to be issued."
               buttonText="Activate Now"
-              cardImageUrl={getCardImage()}
               onButtonClick={() => setActivateClicked(true)}
+              hideLayerSheet
             />
           );
         }
@@ -125,7 +59,6 @@ export default function AddInstacardScreen() {
       case 'SHOW_CARD_ACTIVE':
         return (
           <HowToUseInstacards
-            CardImagesUrl={getCardImage()}
             cardType={state.cardType}
           />
         );

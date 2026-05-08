@@ -51,6 +51,7 @@ export default function GiftRecipientDetailsScreen() {
           giftMessage: giftMessage.trim() || undefined,
         }),
       );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       dispatch(showToast({
         message: 'Could not save details',

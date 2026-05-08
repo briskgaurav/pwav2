@@ -29,11 +29,6 @@ export default function VerifyRegisteredEmail() {
     await call(() => verifyEmailOtpV2(requestId, code));
   };
 
-  const handleSuccess = () => {
-    // No-op: useCardJourney.call() already dispatched the new state,
-    // and the parent router will re-render the next screen.
-  };
-
   const handleResend = async () => {
     if (!requestId) {
       throw new Error('Card request not initialised. Please restart the flow.');
@@ -67,7 +62,6 @@ export default function VerifyRegisteredEmail() {
       maskedValue={maskedEmail}
       onVerify={handleVerify}
       onResend={handleResend}
-      onSuccess={handleSuccess}
       initialResendCooldownSeconds={30}
     />
   );

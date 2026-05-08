@@ -36,6 +36,7 @@ export default function VCCardActivation() {
 
     try {
       await call(() => setupPin(requestId, pin));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       dispatch(showToast({
         message: 'PIN Setup Failed',
@@ -48,28 +49,6 @@ export default function VCCardActivation() {
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Card details summary */}
-      {cardDetails && (
-        <div className="p-6 mx-6 mt-6 border border-text-primary/20 rounded-2xl bg-white space-y-2">
-          <p className="text-sm text-text-secondary">Card Number</p>
-          <p className="text-lg font-mono font-semibold text-text-primary">{cardDetails.vcPanMasked}</p>
-          <div className="flex justify-between text-sm">
-            <div>
-              <p className="text-text-secondary">Scheme</p>
-              <p className="text-text-primary font-medium">{cardDetails.cardScheme}</p>
-            </div>
-            <div>
-              <p className="text-text-secondary">Expiry</p>
-              <p className="text-text-primary font-medium">{cardDetails.cardExpiryMmYy}</p>
-            </div>
-            <div>
-              <p className="text-text-secondary">Variant</p>
-              <p className="text-text-primary font-medium">{cardDetails.cardVariant}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
       <PinSetupForm
         setPinRequested={handleSetPin}
         pinRequested={pinValue}

@@ -9,6 +9,7 @@ import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
 import LayoutSheet from '../../ui/LayoutSheet';
 import ButtonComponent from '../../ui/ButtonComponent';
+import { getCardImage } from '@/utils/card-services';
 
 
 export type SuccessScreenProps = {
@@ -20,10 +21,7 @@ export type SuccessScreenProps = {
   buttonText?: string;
   /** Custom button action; when set, card preview and default "Activate Now" are hidden */
   onButtonClick?: () => void;
-  /** Show card preview */
-  showCardPreview?: boolean;
   hideLayerSheet?: boolean;
-  cardImageUrl?: string;
 };
 
 export default function SuccessScreen({
@@ -32,31 +30,23 @@ export default function SuccessScreen({
   description,
   buttonText,
   onButtonClick,
-  showCardPreview = true,
   hideLayerSheet = false,
-  cardImageUrl,
 }: SuccessScreenProps = {}) {
-
-
 
   useEffect(() => {
     notifyNavigation('success');
   }, []);
 
-
-
-
   const router = useRouter();
   const searchParams = useSearchParams();
-  const cardType = (searchParams.get('type') as CardType) || 'debit';
+  const cardType = (searchParams.get('type') as CardType);
+  const cardImageUrl = getCardImage(cardType ?? null);
   const displayTitle = title ?? 'Payment was Successful!';
   const displayDescription =
     description ??
     'We have successfully collected card issuance Fee of N XXXX for the Virtual Instacard you had requested to be issued.';
   const displayButtonText = buttonText ?? 'Activate Now';
   const handleButtonClick = onButtonClick ?? (() => router.push(routes.pinSetup(cardType)));
-
-
 
   return (
     <LayoutSheet routeTitle="Success" needPadding={false} hideLayerSheet={hideLayerSheet}>

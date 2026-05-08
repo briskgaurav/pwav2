@@ -49,6 +49,7 @@ export type NextActionCode =
   | 'ENTER_RECIPIENT_CODE'
   | 'ENTER_SENDER_CODE'
   | 'SHOW_CARD_ACTIVE'
+  | 'VERIFY_BANK_OTP'
   | 'SHOW_REQUEST_CLOSED';
 
 export type CardRequestStateResponse = {
@@ -82,7 +83,7 @@ export type CardRequestStateResponse = {
   consentVersion?: string;
 };
 
-export type CardErrorCode = 
+export type CardErrorCode =
   | 'VALIDATION_ERROR'
   | 'INVALID_REQUEST'
   | 'UNAUTHORIZED'
@@ -127,11 +128,11 @@ export type ErrorResponse = {
   errorMessage: string;
   retryable: boolean;
   userAction:
-    | 'NONE' | 'FIX_INPUT' | 'RE_AUTHENTICATE' | 'WAIT_AND_RETRY' | 'RETRY_LATER'
-    | 'COMPLETE_KYC' | 'RESUME_EXISTING' | 'USE_DIFFERENT_KEY' | 'OPEN_NEW_REQUEST'
-    | 'RETRY_OTP' | 'RESEND_OTP' | 'USE_BANK_OTP' | 'USE_SOFT_TOKEN' | 'VERIFY_FIRST'
-    | 'RESUME' | 'RETRY_AFTER_DATE' | 'ACCEPT_T_AND_C' | 'RE_CAPTURE_CONSENT' | 'WAIT'
-    | 'RECHARGE_AND_RETRY' | 'CONTACT_SUPPORT' | 'RETRY' | 'REQUEST_REGENERATION';
+  | 'NONE' | 'FIX_INPUT' | 'RE_AUTHENTICATE' | 'WAIT_AND_RETRY' | 'RETRY_LATER'
+  | 'COMPLETE_KYC' | 'RESUME_EXISTING' | 'USE_DIFFERENT_KEY' | 'OPEN_NEW_REQUEST'
+  | 'RETRY_OTP' | 'RESEND_OTP' | 'USE_BANK_OTP' | 'USE_SOFT_TOKEN' | 'VERIFY_FIRST'
+  | 'RESUME' | 'RETRY_AFTER_DATE' | 'ACCEPT_T_AND_C' | 'RE_CAPTURE_CONSENT' | 'WAIT'
+  | 'RECHARGE_AND_RETRY' | 'CONTACT_SUPPORT' | 'RETRY' | 'REQUEST_REGENERATION';
   supportRef: string;
   requestId?: string;
   details?: string[];

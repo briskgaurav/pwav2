@@ -8,87 +8,53 @@ import ButtonComponent from "@/components/ui/ButtonComponent"
 import { haptic } from '@/lib/useHaptics'
 
 import { CARD_TYPE_OPTIONS, type CardType } from "@/constants/cardData"
-import { UserInstaCardSteps } from "@/types/userVerificationSteps"
 import { notifyNavigation } from "@/lib/bridge"
-import { requestCard } from "@/lib/api/cards"
-import { ApiError, AuthError } from "@/lib/api/errors"
 import { useAppDispatch } from "@/store/redux/hooks"
+import { useCardJourney } from "@/hooks/useCardJourney"
+import { createCardRequest } from "@/lib/api/cardJourneyApi"
 import { showToast } from "@/store/redux/slices/toasterSlice"
+import { MOCK_HOST_CONTEXT } from "@/lib/api/__mocks__/hostContext"
 
-
-interface SelectCardTypesProps {
-  onNext: (nextStep: UserInstaCardSteps) => void;
-  overrideSubmit?: (cardType: CardType) => void;
-  submitting?: boolean;
-  errorMessage?: string | null;
-}
-
-export default function SelectCardTypes({
-  onNext,
-  overrideSubmit,
-  submitting: externalSubmitting = false,
-  errorMessage: externalErrorMessage = null,
-}: SelectCardTypesProps) {
+/**
+ * Card type selector screen — the first screen in the issuance flow.
+ */
+export default function SelectCardTypes() {
   const dispatch = useAppDispatch();
+  const [submitting, setSubmitting] = useState(false);
   const [selectedType, setSelectedType] = useState<CardType>('DEBIT_CARD');
-  const [internalSubmitting, setInternalSubmitting] = useState(false);
-  const [internalErrorMessage, setInternalErrorMessage] = useState<string | null>(null);
-
-  const submitting = overrideSubmit ? externalSubmitting : internalSubmitting;
-  const errorMessage = overrideSubmit ? externalErrorMessage : internalErrorMessage;
-
+  const { call } = useCardJourney();
 
   useEffect(() => {
     notifyNavigation('select-card-type')
   }, [])
 
-
   const handleNext = async () => {
     haptic("medium");
-    if (submitting) return;
-
-    if (overrideSubmit) {
-      overrideSubmit(selectedType);
-      return;
-    }
-
-    setInternalErrorMessage(null);
-    setInternalSubmitting(true);
+    if (submitting || !selectedType) return;
+    setSubmitting(true);
     try {
-      const response = await requestCard({ cardType: selectedType });
-      // Legacy code below for backward compat:
-      /*dispatch(setCardRequest({
-        requestId: response.requestId,
-        registeredEmail: response.registeredEmail,
-        emailOtpStatus: response.otpStatus,
-        selectedCardType: selectedType,
-      }));*/
-      onNext('registered_email_verification');
-    } catch (err) {
-      if (err instanceof AuthError) {
-        setInternalErrorMessage('Your session has expired. Please reopen the app.');
-      } else if (err instanceof ApiError) {
-        setInternalErrorMessage('Could not start your card request. Please try again.');
-      } else {
-        setInternalErrorMessage('Something went wrong. Please try again.');
-      }
-    } finally {
-      setInternalSubmitting(false);
-    }
-
-  }
-
-  useEffect(() => {
-    if (errorMessage) {
+      await call(() =>
+        createCardRequest({
+          cardType: selectedType,
+          selectedBankAccountNumber:
+            selectedType === 'CREDIT_CARD' || selectedType === 'DEBIT_CARD'
+              ? MOCK_HOST_CONTEXT.selectedBankAccountNumber
+              : undefined,
+        }),
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      const msg = err?.errorMessage || 'Could not start your card request. Please try again.';
       dispatch(showToast({
-        message: 'Something went wrong.',
-        subtitle: errorMessage ?? 'Something went wrong. Please try again.',
-        duration: 2000,
+        message: 'Something went wrong',
+        subtitle: msg,
+        duration: 3000,
         tosterType: 'error',
-      }))
+      }));
+    } finally {
+      setSubmitting(false);
     }
-  }, [showToast, errorMessage])
-
+  }
 
   return (
     <div className="min-h-full flex flex-col">
@@ -110,12 +76,6 @@ export default function SelectCardTypes({
             />
           ))}
         </div>
-
-        {/* {errorMessage && (
-          <p role="alert" className="text-[3.5vw] text-red-600 mt-[4vw]">
-            {errorMessage}
-          </p>
-        )} */}
       </div>
 
       <div

@@ -39,7 +39,7 @@ export default function BankVerificationMethod() {
       // Fire POST /api/v1/card/bank-otp/send — backend responds with
       // the same envelope (OTP_BANK_PENDING + destinationMasked).
       await call(() => sendBankOtpV2(requestId));
-      setSelectedVerificationMethod("otp");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       dispatch(showToast({
         message: 'Could not send OTP',
@@ -69,17 +69,6 @@ export default function BankVerificationMethod() {
           </Button>
         </div>
       )}
-      {
-        selectedVerificationMethod === "otp" && (
-          <VerifyBankOTP />
-        )
-      }
-
-      {
-        selectedVerificationMethod === 'soft_token' && (
-          <VerifyBankSoftToken />
-        )
-      }
     </>
   );
 }
