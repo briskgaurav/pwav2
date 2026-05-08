@@ -26,7 +26,7 @@ export default function AddGiftScreen() {
   }, []);
 
   const handleNext = () => {
-    router.push(routes.otp('gift'));
+    router.push(routes.otp('GIFT_CARD'));
   };
 
   return (

@@ -1,5 +1,5 @@
 import CardDetailScreen from '@/components/screens/CardDetailScreen/CardDetailScreen'
 
 export default function CardDetailPrepaidPage() {
-  return <CardDetailScreen cardType="prepaid" />
+  return <CardDetailScreen cardType="PREPAID_CARD" />
 }

@@ -11,8 +11,7 @@ import FaqIconButton from '@/components/ui/FaqIconButton'
 import FAQModal from '@/components/ui/FAQModal'
 import { CARD_DATA } from '@/lib/api/HowToUseCardsData'
 import ButtonComponent from '@/components/ui/ButtonComponent'
-import { useAppSelector } from '@/store/redux/hooks'
-import { selectCustomerName } from '@/store/redux/slices/cardRequestSlice'
+import { useCardJourney } from '@/hooks/useCardJourney'
 
 interface howToUseProps {
     CardImagesUrl: string
@@ -24,7 +23,8 @@ export default function HowToUseInstacards({
 }: howToUseProps) {
     const config = CARD_DATA[cardType || 'CREDIT_CARD'];
     const router = useRouter()
-    const userName = useAppSelector(selectCustomerName)
+    const { state, reset } = useCardJourney();
+    const maskedPan = state?.cardDetails?.vcPanMasked ?? '•••• •••• •••• ••••';
     const [expandedSection, setExpandedSection] =
         useState<string | null>(null)
 
@@ -42,18 +42,23 @@ export default function HowToUseInstacards({
         setFaqData(null)
     }
 
+    const handleDone = () => {
+        reset();
+        router.replace(routes.instacard);
+    }
+
     return (
         <div className="flex pb-[10vh] flex-col gap-6 p-6">
             {/* Card */}
 
             <div className="text-center">
-                <p className="text-sm text-text-primary">Hello, {userName}</p>
+                <p className="text-sm text-text-primary">Congratulations!</p>
                 <p className="text-sm text-text-primary">Your Instacard is now ready for usage</p>
             </div>
             <CardMockup
                 isclickable={false}
                 imageSrc={CardImagesUrl}
-                maskedNumber="3333 4444 5555 6666"
+                maskedNumber={maskedPan}
             />
 
             {/* Description */}
@@ -133,7 +138,7 @@ export default function HowToUseInstacards({
                 data={faqData ?? undefined}
             />
             <div className="sticky bottom-0 bg-background">
-                <ButtonComponent title="Go To Instacard Home" onClick={() => router.replace(routes.instacard)} />
+                <ButtonComponent title="Go To Instacard Home" onClick={handleDone} />
             </div>
 
         </div>

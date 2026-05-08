@@ -17,7 +17,7 @@ export default function UniversalLinkedSuccess() {
   const router = useRouter()
 
   const linkedVirtualCard = cards.find((c) => c.id === managingCardId)
-  const universalCard = cards.find((c) => c.id === pendingLinkUniversalCardId) || cards.find((c) => c.cardType === 'debit')
+  const universalCard = cards.find((c) => c.id === pendingLinkUniversalCardId) || cards.find((c) => c.cardType === 'DEBIT_CARD')
 
   useEffect(() => {
     notifyNavigation('linked-success');
@@ -36,7 +36,7 @@ export default function UniversalLinkedSuccess() {
     router.push('/')
     notifyCardAdded({
       cardId: linkedVirtualCard?.id || `card-${Date.now()}`,
-      cardType: linkedVirtualCard?.cardType || 'debit',
+      cardType: linkedVirtualCard?.cardType || 'DEBIT_CARD',
       lastFourDigits: linkedVirtualCard?.cardNumber.slice(-4) || '1234',
     });
   };

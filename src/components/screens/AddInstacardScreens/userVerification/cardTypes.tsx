@@ -13,21 +13,29 @@ import { notifyNavigation } from "@/lib/bridge"
 import { requestCard } from "@/lib/api/cards"
 import { ApiError, AuthError } from "@/lib/api/errors"
 import { useAppDispatch } from "@/store/redux/hooks"
-import { setCardRequest } from "@/store/redux/slices/cardRequestSlice"
 import { showToast } from "@/store/redux/slices/toasterSlice"
 
 
 interface SelectCardTypesProps {
   onNext: (nextStep: UserInstaCardSteps) => void;
+  overrideSubmit?: (cardType: CardType) => void;
+  submitting?: boolean;
+  errorMessage?: string | null;
 }
 
 export default function SelectCardTypes({
-  onNext
+  onNext,
+  overrideSubmit,
+  submitting: externalSubmitting = false,
+  errorMessage: externalErrorMessage = null,
 }: SelectCardTypesProps) {
   const dispatch = useAppDispatch();
   const [selectedType, setSelectedType] = useState<CardType>('DEBIT_CARD');
-  const [submitting, setSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [internalSubmitting, setInternalSubmitting] = useState(false);
+  const [internalErrorMessage, setInternalErrorMessage] = useState<string | null>(null);
+
+  const submitting = overrideSubmit ? externalSubmitting : internalSubmitting;
+  const errorMessage = overrideSubmit ? externalErrorMessage : internalErrorMessage;
 
 
   useEffect(() => {
@@ -39,32 +47,33 @@ export default function SelectCardTypes({
     haptic("medium");
     if (submitting) return;
 
-    setErrorMessage(null);
+    if (overrideSubmit) {
+      overrideSubmit(selectedType);
+      return;
+    }
 
-    setSubmitting(true);
+    setInternalErrorMessage(null);
+    setInternalSubmitting(true);
     try {
       const response = await requestCard({ cardType: selectedType });
-
-
-      dispatch(setCardRequest({
+      // Legacy code below for backward compat:
+      /*dispatch(setCardRequest({
         requestId: response.requestId,
         registeredEmail: response.registeredEmail,
         emailOtpStatus: response.otpStatus,
         selectedCardType: selectedType,
-      }));
+      }));*/
       onNext('registered_email_verification');
     } catch (err) {
-      // AuthError is terminal — host SDK has already been notified by the
-      // session layer. Surface a generic message so the user is not stuck.
       if (err instanceof AuthError) {
-        setErrorMessage('Your session has expired. Please reopen the app.');
+        setInternalErrorMessage('Your session has expired. Please reopen the app.');
       } else if (err instanceof ApiError) {
-        setErrorMessage('Could not start your card request. Please try again.');
+        setInternalErrorMessage('Could not start your card request. Please try again.');
       } else {
-        setErrorMessage('Something went wrong. Please try again.');
+        setInternalErrorMessage('Something went wrong. Please try again.');
       }
     } finally {
-      setSubmitting(false);
+      setInternalSubmitting(false);
     }
 
   }

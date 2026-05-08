@@ -1,68 +1,48 @@
 'use client';
 
 import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen';
-import type { UserInstaCardSteps } from '@/types/userVerificationSteps';
-import { sendBankOtp, verifyBankOtp } from '@/lib/api/cards';
-import { useAppDispatch, useAppSelector } from '@/store/redux/hooks';
-import {
-  selectCardRequestBankOtpChannel,
-  selectCardRequestBankOtpDestination,
-  selectCardRequestId,
-  setBankOtpSent,
-  setBankOtpVerified,
-} from '@/store/redux/slices/cardRequestSlice';
+import { verifyBankOtpV2, sendBankOtpV2, retryBankOtp } from '@/lib/api/cardJourneyApi';
+import { useCardJourney } from '@/hooks/useCardJourney';
 
-interface VerifyBankOTPProps {
-  onNext: (nextStep: UserInstaCardSteps) => void;
-}
+/**
+ * Bank OTP entry screen.
+ *
+ * Reads `requestId` and `destinationMasked` from the Redux card-request state.
+ * On success the backend returns the next envelope (consent, eligibility, etc.)
+ * and `useCardJourney.call()` dispatches it — the router re-renders automatically.
+ */
+export default function VerifyBankOTP() {
+  const { state, call } = useCardJourney();
 
-export default function VerifyBankOTP({
-  onNext,
-}: VerifyBankOTPProps) {
-  const dispatch = useAppDispatch();
-  const requestId = useAppSelector(selectCardRequestId);
-  const destination = useAppSelector(selectCardRequestBankOtpDestination);
-  const channel = useAppSelector(selectCardRequestBankOtpChannel);
+  const requestId = state?.requestId ?? '';
+  const destination = state?.nextAction?.destinationMasked ?? '';
 
   const handleVerify = async (code: string) => {
     if (!requestId) {
       throw new Error('Card request not initialised. Please restart the flow.');
     }
-    const response = await verifyBankOtp({ requestId, otp: code });
-    dispatch(setBankOtpVerified({ bankOtpMatchStatus: response.otpMatchStatus }));
+    await call(() => verifyBankOtpV2(requestId, code));
   };
 
   const handleResend = async () => {
     if (!requestId) {
       throw new Error('Card request not initialised. Please restart the flow.');
     }
-    const response = await sendBankOtp({ requestId });
-    
-    dispatch(setBankOtpSent({
-      bankOtpDestination: response.bankOtpDestination,
-      bankOtpChannel: response.bankOtpChannel,
-      bankOtpStatus: response.otpStatus,
-    }));
+    await call(() => retryBankOtp(requestId));
   };
 
   const handleSuccess = () => {
-   onNext('user_consent');
+    // No-op: useCardJourney.call() already dispatched the new state.
   };
-
-  const subtitle = channel === 'EMAIL'
-    ? 'Your bank has sent you a 6-digit code to your email'
-    : 'Your bank has sent you a 6-digit code to your phone';
 
   return (
     <VerificationCodeScreen
       title="Verify Bank OTP"
-      subtitle={subtitle}
-      maskedValue={destination ?? ''}
+      subtitle="Your bank has sent you a 6-digit code to"
+      maskedValue={destination}
       onVerify={handleVerify}
       onResend={handleResend}
       onSuccess={handleSuccess}
-    
-
     />
   );
 }

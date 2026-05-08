@@ -6,7 +6,7 @@ import FloatingBottomBarLayoutClient from '@/components/screens/InstacardScreens
 
 export default function ManageGiftPage() {
   return (
-    <ManageCardPageWrapper cardType="gift">
+    <ManageCardPageWrapper cardType="GIFT_CARD">
       <ManageGiftCardScreen />
       <FloatingBottomBarLayoutClient hidescan={true} />
     </ManageCardPageWrapper>

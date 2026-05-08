@@ -32,7 +32,7 @@ export default function AddDebitScreen() {
   }, []);
 
   const handleNext = () => {
-    router.push(routes.otp('debit'));
+    router.push(routes.otp('DEBIT_CARD'));
   };
 
   return (

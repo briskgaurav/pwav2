@@ -56,7 +56,7 @@ export default function ManagePrepaidCardScreen() {
         </div>
 
         <div className="flex gap-4 overflow-x-auto">
-          {getManageBtns('prepaid').map((btn, index) => (
+          {getManageBtns('PREPAID_CARD').map((btn, index) => (
             <ManageBtn href={btn.href} key={index} icon={btn.icon} title={btn.title} />
           ))}
         </div>

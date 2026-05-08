@@ -6,11 +6,10 @@ import Link from "next/link";
 import { Checkbox } from "@/components/ui";
 import ButtonComponent from "../../ui/ButtonComponent";
 import { notifyNavigation } from "@/lib/bridge";
-import { creditUnderwriting, submitConsent, type UnderwritingDecision } from "@/lib/api/cards";
-import { ApiError, AuthError } from "@/lib/api/errors";
-import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
-import { selectCardRequestId, selectMaskedCardPAN, setMaskedCardPAN } from "@/store/redux/slices/cardRequestSlice";
-import type { UserInstaCardSteps } from "@/types/userVerificationSteps";
+import { submitConsentV2 } from "@/lib/api/cardJourneyApi";
+import { useCardJourney } from "@/hooks/useCardJourney";
+import { useAppDispatch } from "@/store/redux/hooks";
+import { showToast } from "@/store/redux/slices/toasterSlice";
 
 // TODO: Replace with formatted T&C content sent by the backend in the
 //       underwriting response. Once that lands, drop this constant and
@@ -23,70 +22,34 @@ const TERMS = [
   "You agree to pay the outstanding amount from your BVN linked accounts",
 ] as const;
 
-interface CreditCardConsentProps {
-  onNext: (nextStep: UserInstaCardSteps) => void;
-}
-
-export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
-  const requestId = useAppSelector(selectCardRequestId);
+/**
+ * Universal consent screen — driven by:
+ *   - `nextAction.code === 'CAPTURE_CONSENT'` (DEBIT / PREPAID / GIFT)
+ *   - `nextAction.code === 'SHOW_ELIGIBILITY_RESULT'` (CREDIT)
+ *
+ * For CREDIT: shows `approvedCreditLimitMinor` (÷100) + T&C.
+ * For DEBIT:  shows `linkedAccounts` selector + T&C.
+ * For PREPAID/GIFT: shows T&C only.
+ */
+export default function CreditCardConsent() {
+  const { state, call } = useCardJourney();
   const dispatch = useAppDispatch();
 
-  const [decision, setDecision] = useState<UnderwritingDecision | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const requestId = state?.requestId ?? '';
+  const cardType = state?.cardType;
+  const consentVersion = state?.consentVersion ?? 'v1';
+  const approvedCreditLimit = state?.approvedCreditLimitMinor;
+  const linkedAccounts = state?.linkedAccounts;
+  const currentState = state?.currentState;
+  const isEligibilityFailed = currentState === 'ELIGIBILITY_FAILED';
+
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [approvedCreditLimit, setApprovedCreditLimit] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
-    notifyNavigation("add-credit");
+    notifyNavigation("add-consent");
   }, []);
-
-  // Run underwriting on mount. Local state only — these values are not
-  // shared with any other screen, so Redux is the wrong place for them.
-  //
-  // The AbortController serves two purposes:
-  //   1. In React Strict Mode (dev), the effect mounts → unmounts → mounts.
-  //      Without aborting, the first fetch completes and a duplicate hits
-  //      the backend. Aborting cancels the orphaned request at the network
-  //      layer (browser shows it as "(canceled)").
-  //   2. If the screen unmounts while the request is in flight (user backs
-  //      out), the call is canceled and no setState fires after unmount.
-
-  useEffect(() => {
-    if (!requestId) {
-      setError("Card request not initialised. Please restart the flow.");
-      setIsLoading(false);
-      return;
-    }
-
-    const controller = new AbortController();
-
-    (async () => {
-      try {
-        const response = await creditUnderwriting(
-          { requestId, cardTypeRequest: "CREDIT_CARD" },
-          { signal: controller.signal },
-        );
-        setDecision(response.underwritingDecision);
-        setApprovedCreditLimit(response.approvedCreditLimit);
-      } catch (err) {
-        if (err instanceof ApiError && err.code === "ABORTED") return;
-        if (err instanceof AuthError) {
-          setError("Your session has expired. Please reopen the app.");
-        } else if (err instanceof ApiError) {
-          setError("Could not run underwriting. Please try again.");
-        } else {
-          setError("Something went wrong. Please try again.");
-        }
-      } finally {
-        if (!controller.signal.aborted) setIsLoading(false);
-      }
-    })();
-
-    return () => controller.abort();
-  }, [requestId]);
 
   const handleApply = async () => {
     if (!requestId || submitting) return;
@@ -94,44 +57,23 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
     setSubmitError(null);
     setSubmitting(true);
     try {
-      const response = await submitConsent({
-        requestId,
-        cardTypeRequest: "CREDIT_CARD",
-        consentOnTermsAndConditions: true,
-      });
-      // if the follow is success
-      dispatch(setMaskedCardPAN(response.maskedPan));
-      onNext("success");
-    } catch (err) {
-      if (err instanceof AuthError) {
-        setSubmitError("Your session has expired. Please reopen the app.");
-      } else if (err instanceof ApiError) {
-        setSubmitError("Could not submit your application. Please try again.");
-      } else {
-        setSubmitError("Something went wrong. Please try again.");
-      }
+      await call(() => submitConsentV2(requestId, consentVersion));
+    } catch (err: any) {
+      const msg = err?.errorMessage || err?.message || 'Could not submit your application. Please try again.';
+      setSubmitError(msg);
+      dispatch(showToast({
+        message: 'Submission Failed',
+        subtitle: msg,
+        duration: 3000,
+        tosterType: 'error',
+      }));
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="w-6 h-6 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex-1 flex items-center justify-center p-6 text-center">
-        <p role="alert" className="text-red-600">{error}</p>
-      </div>
-    );
-  }
-
-  if (decision === "REJECTED") {
+  // Terminal: eligibility failed
+  if (isEligibilityFailed) {
     return (
       <div className="flex-1 flex items-center justify-center p-6 text-center">
         <div className="space-y-3">
@@ -141,6 +83,9 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
           <p className="text-sm text-text-primary">
             Sorry, we couldn&apos;t approve your application at this time.
           </p>
+          {state?.failureReason && (
+            <p className="text-xs text-text-secondary mt-2">{state.failureReason}</p>
+          )}
         </div>
       </div>
     );
@@ -149,17 +94,40 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
   return (
     <div className="flex-1 flex flex-col">
       <div className="flex-1 overflow-auto py-10 p-6">
-        {/* TODO: Replace this entire block with backend-rendered T&C content. */}
-        <div className="p-6 text-lg border bg-white space-y-6 border-text-primary/20 text-center text-text-primary rounded-2xl mb-6">
-          <p className="font-medium">Pre-approved Credit Limit</p>
-          <p className="font-semibold text-3xl">
-            <span className="line-through"> N</span> {approvedCreditLimit}
-          </p>
-        </div>
+        {/* Credit: show approved limit */}
+        {cardType === 'CREDIT_CARD' && approvedCreditLimit != null && (
+          <div className="p-6 text-lg border bg-white space-y-6 border-text-primary/20 text-center text-text-primary rounded-2xl mb-6">
+            <p className="font-medium">Pre-approved Credit Limit</p>
+            <p className="font-semibold text-3xl">
+              <span className="line-through"> N</span> {(approvedCreditLimit / 100).toLocaleString()}
+            </p>
+          </div>
+        )}
+
+        {/* Debit: show linked accounts */}
+        {cardType === 'DEBIT_CARD' && linkedAccounts && linkedAccounts.length > 0 && (
+          <div className="mb-6 space-y-3">
+            <p className="text-md text-text-primary font-medium">Your Linked Accounts</p>
+            {linkedAccounts.map((account, index) => (
+              <div
+                key={index}
+                className={`p-4 border rounded-xl ${account.primary ? 'border-primary bg-primary/5' : 'border-text-primary/20'}`}
+              >
+                <p className="font-medium text-text-primary">{account.bankName}</p>
+                <p className="text-sm text-text-secondary">
+                  {account.accountType} — {account.accountNumberMasked}
+                </p>
+                {account.primary && (
+                  <span className="text-xs text-primary font-medium">Primary</span>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="flex flex-col gap-5">
           <p className="text-md text-text-primary">
-            Please agree on following T&amp;C for accessing Credit Instacard
+            Please agree on following T&amp;C for accessing your Instacard
           </p>
 
           <ul className="flex flex-col gap-[6px] m-0 pl-5 list-disc">

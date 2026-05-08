@@ -453,7 +453,7 @@ export const CardStack = forwardRef<CardStackRef, CardStackProps>(
           }}
           className="absolute w-full max-w-[90%] mx-auto top-[13vh] left-1/2 will-change-transform"
         >
-          <CardIatem card={card} onPress={onCardPress} />
+          <CardItem card={card} onPress={onCardPress} />
         </div>
       );
     });

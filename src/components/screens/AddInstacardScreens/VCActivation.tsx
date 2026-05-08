@@ -1,62 +1,84 @@
-import { cardActivation } from "@/lib/api/cards";
-import SuccessScreen from "../AuthScreens/SuccessScreen";
-import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
-import { selectCardRequestEmail, selectCardRequestId, selectMaskedCardPAN, selectPinRequested, selectSelectedCardType, setPinRequested } from "@/store/redux/slices/cardRequestSlice";
+'use client';
+
+import { setupPin } from "@/lib/api/cardJourneyApi";
+import { useCardJourney } from "@/hooks/useCardJourney";
 import PinSetupForm from "../AuthScreens/PinSetupFormScreen";
-import { MOCK_HOST_CONTEXT } from "@/lib/api/__mocks__/hostContext";
-import { useRouter } from 'next/navigation';
-import { useState } from "react";
-import type { UserInstaCardSteps } from "@/types/userVerificationSteps";
+import { useAppDispatch } from "@/store/redux/hooks";
 import { showToast } from "@/store/redux/slices/toasterSlice";
+import { useState } from "react";
 
-interface CreditCardConsentProps {
-  onNext: (nextStep: UserInstaCardSteps) => void;
-}
-export default function VCCardActivation({onNext}: CreditCardConsentProps) {
+/**
+ * PIN setup screen — driven by `nextAction.code === 'SHOW_CARD_DETAILS_AND_SET_PIN'`.
+ *
+ * Shows the masked card details from `state.cardDetails` and a PIN entry form.
+ * On success the backend returns `ACTIVE` / `SHOW_CARD_ACTIVE`.
+ */
+export default function VCCardActivation() {
+  const { state, call } = useCardJourney();
+  const dispatch = useAppDispatch();
+  const [pinValue, setPinValue] = useState<number | undefined>(undefined);
 
+  const requestId = state?.requestId ?? '';
+  const cardDetails = state?.cardDetails;
 
-    const requestId = useAppSelector(selectCardRequestId);
-    const registeredEmail = useAppSelector(selectCardRequestEmail);
-    const selectedCardType = useAppSelector(selectSelectedCardType);
-    const maskedCardPAN = useAppSelector(selectMaskedCardPAN);
-    const pinRequested = useAppSelector(selectPinRequested);
-    const dispatch = useAppDispatch();
+  const handleSetPin = (pin: number) => setPinValue(pin);
 
-    const handleSetPinRequested = (pin: number) => dispatch(setPinRequested(pin));
-
-    const handleCardActivate = async (pin: string) => {
-        if (!requestId) {
-
-            dispatch(showToast({
-                message: 'Something Went Wrong!',
-                subtitle: 'Please try again later.',
-                duration: 2000,
-                tosterType: 'error',
-            }))
-            return
-        }
-        // console.log(selectMaskedCardPAN,"MASKED PAN")
-
-        const response = await cardActivation({
-            ...MOCK_HOST_CONTEXT,
-            requestId, pinRequested: pin,
-            cardType: selectedCardType ?? '',
-            vcPan: maskedCardPAN ?? '',
-            registeredEmail: registeredEmail ?? ''
-        });
-
-        onNext('how_to_use_card')
+  const handleCardActivate = async (pin: string) => {
+    if (!requestId) {
+      dispatch(showToast({
+        message: 'Something Went Wrong!',
+        subtitle: 'Please try again later.',
+        duration: 2000,
+        tosterType: 'error',
+      }));
+      return;
     }
 
-    return (
-        <PinSetupForm
-            setPinRequested={handleSetPinRequested}
-            pinRequested={pinRequested ?? undefined}
-            title="PIN Setup"
-            subtitle="Please setup your PIN for this Instacard"
-            pinLabel="Enter 4-digit PIN"
-            confirmPinLabel="Re-Enter PIN"
-            onSubmit={handleCardActivate}
-        />
-    )
+    try {
+      await call(() => setupPin(requestId, pin));
+    } catch (err: any) {
+      dispatch(showToast({
+        message: 'PIN Setup Failed',
+        subtitle: err?.errorMessage || 'Please try again.',
+        duration: 3000,
+        tosterType: 'error',
+      }));
+    }
+  };
+
+  return (
+    <div className="flex-1 flex flex-col">
+      {/* Card details summary */}
+      {cardDetails && (
+        <div className="p-6 mx-6 mt-6 border border-text-primary/20 rounded-2xl bg-white space-y-2">
+          <p className="text-sm text-text-secondary">Card Number</p>
+          <p className="text-lg font-mono font-semibold text-text-primary">{cardDetails.vcPanMasked}</p>
+          <div className="flex justify-between text-sm">
+            <div>
+              <p className="text-text-secondary">Scheme</p>
+              <p className="text-text-primary font-medium">{cardDetails.cardScheme}</p>
+            </div>
+            <div>
+              <p className="text-text-secondary">Expiry</p>
+              <p className="text-text-primary font-medium">{cardDetails.cardExpiryMmYy}</p>
+            </div>
+            <div>
+              <p className="text-text-secondary">Variant</p>
+              <p className="text-text-primary font-medium">{cardDetails.cardVariant}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <PinSetupForm
+        setPinRequested={handleSetPin}
+        pinRequested={pinValue}
+        title="PIN Setup"
+        subtitle="Please setup your PIN for this Instacard"
+        pinLabel="Enter 4-digit PIN"
+        confirmPinLabel="Re-Enter PIN"
+        onSubmit={handleCardActivate}
+      />
+    </div>
+  );
 }

@@ -42,7 +42,7 @@ export default function ManageGiftCardScreen() {
         <Balance />
 
         <div className="flex gap-4 items-start justify-between overflow-x-auto">
-          {getManageBtns('gift').map((btn, index) => (
+          {getManageBtns('GIFT_CARD').map((btn, index) => (
             <ManageBtn href={btn.href} key={index} icon={btn.icon} title={btn.title} />
           ))}
         </div>

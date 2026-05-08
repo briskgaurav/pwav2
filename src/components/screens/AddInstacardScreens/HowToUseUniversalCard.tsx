@@ -84,7 +84,7 @@ const cardActions: Array<{
     {
       icon: <ManageCard />,
       text: 'Manage Card',
-      route: routes.manageCard('debit'),
+      route: routes.manageCard('DEBIT_CARD'),
       faqData: {
         heading: 'Manage Card',
         bulletPoints: [
@@ -128,7 +128,7 @@ export default function HowToUseUniversalCard() {
     if (!cardAddedRef.current) {
       cardAddedRef.current = true
       dispatch(setPendingCardForm('universal'))
-      dispatch(addCard({ cardType: 'debit', cardHolderName: fullName }))
+      dispatch(addCard({ cardType: 'DEBIT_CARD', cardHolderName: fullName }))
     }
   }, [dispatch, fullName])
 

@@ -25,7 +25,7 @@ export default function AddPrepaidScreen() {
   }, []);
 
   const handleNext = () => {
-    router.push(routes.otp('prepaid'));
+    router.push(routes.otp('PREPAID_CARD'));
   };
 
   return (

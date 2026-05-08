@@ -1,5 +1,5 @@
 import CardDetailScreen from '@/components/screens/CardDetailScreen/CardDetailScreen'
 
 export default function CardDetailCreditPage() {
-  return <CardDetailScreen cardType="credit" />
+  return <CardDetailScreen cardType="CREDIT_CARD" />
 }

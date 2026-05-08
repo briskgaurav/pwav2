@@ -1,189 +1,76 @@
-import { CardType } from "@/constants/cardData";
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import type { CardRequestStateResponse } from '@/types/cardIssuance'
 
-/**
- * Non-persisted state for the in-flight card request flow.
- *
- * Two distinct OTPs flow through this slice; they are kept in separate
- * fields so neither overwrites the other:
- *
- *   ┌──────────────────────────┬─────────────────────┬──────────────────────────┐
- *   │ OTP                      │ Sent endpoint       │ Verify endpoint          │
- *   ├──────────────────────────┼─────────────────────┼──────────────────────────┤
- *   │ Registered-email OTP     │ /card/request       │ /card/email-otp/verify   │
- *   │ Bank OTP                 │ /card/bank-otp/send │ /card/bank-otp/verify    │
- *   └──────────────────────────┴─────────────────────┴──────────────────────────┘
- *
- * Cleared when the flow completes or restarts.
- *
- * @remarks
- * This slice is intentionally **not** added to `persistConfig.whitelist` —
- * the request lifecycle is per-session and must not survive a reload.
- */
-
-/** Channel the bank used to deliver the bank OTP. */
-export type BankOtpChannel = "EMAIL" | "PHONE";
-
-interface CardRequestState {
-  requestId: string | null;
-  registeredEmail: string | null;
-
-  // Custormer Name
-  customerName: string | null;
-
-  /** User selected card type */
-  selectedCardType: CardType | null;
-
-  /** Status of the email OTP send (set by /card/request). */
-  emailOtpStatus: string | null;
-
-  /** Match result of the email OTP verify (set by /card/email-otp/verify). */
-  emailOtpMatchStatus: string | null;
-
-  /** Pre-masked bank OTP destination from the backend (never raw PII). */
-  bankOtpDestination: string | null;
-
-  /** Which channel the bank OTP was sent on — drives screen copy. */
-  bankOtpChannel: BankOtpChannel | null;
-
-  /** Status of the bank OTP send (set by /email-otp/verify or /bank-otp/send). */
-  bankOtpStatus: string | null;
-
-  /** Match result of the bank OTP verify (set by /card/bank-otp/verify). */
-  bankOtpMatchStatus: string | null;
-
-  /** Masked card PAN */
-  maskedCardPAN: string | null;
-  pinRequested: number | null;
+export interface CardRequestState {
+  response: CardRequestStateResponse | null;
 }
 
 const initialState: CardRequestState = {
-  requestId: null,
-  registeredEmail: null,
-  customerName:null,
-  selectedCardType: null,
-  emailOtpStatus: null,
-  emailOtpMatchStatus: null,
-  bankOtpDestination: null,
-  bankOtpChannel: null,
-  bankOtpStatus: null,
-  bankOtpMatchStatus: null,
-  maskedCardPAN: null,
-  pinRequested: null,
-};
+  response: null,
+}
 
 const cardRequestSlice = createSlice({
   name: "cardRequest",
   initialState,
   reducers: {
-    /** Capture the response from `POST /api/v1/card/request`. */
-    setCardRequest: (
+    setCardRequestState: (
       state,
-      action: PayloadAction<{
-        requestId: string;
-        registeredEmail: string;
-        emailOtpStatus: string;
-        selectedCardType: CardType;
-        customerName: string;
-      }>,
+      action: PayloadAction<CardRequestStateResponse>
     ) => {
-      state.requestId = action.payload.requestId;
-      state.registeredEmail = action.payload.registeredEmail;
-      state.emailOtpStatus = action.payload.emailOtpStatus;
-      state.selectedCardType = action.payload.selectedCardType;
-      state.customerName = action.payload.customerName;
+      state.response = action.payload;
     },
-
-    /** Store the selected card type */
-    setSelectedCardType: (state, action: PayloadAction<CardType>) => {
-      state.selectedCardType = action.payload;
+    clearCardRequestState: (state) => {
+      state.response = null;
     },
-
-    /**
-     * Capture the email-OTP-verify result. Bank-side fields from the same
-     * response are dispatched separately via setBankOtpSent.
-     */
-    setEmailOtpVerified: (
-      state,
-      action: PayloadAction<{ emailOtpMatchStatus: string }>,
-    ) => {
-      state.emailOtpMatchStatus = action.payload.emailOtpMatchStatus;
-    },
-
-    /**
-     * Capture the bank-OTP-send result. Dispatched both from the bank-side
-     * fields of `/email-otp/verify` and from the explicit `/bank-otp/send`
-     * (initial trigger and resend).
-     */
-    setBankOtpSent: (
-      state,
-      action: PayloadAction<{
-        bankOtpDestination: string;
-        bankOtpChannel: BankOtpChannel;
-        bankOtpStatus: string;
-      }>,
-    ) => {
-      state.bankOtpDestination = action.payload.bankOtpDestination;
-      state.bankOtpChannel = action.payload.bankOtpChannel;
-      state.bankOtpStatus = action.payload.bankOtpStatus;
-    },
-
-    /** Capture the response from `POST /api/v1/card/bank-otp/verify`. */
-    setBankOtpVerified: (
-      state,
-      action: PayloadAction<{ bankOtpMatchStatus: string }>,
-    ) => {
-      state.bankOtpMatchStatus = action.payload.bankOtpMatchStatus;
-    },
-
-    setMaskedCardPAN: (state, action: PayloadAction<string>) => {
-      state.maskedCardPAN = action.payload;
-    },
-
-    setPinRequested: (state, action: PayloadAction<number>) => {
-      state.pinRequested = action.payload;
-    },
-    setCustomerName: (state, action: PayloadAction<string>) => {
-      state.customerName = action.payload;
-    },
-
-    /** Reset back to the initial empty state when the flow ends or restarts. */
-    clearCardRequest: () => initialState,
   },
-
   selectors: {
-    selectCardRequestId: (state) => state.requestId,
-    selectCardRequestEmail: (state) => state.registeredEmail,
-    selectSelectedCardType: (state) => state.selectedCardType,
-    selectCardRequestBankOtpDestination: (state) => state.bankOtpDestination,
-    selectCardRequestBankOtpChannel: (state) => state.bankOtpChannel,
-    selectMaskedCardPAN: (state) => state.maskedCardPAN,
-    selectPinRequested: (state) => state.pinRequested,
-    selectCustomerName: (state) => state.customerName,
+    selectCardRequestResponse: (state) => state.response,
+    selectNextActionCode: (state) => state.response?.nextAction?.code,
   },
 });
 
-export const {
-  setCardRequest,
-  setSelectedCardType,
-  setEmailOtpVerified,
-  setBankOtpSent,
-  setBankOtpVerified,
-  clearCardRequest,
-  setMaskedCardPAN,
-  setPinRequested,
-  setCustomerName,
-} = cardRequestSlice.actions;
+export const { setCardRequestState, clearCardRequestState } = cardRequestSlice.actions
+export const { selectCardRequestResponse, selectNextActionCode } = cardRequestSlice.selectors
+export default cardRequestSlice.reducer
 
-export const {
-  selectCardRequestId,
-  selectCardRequestEmail,
-  selectSelectedCardType,
-  selectCardRequestBankOtpDestination,
-  selectCardRequestBankOtpChannel,
-  selectMaskedCardPAN,
-  selectPinRequested,
-  selectCustomerName,
-} = cardRequestSlice.selectors;
+// ─── Backward-compatibility re-exports ─────────────────────────────────────
+// These selectors read from the new `response` envelope so legacy screens
+// (CardConsent, DebitCardConsent, VCActivation, HowToUseInstacards, etc.)
+// keep compiling during migration. Delete once those screens are ported.
 
-export default cardRequestSlice.reducer;
+/** @deprecated Use `selectCardRequestResponse` and read `.requestId` */
+export const selectCardRequestId = (root: { cardRequest: CardRequestState }) =>
+  root.cardRequest.response?.requestId ?? null;
+
+/** @deprecated Use `selectCardRequestResponse` and read `.nextAction.destinationMasked` */
+export const selectCardRequestEmail = (root: { cardRequest: CardRequestState }) =>
+  root.cardRequest.response?.nextAction?.destinationMasked ?? null;
+
+/** @deprecated Use `selectCardRequestResponse` and read `.cardType` */
+export const selectSelectedCardType = (root: { cardRequest: CardRequestState }) =>
+  root.cardRequest.response?.cardType ?? null;
+
+/** @deprecated Use `selectCardRequestResponse` and read `.cardDetails.vcPanMasked` */
+export const selectMaskedCardPAN = (root: { cardRequest: CardRequestState }) =>
+  root.cardRequest.response?.cardDetails?.vcPanMasked ?? null;
+
+/** @deprecated Stub — PIN tracking moved to PinSetupForm local state */
+export const selectPinRequested = (_root: { cardRequest: CardRequestState }) =>
+  null as number | null;
+
+/** @deprecated Stub — customer name from response not tracked separately */
+export const selectCustomerName = (root: { cardRequest: CardRequestState }) =>
+  null as string | null;
+
+/** @deprecated No-op action — slice no longer tracks these separately */
+export const setMaskedCardPAN = (_pan: string) => ({ type: 'cardRequest/noop' as const });
+export const setPinRequested = (_pin: number) => ({ type: 'cardRequest/noop' as const });
+export const setCustomerName = (_name: string) => ({ type: 'cardRequest/noop' as const });
+export const setCardRequest = (_payload: any) => ({ type: 'cardRequest/noop' as const });
+export const setEmailOtpVerified = (_payload: any) => ({ type: 'cardRequest/noop' as const });
+export const setBankOtpSent = (_payload: any) => ({ type: 'cardRequest/noop' as const });
+export const setBankOtpVerified = (_payload: any) => ({ type: 'cardRequest/noop' as const });
+export const selectCardRequestBankOtpDestination = (_root: { cardRequest: CardRequestState }) =>
+  null as string | null;
+export const selectCardRequestBankOtpChannel = (_root: { cardRequest: CardRequestState }) =>
+  null as string | null;

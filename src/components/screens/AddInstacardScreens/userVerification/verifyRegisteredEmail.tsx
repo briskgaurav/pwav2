@@ -1,76 +1,51 @@
 'use client';
 
 import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen';
-import type { UserInstaCardSteps } from '@/types/userVerificationSteps';
-import {  resendEmailOtp, sendBankOtp, verifyEmailOtp } from '@/lib/api/cards';
-import { MOCK_HOST_CONTEXT } from '@/lib/api/__mocks__/hostContext';
-import { useAppDispatch, useAppSelector } from '@/store/redux/hooks';
-import {
-  selectCardRequestEmail,
-  selectCardRequestId,
-  setBankOtpSent,
-  setEmailOtpVerified,
-} from '@/store/redux/slices/cardRequestSlice';
+import { verifyEmailOtpV2, retryEmailOtp } from '@/lib/api/cardJourneyApi';
+import { useCardJourney } from '@/hooks/useCardJourney';
+import { useAppDispatch } from '@/store/redux/hooks';
 import { showToast } from '@/store/redux/slices/toasterSlice';
 import { ApiError } from '@/lib/api/errors';
 
-interface VerifyRegisteredEmailProps {
-  onNext: (nextStep: UserInstaCardSteps) => void;
-}
-
-export default function VerifyRegisteredEmail({
-  onNext,
-}: VerifyRegisteredEmailProps) {
+/**
+ * Email OTP screen — driven by `nextAction.code === 'VERIFY_EMAIL_OTP'`.
+ *
+ * Reads `requestId` and `destinationMasked` from the Redux card-request
+ * state. On successful verify the backend returns the next envelope
+ * (typically `VERIFY_BANK_OTP_OR_SOFT_TOKEN`) and `useCardJourney.call()`
+ * dispatches it — the parent router re-renders the correct screen automatically.
+ */
+export default function VerifyRegisteredEmail() {
   const dispatch = useAppDispatch();
-  const requestId = useAppSelector(selectCardRequestId);
-  const registeredEmail = useAppSelector(selectCardRequestEmail);
+  const { state, call } = useCardJourney();
+
+  const requestId = state?.requestId ?? '';
+  const maskedEmail = state?.nextAction?.destinationMasked ?? '';
 
   const handleVerify = async (code: string) => {
-    if (!requestId || !registeredEmail) {
+    if (!requestId) {
       throw new Error('Card request not initialised. Please restart the flow.');
     }
-
-    // 1) Verify the email OTP. Backend returns 400 on invalid OTP, which
-    //    fetchWithAuth surfaces as an ApiError — VerificationCodeScreen
-    //    catches it and shows the message under the input.
-    const verifyResponse = await verifyEmailOtp({
-      requestId,
-      registeredEmail,
-      otp: code,
-    });
-    dispatch(setEmailOtpVerified({
-      emailOtpMatchStatus: verifyResponse.otpMatchStatus,
-    }));
-
-    // 2) Email is verified — now trigger the bank OTP. /bank-otp/send is
-    //    the source of truth for bank channel info; we ignore any bank
-    //    fields the verify response may include. If this call fails, the
-    //    error surfaces on this screen rather than the next.
-    const sendResponse = await sendBankOtp({ requestId });
-    dispatch(setBankOtpSent({
-      bankOtpDestination: sendResponse.bankOtpDestination,
-      bankOtpChannel: sendResponse.bankOtpChannel,
-      bankOtpStatus: sendResponse.otpStatus,
-    }));
+    await call(() => verifyEmailOtpV2(requestId, code));
   };
 
   const handleSuccess = () => {
-    onNext('bank_verification');
+    // No-op: useCardJourney.call() already dispatched the new state,
+    // and the parent router will re-render the next screen.
   };
 
   const handleResend = async () => {
     if (!requestId) {
       throw new Error('Card request not initialised. Please restart the flow.');
     }
-
     try {
-      await resendEmailOtp({ requestId, ...MOCK_HOST_CONTEXT });
+      await call(() => retryEmailOtp(requestId));
       dispatch(showToast({
         message: 'OTP sent successfully',
         subtitle: 'Please check your email for the OTP',
         duration: 2000,
         tosterType: 'success',
-      }))
+      }));
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
         dispatch(showToast({
@@ -78,10 +53,10 @@ export default function VerifyRegisteredEmail({
           subtitle: 'Something went wrong!',
           duration: 2000,
           tosterType: 'error',
-        }))
-        return
+        }));
+        return;
       }
-      throw err
+      throw err;
     }
   };
 
@@ -89,7 +64,7 @@ export default function VerifyRegisteredEmail({
     <VerificationCodeScreen
       title="Verify OTP"
       subtitle="We have sent you a 6-digit code to your"
-      maskedValue={registeredEmail ?? ''}
+      maskedValue={maskedEmail}
       onVerify={handleVerify}
       onResend={handleResend}
       onSuccess={handleSuccess}

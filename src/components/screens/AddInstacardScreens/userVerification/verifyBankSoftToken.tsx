@@ -1,32 +1,29 @@
 'use client';
 
 import VerifySoftTokenScreen from '@/components/screens/AuthScreens/VerifySoftTokenScreen';
-import type { UserInstaCardSteps } from '@/types/userVerificationSteps';
-import { verifyBankSoftToken } from '@/lib/api/cards';
-import { useAppSelector } from '@/store/redux/hooks';
-import { selectCardRequestId } from '@/store/redux/slices/cardRequestSlice';
+import { verifySoftTokenV2 } from '@/lib/api/cardJourneyApi';
+import { useCardJourney } from '@/hooks/useCardJourney';
 
-interface VerifyBankSoftTokenProps {
-  onNext: (nextStep: UserInstaCardSteps) => void;
-}
+/**
+ * Soft token entry screen.
+ *
+ * On success the backend returns the next envelope and `useCardJourney.call()`
+ * dispatches it — the router re-renders automatically.
+ */
+export default function VerifyBankSoftToken() {
+  const { state, call } = useCardJourney();
 
-export default function VerifyBankSoftToken({
-  onNext,
-}: VerifyBankSoftTokenProps) {
-  const requestId = useAppSelector(selectCardRequestId);
+  const requestId = state?.requestId ?? '';
 
   const handleVerify = async (code: string) => {
     if (!requestId) {
       throw new Error('Card request not initialised. Please restart the flow.');
     }
-    // The success/failure of verification is signalled by the 200/400 status,
-    // and no downstream screen consumes the verification status field, so we
-    // do not dispatch the response into Redux.
-    await verifyBankSoftToken({ requestId, softToken: code });
+    await call(() => verifySoftTokenV2(requestId, code));
   };
 
   const handleSuccess = () => {
-    onNext('user_consent');
+    // No-op: useCardJourney.call() already dispatched the new state.
   };
 
   return (

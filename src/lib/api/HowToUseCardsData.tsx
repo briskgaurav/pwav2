@@ -67,7 +67,7 @@ export const CARD_DATA: Record<
         icon: <ManageCard />,
         text: 'Manage Card',
 
-        route: routes.manageCard('debit'),
+        route: routes.manageCard('DEBIT_CARD'),
 
         faqData: {
           heading: 'Remove Card',
@@ -174,7 +174,7 @@ export const CARD_DATA: Record<
         icon: <ManageCard />,
         text: 'Manage Card',
 
-        route: routes.manageCard('credit'),
+        route: routes.manageCard('CREDIT_CARD'),
 
         faqData: {
           heading: 'Remove Card',
@@ -281,7 +281,7 @@ export const CARD_DATA: Record<
         icon: <ManageCard />,
         text: 'Manage Card',
 
-        route: routes.manageCard('prepaid'),
+        route: routes.manageCard('PREPAID_CARD'),
 
         faqData: {
           heading: 'Remove Card',
@@ -371,7 +371,7 @@ export const CARD_DATA: Record<
         icon: <ManageCard />,
         text: 'Manage Card',
 
-        route: routes.manageCard('gift'),
+        route: routes.manageCard('GIFT_CARD'),
 
         faqData: {
           heading: 'Remove Card',

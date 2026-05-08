@@ -5,7 +5,7 @@ import ManageCardPageWrapper from '@/components/screens/ManageCardsScreens/Manag
 
 export default function ManagePrepaidPage() {
   return (
-    <ManageCardPageWrapper cardType="prepaid">
+    <ManageCardPageWrapper cardType="PREPAID_CARD">
       <ManagePrepaidCardScreen />
     </ManageCardPageWrapper>
   )
