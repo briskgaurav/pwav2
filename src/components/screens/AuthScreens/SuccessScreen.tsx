@@ -1,16 +1,15 @@
 'use client';
 
 import { useEffect } from 'react';
-import { CardMockup } from '@/components/ui';
 import { notifyNavigation } from '@/lib/bridge';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
-import { useManagingCard } from '@/hooks/useManagingCard';
 import LayoutSheet from '../../ui/LayoutSheet';
 import ButtonComponent from '../../ui/ButtonComponent';
+
 
 export type SuccessScreenProps = {
   /** Custom title (e.g. "Success!") */
@@ -38,21 +37,26 @@ export default function SuccessScreen({
   cardImageUrl,
 }: SuccessScreenProps = {}) {
 
-  const isCustom = Boolean(onButtonClick);
+
 
   useEffect(() => {
     notifyNavigation('success');
   }, []);
+
+
+
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const cardType = (searchParams.get('type') as CardType) || 'debit';
-  const { imageSrc, maskedNumber } = useManagingCard();
   const displayTitle = title ?? 'Payment was Successful!';
   const displayDescription =
     description ??
     'We have successfully collected card issuance Fee of N XXXX for the Virtual Instacard you had requested to be issued.';
   const displayButtonText = buttonText ?? 'Activate Now';
   const handleButtonClick = onButtonClick ?? (() => router.push(routes.pinSetup(cardType)));
+
+
 
   return (
     <LayoutSheet routeTitle="Success" needPadding={false} hideLayerSheet={hideLayerSheet}>
@@ -90,26 +94,6 @@ export default function SuccessScreen({
 
           </div>
         </div>
-
-        {/* Card preview - only for default card issuance flow */}
-        {!isCustom && showCardPreview && (
-          <div>
-            <p className="text-[15px] pl-4 text-text-primary w-full text-left leading-normal m-0">
-              Your Instacard is Ready for Activation.
-            </p>
-            <div>
-
-              <CardMockup
-                imageSrc={imageSrc || '/img/cards/DebitCard.png'}
-                maskedNumber={maskedNumber}
-                isclickable={false}
-                showActions={false}
-                showNumber={false}
-
-              />
-            </div>
-          </div>
-        )}
       </div>
       <ButtonComponent title={displayButtonText} onClick={handleButtonClick} />
 

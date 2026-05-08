@@ -1,7 +1,7 @@
 import { useAuth } from '@/lib/auth-context'
 import Image from 'next/image'
 import Link from 'next/link'
-import  { useState } from 'react'
+import { useState } from 'react'
 import { BlockUnblockIcon, LimitationsIcon, PinIcon } from '@/constants/icons'
 import { routes } from '@/lib/routes'
 

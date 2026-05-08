@@ -14,6 +14,7 @@ import { useAppSelector } from "@/store/redux/hooks";
 import { selectSelectedCardType } from '@/store/redux/slices/cardRequestSlice'
 import DebitCardConsent from "./DebitCardConsent";
 import HowToUseInstacards from "./HowToUseInstacards";
+import CardConsent from "./CardConsent";
 /**
  * Multi-step "Add Instacard" flow. Each step is rendered by a child component
  * driven by `userVerificationStep` — there are no separate routes per step.
@@ -23,7 +24,7 @@ import HowToUseInstacards from "./HowToUseInstacards";
 export default function AddInstacardScreen() {
   const [userVerificationStep, setUserVerificationStep] = useState<UserInstaCardSteps>('select_card');
   const cardType = useAppSelector(selectSelectedCardType)
-  const SuccessCardImage = cardType === 'CREDIT_CARD' ? "/img/creditcard.png" : cardType === 'DEBIT_CARD' ? "/img/debitCard.png" : cardType === 'PREPAID_CARD' ? "/img/prepaid.png" : cardType === 'GIFT_CARD' ? "/img/gift.png" : ""
+  const CardImages = cardType === 'CREDIT_CARD' ? "/img/creditcard.png" : cardType === 'DEBIT_CARD' ? "/img/debitmockup.png" : cardType === 'PREPAID_CARD' ? "/img/prepaid.png" : cardType === 'GIFT_CARD' ? "/img/gift.png" : "/img/debitmockup.png"
 
 
   const handleNext = (nextStep: UserInstaCardSteps) => {
@@ -34,27 +35,26 @@ export default function AddInstacardScreen() {
     switch (userVerificationStep) {
       case 'select_card':
         return <SelectCardTypes onNext={handleNext} />;
-      // return <HowToUseInstacards cardType={cardType} />
-
       case 'registered_email_verification':
         return <VerifyRegisteredEmail onNext={handleNext} />;
       case 'bank_verification':
         return <BankVerificationMethod onNext={handleNext} />;
       case 'user_consent':
-        if (cardType === 'CREDIT_CARD') {
-          return <CreditCardConsent onNext={handleNext} />;
-        } if (cardType === 'DEBIT_CARD') {
-          return <DebitCardConsent onNext={handleNext} />;
-        }
-        return <CreditCardConsent onNext={handleNext} />;
+        // if (cardType === 'CREDIT_CARD') {
+        //   return <CreditCardConsent onNext={handleNext} />;
+        // } if (cardType === 'DEBIT_CARD') {
+        //   return <DebitCardConsent onNext={handleNext} />;
+        // }
+        return <CardConsent cardType={cardType} onNext={handleNext} />;
       case 'success':
         // TODO: render the success / card-issued screen.
         //return <SuccessScreen hideLayerSheet onButtonClick={handleCardActivation} />;
-        return <SuccessScreen cardImageUrl={SuccessCardImage} hideLayerSheet onButtonClick={() => handleNext('card_activation')} />
+        return <SuccessScreen cardImageUrl={CardImages} hideLayerSheet onButtonClick={() => handleNext('card_activation')} />
       case 'card_activation':
         return <VCCardActivation onNext={handleNext} />
       case 'how_to_use_card':
-        return <HowToUseInstacards cardType={cardType} />
+        return <HowToUseInstacards CardImagesUrl={CardImages} cardType={cardType} />
+
       default:
         return null;
     }

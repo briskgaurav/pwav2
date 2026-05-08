@@ -7,6 +7,7 @@ import { MOCK_HOST_CONTEXT } from "@/lib/api/__mocks__/hostContext";
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import type { UserInstaCardSteps } from "@/types/userVerificationSteps";
+import { showToast } from "@/store/redux/slices/toasterSlice";
 
 interface CreditCardConsentProps {
   onNext: (nextStep: UserInstaCardSteps) => void;
@@ -23,12 +24,16 @@ export default function VCCardActivation({onNext}: CreditCardConsentProps) {
 
     const handleSetPinRequested = (pin: number) => dispatch(setPinRequested(pin));
 
-
-    const router = useRouter();
-
     const handleCardActivate = async (pin: string) => {
         if (!requestId) {
-            throw new Error('Card request not initialised. Please restart the flow.');
+
+            dispatch(showToast({
+                message: 'Something Went Wrong!',
+                subtitle: 'Please try again later.',
+                duration: 2000,
+                tosterType: 'error',
+            }))
+            return
         }
         // console.log(selectMaskedCardPAN,"MASKED PAN")
 
@@ -40,9 +45,6 @@ export default function VCCardActivation({onNext}: CreditCardConsentProps) {
             registeredEmail: registeredEmail ?? ''
         });
 
-        if (response) {
-            router.replace("/instacard/add-instacard/how-to-use-card")
-        }
         onNext('how_to_use_card')
     }
 

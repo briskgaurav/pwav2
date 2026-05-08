@@ -28,6 +28,9 @@ interface CardRequestState {
   requestId: string | null;
   registeredEmail: string | null;
 
+  // Custormer Name
+  customerName: string | null;
+
   /** User selected card type */
   selectedCardType: CardType | null;
 
@@ -57,6 +60,7 @@ interface CardRequestState {
 const initialState: CardRequestState = {
   requestId: null,
   registeredEmail: null,
+  customerName:null,
   selectedCardType: null,
   emailOtpStatus: null,
   emailOtpMatchStatus: null,
@@ -80,12 +84,14 @@ const cardRequestSlice = createSlice({
         registeredEmail: string;
         emailOtpStatus: string;
         selectedCardType: CardType;
+        customerName: string;
       }>,
     ) => {
       state.requestId = action.payload.requestId;
       state.registeredEmail = action.payload.registeredEmail;
       state.emailOtpStatus = action.payload.emailOtpStatus;
       state.selectedCardType = action.payload.selectedCardType;
+      state.customerName = action.payload.customerName;
     },
 
     /** Store the selected card type */
@@ -137,6 +143,9 @@ const cardRequestSlice = createSlice({
     setPinRequested: (state, action: PayloadAction<number>) => {
       state.pinRequested = action.payload;
     },
+    setCustomerName: (state, action: PayloadAction<string>) => {
+      state.customerName = action.payload;
+    },
 
     /** Reset back to the initial empty state when the flow ends or restarts. */
     clearCardRequest: () => initialState,
@@ -150,6 +159,7 @@ const cardRequestSlice = createSlice({
     selectCardRequestBankOtpChannel: (state) => state.bankOtpChannel,
     selectMaskedCardPAN: (state) => state.maskedCardPAN,
     selectPinRequested: (state) => state.pinRequested,
+    selectCustomerName: (state) => state.customerName,
   },
 });
 
@@ -162,6 +172,7 @@ export const {
   clearCardRequest,
   setMaskedCardPAN,
   setPinRequested,
+  setCustomerName,
 } = cardRequestSlice.actions;
 
 export const {
@@ -172,6 +183,7 @@ export const {
   selectCardRequestBankOtpChannel,
   selectMaskedCardPAN,
   selectPinRequested,
+  selectCustomerName,
 } = cardRequestSlice.selectors;
 
 export default cardRequestSlice.reducer;

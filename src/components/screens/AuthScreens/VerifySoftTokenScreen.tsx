@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui'
 import NativeOTPInput from '@/components/ui/NativeOTPInput'
+import { useAppDispatch } from '@/store/redux/hooks'
+import { showToast } from '@/store/redux/slices/toasterSlice'
 
 const MAX_CODE_LENGTH = 6
 
@@ -37,6 +39,7 @@ export default function VerifySoftTokenScreen({
   const [code, setCode] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
   const [errorText, setErrorText] = useState<string | null>(null)
+  const dispatch = useAppDispatch()
 
   const isCodeComplete = code.length === MAX_CODE_LENGTH
 
@@ -50,9 +53,23 @@ export default function VerifySoftTokenScreen({
       setErrorText(e instanceof Error ? e.message : 'Something went wrong')
       return
     }
+
     setIsVerifying(false)
     onSuccess?.()
   }
+
+  useEffect(() => {
+    if (errorText) {
+      dispatch(
+        showToast({
+          message: 'Invalid Soft Token',
+          subtitle: "Enter the valid Soft Token number",
+          duration: 2000,
+          tosterType: "error",
+        })
+      );
+    }
+  }, [errorText, dispatch]);
 
   return (
     <div className="flex flex-col">
@@ -84,9 +101,9 @@ export default function VerifySoftTokenScreen({
           </Button>
         </div>
 
-        {errorText && (
+        {/* {errorText && (
           <p className="mt-2 text-xs text-red-500">{errorText}</p>
-        )}
+        )} */}
       </div>
     </div>
   )
