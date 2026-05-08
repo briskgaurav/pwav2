@@ -15,6 +15,6 @@ export function haptic(type: HapticType = 'light') {
       warning: [60, 40, 60],
     };
 
-    navigator.vibrate(patterns[type]);
+    navigator.vibrate(new Map<string, number | number[]>(Object.entries(patterns)).get(type) ?? 30);
   }
 }

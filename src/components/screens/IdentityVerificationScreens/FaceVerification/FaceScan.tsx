@@ -1,3 +1,4 @@
+import Image from 'next/image';
 'use client';
 
 import { useEffect, useCallback, useState } from 'react';
@@ -150,12 +151,12 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
           {capturedImage ? (
             // Show captured image preview
             <div className="relative w-full h-full">
-              <img
+              <Image 
                 src={capturedImage}
                 alt="Captured"
                 className="w-full h-full object-cover"
                 style={{ transform: 'scaleX(-1)' }}
-              />
+              / width={100} height={100} unoptimized>
               <FaceGuide isValid={true} />
 
               {/* Retake button */}

@@ -4,9 +4,9 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { Button, PaymentProcessingOverlay } from '@/components/ui'
 import { type CardData } from '@/constants/cardData'
+import { usePaymentProcessing } from '@/hooks/usePaymentProcessing'
 import { useAuth } from '@/lib/auth-context'
 import { useAppSelector } from '@/store/redux/hooks'
-import { usePaymentProcessing } from '@/hooks/usePaymentProcessing'
 
 import CardPinVerificationDrawer from '../AuthScreens/CardPinVerificationDrawer'
 import { CardStack, type CardStackRef } from '../InstacardScreens/CardStack'
@@ -78,7 +78,7 @@ export default function PayUsingInstacard({ amount, onPay }: PayUsingInstacardPr
 
   const selectedCard =
     filteredCards.find((c) => c.id === selectedCardId) ??
-    filteredCards[currentCardIndex] ??
+    filteredCards.at(currentCardIndex) ??
     null
 
   return (

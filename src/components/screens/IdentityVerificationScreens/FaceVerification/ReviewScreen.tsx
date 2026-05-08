@@ -1,3 +1,4 @@
+import Image from 'next/image';
 'use client'
 
 import React, { useEffect, useMemo, useState } from 'react'
@@ -57,13 +58,13 @@ export default function ReviewScreen({
         </div>
         <div className="w-full relative rounded-xl overflow-hidden  h-[45vh]  bg-gray-200">
           {capturedImage ? (
-            <img src={capturedImage} alt="Captured face" className="w-full h-full object-cover" />
+            <Image src={capturedImage} alt="Captured face" className="w-full h-full object-cover" / width={100} height={100} unoptimized>
           ) : (
-            <img
+            <Image 
               src="/svg/greetingbar/avtar.svg"
               alt="Captured face"
               className="w-full h-[320px] object-cover"
-            />
+            / width={100} height={100} unoptimized>
           )}
 
           <div className="absolute top-4 left-4 bg-green-500 rounded-full px-4 py-1 flex items-center gap-2">

@@ -63,8 +63,10 @@ export function ProfileDrawer({
         trigger: handleRef.current,
         bounds: isLeft ? { minX: -drawerWidth, maxX: 0 } : { minX: 0, maxX: drawerWidth },
         inertia: true,
-        onDragEnd: function () {
-          const endX = this.endX ?? this.x
+        onDragEnd: () => {
+          const instance = draggableRef.current[0]
+          if (!instance) return
+          const endX = instance.endX ?? instance.x
           if (isLeft) {
             if (endX < -threshold) handleClose()
             else gsap.to(drawerRef.current, { x: 0, duration: 0.5, ease: 'power3.out' })

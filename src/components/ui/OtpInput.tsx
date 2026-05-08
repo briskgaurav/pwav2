@@ -32,14 +32,15 @@ const OtpInput: React.FC<OtpInputProps> = ({
     if (value == null) return
     if (value.length > length) return
 
-    const current = otp.join('')
-    if (current === value) return
+    setOtp((prev) => {
+      const current = prev.join('')
+      if (current === value) return prev
 
-    const next = Array(length)
-      .fill('')
-      .map((_, i) => value[i] ?? '')
-    setOtp(next)
-  }, [value, length, otp])
+      return Array(length)
+        .fill('')
+        .map((_, i) => value.at(i) ?? '')
+    })
+  }, [value, length])
 
   const updateOtp = (newOtp: string[]) => {
     setOtp(newOtp)
@@ -54,18 +55,18 @@ const OtpInput: React.FC<OtpInputProps> = ({
     if (!/^\d*$/.test(value)) return
 
     const newOtp = [...otp]
-    newOtp[index] = value.slice(-1)
+    newOtp.splice(index, 1, value.slice(-1))
     updateOtp(newOtp)
 
     // Move to next input
     if (value && index < length - 1) {
-      inputRefs.current[index + 1]?.focus()
+      inputRefs.current.at(index + 1)?.focus()
     }
   }
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus()
+    if (e.key === 'Backspace' && !otp.at(index) && index > 0) {
+      inputRefs.current.at(index - 1)?.focus()
     }
   }
 
@@ -74,11 +75,11 @@ const OtpInput: React.FC<OtpInputProps> = ({
     const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, length)
     const newOtp = [...otp]
     for (let i = 0; i < pastedData.length; i++) {
-      newOtp[i] = pastedData[i]
+      newOtp.splice(i, 1, pastedData.charAt(i))
     }
     updateOtp(newOtp)
     const nextIndex = Math.min(pastedData.length, length - 1)
-    inputRefs.current[nextIndex]?.focus()
+    inputRefs.current.at(nextIndex)?.focus()
   }
 
   const renderInputs = (start: number, end: number, showAutoFocus: boolean) => {
@@ -92,13 +93,14 @@ const OtpInput: React.FC<OtpInputProps> = ({
               key={index}
 
               ref={(el) => {
+                // eslint-disable-next-line security/detect-object-injection
                 inputRefs.current[index] = el
               }}
               type='text'
               readOnly={true}
               inputMode='none'
               maxLength={1}
-              value={otp[index] ?? ''}
+              value={otp.at(index) ?? ''}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               autoFocus={showAutoFocus && index === 0 && autoFocus}

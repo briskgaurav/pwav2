@@ -14,9 +14,7 @@ declare global {
 }
 
 function getStore() {
-  if (!globalThis.__emailRegistrationOtpStore) {
-    globalThis.__emailRegistrationOtpStore = new Map()
-  }
+  globalThis.__emailRegistrationOtpStore ??= new Map()
   return globalThis.__emailRegistrationOtpStore
 }
 

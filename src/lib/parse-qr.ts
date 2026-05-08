@@ -39,10 +39,20 @@ export function parseQRData(raw: string): ParsedQRData {
   // --- 2. JSON payload ---
   if (raw.trim().startsWith('{')) {
     try {
-      const json = JSON.parse(raw)
-      result.merchantName = json.merchantName ?? json.name ?? json.merchant ?? json.pn ?? undefined
-      result.amount = String(json.amount ?? json.am ?? '') ?? undefined
-      result.description = json.description ?? json.note ?? json.tn ?? json.message ?? undefined
+      const parsed = JSON.parse(raw) as unknown
+      if (typeof parsed === 'object' && parsed !== null) {
+        const json = parsed as Record<string, unknown>
+        
+        const getStr = (val: unknown): string | undefined => 
+          typeof val === 'string' ? val : undefined
+          
+        const getStrOrNum = (val: unknown): string | undefined => 
+          typeof val === 'string' || typeof val === 'number' ? String(val) : undefined
+
+        result.merchantName = getStr(json.merchantName) ?? getStr(json.name) ?? getStr(json.merchant) ?? getStr(json.pn) ?? undefined
+        result.amount = getStrOrNum(json.amount) ?? getStrOrNum(json.am) ?? undefined
+        result.description = getStr(json.description) ?? getStr(json.note) ?? getStr(json.tn) ?? getStr(json.message) ?? undefined
+      }
       return result
     } catch { /* fall through */ }
   }

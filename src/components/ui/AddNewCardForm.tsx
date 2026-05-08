@@ -75,7 +75,7 @@ export function AddNewCardForm({ initialValues, onChange, border = true, showChe
     )
 
     const errors = validateFields(values)
-    const showError = (field: keyof AddNewCardFormValues) => Boolean(touched[field] && errors[field])
+    const showError = (field: keyof AddNewCardFormValues) => Boolean(new Map(Object.entries(touched)).get(field) && new Map(Object.entries(errors)).get(field))
 
     const update = (patch: Partial<AddNewCardFormValues>) => {
         setValues((prev) => {

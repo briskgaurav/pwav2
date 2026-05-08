@@ -200,8 +200,10 @@ export default function ActionDrawer({
                 trigger: handleRef.current,
                 bounds: { minY: 0, maxY: window.innerHeight },
                 inertia: true,
-                onDragEnd: function () {
-                    const endY = this.endY ?? this.y
+                onDragEnd: () => {
+                    const instance = draggableRef.current[0]
+                    if (!instance) return
+                    const endY = instance.endY ?? instance.y
                     if (endY > threshold) {
                         handleClose()
                     } else {
@@ -261,7 +263,7 @@ export default function ActionDrawer({
                 router.push(path)
             }
         },
-        [onActionPress, selectedCard, actionRoutes, handleClose, router]
+        [onActionPress, selectedCard, actionRoutes, handleClose, router, dispatch]
     )
 
     const handleFaqPress = useCallback((action: ActionItem) => {

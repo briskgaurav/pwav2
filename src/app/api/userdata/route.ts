@@ -11,9 +11,7 @@ declare global {
 }
 
 function getOverrideStore() {
-  if (!globalThis.__userdataOverrides) {
-    globalThis.__userdataOverrides = new Map()
-  }
+  globalThis.__userdataOverrides ??= new Map()
   return globalThis.__userdataOverrides
 }
 

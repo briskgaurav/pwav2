@@ -207,7 +207,8 @@ function HowToUseCardContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const cardType = (searchParams.get('type') as CardType) || 'debit';
-    const config = CARD_TYPE_CONFIG[cardType];
+    const configMap = new Map<string, typeof CARD_TYPE_CONFIG['debit']>(Object.entries(CARD_TYPE_CONFIG));
+    const config = configMap.get(cardType) ?? CARD_TYPE_CONFIG.debit;
     const cardActions = useMemo(() => getCardActions(cardType), [cardType]);
     const { mockupImageSrc, maskedNumber } = useManagingCard();
     const userFullName = useAppSelector((s) => s.user.fullName);

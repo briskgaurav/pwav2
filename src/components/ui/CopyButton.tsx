@@ -26,7 +26,7 @@ export default function CopyButton({ value, size = 'md', className = '' }: CopyB
     
     try {
       // Try modern clipboard API first
-      if (navigator.clipboard && navigator.clipboard.writeText) {
+      if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(value)
       } else {
         // Fallback for older browsers/mobile

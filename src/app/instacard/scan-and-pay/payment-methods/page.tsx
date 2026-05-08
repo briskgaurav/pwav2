@@ -12,8 +12,9 @@ export default async function page({
 }) {
   const resolved = (await searchParams) ?? {}
 
+  const paramsMap = new Map(Object.entries(resolved))
   const pick = (key: string) => {
-    const v = resolved[key]
+    const v = paramsMap.get(key)
     return Array.isArray(v) ? v[0] : v
   }
 

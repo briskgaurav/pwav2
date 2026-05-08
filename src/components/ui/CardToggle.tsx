@@ -17,6 +17,8 @@ const tabLabels: Record<PayMode, string> = {
   balance: 'Account Balance',
 }
 
+const TABS: PayMode[] = ['instacard', 'other', 'balance']
+
 export default function CardToggle({
   active = 'instacard',
   onChange,
@@ -27,11 +29,11 @@ export default function CardToggle({
   const dividerRef0Right = useRef<HTMLDivElement>(null)
   const dividerRef2Left = useRef<HTMLDivElement>(null)
 
-  const tabs: PayMode[] = ['instacard', 'other', 'balance']
+  const tabLabelsMap = useMemo(() => new Map<string, string>(Object.entries(tabLabels)), [])
 
   // 🔥 Slider animation (GSAP) & dividers
   useEffect(() => {
-    const index = tabs.indexOf(current)
+    const index = TABS.indexOf(current)
     // Slider GSAP
     if (sliderRef.current) {
       gsap.to(sliderRef.current, {
@@ -72,7 +74,7 @@ export default function CardToggle({
         })
       }
     }
-  }, [current, tabs])
+  }, [current])
 
   const handleClick = (mode: PayMode) => {
     setCurrent(mode)
@@ -83,7 +85,7 @@ export default function CardToggle({
     <div className='bg-[#ECEEFF] mb-4  px-1 h-fit'>
       <div className=' text-sm h-fit py-0 overflow-hidden rounded-t-2xl relative text-text-primary flex w-full '>
         <div className="relative w-full flex">
-          {tabs.map((tab, idx) => {
+          {TABS.map((tab, idx) => {
             const isActive = current === tab
             return (
               <div key={tab} className="relative flex-1">
@@ -115,7 +117,7 @@ export default function CardToggle({
                         : 'opacity-100 translate-y-0'
                         }`}
                     >
-                      {tabLabels[tab]}
+                      {tabLabelsMap.get(tab)}
                     </span>
 
                     {/* 🔹 Active Content */}
@@ -129,7 +131,7 @@ export default function CardToggle({
                         Pay Using
                       </span>
                       <span className="font-medium text-primary">
-                        {tabLabels[tab]}
+                        {tabLabelsMap.get(tab)}
                       </span>
                     </div>
                   </div>

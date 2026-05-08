@@ -39,7 +39,7 @@ export const calculateBrightness = (videoEl) => {
   let sum = 0;
   for (let i = 0; i < data.length; i += 4) {
     // Luminance formula
-    sum += (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
+    sum += (data.at(i) * 0.299 + data.at(i + 1) * 0.587 + data.at(i + 2) * 0.114);
   }
 
   return sum / (size * size);
@@ -65,7 +65,7 @@ export const calculateBlurVariance = (videoEl) => {
   // Convert to grayscale
   const gray = [];
   for (let i = 0; i < data.length; i += 4) {
-    gray.push(data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
+    gray.push(data.at(i) * 0.299 + data.at(i + 1) * 0.587 + data.at(i + 2) * 0.114);
   }
 
   // Laplacian kernel
@@ -77,11 +77,11 @@ export const calculateBlurVariance = (videoEl) => {
     for (let x = 1; x < size - 1; x++) {
       const idx = y * size + x;
       const laplacian =
-        -gray[idx - size] -
-        gray[idx - 1] +
-        4 * gray[idx] -
-        gray[idx + 1] -
-        gray[idx + size];
+        -gray.at(idx - size) -
+        gray.at(idx - 1) +
+        4 * gray.at(idx) -
+        gray.at(idx + 1) -
+        gray.at(idx + size);
 
       sum += laplacian;
       sumSq += laplacian * laplacian;

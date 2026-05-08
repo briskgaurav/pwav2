@@ -38,7 +38,7 @@ function NativePinInput({
     useDots?: boolean
 }) {
     const hiddenRef = useRef<HTMLInputElement | null>(null)
-    const digits = Array.from({ length: maxLength }, (_, i) => value[i] || '')
+    const digits = Array.from({ length: maxLength }, (_, i) => value.at(i) ?? '')
   const DIGIT_KEYS = useMemo(() => Array.from({ length: maxLength }, () => crypto.randomUUID()), [maxLength])
 
     const focus = () => hiddenRef.current?.focus()
@@ -80,7 +80,7 @@ function NativePinInput({
                     const isCursor = i === value.length && value.length < maxLength
                     return (
                         <div
-                            key={DIGIT_KEYS[i]}
+                            key={DIGIT_KEYS.at(i)}
                             className={`border flex items-center justify-center text-base font-semibold text-text-primary text-center outline-none shrink-0 transition-colors ${maxLength > 6 ? 'w-10 h-10 rounded-lg' : 'w-12 h-12 rounded-xl'
                                 } ${(isCursor && 'border-primary') || (digit && 'border-text-primary') || 'border-text-secondary'
                                 }`}

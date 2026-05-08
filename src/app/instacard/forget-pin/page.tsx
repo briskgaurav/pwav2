@@ -50,11 +50,11 @@ export default function page() {
 
   useEffect(() => {
     startCamera()
+    const video = videoRef.current
 
     // Cleanup function to stop the camera when component unmounts
     return () => {
-      const video = videoRef.current
-      if (video && video.srcObject) {
+      if (video?.srcObject) {
         const stream = video.srcObject as MediaStream
         stream.getTracks().forEach(track => track.stop())
       }

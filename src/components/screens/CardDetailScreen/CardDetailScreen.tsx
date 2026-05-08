@@ -20,7 +20,8 @@ type CardDetailScreenProps = {
 }
 
 export default function CardDetailScreen({ cardType }: CardDetailScreenProps) {
-  const config = CARD_CONFIG[cardType]
+  const configMap = new Map<string, typeof CARD_CONFIG['debit']>(Object.entries(CARD_CONFIG))
+  const config = configMap.get(cardType) ?? CARD_CONFIG.debit
   const [isVerified, setIsVerified] = useState(false)
   const { imageSrc, maskedNumber } = useManagingCard()
   const router = useRouter()

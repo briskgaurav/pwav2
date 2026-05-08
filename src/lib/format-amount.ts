@@ -10,9 +10,9 @@ const TENS = [
 
 function chunkToWords(n: number): string {
   if (n === 0) return ''
-  if (n < 20) return ONES[n]
-  if (n < 100) return `${TENS[Math.floor(n / 10)]} ${ONES[n % 10]}`.trim()
-  return `${ONES[Math.floor(n / 100)]} Hundred ${chunkToWords(n % 100)}`.trim()
+  if (n < 20) return ONES.at(n) ?? ''
+  if (n < 100) return `${TENS.at(Math.floor(n / 10))} ${ONES.at(n % 10)}`.trim()
+  return `${ONES.at(Math.floor(n / 100))} Hundred ${chunkToWords(n % 100)}`.trim()
 }
 
 export function convertToWords(num: number): string {
@@ -29,7 +29,7 @@ export function convertToWords(num: number): string {
     const chunk = remaining % 1000
     if (chunk > 0) {
       const words = chunkToWords(chunk)
-      parts.unshift(scales[scaleIndex] ? `${words} ${scales[scaleIndex]}` : words)
+      parts.unshift(scales.at(scaleIndex) ? `${words} ${scales.at(scaleIndex)}` : words)
     }
     remaining = Math.floor(remaining / 1000)
     scaleIndex++

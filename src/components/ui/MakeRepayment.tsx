@@ -82,7 +82,7 @@ export default function MakeRepayment() {
               type='none'
               autoComplete="one-time-code"
               placeholder='Enter Amount'
-              value={amounts[option]}
+              value={new Map(Object.entries(amounts)).get(option) ?? ''}
               onChange={(e) =>
                 handleAmountChange(option, e.target.value)
               }

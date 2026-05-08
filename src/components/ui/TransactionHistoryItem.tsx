@@ -5,20 +5,20 @@ import { TRANSACTION_HISTORY_DATA } from '@/store/TransactionHistory'
 
 // Helper function to group transactions by month
 function groupTransactionsByMonth(transactions: typeof TRANSACTION_HISTORY_DATA) {
-  const groups: { [key: string]: typeof TRANSACTION_HISTORY_DATA } = {}
+  const groups = new Map<string, typeof TRANSACTION_HISTORY_DATA>()
   
   transactions.forEach((transaction) => {
     // Extract month and year from date string (e.g., "Jan 01 , 2025 | 8:00 PM")
     const datePart = transaction.date.split('|')[0].trim()
     const monthYear = datePart.replace(/\d+\s*,?\s*/, '').trim() // Gets "Jan 2025" format
     
-    if (!groups[monthYear]) {
-      groups[monthYear] = []
+    if (!groups.has(monthYear)) {
+      groups.set(monthYear, [])
     }
-    groups[monthYear].push(transaction)
+    groups.get(monthYear)!.push(transaction)
   })
   
-  return Object.entries(groups).map(([label, transactions]) => ({
+  return Array.from(groups.entries()).map(([label, transactions]) => ({
     label,
     transactions
   }))

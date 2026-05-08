@@ -1,3 +1,4 @@
+import Image from 'next/image';
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -174,7 +175,7 @@ function AccordionSection({
         className="w-full flex items-center justify-between px-5 py-4"
       >
         <div className="flex items-center gap-2">
-          <img src={iconSrc} alt={TYPE_LABELS[type]} className="w-6 h-6" />
+          <Image src={iconSrc} alt={TYPE_LABELS[type]} className="w-6 h-6" / width={100} height={100} unoptimized>
           <span className="text-base font-medium text-text-primary capitalize tracking-wide">
             {TYPE_LABELS[type]}
           </span>

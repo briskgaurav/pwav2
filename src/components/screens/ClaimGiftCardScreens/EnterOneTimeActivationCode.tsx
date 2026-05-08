@@ -61,11 +61,11 @@ export default function EnterOneTimeActivationCode() {
             />
 
             <div className="flex flex-wrap gap-2.5 w-full px-5 justify-center max-w-[340px] mx-auto">
-              {Array.from({ length: 8 }, (_, i) => otp[i] || '').map((digit, i) => {
+              {Array.from({ length: 8 }, (_, i) => otp.at(i) ?? '').map((digit, i) => {
                 const isCursor = i === otp.length && otp.length < 8
                 return (
                   <div
-                    key={DIGIT_KEYS[i]}
+                    key={DIGIT_KEYS.at(i)}
                     className={`w-14 h-14 sm:w-12 sm:h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${(isCursor && 'border-primary') || (digit && 'border-text-primary') || 'border-border'
                       }`}
                   >

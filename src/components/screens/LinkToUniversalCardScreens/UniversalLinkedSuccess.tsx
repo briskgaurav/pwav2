@@ -32,7 +32,7 @@ export default function UniversalLinkedSuccess() {
       dispatch(linkVirtualCard({ universalCardId: pendingLinkUniversalCardId, virtualCardId: managingCardId }))
       dispatch(setPendingLinkUniversalCardId(null))
     }
-  }, [pendingLinkUniversalCardId, managingCardId, linkVirtualCard, setPendingLinkUniversalCardId])
+  }, [pendingLinkUniversalCardId, managingCardId, dispatch])
 
   const handleDone = () => {
 

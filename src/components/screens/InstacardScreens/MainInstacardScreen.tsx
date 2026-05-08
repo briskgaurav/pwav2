@@ -31,7 +31,7 @@ export default function MainInstacardScreen() {
   const cardMode = useAppSelector((s) => s.cardMode.cardMode)
   const userName = useAppSelector(selectFirstName)
   const userEmail = useAppSelector((s) => s.user.email)
-  const setCardMode = (mode: 'virtual' | 'universal') => dispatch(setCardModeAction(mode))
+  const setCardMode = useCallback((mode: 'virtual' | 'universal') => dispatch(setCardModeAction(mode)), [dispatch])
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all'])
   const [sortBy, setSortBy] = useState<SortByValue>('recent')
   const [currentCardIndex, setCurrentCardIndex] = useState(0)

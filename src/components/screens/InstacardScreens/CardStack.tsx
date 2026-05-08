@@ -102,7 +102,7 @@ export const CardStack = forwardRef<CardStackRef, CardStackProps>(
       const idx = effectiveIndexRef.current;
 
       for (let i = 0; i < totalCards; i++) {
-        const el = cardRefs.current[i];
+        const el = cardRefs.current.at(i);
         if (!el) continue;
 
         const stackPosition = i - idx;
@@ -452,7 +452,9 @@ export const CardStack = forwardRef<CardStackRef, CardStackProps>(
         <div
           key={card.id}
           ref={(el) => {
-            cardRefs.current[index] = el;
+            if (el) {
+              cardRefs.current.splice(index, 1, el);
+            }
           }}
           className="absolute w-full max-w-[90%] mx-auto top-[13vh] left-1/2 will-change-transform"
         >

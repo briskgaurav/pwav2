@@ -12,7 +12,7 @@ export default function page() {
             description="We have successfully collected card issuance Fee of N XXXX for the Virtual Instacard you had requested to be issued."
             buttonText="Back to Home"
             
-            onButtonClick={() => {notifyUserCancelled() , router.push('/instacard')}}
+            onButtonClick={() => { notifyUserCancelled(); router.push('/instacard'); }}
             showCardPreview={false}
         />
     )

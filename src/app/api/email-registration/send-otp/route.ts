@@ -7,7 +7,7 @@ function generateOtp() {
 function maskEmail(email: string) {
   const value = (email ?? '').trim().toLowerCase()
   const [local, domain] = value.split('@')
-  if (!local ?? !domain) return ''
+  if (!local || !domain) return ''
   return `${local[0]}***@${domain}`
 }
 
@@ -22,9 +22,7 @@ declare global {
 }
 
 function getStore() {
-  if (!globalThis.__emailRegistrationOtpStore) {
-    globalThis.__emailRegistrationOtpStore = new Map()
-  }
+  globalThis.__emailRegistrationOtpStore ??= new Map()
   return globalThis.__emailRegistrationOtpStore
 }
 

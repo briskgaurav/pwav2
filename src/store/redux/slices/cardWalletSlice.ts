@@ -34,7 +34,8 @@ function generateCardNumber(): string {
 }
 
 function pickName(cardType: CardType, existingCards: CardData[]): string {
-  const names = CARD_TYPE_NAMES[cardType]
+  const namesMap = new Map(Object.entries(CARD_TYPE_NAMES))
+  const names = namesMap.get(cardType) ?? CARD_TYPE_NAMES.debit
   const usedNames = new Set(
     existingCards.filter((c) => c.cardType === cardType).map((c) => c.name)
   )
@@ -80,7 +81,8 @@ const cardWalletSlice = createSlice({
       const { cardType, cardHolderName } = action.payload
       const isGift = cardType === 'gift'
       const cardForm: CardForm = isGift ? 'virtual' : state.pendingCardForm
-      const imageId: CardImageId = cardForm === 'universal' ? 5 : CARD_TYPE_TO_IMAGE[cardType]
+      const cardImageMap = new Map<string, CardImageId>(Object.entries(CARD_TYPE_TO_IMAGE))
+      const imageId: CardImageId = cardForm === 'universal' ? 5 : (cardImageMap.get(cardType) ?? 1)
       const newCard: CardData = {
         id: generateId(),
         imageId,

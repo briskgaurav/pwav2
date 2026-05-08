@@ -30,7 +30,7 @@ const StatusIcon = ({ status }) => {
   );
 };
 
-const ValidationItem = ({ label, validation, messages }) => {
+const ValidationItem = ({ validation, messages }) => {
   const getMessage = () => {
     if (!validation) return messages.checking;
     return messages[validation.message] || messages.checking;
@@ -90,7 +90,8 @@ export default function ValidationStatus({ validations, compact = false }) {
     }
 
     const [key, validation] = failingValidations[0];
-    const messages = VALIDATION_MESSAGES[key];
+    const messagesMap = new Map(Object.entries(VALIDATION_MESSAGES));
+    const messages = messagesMap.get(key);
 
     return (
       <div className="bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">

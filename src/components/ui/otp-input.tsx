@@ -25,8 +25,8 @@ export function OTPInput({
 
   const digits = useMemo(
     () =>
-      Array.from({ length: maxLength }, (_, index) => value[index] || ''),
-    [value, maxLength, resetKey]
+      Array.from({ length: maxLength }, (_, index) => value.at(index) || ''),
+    [value, maxLength]
   );
 
   const handleChange = (index: number, inputValue: string) => {
@@ -37,29 +37,23 @@ export function OTPInput({
       const pastedDigits = inputValue
         .replace(/\D/g, '')
         .slice(0, maxLength - index);
-      const newValue = value.split('');
-      for (let i = 0; i < pastedDigits.length; i++) {
-        newValue[index + i] = pastedDigits[i];
-      }
-      const updatedValue = newValue.join('').slice(0, maxLength);
+      const updatedValue = (value.slice(0, index) + pastedDigits + value.slice(index + pastedDigits.length)).slice(0, maxLength);
       onChange?.(updatedValue);
 
       const nextIndex = Math.min(
         index + pastedDigits.length,
         maxLength - 1
       );
-      inputRefs.current[nextIndex]?.focus();
+      inputRefs.current.at(nextIndex)?.focus();
       return;
     }
 
-    const newValue = value.split('');
-    newValue[index] = inputValue.slice(-1);
-    const updatedValue = newValue.join('').slice(0, maxLength);
+    const updatedValue = (value.slice(0, index) + inputValue.slice(-1) + value.slice(index + 1)).slice(0, maxLength);
 
     onChange?.(updatedValue);
 
     if (inputValue && index < maxLength - 1) {
-      inputRefs.current[index + 1]?.focus();
+      inputRefs.current.at(index + 1)?.focus();
     }
   };
 
@@ -67,8 +61,8 @@ export function OTPInput({
     index: number,
     e: React.KeyboardEvent<HTMLInputElement>
   ) => {
-    if (e.key === 'Backspace' && !value[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
+    if (e.key === 'Backspace' && !value.at(index) && index > 0) {
+      inputRefs.current.at(index - 1)?.focus();
     }
   };
 
@@ -81,7 +75,7 @@ export function OTPInput({
     if (pastedData) {
       onChange?.(pastedData);
       const nextIndex = Math.min(pastedData.length, maxLength - 1);
-      inputRefs.current[nextIndex]?.focus();
+      inputRefs.current.at(nextIndex)?.focus();
     }
   };
 
@@ -100,7 +94,7 @@ export function OTPInput({
     >
       {digits.map((digit, index) => (
         <div
-          key={DIGIT_KEYS[index]}
+          key={DIGIT_KEYS.at(index)}
           className={`${maxLength > 6 ? 'w-10 h-10 rounded-lg' : 'w-12 h-12 rounded-xl' }  border border-text-primary flex items-center justify-center text-base font-semibold text-text-primary text-center outline-none shrink-0`}
           style={{ position: 'relative' }}
           tabIndex={-1}
@@ -108,6 +102,7 @@ export function OTPInput({
           <input
             autoComplete="one-time-code"
             ref={(el) => {
+              // eslint-disable-next-line security/detect-object-injection
               inputRefs.current[index] = el;
             }}
             type={useDots ? 'tel' : 'tel'}

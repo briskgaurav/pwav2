@@ -14,7 +14,8 @@ type ManageCardPageWrapperProps = {
 
 export default function ManageCardPageWrapper({ cardType, children }: ManageCardPageWrapperProps) {
   const [isVerified, setIsVerified] = useState(false)
-  const config = CARD_CONFIG[cardType]
+  const configMap = new Map<string, typeof CARD_CONFIG['debit']>(Object.entries(CARD_CONFIG))
+  const config = configMap.get(cardType) ?? CARD_CONFIG.debit
   const { imageSrc, maskedNumber } = useManagingCard()
 
   const handleVerified = () => {

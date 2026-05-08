@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useMemo } from 'react'
+
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -9,13 +10,13 @@ import { PlusIcon } from 'lucide-react'
 import CardPinAuth from '@/components/screens/AuthScreens/CardPinAuth'
 import SuccessScreen from '@/components/screens/AuthScreens/SuccessScreen'
 import VerificationCodeScreen from '@/components/screens/AuthScreens/VerificationCodeScreen'
-import { CardMockup, SheetContainer } from '@/components/ui'
+import { CardMockup } from '@/components/ui'
+import LayoutSheet from '@/components/ui/LayoutSheet'
 import { useManagingCard } from '@/hooks/useManagingCard'
 import { routes } from '@/lib/routes'
 import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
 import { linkVirtualCard as linkVirtualCardAction } from '@/store/redux/slices/cardWalletSlice'
 import { selectMaskedEmail, selectMaskedMobile } from '@/store/redux/slices/userSlice'
-import LayoutSheet from '@/components/ui/LayoutSheet'
 
 type LinkVirtualStep = 'pin' | 'selectCard' | 'emailOtp' | 'phoneOtp' | 'success'
 

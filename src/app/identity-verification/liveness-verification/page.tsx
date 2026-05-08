@@ -135,7 +135,7 @@ export default function LivenessVerificationPage() {
     <LayoutSheet
       needPadding={false}
       routeTitle="Liveness Verification"
-      progressNode={<IdentityVerificationProgress /> as any}
+      progressNode={<IdentityVerificationProgress />}
     >
       <div className="flex flex-col h-full">
         <div className="flex-1 flex items-start justify-center">

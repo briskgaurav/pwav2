@@ -41,7 +41,7 @@ function NativePINField({
   active: boolean
   onActivate: () => void
 }) {
-  const digits = Array.from({ length: PIN_LENGTH }, (_, i) => value[i] || '')
+  const digits = Array.from({ length: PIN_LENGTH }, (_, i) => value.at(i) ?? '')
   const DIGIT_KEYS = useMemo(() => Array.from({ length: PIN_LENGTH }, () => crypto.randomUUID()), [])
 
   const focus = () => inputRef.current?.focus()
@@ -80,7 +80,7 @@ function NativePINField({
             const isCursor = active && i === value.length && value.length < PIN_LENGTH
             return (
               <div
-                key={DIGIT_KEYS[i]}
+                key={DIGIT_KEYS.at(i)}
                 className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${(isCursor && 'border-primary') || (d && 'border-text-primary') || 'border-border'
                   }`}
               >

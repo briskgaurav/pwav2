@@ -25,10 +25,12 @@ const defaultImages: Record<CardType, string> = {
 export default function EmailStatementsScreens({ cardType }: EmailStatementsScreensProps) {
     const { imageSrc, maskedNumber } = useManagingCard()
 
+    const defaultImagesMap = new Map(Object.entries(defaultImages))
+
     return (
         <LayoutSheet routeTitle='Email Statements' needPadding={false}>
             <div className="flex-1 overflow-auto pb-[10vh] p-4 space-y-5">
-                <CardMockup imageSrc={imageSrc ?? defaultImages[cardType]} maskedNumber={maskedNumber} />
+                <CardMockup imageSrc={imageSrc ?? (defaultImagesMap.get(cardType) as string)} maskedNumber={maskedNumber} />
                 {cardType === 'credit' ? <CreditDueBalance /> : <Balance />}
                 <EmailStatements />
                 <RecentTransactions />

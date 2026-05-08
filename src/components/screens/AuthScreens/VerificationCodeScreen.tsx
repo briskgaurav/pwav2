@@ -44,7 +44,7 @@ function NativeOTPInput({
   enableAutoFill?: boolean
 }) {
   const hiddenRef = useRef<HTMLInputElement>(null)
-  const digits = Array.from({ length: maxLength }, (_, i) => value[i] ?? '')
+  const digits = Array.from({ length: maxLength }, (_, i) => value.at(i) ?? '')
   const DIGIT_KEYS = useMemo(() => Array.from({ length: maxLength }, () => crypto.randomUUID()), [maxLength])
 
   const focusInput = () => hiddenRef.current?.focus()
@@ -85,7 +85,7 @@ function NativeOTPInput({
           const isCursor = i === value.length && value.length < maxLength
           return (
             <div
-              key={DIGIT_KEYS[i]}
+              key={DIGIT_KEYS.at(i)}
               className={`w-12 h-12 rounded-[10px] border flex items-center justify-center text-base font-semibold text-text-primary shrink-0 transition-colors ${(isCursor && 'border-primary') ?? (digit && 'border-text-primary') ?? 'border-border'
                 }`}
             >

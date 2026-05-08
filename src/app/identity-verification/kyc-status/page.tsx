@@ -1,3 +1,4 @@
+import Image from 'next/image';
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
@@ -81,7 +82,7 @@ export default function KycStatusPage() {
           <div className="flex items-center relative p-4 pt-10 border border-border rounded-xl justify-between">
             <div className="w-10 h-10 rounded-full absolute top-0 left-1/2 border border-green-500 -translate-x-1/2 -translate-y-1/2 bg-primary flex items-center justify-center overflow-hidden">
               {faceScanImage && (
-                <img src={faceScanImage} alt="Face scan" className="w-full h-full object-cover" />
+                <Image src={faceScanImage} alt="Face scan" className="w-full h-full object-cover" / width={100} height={100} unoptimized>
               )}
             </div>
             <p className="text-text-primary text-sm">Face Capture &amp; Liveness</p>

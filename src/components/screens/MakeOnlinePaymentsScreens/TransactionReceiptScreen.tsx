@@ -40,7 +40,8 @@ function StatusBadge({ status }: { status: Transaction['status'] }) {
     },
   }
 
-  const { icon: Icon, label, bg, text, border } = config[status]
+  const configMap = new Map(Object.entries(config))
+  const { icon: Icon, label, bg, text, border } = configMap.get(status) ?? config.pending
 
   return (
     <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ${bg} border ${border}`}>

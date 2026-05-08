@@ -16,9 +16,7 @@ declare global {
 }
 
 function getStore() {
-  if (!globalThis.__idVerificationOtpStore) {
-    globalThis.__idVerificationOtpStore = new Map()
-  }
+  globalThis.__idVerificationOtpStore ??= new Map()
   return globalThis.__idVerificationOtpStore
 }
 
