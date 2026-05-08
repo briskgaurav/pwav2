@@ -1,152 +1,113 @@
-'use client'
+"use client"
 
-import { Button, SheetContainer } from '@/components/ui'
-import { notifyCardAdded, notifyNavigation } from '@/lib/bridge'
-import { routes } from '@/lib/routes'
-import { useAppDispatch, useAppSelector } from '@/store/redux/hooks'
-import { addCard, setPendingCardForm } from '@/store/redux/slices/cardWalletSlice'
-import { CARD_IMAGE_PATHS, type CardData } from '@/constants/cardData'
-import Image from 'next/image'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useRef, useState } from 'react'
-import { ICONS, ManageCard, PhoneIcon } from '@/constants/icons'
-import { ChevronDown } from 'lucide-react'
+import { FAQData } from "@/components/ui/FAQModal"
+import { CardType } from "@/constants/cardData"
+import { routes } from "@/lib/routes"
+import CardMockup from "@/components/ui/CardMockup"
+import AccordionItem from "@/components/ui/AccordionItem"
 import FaqIconButton from '@/components/ui/FaqIconButton'
 import FAQModal from '@/components/ui/FAQModal'
-import type { FAQData } from '@/components/ui/FAQModal'
-import CardMockup from '@/components/ui/CardMockup'
-import LayoutSheet from '../../ui/LayoutSheet'
 import ButtonComponent from '@/components/ui/ButtonComponent'
+import { useAppSelector } from '@/store/redux/hooks'
+import { selectCustomerName } from '@/store/redux/slices/cardRequestSlice'
+import { ManageCard, PhoneIcon } from '@/constants/icons'
 
-interface AccordionItemProps {
-  title: string;
-  isExpanded: boolean;
-  onToggle: () => void;
-  children: React.ReactNode;
-}
+const UNIVERSAL_CARD_DATA = {
+  label: 'Universal Card',
+  mockupImage: '/img/cards/Universal1.png',
+  description:
+    'You can simply use this Virtual Universal Card using any of the following method:',
 
-function AccordionItem({ title, isExpanded, onToggle, children }: AccordionItemProps) {
-  return (
-    <div className="bg-background2 rounded-xl border border-gray-200 overflow-hidden">
-      <button
-        onClick={onToggle}
-        className="w-full flex items-center justify-between p-4 text-left"
-      >
-        <span className="text-sm font-medium text-text-primary">{title}</span>
-        <ChevronDown
-          className={`w-5 h-5 text-text-primary transition-transform duration-200 ease-out ${isExpanded ? 'rotate-180' : 'rotate-0'
-            }`}
-        />
-      </button>
-      <div
-        className={`grid transition-all duration-200 ease-out ${isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-          }`}
-      >
-        <div className="overflow-hidden">
-          <div className="px-4 pb-4">
-            {children}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+  accordion: [
+    {
+      id: 'virtual',
+      title: 'Use Virtual Debit Card Directly',
+      intro:
+        'Open your Digital Instacard Wallet and select this card to:',
 
-const accordionData = [
-  {
-    id: 'virtual',
-    title: 'Use Universal Card Directly',
-    intro: 'Your Universal Card is ready to use:',
-    bullets: [
-      'Use at any ATM for cash withdrawals',
-      'Make payments at POS terminals in stores',
-      'Link virtual cards to use them through this Universal Card',
-    ],
-  },
-  {
-    id: 'link-virtual',
-    title: 'Link Virtual Cards',
-    intro: 'Connect your virtual cards to this Universal Card:',
-    bullets: [
-      'Link any Virtual Instacard to share the same account',
-      'Switch between linked cards anytime',
-      'Use your virtual card balance through the Universal Card',
-    ],
-  },
-];
+      bullets: [
+        'Make Online Payment using security of a Dynamic CVV',
 
-const cardActions: Array<{
-  icon: React.ReactNode;
-  text: string;
-  faqData: FAQData;
-  route: string;
-}> = [
+        'Make the selected card your Default Contactless card on your NFC enabled phone to Tap your Phone on any POS for initiating a contactless payment, similar to how you make contactless payment using a Physical Card.',
+      ],
+    },
+
+    {
+      id: 'link-physical',
+      title: 'Link to Universal Card',
+      intro:
+        'You can link this Virtual Instacard to a Universal Card:',
+
+      bullets: [
+        'Request a Universal Card from any FCMB branch near you',
+
+        'Link your Virtual Instacard to the Universal Card to share the same account and transaction history',
+
+        'Use the Universal Card at ATMs and POS terminals for cash withdrawals and in-store purchases',
+      ],
+    },
+  ],
+
+  actions: [
     {
       icon: <ManageCard />,
       text: 'Manage Card',
-      route: routes.manageCard('DEBIT_CARD'),
+
+      route: routes.manageCard('DEBIT_CARD' as CardType, 'universal'),
+
       faqData: {
-        heading: 'Manage Card',
+        heading: 'Remove Card',
+
         bulletPoints: [
-          'View and update your card settings.',
-          'Block or unblock your card temporarily.',
-          'Set transaction limits and controls.',
-          'View linked accounts and cards.',
+          'Removing a card will permanently delete it from your account.',
+
+          'All associated transactions and history will be archived.',
+
+          'You will no longer be able to use this card for any transactions.',
+
+          'If you have any pending transactions, please wait for them to complete before removing the card.',
+
+          'You can always add a new card later if needed.',
         ],
       },
     },
+
     {
       icon: <PhoneIcon />,
-      text: 'Link Virtual Card',
-      route: routes.linkPhysicalCard,
+      text: 'Link to a Virtual Card',
+
+      route: routes.linkVirtualCard,
+
       faqData: {
-        heading: 'Link Virtual Card',
+        heading: 'Link to a Virtual Card',
+
         bulletPoints: [
-          'Link any Virtual Instacard to your Universal Card.',
-          'Use your virtual card at ATMs and POS terminals.',
-          'Share the same account and transaction history.',
-          'Switch between linked cards anytime.',
+          'You can purchase a Universal Card or a Sigma card from your Bank or any Agent, Marketplace or order online.',
+
+          'Universal Card or Sigma Card offer unified card experience such that you can link any Virtual Instacard to them to start using the virtual Instacard on any POS/ATM through the linked Universal or Sigma Instacard.',
+
+          'Sigma Card is a Universal card variant of Instacard that is issued by a Bank/ FinTech to allow users to link any Virtual Instacard issued by them for making Domestic as well as International payments.',
+
+          'Universal Card is another Universal card variant of Instacard that users can link any virtual Instacard issued by any Bank/ FinTech in your country for making Domestic Payments through a single Universal Card.',
+
+          'You can simply link any one Virtual Instacard to a Universal or Sigma Cards to start using the linked Virtual Instacard from the Universal card. When you link a new Virtual Instacard to a Universal or Sigma card, previously linked Virtual Instacard is de-linked and you can start using the newly linked Virtual Card from the Universal / Sigma card.',
         ],
       },
     },
-  ];
+  ],
+
+}
 
 export default function HowToUseUniversalCard() {
   const router = useRouter()
-  const dispatch = useAppDispatch()
-  const fullName = useAppSelector((s) => s.user.fullName)
-  const cards = useAppSelector((s) => s.cardWallet.cards)
-  const cardAddedRef = useRef(false)
-  const [createdCard, setCreatedCard] = useState<CardData | null>(null)
-  const [expandedSection, setExpandedSection] = useState<string | null>('virtual')
+  const userName = useAppSelector(selectCustomerName)
+  const [expandedSection, setExpandedSection] =
+    useState<string | null>(null)
+
   const [isFaqOpen, setIsFaqOpen] = useState(false)
   const [faqData, setFaqData] = useState<FAQData | null>(null)
-
-  useEffect(() => {
-    notifyNavigation('add-universal-card-success')
-
-    if (!cardAddedRef.current) {
-      cardAddedRef.current = true
-      dispatch(setPendingCardForm('universal'))
-      dispatch(addCard({ cardType: 'DEBIT_CARD', cardHolderName: fullName }))
-    }
-  }, [dispatch, fullName])
-
-  useEffect(() => {
-    if (cardAddedRef.current && !createdCard && cards.length > 0) {
-      const lastCard = cards[cards.length - 1]
-      setCreatedCard(lastCard)
-      notifyCardAdded({
-        cardId: lastCard.id,
-        cardType: lastCard.cardType,
-        lastFourDigits: lastCard.cardNumber.slice(-4),
-      })
-    }
-  }, [cards, createdCard])
-
-  const toggleSection = (section: string) => {
-    setExpandedSection(expandedSection === section ? null : section)
-  }
 
   const openFaq = (e: React.MouseEvent, data: FAQData) => {
     e.stopPropagation()
@@ -159,95 +120,100 @@ export default function HowToUseUniversalCard() {
     setFaqData(null)
   }
 
-  const handleDone = () => {
-    router.push(routes.instacard)
-  }
-
   return (
-    <LayoutSheet routeTitle='How to Use Universal Card' needPadding={false}>
-      <div className='flex-1 flex-col flex justify-start items-center overflow-auto pb-[10vh] space-y-4 p-6'>
-        {/* Header */}
-        <div className="text-center">
-          <p className="text-sm text-text-primary">Congratulations!</p>
-          <p className="text-sm text-text-primary mt-1">Your Universal Card is now ready for usage</p>
-        </div>
+    <div className="flex pb-[10vh] flex-col gap-6 p-6">
+      {/* Card */}
 
-        {/* Card Preview - show the created universal card */}
-        <CardMockup
-          isclickable={false}
-          imageSrc={createdCard ? CARD_IMAGE_PATHS[createdCard.imageId] : '/img/cards/universal.png'}
-          maskedNumber={
-            createdCard
-              ? `**** **** **** ${createdCard.cardNumber.slice(-4)}`
-              : '**** **** **** 0000'
-          }
-        />
+      <div className="text-center">
+        <p className="text-sm text-text-primary">Hello, {userName ? userName : "Customer"}</p>
+        <p className="text-sm text-text-primary">Your Instacard is now ready for usage</p>
+      </div>
+      <CardMockup
+        isclickable={false}
+        imageSrc={UNIVERSAL_CARD_DATA.mockupImage}
+        maskedNumber="3333 4444 5555 6666"
+      />
 
-        {/* How to use section */}
-        <div className="mt-6">
-          <h2 className="text-base text-text-primary text-center">
-            How to use this card?
-          </h2>
-          <p className="text-xs text-text-primary text-center mt-2">
-            You can use your Universal Card in the following ways:
-          </p>
-        </div>
+      {/* Description */}
+      <div className="space-y-2 text-center">
+        <h2 className="text-base">
+          How to use this card?
+        </h2>
 
-        {/* Accordion Sections */}
-        <div className="mt-4 space-y-3 pb-6">
-          {accordionData.map((section) => (
-            <AccordionItem
-              key={section.id}
-              title={section.title}
-              isExpanded={expandedSection === section.id}
-              onToggle={() => toggleSection(section.id)}
-            >
-              <p className="text-xs text-text-primary mb-3">
+        <p className="text-xs">
+          {UNIVERSAL_CARD_DATA.description}
+        </p>
+      </div>
+
+      {/* Accordion */}
+      <div className="space-y-3">
+        {UNIVERSAL_CARD_DATA.accordion.map((section) => (
+          <AccordionItem
+            key={section.id}
+            title={section.title}
+            isExpanded={expandedSection === section.id}
+            onToggle={() =>
+              setExpandedSection(
+                expandedSection === section.id
+                  ? null
+                  : section.id
+              )
+            }
+          >
+            <div className="space-y-3">
+              <p className="text-xs">
                 {section.intro}
               </p>
-              <ul className="space-y-2 text-xs text-text-primary">
-                {section.bullets.map((bullet, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="text-primary">•</span>
+
+              <ul className="space-y-2 text-xs">
+                {section.bullets.map((bullet, index) => (
+                  <li
+                    key={index}
+                    className="flex gap-2"
+                  >
+                    <span>•</span>
                     <span>{bullet}</span>
                   </li>
                 ))}
               </ul>
-            </AccordionItem>
-          ))}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex w-full gap-2">
-          {cardActions.map((action, index) => (
-            <div
-              key={index}
-              onClick={() => router.push(action.route)}
-              className="w-full border flex items-start flex-col justify-between border-text-primary/20 gap-4 rounded-xl p-4"
-            >
-              <div className="flex h-[30%] items-center gap-2 w-full justify-between">
-                <div>
-                  <div className="w-7 h-auto flex items-center justify-center aspect-square">
-                    {action.icon}
-                  </div>
-                </div>
-                <FaqIconButton
-                  onClick={(e) => openFaq(e, action.faqData)}
-                />
-              </div>
-              <p className="text-xs w-full leading-[1.2]">{action.text}</p>
             </div>
-          ))}
-        </div>
+          </AccordionItem>
+        ))}
       </div>
-      <ButtonComponent title='Go To Instacard Home' onClick={handleDone} />
-      {faqData && (
-        <FAQModal
-          visible={isFaqOpen}
-          onClose={closeFaq}
-          data={faqData}
-        />
-      )}
-    </LayoutSheet>
+
+      {/* Actions */}
+      <div className="flex gap-2">
+        {UNIVERSAL_CARD_DATA.actions.map((action, index) => (
+          <div
+            key={index}
+            onClick={() => router.push(action.route)}
+            className="w-full border  border-border rounded-xl p-4 flex flex-col justify-between gap-4"
+          >
+            <div className="flex items-center justify-between w-full">
+              <div className="w-7 h-7 flex items-center justify-center">
+                {action.icon}
+              </div>
+              <FaqIconButton
+                onClick={(e) => openFaq(e, action.faqData)}
+              />
+            </div>
+
+            <p className="text-xs leading-tight">
+              {action.text}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <FAQModal
+        visible={isFaqOpen}
+        onClose={closeFaq}
+        data={faqData ?? undefined}
+      />
+      <div className="sticky bottom-0 bg-background">
+        <ButtonComponent title="Go To Instacard Home" onClick={() => router.replace(routes.instacard)} />
+      </div>
+
+    </div>
   )
 }

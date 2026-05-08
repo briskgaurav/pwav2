@@ -9,12 +9,15 @@ import { useBackRedirect } from '@/hooks/useBackRedirect'
 import { useAppDispatch } from '@/store/redux/hooks'
 import { showToast } from '@/store/redux/slices/toasterSlice'
 import { parseQRData } from '@/lib/parse-qr'
+import ButtonComponent from '@/components/ui/ButtonComponent'
+import { Button } from '@/components/ui'
+import { UserUniveralCardSteps } from '@/types/userVerificationSteps'
 
 const SCANNER_WIDTH = 320
 const SCANNER_HEIGHT = 200
 const CORNER_SIZE = 40
 
-export default function UcScanScreen() {
+export default function UcScanScreen({handleNext}: {handleNext: (step: UserUniveralCardSteps) => void}) {
   const router = useRouter()
   const dispatch = useAppDispatch()
   useBackRedirect(routes.instacard)
@@ -145,13 +148,6 @@ export default function UcScanScreen() {
   }, [])
 
 
-
-  const handleClose = useCallback(() => {
-    if ('vibrate' in navigator) navigator.vibrate(10)
-    stopCamera()
-    router.back()
-  }, [stopCamera, router])
-
   const handleRequestPermission = useCallback(() => {
     startCamera()
   }, [startCamera])
@@ -276,9 +272,6 @@ export default function UcScanScreen() {
               <span className="text-[#fff] font-semibold">Grant Camera Permission</span>
             </button>
           )}
-          <button onClick={handleClose} className="p-3 mt-2 active:opacity-70 transition-opacity">
-            <span className="text-[#fff]/60 text-sm">Go Back</span>
-          </button>
         </div>
       ) : (
         <>
@@ -344,12 +337,7 @@ export default function UcScanScreen() {
               </p>
 
               <div className="flex flex-col w-full px-6 gap-4">
-                <button 
-                  onClick={() =>{router.push(routes.addUniversalVerifyMobile)}}
-                  className="w-full bg-primary py-4 rounded-full active:scale-[0.98] transition-transform flex items-center justify-center"
-                >
-                  <span className="text-white font-semibold text-base">Continue</span>
-                </button>
+               <Button onClick={() => {handleNext('registered_email_verification')}} >Continue</Button>
               </div>
             </div>
 

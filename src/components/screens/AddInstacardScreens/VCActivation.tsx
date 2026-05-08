@@ -19,7 +19,6 @@ export default function VCCardActivation() {
   const [pinValue, setPinValue] = useState<number | undefined>(undefined);
 
   const requestId = state?.requestId ?? '';
-  const cardDetails = state?.cardDetails;
 
   const handleSetPin = (pin: number) => setPinValue(pin);
 

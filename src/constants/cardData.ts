@@ -29,15 +29,19 @@ export type CardImageId = 1 | 2 | 3 | 4 | 5;
 //   5: '/img/cards/Universal1.png',
 // };
 export const CARD_IMAGE_PATHS: Record<CardImageId, string> = {
-  1: '/img/cards/DebitCard.png',
-  2: '/img/cards/Credit1.png',
-  3: '/img/cards/prepaid1.png',
-  4: '/img/cards/Gift1.png',
-  5: '/img/cards/Universal1.png',
+  1: "/img/cards/DebitCard.png",
+  2: "/img/cards/Credit1.png",
+  3: "/img/cards/prepaid1.png",
+  4: "/img/cards/Gift1.png",
+  5: "/img/cards/Universal1.png",
 };
 
 /** All supported card types */
-export type CardType = "DEBIT_CARD" | "CREDIT_CARD" | "PREPAID_CARD" | "GIFT_CARD";
+export type CardType =
+  | "DEBIT_CARD"
+  | "CREDIT_CARD"
+  | "PREPAID_CARD"
+  | "GIFT_CARD";
 
 /** Card form type */
 export type CardForm = "universal" | "virtual";
@@ -49,10 +53,10 @@ export interface CardTypesOptions {
 }
 
 export const CARD_TYPE_OPTIONS: CardTypesOptions[] = [
-  { id: 'DEBIT_CARD', label: 'Debit Card', icon: '/svg/debitcard.svg' },
-  { id: 'CREDIT_CARD', label: 'Credit Card', icon: '/svg/creditcard.svg' },
-  { id: 'PREPAID_CARD', label: 'Pre-Paid Card', icon: '/svg/prepaidcard.svg' },
-  { id: 'GIFT_CARD', label: 'Gift A Card', icon: '/svg/giftcard.svg' },
+  { id: "DEBIT_CARD", label: "Debit Card", icon: "/svg/debitcard.svg" },
+  { id: "CREDIT_CARD", label: "Credit Card", icon: "/svg/creditcard.svg" },
+  { id: "PREPAID_CARD", label: "Pre-Paid Card", icon: "/svg/prepaidcard.svg" },
+  { id: "GIFT_CARD", label: "Gift A Card", icon: "/svg/giftcard.svg" },
 ];
 
 export interface CardData {
@@ -83,7 +87,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "12/26",
-    balance: 15000.50,
+    balance: 15000.5,
     cardType: "DEBIT_CARD",
     cardForm: "virtual",
     recentlyUsed: true,
@@ -99,7 +103,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "08/27",
-    balance: 250000.00,
+    balance: 250000.0,
     cardType: "CREDIT_CARD",
     cardForm: "virtual",
     recentlyUsed: true,
@@ -131,7 +135,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "06/25",
-    balance: 5000.00,
+    balance: 5000.0,
     cardType: "PREPAID_CARD",
     cardForm: "universal",
     recentlyUsed: true,
@@ -147,7 +151,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "12/25",
-    balance: 2500.00,
+    balance: 2500.0,
     cardType: "GIFT_CARD",
     cardForm: "universal",
     recentlyUsed: true,
@@ -163,7 +167,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "11/26",
-    balance: 175000.00,
+    balance: 175000.0,
     cardType: "CREDIT_CARD",
     cardForm: "universal",
     recentlyUsed: false,
@@ -179,7 +183,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "10/25",
-    balance: 3200.00,
+    balance: 3200.0,
     cardType: "DEBIT_CARD",
     cardForm: "virtual",
     recentlyUsed: false,
@@ -195,7 +199,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "09/27",
-    balance: 120000.00,
+    balance: 120000.0,
     cardType: "CREDIT_CARD",
     cardForm: "virtual",
     recentlyUsed: false,
@@ -211,7 +215,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "04/28",
-    balance: 10000.00,
+    balance: 10000.0,
     cardType: "PREPAID_CARD",
     cardForm: "virtual",
     recentlyUsed: false,
@@ -227,7 +231,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "07/26",
-    balance: 7500.00,
+    balance: 7500.0,
     cardType: "GIFT_CARD",
     cardForm: "virtual",
     recentlyUsed: false,
@@ -243,7 +247,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "06/27",
-    balance: 1500.00,
+    balance: 1500.0,
     cardType: "PREPAID_CARD",
     cardForm: "virtual",
     recentlyUsed: false,
@@ -259,7 +263,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "05/25",
-    balance: 3000.00,
+    balance: 3000.0,
     cardType: "GIFT_CARD",
     cardForm: "virtual",
     recentlyUsed: false,
@@ -275,7 +279,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "04/26",
-    balance: 22000.00,
+    balance: 22000.0,
     cardType: "DEBIT_CARD",
     cardForm: "virtual",
     recentlyUsed: false,
@@ -291,7 +295,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "03/27",
-    balance: 85000.00,
+    balance: 85000.0,
     cardType: "CREDIT_CARD",
     cardForm: "virtual",
     recentlyUsed: false,
@@ -307,7 +311,7 @@ export const mockCards: CardData[] = [
     cardNumber: "0000 0000 0000 0000",
     pin: "0000",
     expiry: "02/28",
-    balance: 45000.00,
+    balance: 45000.0,
     cardType: "DEBIT_CARD",
     cardForm: "universal",
     recentlyUsed: false,

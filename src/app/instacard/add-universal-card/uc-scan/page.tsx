@@ -1,4 +1,4 @@
-import UcScanScreen from '@/components/screens/AddInstacardScreens/UCScanScreen'
+import UcScanScreen from '@/components/screens/AddInstacardScreens/UniversalCardScreens/UCScanScreen'
 import LayoutSheet from '@/components/ui/LayoutSheet'
 import React from 'react'
 

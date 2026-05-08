@@ -136,6 +136,9 @@ export default function CardPinVerificationDrawer({
         if (pinLength === 6) {
             return verifyPin ?? ((p: string) => p === '111111');
         }
+        if (pinLength === 4) {
+            return verifyPin ?? ((p: string) => p === '1111');
+        }
         return verifyPin ?? ((p: string) => p === globalPin);
     };
     const verifier = useMemo(getVerifier, [globalPin, verifyPin, pinLength]);

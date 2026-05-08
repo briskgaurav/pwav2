@@ -1,11 +1,17 @@
-export type UserInstaCardSteps = 
-  | 'select_card' 
-  | 'registered_email_verification' 
-  | 'bank_verification'
-  | 'user_consent'
-  | 'success'
-  | 'card_activation'
-  | 'how_to_use_card';        // ← add this so onNext('complete') works
+export type UserInstaCardSteps =
+  | "select_card"
+  | "registered_email_verification"
+  | "bank_verification"
+  | "user_consent"
+  | "success"
+  | "card_activation"
+  | "how_to_use_card";
 
-export type BankVerifictionMethod = 'soft_token' | 'otp';  // ← underscore, not dash
-export type UIBankStep = 'select' | BankVerifictionMethod;  // 'select' | 'soft_token' | 'otp'
+export type UserUniveralCardSteps =
+  | "validate_pan"
+  | "registered_email_verification"
+  | "card_activation"
+  | "how_to_use_card"; // ← add this so onNext('complete') works
+
+export type BankVerifictionMethod = "soft_token" | "otp"; // ← underscore, not dash
+export type UIBankStep = "select" | BankVerifictionMethod; // 'select' | 'soft_token' | 'otp'
