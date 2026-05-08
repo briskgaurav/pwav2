@@ -14,8 +14,15 @@ import LayoutSheet from '@/components/ui/LayoutSheet'
 import { UserInstaCardSteps } from '@/types/userVerificationSteps'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import { saveGiftRecipientDetails } from '@/lib/api/cards'
-import { selectCardRequestId, selectSelectedCardType, setGiftCardRequest } from '@/store/redux/slices/cardRequestSlice'
 import { useAppDispatch, useAppSelector } from '@/store/redux/hooks'
+
+import {
+  selectCardRequestId,
+  selectSelectedCardType,
+  selectRecipientName,
+  selectRecipientEmail,
+  setGiftCardRequest,
+} from "@/store/redux/slices/cardRequestSlice";
 
 const TERMS_AND_CONDITIONS = {
     heading: 'Terms & Conditions',
@@ -50,7 +57,7 @@ interface GiftACardRecInfProps {
   onNext: (nextStep: UserInstaCardSteps) => void;
 }
 
-export default function GiftACardReceipientInf({
+export default function GiftACardAmount({
   onNext,
 }: GiftACardRecInfProps) {
 
@@ -58,6 +65,10 @@ export default function GiftACardReceipientInf({
     const selectedType = useAppSelector(selectSelectedCardType);
     const  dispatch = useAppDispatch();
     const requestId = useAppSelector(selectCardRequestId);
+
+    // get recipient details from redux
+    const savedRecipientName = useAppSelector(selectRecipientName);
+    const savedRecipientEmail = useAppSelector(selectRecipientEmail);
     
 
     const [amount, setAmount] = useState('')
@@ -127,50 +138,48 @@ export default function GiftACardReceipientInf({
     }
 
 const handleSuccess = async () => {
-  try {
-    // requestId can be string | null → convert safely
-    if (!requestId) {
-      console.error("Request ID is missing");
-      return;
-    }
-
-    // selectedType can be string | null → convert safely
-    if (!selectedType) {
-      console.error("Selected Card Type is missing");
-      return;
-    }
-
-        console.log("143 Recipient details saved amount : ", amount);
-
-    const response = await saveGiftRecipientDetails({
-      requestId: requestId as string,
-      recipientName,
-      recipientEmail,
-      amount: amount as string
-    });
-
-    console.log("149 Recipient details saved successfully:", response);
-
-    dispatch(
-        setGiftCardRequest({
-            requestId: response.requestId,
-            registeredEmail: response.registeredEmail ?? "",
-            emailOtpStatus: response.status ?? "",
-            selectedCardType: selectedType,
-
-            currentState: response.currentState, // OTP_EMAIL_PENDING
-            nextAction: response.nextAction,
-            recipientName: response.recipientName,
-            recipientEmail: response.recipientEmail,
-        })
-    );
 
     onNext("registered_email_verification");
-  } catch (error) {
-    console.error("Failed to save recipient details:", error);
-     onNext("gift_card_amount");
 
-  }
+//   try {
+//     // requestId can be string | null → convert safely
+//     if (!requestId) {
+//       console.error("Request ID is missing");
+//       return;
+//     }
+
+//     // selectedType can be string | null → convert safely
+//     if (!selectedType) {
+//       console.error("Selected Card Type is missing");
+//       return;
+//     }
+
+//     const response = await saveGiftRecipientDetails({
+//       requestId: requestId as string,
+//       recipientName,
+//       recipientEmail,
+//     });
+
+//     console.log("149 Recipient details saved successfully:", response);
+
+//     dispatch(
+//         setGiftCardRequest({
+//             requestId: response.requestId,
+//             registeredEmail: response.registeredEmail ?? "",
+//             emailOtpStatus: response.status ?? "",
+//             selectedCardType: selectedType,
+
+//             currentState: response.currentState, // OTP_EMAIL_PENDING
+//             nextAction: response.nextAction,
+//             recipientName: response.recipientName,
+//             recipientEmail: response.recipientEmail,
+//         })
+//     );
+
+//     onNext("registered_email_verification");
+//   } catch (error) {
+//     console.error("Failed to save recipient details:", error);
+//   }
 };
 
     return (
@@ -179,8 +188,8 @@ const handleSuccess = async () => {
                 <GiftCardHeader />
 
                 <GiftRecipientDetails
-                    recipientName={recipientName}
-                    recipientEmail={recipientEmail}
+                    recipientName={savedRecipientName ?? ""}
+                    recipientEmail={savedRecipientEmail ?? ""}
                     recipientMessage={recipientMessage}
                     onRecipientNameChange={handleRecipientNameChange}
                     onRecipientEmailChange={handleRecipientEmailChange}

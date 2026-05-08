@@ -18,6 +18,7 @@ import GiftCardConsent from "./GiftCardConsent";
 import GiftACardScreen from "../ClaimGiftCardScreens/GiftACardScreen";
 import GiftACardReceipientInf from "./GiftCardReceipientInformation";
 import DebitCardConsentScreen from "./DebitCardConsentScreen";
+import GiftACardAmount from "./GiftCardAmount";
 
 
 /**
@@ -66,7 +67,15 @@ export default function AddInstacardScreen() {
         return <SuccessScreen hideLayerSheet onButtonClick={() => handleNext('card_activation')} />
       case 'card_activation':
         return <VCCardActivation />
-      default:
+
+
+        case 'gift_card_amount':
+        // TODO: render the success / card-issued screen.
+        //return <SuccessScreen hideLayerSheet onButtonClick={handleCardActivation} />;
+        return <GiftACardAmount onNext={handleNext} />
+
+
+        default:
         return null;
     }
   };

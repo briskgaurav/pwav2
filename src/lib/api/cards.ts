@@ -1,3 +1,8 @@
+
+
+
+
+
 /**
  * Card-related backend calls. Every function here goes through `fetchWithAuth`
  * — never call `fetch` directly from feature code.
@@ -123,12 +128,116 @@ export async function verifyEmailOtp(input: VerifyEmailOtpInput): Promise<Verify
   });
 }
 
-// ─── /card/bank-otp/send ───────────────────────────────────────────────────
+//////////////////// Gift card------------------
+/** Input for `POST /api/v1/card/email-otp/verify`. */
+export interface GiftVerifyEmailOtpInput {
+  requestId: string;
+  issuerBankCode: string;
+  country: string;
+  mobileAppUserId: string;
+  customerId: string;
+  customerName: string;
+  bvn: string;
+  nin: string;
+  registeredEmail: string;
+  otp: string;
+}
+
+/** Response from `POST /api/v1/card/email-otp/verify`. */
+export interface GiftVerifyEmailOtpResponse {
+  requestId: string;
+  issuerBankCode: string;
+  country: string;
+  mobileAppUserId: string;
+  customerId: string;
+  customerName: string;
+
+  /** Card details */
+  cardType: string;
+  amount: number;
+
+  /** Gift card flow state */
+  currentState: string;
+  nextAction: string;
+
+  /** API status */
+  status: string;
+  message: string;
+}
+
+/**
+ * Verify the OTP sent to the user's registered email.
+ * Throws on `400` (invalid OTP) — caller can show "Invalid code" to the user.
+ */
+export async function GiftverifyEmailOtp(
+  input: GiftVerifyEmailOtpInput
+): Promise<GiftVerifyEmailOtpResponse> {
+  return fetchWithAuth<GiftVerifyEmailOtpResponse>(
+    '/api/v1/card/email-otp/verify',
+    {
+      method: 'POST',
+      json: {
+        ...MOCK_HOST_CONTEXT,
+        ...input,
+      },
+    }
+  );
+}
 
 /** Input for `POST /api/v1/card/bank-otp/send`. */
-export interface SendBankOtpInput {
+export interface GiftSendBankOtpInput {
   requestId: string;
+  issuerBankCode: string;
+  country: string;
+  mobileAppUserId: string;
+  customerId: string;
+  customerName: string;
+  bvn: string;
+  nin: string;
 }
+
+/** Response from `POST /api/v1/card/bank-otp/send`. */
+export interface GiftSendBankOtpResponse {
+  requestId: string;
+  issuerBankCode: string;
+  country: string;
+  mobileAppUserId: string;
+  customerId: string;
+  customerName: string;
+
+  /** Card details */
+  cardType: string;
+  amount: number;
+
+  /** Flow state */
+  currentState: string;
+  nextAction: string;
+
+  /** API status */
+  status: string;
+  message: string;
+}
+
+/**
+ * Trigger the bank to send an OTP to the customer.
+ * Called automatically after email OTP verification.
+ */
+
+export async function GiftsendBankOtp(
+  input: GiftSendBankOtpInput
+): Promise<GiftSendBankOtpResponse> {
+  return fetchWithAuth<GiftSendBankOtpResponse>(
+    '/api/v1/cards/bank-otp/send',
+    {
+      method: 'POST',
+      json: {
+        ...MOCK_HOST_CONTEXT,
+        ...input,
+      },
+    }
+  );
+}
+// ─── /card/bank-otp/send ───────────────────────────────────────────────────
 
 /** Input for `POST /api/v1/card-issuance/virtual-card/pin`. */
 export interface CardActivationInput {
@@ -163,11 +272,25 @@ export interface CardActivationResponse {
   message: string;
 }
 
+//card activation
+export async function cardActivation(input: CardActivationInput): Promise<CardActivationResponse> {
+  return fetchWithAuth<CardActivationResponse>('/api/v1/card-issuance/virtual-card/pin', {
+    method: 'POST',
+    json: { ...MOCK_HOST_CONTEXT, ...input },
+  });
+}
+
+
 /**
  * Response from `POST /api/v1/card/bank-otp/send`.
  * Same `bankOtpDestination` + `bankOtpChannel` shape as the email-OTP-verify
  * response — see {@link VerifyEmailOtpResponse} for the rationale.
  */
+/** Input for `POST /api/v1/card/bank-otp/send`. */
+export interface SendBankOtpInput {
+  requestId: string;
+}
+
 export interface SendBankOtpResponse {
   requestId: string;
   issuerBankCode: string;
@@ -359,10 +482,169 @@ export async function submitConsent(
   });
 }
 
-//card activation
-export async function cardActivation(input: CardActivationInput): Promise<CardActivationResponse> {
-  return fetchWithAuth<CardActivationResponse>('/api/v1/card-issuance/virtual-card/pin', {
+// -------------------------- GIFT CARD FLOW --------------------------
+//--------------------------Gift card //-----------------
+
+export interface RequestGiftCardInput {
+  cardType: string;
+  issuerBankCode?: string;
+  country?: string;
+  mobileAppUserId?: string;
+  customerId?: string;
+  customerName?: string;
+  bvn?: string;
+  nin?: string;
+}
+
+export interface RequestGiftCardResponse {
+  requestId: string;
+  issuerBankCode: string;
+  country: string;
+  mobileAppUserId: string;
+  customerId: string;
+  customerName: string;
+  cardType: string;
+  currentState: string;
+  nextAction: string;
+  status: string;
+  message: string;
+}
+
+/**
+ * Initiate a new card request. Returns a `requestId` plus the registered
+ * email and OTP status to drive the next verification step.
+ */
+export async function requestGiftCardStatus(input: RequestGiftCardInput): Promise<RequestCardResponse> {
+  const payload: Required<RequestGiftCardInput> = {
+    ...MOCK_HOST_CONTEXT,
+    ...input,
+  };
+
+  return fetchWithAuth<RequestCardResponse>('/api/v1/cards/request', {
     method: 'POST',
-    json: { ...MOCK_HOST_CONTEXT, ...input },
+    json: payload,
   });
+}
+
+// ----------------------------------------------------
+// STEP 2 → Capture Recipient Details
+// POST /api/v1/cards/{requestId}/gift/recipient-details
+// ----------------------------------------------------
+
+export interface GiftRecipientDetailsInput {
+  requestId: string;
+  recipientName: string;
+  recipientEmail: string;
+  amount: string;
+}
+
+export interface GiftRecipientDetailsResponse {
+  requestId: string;
+  currentState: string; // OTP_EMAIL_PENDING
+  nextAction: string;
+  registeredEmail: string;
+  recipientName: string;
+  recipientEmail: string;
+  status: string;
+  message: string;
+}
+
+export async function saveGiftRecipientDetails(
+  input: GiftRecipientDetailsInput,
+): Promise<GiftRecipientDetailsResponse> {
+  return fetchWithAuth<GiftRecipientDetailsResponse>(
+    `/api/v1/cards/${input.requestId}/gift/recipient-details`,
+    {
+      method: 'POST',
+      json: { ...MOCK_HOST_CONTEXT, ...input },
+    },
+  );
+}
+
+// ----------------------------------------------------
+// STEP 6 → Recipient Code Validation
+// POST /api/v1/cards/{requestId}/gift/recipient-code
+// ----------------------------------------------------
+
+export interface VerifyRecipientCodeInput {
+  requestId: string;
+  recipientCode: string;
+}
+
+export interface VerifyRecipientCodeResponse {
+  requestId: string;
+  currentState: string; // SENDER_CODE_PENDING
+  nextAction: string;
+  status: string;
+  message: string;
+}
+
+export async function verifyRecipientCode(
+  input: VerifyRecipientCodeInput,
+): Promise<VerifyRecipientCodeResponse> {
+  return fetchWithAuth<VerifyRecipientCodeResponse>(
+    `/api/v1/cards/${input.requestId}/gift/recipient-code`,
+    {
+      method: 'POST',
+      json: {
+        recipientCode: input.recipientCode,
+      },
+    },
+  );
+}
+
+// ----------------------------------------------------
+// STEP 7 → Sender Code Validation
+// POST /api/v1/cards/{requestId}/gift/sender-code
+// ----------------------------------------------------
+
+export interface VerifySenderCodeInput {
+  requestId: string;
+  senderCode: string;
+}
+
+export interface VerifySenderCodeResponse {
+  requestId: string;
+  currentState: string; // ACTIVE
+  nextAction: string;   // SHOW_CARD_ACTIVE
+  status: string;
+  message: string;
+}
+
+export async function verifySenderCode(
+  input: VerifySenderCodeInput,
+): Promise<VerifySenderCodeResponse> {
+  return fetchWithAuth<VerifySenderCodeResponse>(
+    `/api/v1/cards/${input.requestId}/gift/sender-code`,
+    {
+      method: 'POST',
+      json: {
+        senderCode: input.senderCode,
+      },
+    },
+  );
+}
+
+// ----------------------------------------------------
+// STEP 8 → Get Gift Card Status
+// GET /api/v1/cards/{requestId}/status
+// ----------------------------------------------------
+
+export interface GiftCardStatusResponse {
+  requestId: string;
+  currentState: string; // ACTIVE
+  nextAction: string;   // SHOW_CARD_ACTIVE
+  status: string;
+  message: string;
+}
+
+export async function getGiftCardStatus(
+  requestId: string,
+): Promise<GiftCardStatusResponse> {
+  return fetchWithAuth<GiftCardStatusResponse>(
+    `/api/v1/cards/${requestId}/status`,
+    {
+      method: 'GET',
+    },
+  );
 }

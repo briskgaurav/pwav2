@@ -96,6 +96,7 @@ export default function VerificationCodeScreen({
 
     try {
       if (onVerify) {
+        console.log("99 VerificationCodeScreen.tsx , code : ", code);
         await onVerify(code);
       } else {
         await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -142,6 +143,7 @@ export default function VerificationCodeScreen({
     } finally {
       setIsResending(false);
     }
+
   };
 
   const isCodeComplete = code.length === MAX_CODE_LENGTH;

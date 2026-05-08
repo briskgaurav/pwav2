@@ -88,9 +88,9 @@ export function AddMoneyForm({ amount, onAmountChange, onSelectRecommended, onOp
                     })}
                 </div>
 
-                <Button fullWidth className='bg-primary text-white' onClick={onOpenModal} disabled={isButtonDisabled}>
+                {/* <Button fullWidth className='bg-primary text-white' onClick={onOpenModal} disabled={isButtonDisabled}>
                     {btnTitle}
-                </Button>
+                </Button> */}
             </div>
         </div>
     )

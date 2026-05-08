@@ -50,6 +50,12 @@ interface CardRequestState {
   bankOtpMatchStatus: string | null
 
   maskedPan: string | null
+
+  // Gift Card fields
+  currentState: string | null
+  nextAction: string | null
+  recipientName: string | null
+  recipientEmail: string | null
 }
 
 const initialState: CardRequestState = {
@@ -63,6 +69,12 @@ const initialState: CardRequestState = {
   bankOtpStatus: null,
   bankOtpMatchStatus: null,
   maskedPan: null,
+
+  // Gift Card initial values
+  currentState: null,
+  nextAction: null,
+  recipientName: null,
+  recipientEmail: null,
 }
 
 const cardRequestSlice = createSlice({
@@ -143,6 +155,31 @@ const cardRequestSlice = createSlice({
       state.maskedPan = action.payload
     },
 
+    /** Gift card */
+    setGiftCardRequest: (
+      state,
+      action: PayloadAction<{
+        requestId: string
+        registeredEmail: string
+        emailOtpStatus: string
+        selectedCardType: CardType
+        currentState: string
+        nextAction: string
+        recipientName: string
+        recipientEmail: string
+      }>
+    ) => {
+      state.requestId = action.payload.requestId
+      state.registeredEmail = action.payload.registeredEmail
+      state.emailOtpStatus = action.payload.emailOtpStatus
+      state.selectedCardType = action.payload.selectedCardType
+      state.currentState = action.payload.currentState
+      state.nextAction = action.payload.nextAction
+      state.recipientName = action.payload.recipientName
+      state.recipientEmail = action.payload.recipientEmail
+    },
+
+
     /** Reset back to the initial empty state when the flow ends or restarts. */
     clearCardRequest: () => initialState,
   },
@@ -154,11 +191,18 @@ const cardRequestSlice = createSlice({
     selectCardRequestBankOtpDestination: (state) => state.bankOtpDestination,
     selectCardRequestBankOtpChannel: (state) => state.bankOtpChannel,
     selectMaskedPan: (state) => state.maskedPan,
+
+    // Gift Card selectors
+    selectCurrentState: (state) => state.currentState,
+    selectNextAction: (state) => state.nextAction,
+    selectRecipientName: (state) => state.recipientName,
+    selectRecipientEmail: (state) => state.recipientEmail,
   },
 })
 
 export const {
   setCardRequest,
+  setGiftCardRequest,
   setSelectedCardType,
   setEmailOtpVerified,
   setBankOtpSent,
@@ -174,6 +218,12 @@ export const {
   selectCardRequestBankOtpDestination,
   selectCardRequestBankOtpChannel,
   selectMaskedPan,
+
+  // Gift Card selectors
+  selectCurrentState,
+  selectNextAction,
+  selectRecipientName,
+  selectRecipientEmail,
 } = cardRequestSlice.selectors
 
 export default cardRequestSlice.reducer

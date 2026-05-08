@@ -37,7 +37,7 @@ export default function CreditCardConsent({ onNext }: CreditCardConsentProps) {
   const [approvedCreditLimit, setApprovedCreditLimit] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   
 
   useEffect(() => {

@@ -5,6 +5,7 @@ export type UserInstaCardSteps =
   | 'bank_verification'
   | 'user_consent'
   | 'success'
+  | 'gift_card_amount'
   | 'card_activation';             // ← add this so onNext('complete') works
 
 export type BankVerifictionMethod = 'soft_token' | 'otp';  // ← underscore, not dash

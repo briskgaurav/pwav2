@@ -10,7 +10,7 @@ import { haptic } from '@/lib/useHaptics'
 import { CARD_TYPE_OPTIONS, type CardType } from "@/constants/cardData"
 import { UserInstaCardSteps } from "@/types/userVerificationSteps"
 import { notifyNavigation } from "@/lib/bridge"
-import { requestCard } from "@/lib/api/cards"
+import { requestCard, requestGiftCardStatus } from "@/lib/api/cards"
 import { ApiError, AuthError } from "@/lib/api/errors"
 import { useAppDispatch } from "@/store/redux/hooks"
 import { setCardRequest } from "@/store/redux/slices/cardRequestSlice"
@@ -39,18 +39,29 @@ export default function SelectCardTypes({
     setSubmitting(true);
     try {
 
-      const response = await requestCard({ cardType: selectedType });
-      dispatch(setCardRequest({
-        requestId: response.requestId,
-        registeredEmail: response.registeredEmail,
-        emailOtpStatus: response.otpStatus,
-        selectedCardType: selectedType,
-      }));
-
       if(selectedType == 'GIFT_CARD'){
-         return onNext('prepare_gift_card');
-      }
+        const response = await requestGiftCardStatus({ cardType: selectedType });
+        dispatch(setCardRequest({
+          requestId: response.requestId,
+          registeredEmail: response.registeredEmail,
+          emailOtpStatus: response.otpStatus,
+          selectedCardType: selectedType,
+        }));
+
+        onNext('prepare_gift_card');
+
+      }else{
+        const response = await requestCard({ cardType: selectedType });
+        dispatch(setCardRequest({
+          requestId: response.requestId,
+          registeredEmail: response.registeredEmail,
+          emailOtpStatus: response.otpStatus,
+          selectedCardType: selectedType,
+        }));
+
       onNext('registered_email_verification');
+
+    }
 
     } catch (err) {
       // AuthError is terminal — host SDK has already been notified by the
@@ -111,3 +122,4 @@ export default function SelectCardTypes({
     </div>
   )
 }
+
