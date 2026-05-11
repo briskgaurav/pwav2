@@ -1,4 +1,4 @@
-import AddUniversalCardScreen from '@/components/screens/AddInstacardScreens/AddUniversalCardScreen'
+import AddUniversalCardScreen from '@/components/screens/UniversalCardScreens/AddUniversalCardScreen'
 import React from 'react'
 
 export default function page() {
