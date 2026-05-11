@@ -10,8 +10,8 @@ import CardPinVerificationDrawer from "../AuthScreens/CardPinVerificationDrawer"
 
 // Dynamic array of virtual cards (2 cards as requested)
 const VIRTUAL_CARDS_DATA = [
-    { id: "1", cardNumber: "*******1231", isLinked: false },
-    { id: "2", cardNumber: "*******1223", isLinked: true },
+    // { id: "1", cardNumber: "*******1231", isLinked: false },
+    // { id: "2", cardNumber: "*******1223", isLinked: true },
 ];
 
 interface Props {
