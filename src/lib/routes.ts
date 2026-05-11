@@ -86,14 +86,8 @@ export const routes = {
   // Virtual card linking
   linkVirtualCard: "/instacard/link-virtual-card",
 
-  // Physical card linking
-  linkPhysicalCard: "/instacard/link-universal-card",
-  sigmaCardsOptions: "/instacard/link-universal-card/sigma-cards-options",
-  faceVerification: "/instacard/link-universal-card/face-verification",
-  bvnVerification: "/instacard/link-universal-card/bvn-verification",
-  linkVerifyEmail: "/instacard/link-universal-card/verify-email",
-  linkVerifyOtp: "/instacard/link-universal-card/verify-otp",
-  linkedSuccess: "/instacard/link-universal-card/linked-success",
+  // Physical card linking (now backend-driven via add-universal-card)
+  linkPhysicalCard: "/instacard/add-universal-card",
 
   // Registration / KYC flow
   registrationVerificationMethod: "/registration/verification-method",
