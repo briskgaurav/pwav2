@@ -1,6 +1,9 @@
-import { CardLinkStateResponse, InitiateLinkRequest } from '@/types/cardLinking';
-import { MOCK_HOST_CONTEXT } from './__mocks__/hostContext';
-import { fetchWithAuth } from './fetchWithAuth';
+import {
+  CardLinkStateResponse,
+  InitiateLinkRequest,
+} from "@/types/cardLinking";
+import { MOCK_HOST_CONTEXT } from "./__mocks__/hostContext";
+import { fetchWithAuth } from "./fetchWithAuth";
 // import type { CardLinkStateResponse, InitiateLinkRequest } from '@/types/cardLinking';
 
 // ─── POST /api/v1/card-link/initiate ────────────────────────────────────────
@@ -25,9 +28,9 @@ export async function initiateCardLink(
     ...(vcCardId ? { vcCardId } : {}),
   };
 
-  return fetchWithAuth<CardLinkStateResponse>('/api/v1/card-link/initiate', {
-    method: 'POST',
-    headers: { 'Idempotency-Key': crypto.randomUUID() },
+  return fetchWithAuth<CardLinkStateResponse>("/api/v1/card-link/initiate", {
+    method: "POST",
+    headers: { "Idempotency-Key": crypto.randomUUID() },
     json: payload,
   });
 }
@@ -42,7 +45,7 @@ export async function verifyVcPin(
   return fetchWithAuth<CardLinkStateResponse>(
     `/api/v1/card-link/${requestId}/verify-vc-pin`,
     {
-      method: 'POST',
+      method: "POST",
       json: {
         pin,
         ...(vcCardId ? { vcCardId } : {}),
@@ -60,7 +63,7 @@ export async function selectUc(
   return fetchWithAuth<CardLinkStateResponse>(
     `/api/v1/card-link/${requestId}/select-uc`,
     {
-      method: 'POST',
+      method: "POST",
       json: { ucCardId },
     },
   );
@@ -71,12 +74,16 @@ export async function selectUc(
 export async function verifyUcPin(
   requestId: string,
   pin: string,
+  vcCardId?: string,
 ): Promise<CardLinkStateResponse> {
   return fetchWithAuth<CardLinkStateResponse>(
     `/api/v1/card-link/${requestId}/verify-uc-pin`,
     {
-      method: 'POST',
-      json: { pin },
+      method: "POST",
+      json: {
+        pin,
+        ...(vcCardId ? { vcCardId } : {}),
+      },
     },
   );
 }
@@ -94,7 +101,7 @@ export async function provideUcPan(
   return fetchWithAuth<CardLinkStateResponse>(
     `/api/v1/card-link/${requestId}/provide-uc-pan`,
     {
-      method: 'POST',
+      method: "POST",
       json: { ucPanFull },
     },
   );
@@ -109,7 +116,7 @@ export async function setupUcPin(
   return fetchWithAuth<CardLinkStateResponse>(
     `/api/v1/card-link/${requestId}/setup-uc-pin`,
     {
-      method: 'POST',
+      method: "POST",
       json: { pin },
     },
   );
@@ -124,7 +131,7 @@ export async function selectVc(
   return fetchWithAuth<CardLinkStateResponse>(
     `/api/v1/card-link/${requestId}/select-vc`,
     {
-      method: 'POST',
+      method: "POST",
       json: { vcCardId },
     },
   );
@@ -143,7 +150,7 @@ export async function resumeCardLink(
   return fetchWithAuth<CardLinkStateResponse>(
     `/api/v1/card-link/${requestId}/resume`,
     {
-      method: 'POST',
+      method: "POST",
     },
   );
 }

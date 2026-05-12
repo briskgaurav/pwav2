@@ -22,7 +22,7 @@ export default function UniversalCardMethods({ handleNext }: { handleNext: (step
                 // are structurally compatible for the fields we need (requestId, nextAction)
                 const response = await call(() => initiateCardLink() as any)
                 // console.log(response)
-                dispatch(setCardLinkingData({ response }))
+                // dispatch(setCardLinkingData({ response }))
             } catch (error) {
                 console.error("Failed to initiate card link:", error)
             }
@@ -35,32 +35,32 @@ export default function UniversalCardMethods({ handleNext }: { handleNext: (step
     }
 
     const handleContinue = async () => {
-        try {
-            if (cardLinkingData.response?.requestId) {
-                console.log(cardLinkingData.response.requestId)
-                const response = await call(() => selectUc(
-                    cardLinkingData.response.requestId,
-                    cardNumber.replace(/\s+/g, '')
-                ) as any)
-                dispatch(setCardLinkingData({ response }))
-              
-            }
-        } catch (error) {
-            console.error("Failed to select UC:", error)
-        }
-              handleNext('registered_email_verification')
+        // try {
+        //     if (cardLinkingData.response?.requestId) {
+        //         console.log(cardLinkingData.response.requestId)
+        //         const response = await call(() => selectUc(
+        //             cardLinkingData.response.requestId,
+        //             cardNumber.replace(/\s+/g, '')
+        //         ) as any)
+        //         dispatch(setCardLinkingData({ response }))
+
+        //     }
+        // } catch (error) {
+        //     console.error("Failed to select UC:", error)
+        // }
+        // handleNext('registered_email_verification')
 
     }
 
     return (
         <>
             {UniversalCardMethod === 'input-field' ? (
-                <EnterUniversalCard 
-                    handleContinue={handleContinue} 
-                    cardNumber={cardNumber} 
-                    setCardNumber={setCardNumber} 
-                    handleNext={handleNext} 
-                    handleMethodChange={handleMethodChange} 
+                <EnterUniversalCard
+                    handleContinue={handleContinue}
+                    cardNumber={cardNumber}
+                    setCardNumber={setCardNumber}
+                    handleNext={handleNext}
+                    handleMethodChange={handleMethodChange}
                 />
             ) : (
                 <UcScanScreen handleNext={handleNext} />

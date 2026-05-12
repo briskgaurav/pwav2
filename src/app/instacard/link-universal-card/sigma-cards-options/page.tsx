@@ -1,13 +1,20 @@
 
 
 
-import SigmaCardOptionsScreen from '@/components/screens/LinkToUniversalCardScreens/SigmaCardOptionsScreen'
+// import SigmaCardOptionsScreen from '@/components/screens/LinkToUniversalCardScreens/SigmaCardOptionsScreen'
 
+
+// export default function page() {
+
+
+//   return (
+//     <SigmaCardOptionsScreen />
+//   )
+// }
+import React from 'react'
 
 export default function page() {
-
-
   return (
-    <SigmaCardOptionsScreen />
+    <div>page</div>
   )
 }

@@ -24,7 +24,7 @@ export default function AddUniversalCardScreen() {
       case 'validate_pan':
         return <UniversalCardMethods handleNext={handleNext} />;
       case 'registered_email_verification':
-        return <VerifyRegisteredEmail  handleNext={handleNext} />;
+        return <VerifyRegisteredEmail handleNext={handleNext} />;
       case 'card_activation':
         return <UCPinSetup onNext={handleNext} />
       case 'how_to_use_card':

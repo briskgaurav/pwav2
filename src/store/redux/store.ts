@@ -26,6 +26,7 @@ import limitSettingReducer from './slices/limitSettingSlice'
 import onlinePaymentReducer from './slices/onlinePaymentSlice'
 import toasterReducer from './slices/toasterSlice'
 import cardLinkingReducer from './slices/cardLinkingSlice'
+import cardDataWalletReducer from './slices/cardDataWalletSlice'
 
 const persistConfig = {
   key: 'root',
@@ -57,6 +58,7 @@ const rootReducer = combineReducers({
   onlinePayment: onlinePaymentReducer,
   toaster: toasterReducer,
   cardLinking: cardLinkingReducer,
+  cardDataWallet: cardDataWalletReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

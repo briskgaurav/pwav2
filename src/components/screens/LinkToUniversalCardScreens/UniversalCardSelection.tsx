@@ -8,7 +8,7 @@ import { routes } from "@/lib/routes";
 import { LinkLinkVirtualCardSteps } from "@/types/cardsLinkingSteps";
 import CardPinVerificationDrawer from "../AuthScreens/CardPinVerificationDrawer";
 import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
-import { fetchAllCards, selectVirtualCards, selectCardsStatus } from "@/store/redux/slices/cardDataWalletSlice";
+import { fetchAllCards, selectCardsStatus, selectUniversalCards } from "@/store/redux/slices/cardDataWalletSlice";
 import { useEffect } from "react";
 import { initiateCardLink, verifyVcPin, verifyUcPin } from "@/lib/api/cardLinkApi";
 import { setCardLinkingData, selectCardLinkingData } from "@/store/redux/slices/cardLinkingSlice";
@@ -17,9 +17,9 @@ interface Props {
     handleNext: (step: LinkLinkVirtualCardSteps) => void;
 }
 
-export default function VirtualCardSelections({ handleNext }: Props) {
+export default function UniversalCardSelection({ handleNext }: Props) {
     const dispatch = useAppDispatch();
-    const virtualCards = useAppSelector(selectVirtualCards);
+    const universalCards = useAppSelector(selectUniversalCards);
     const cardsStatus = useAppSelector(selectCardsStatus);
 
     useEffect(() => {
@@ -33,11 +33,11 @@ export default function VirtualCardSelections({ handleNext }: Props) {
     const [pinDrawOpen, setPinDrawOpen] = useState(false);
 
 
-    // Treat all fetched virtual cards as unlinked for now
-    const unlinkedVirtualCards = virtualCards;
-    const linkedVirtualCards: typeof virtualCards = [];
+    // Treat all fetched universal cards as unlinked for now
+    const unlinkedUniversalCards = universalCards;
+    const linkedUniversalCards: typeof universalCards = [];
 
-    const isAvailableForLinking = unlinkedVirtualCards.length > 0;
+    const isAvailableForLinking = unlinkedUniversalCards.length > 0;
     const cardLinkingData = useAppSelector(selectCardLinkingData);
 
     const handleNextClick = (e: React.MouseEvent) => {
@@ -47,13 +47,13 @@ export default function VirtualCardSelections({ handleNext }: Props) {
         }
     };
 
-    const HandleVerifyVCPin = (PIN: string) => {
-        const selectedCardObj = virtualCards.find(c => c.cardId === selectedCard);
+    const HandleVerifyUCPin = (PIN: string) => {
+        const selectedCardObj = universalCards.find(c => c.cardId === selectedCard);
         console.log(selectedCardObj)
         return selectedCardObj?.defaultPin === PIN;
 
-        // CHECK VERIFY VC PIN API!
-        // verifyVcPin
+        // CHECK VERIFY UC PIN API!
+        // verifyUcPin
     }
 
 
@@ -80,12 +80,12 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                 <>
                     <p className="font-medium text-sm">
                         {isAvailableForLinking
-                            ? "Link this Universal Instacard to a Virtual Instacard"
-                            : "No virtual cards available, Please add a virtual card first!"}
+                            ? "Link this Virtual Instacard to a Universal Instacard"
+                            : "No Universal Instacards available, Please add a Universal Instacard first!"}
                     </p>
                     <div className="-mt-5">
                         <CardMockup
-                            imageSrc={"/img/cards/Universal1.png"}
+                            imageSrc={"/img/cards/debit.png"}
                             isclickable={false}
                             showActions={false}
                             showNumber={false}
@@ -95,8 +95,8 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                     {isAvailableForLinking && (
                         <>
                             <p className="mt-4 text-sm">
-                                You have following Virtual Instacard available for linking to
-                                this Universal Card issued by <strong>FCMB.</strong>
+                                You have following Universal Instacard available for linking to
+                                this Virtual Card issued by <strong>FCMB.</strong>
                             </p>
                             <p className="text-sm text-left w-full">
                                 Select the one you want to link to this Instacard
@@ -104,12 +104,12 @@ export default function VirtualCardSelections({ handleNext }: Props) {
 
                             <div className="flex flex-col items-start justify-start w-full mt-4 space-y-3">
                                 {/* Unlinked Virtual Cards */}
-                                {unlinkedVirtualCards.length > 0 && (
+                                {unlinkedUniversalCards.length > 0 && (
                                     <>
                                         <p className="text-xs text-text-secondary font-medium">
-                                            Available Virtual Cards
+                                            Available Universal Cards
                                         </p>
-                                        {unlinkedVirtualCards.map((card) => (
+                                        {unlinkedUniversalCards.map((card) => (
                                             <button
                                                 key={card.cardId}
                                                 onClick={() => setSelectedCard(card.cardId)}
@@ -139,7 +139,7 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                                                     )}
                                                 </div>
                                                 <span className="text-sm text-text-primary">
-                                                    {card.maskedCardNumber} ( Virtual Card )
+                                                    {card.maskedCardNumber} ( Universal Card )
                                                 </span>
                                             </button>
                                         ))}
@@ -147,13 +147,13 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                                 )}
 
                                 {/* Linked Virtual Cards */}
-                                {linkedVirtualCards.length > 0 && (
+                                {linkedUniversalCards.length > 0 && (
                                     <>
                                         <div className="mb-6 w-full space-y-4">
                                             <p className="text-xs text-text-secondary font-medium mt-4">
-                                                Already Linked Virtual Cards
+                                                Already Linked Universal Cards
                                             </p>
-                                            {linkedVirtualCards.map((card) => (
+                                            {linkedUniversalCards.map((card) => (
                                                 <button
                                                     key={card.cardId}
                                                     disabled
@@ -162,7 +162,7 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                                                     <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center border-text-primary/20" />
                                                     <div className="flex flex-col items-start">
                                                         <span className="text-sm text-text-primary">
-                                                            {card.maskedCardNumber} ( Virtual Card )
+                                                            {card.maskedCardNumber} ( Universal Card )
                                                         </span>
                                                         <span className="text-xs text-orange">
                                                             Already linked
@@ -174,11 +174,11 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                                     </>
                                 )}
 
-                                {unlinkedVirtualCards.length > 0 && (
+                                {unlinkedUniversalCards.length > 0 && (
                                     <Checkbox
                                         checked={consentChecked}
                                         onChange={(checked) => setConsentChecked(checked)}
-                                        label={`I consent to link this Virtual Instacard to my Universal Instacard I have selected above`}
+                                        label={`I consent to link this Universal Instacard to my virtual Instacard I have selected above`}
                                     />
                                 )}
                             </div>
@@ -197,10 +197,10 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                     Next
                 </Link>
                 <Link
-                    href={routes.addInstacard}
+                    href={routes.addUniversalCard}
                     className={`border-primary border p-4 gap-2 text-center text-text-primary flex items-center justify-center rounded-full w-full `}
                 >
-                    <PlusIcon /> <p>Add New Virtual Instacard</p>
+                    <PlusIcon /> <p>Add New Universal Instacard</p>
                 </Link>
             </div>
 
@@ -210,7 +210,7 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                 subtitle="Enter your PIN to continue"
                 showTitle={false}
                 onClose={() => setPinDrawOpen(false)}
-                verifyPin={HandleVerifyVCPin}
+                verifyPin={HandleVerifyUCPin}
                 onVerified={pinVerifySuccess}
                 fieldLength={4}
             />

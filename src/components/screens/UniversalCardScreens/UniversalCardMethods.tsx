@@ -1,8 +1,8 @@
 'use client'
 import { useState } from 'react'
 import type { UserUniveralCardSteps } from '@/types/userVerificationSteps'
-import UcScanScreen from '../AddInstacardScreens/UCScanScreen'
 import EnterUniversalCard from './EnterUniversalCard'
+import UcScanScreen from '../AddInstacardScreens/UniversalCardScreens/UCScanScreen'
 
 export default function UniversalCardMethods({handleNext}: {handleNext: (step: UserUniveralCardSteps) => void}) {
     const [UniversalCardMethod, setUniversalCardMethod] = useState('input-field')

@@ -14,7 +14,7 @@ type CardPinVerificationDrawerProps = {
     title?: string
     showTitle?: boolean
     subtitle?: string
-    onVerified: () => void
+    onVerified: (pin: string) => void
     fieldLength:number,
     /** Optional custom verifier; defaults to comparing against redux `s.card.pin` */
     verifyPin?: (pin: string) => boolean
@@ -186,7 +186,7 @@ export default function CardPinVerificationDrawer({
         const ok = verifier(pin)
         if (ok) {
             onDonePressed?.()
-            onVerified()
+            onVerified(pin)
             return true
         }
         setError('Incorrect PIN')

@@ -25,7 +25,6 @@ export type SuccessScreenProps = {
 };
 
 export default function SuccessScreen({
-
   title,
   description,
   buttonText,
@@ -49,9 +48,8 @@ export default function SuccessScreen({
   const handleButtonClick = onButtonClick ?? (() => router.push(routes.pinSetup(cardType)));
 
   return (
-    <LayoutSheet routeTitle="Success" needPadding={false} hideLayerSheet={hideLayerSheet}>
-      {/* <Header title="Success" /> */}
 
+    <>
       <div className="flex-1 flex flex-col items-start justify-start p-6 py-10 gap-10 text-center">
         {/* Success checkmark animation */}
         <div className="w-full flex  relative flex-col items-center justify-start animate-scale-in">
@@ -87,6 +85,7 @@ export default function SuccessScreen({
       </div>
       <ButtonComponent title={displayButtonText} onClick={handleButtonClick} />
 
-    </LayoutSheet>
+</>
+  
   );
 }

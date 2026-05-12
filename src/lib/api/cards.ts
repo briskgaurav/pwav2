@@ -451,3 +451,72 @@ export async function cardActivation(input: CardActivationInput): Promise<CardAc
     json: { ...MOCK_HOST_CONTEXT, ...input },
   });
 }
+
+
+// ─── /cards/virtual-cards ──────────────────────────────────────────────────
+
+/** Response item for `GET /api/cards/virtual-cards`. */
+export interface VirtualCard {
+  cardId: string;
+  cardType: string;
+  maskedCardNumber: string;
+  balance: number;
+  status: string;
+  currency: string;
+  defaultPin?: string;
+}
+
+/** Input for `GET /api/cards/virtual-cards`. */
+export interface GetVirtualCardsInput {
+  email: string;
+  bvn: string;
+  nin: string;
+}
+
+/**
+ * Fetch all virtual cards associated with the user's identity.
+ */
+export async function getVirtualCards(input: GetVirtualCardsInput): Promise<VirtualCard[]> {
+  const query = new URLSearchParams({
+    email: input.email,
+    bvn: input.bvn,
+    nin: input.nin,
+  }).toString();
+
+  return fetchWithAuth<VirtualCard[]>(`/api/cards/virtual-cards?${query}`, {
+    method: 'GET',
+  });
+}
+
+/** Response item for `GET /api/cards/universal-cards`. */
+export interface UniversalCard {
+  cardId: string;
+  cardType: string;
+  maskedCardNumber: string;
+  balance: number;
+  status: string;
+  currency: string;
+  defaultPin?: string;
+}
+
+/** Input for `GET /api/cards/universal-cards`. */
+export interface GetUniversalCardsInput {
+  email: string;
+  bvn: string;
+  nin: string;
+}
+
+/**
+ * Fetch all universal cards associated with the user's identity.
+ */
+export async function getUniversalCards(input: GetUniversalCardsInput): Promise<UniversalCard[]> {
+  const query = new URLSearchParams({
+    email: input.email,
+    bvn: input.bvn,
+    nin: input.nin,
+  }).toString();
+
+  return fetchWithAuth<UniversalCard[]>(`/api/cards/universal-cards?${query}`, {
+    method: 'GET',
+  });
+}
