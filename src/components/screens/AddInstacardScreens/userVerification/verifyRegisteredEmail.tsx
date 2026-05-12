@@ -6,6 +6,7 @@ import { useCardJourney } from '@/hooks/useCardJourney';
 import { useAppDispatch } from '@/store/redux/hooks';
 import { showToast } from '@/store/redux/slices/toasterSlice';
 import { ApiError } from '@/lib/api/errors';
+import { UserUniveralCardSteps } from '@/types/userVerificationSteps';
 
 /**
  * Email OTP screen — driven by `nextAction.code === 'VERIFY_EMAIL_OTP'`.
@@ -15,7 +16,7 @@ import { ApiError } from '@/lib/api/errors';
  * (typically `VERIFY_BANK_OTP_OR_SOFT_TOKEN`) and `useCardJourney.call()`
  * dispatches it — the parent router re-renders the correct screen automatically.
  */
-export default function VerifyRegisteredEmail() {
+export default function VerifyRegisteredEmail({ handleNext }: { handleNext?: (step: UserUniveralCardSteps) => void }) {
   const dispatch = useAppDispatch();
   const { state, call } = useCardJourney();
 
@@ -27,6 +28,7 @@ export default function VerifyRegisteredEmail() {
       throw new Error('Card request not initialised. Please restart the flow.');
     }
     await call(() => verifyEmailOtpV2(requestId, code));
+    if (handleNext) handleNext('card_activation');
   };
 
   const handleResend = async () => {
@@ -49,6 +51,7 @@ export default function VerifyRegisteredEmail() {
           duration: 2000,
           tosterType: 'error',
         }));
+
         return;
       }
       throw err;

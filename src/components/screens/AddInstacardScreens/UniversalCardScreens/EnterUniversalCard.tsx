@@ -11,11 +11,13 @@ import type { UserUniveralCardSteps } from '@/types/userVerificationSteps'
 interface EnterUniversalProps {
     handleMethodChange: (method: string) => void,
     handleNext: (step: UserUniveralCardSteps) => void
+    cardNumber: string  
+    setCardNumber: (cardNumber: string) => void
+    handleContinue: () => void
 }
 
 
-export default function EnterUniversalCard({ handleMethodChange, handleNext }: EnterUniversalProps) {
-    const [cardNumber, setCardNumber] = useState('')
+export default function EnterUniversalCard({ handleMethodChange, handleNext, cardNumber, setCardNumber, handleContinue }: EnterUniversalProps) {
     const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const rawValue = e.target.value.replace(/\D/g, '').slice(0, 16)
         setCardNumber(formatCardNumber(rawValue))
@@ -51,7 +53,7 @@ export default function EnterUniversalCard({ handleMethodChange, handleNext }: E
                     </div>
                 </div>
             </div>
-            <ButtonComponent title='Continue' onClick={() => handleNext('registered_email_verification')} />
+            <ButtonComponent title='Continue' onClick={() => handleContinue()} />
         </div>
     )
 }

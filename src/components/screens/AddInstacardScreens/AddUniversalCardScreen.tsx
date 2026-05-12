@@ -7,10 +7,10 @@ import type { UserUniveralCardSteps } from "@/types/userVerificationSteps";
 import { useAppSelector } from "@/store/redux/hooks";
 import { selectSelectedCardType } from '@/store/redux/slices/cardRequestSlice'
 import UniversalCardMethods from "./UniversalCardScreens/UniversalCardMethods";
-import VCCardActivation from "./VCActivation";
+import UCPinSetup from "./UCPinSetup";
 import HowToUseUniversalCard from "./HowToUseUniversalCard";
 
-export default function AddInstacardScreen() {
+export default function AddUniversalCardScreen() {
   const [UserUniversalSteps, setUserUniversalSteps] = useState<UserUniveralCardSteps>('validate_pan');
   const cardType = useAppSelector(selectSelectedCardType)
 
@@ -24,10 +24,9 @@ export default function AddInstacardScreen() {
       case 'validate_pan':
         return <UniversalCardMethods handleNext={handleNext} />;
       case 'registered_email_verification':
-        // return <VerifyRegisteredEmail  cardService="UNIVERSAL_CARD" onNext={handleNext} />;
-        return <HowToUseUniversalCard />
+        return <VerifyRegisteredEmail  handleNext={handleNext} />;
       case 'card_activation':
-        return <VCCardActivation onNext={handleNext} />
+        return <UCPinSetup onNext={handleNext} />
       case 'how_to_use_card':
         return <HowToUseUniversalCard />
 
