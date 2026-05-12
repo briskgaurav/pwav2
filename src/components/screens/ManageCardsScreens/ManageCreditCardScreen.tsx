@@ -62,7 +62,7 @@ export default function ManageCreditCardScreen() {
 
           <div className="flex gap-4 w-full">
             {[
-              { icon: StatementsIcon, title: 'View Statements', href: routes.emailStatements('credit') },
+              { icon: StatementsIcon, title: 'View Statements', href: routes.emailStatements('CREDIT_CARD') },
               { icon: RepaymentIcon, title: 'Make Repayments', href: routes.makeRepayments },
             ].map((btn, index) => (
               <ManageBtn fullWidth href={btn.href} key={index} icon={btn.icon} title={btn.title} />

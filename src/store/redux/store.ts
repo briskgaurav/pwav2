@@ -15,6 +15,7 @@ import storage from 'redux-persist/lib/storage'
 import livenessReducer from './slices/livenessSlice'
 import idVerificationReducer from './slices/idVerificationSlice'
 import cardReducer from './slices/cardSlice'
+import cardRequestReducer from './slices/cardRequestSlice'
 import cardModeReducer from './slices/cardModeSlice'
 import cardWalletReducer from './slices/cardWalletSlice'
 import userReducer from './slices/userSlice'
@@ -23,6 +24,8 @@ import accessDrawerReducer from './slices/accessDrawerSlice'
 import manageCardReducer from './slices/manageCardSlice'
 import limitSettingReducer from './slices/limitSettingSlice'
 import onlinePaymentReducer from './slices/onlinePaymentSlice'
+import toasterReducer from './slices/toasterSlice'
+import cardLinkingReducer from './slices/cardLinkingSlice'
 
 const persistConfig = {
   key: 'root',
@@ -43,6 +46,7 @@ const rootReducer = combineReducers({
   liveness: livenessReducer,
   idVerification: idVerificationReducer,
   card: cardReducer,
+  cardRequest: cardRequestReducer,
   cardMode: cardModeReducer,
   cardWallet: cardWalletReducer,
   user: userReducer,
@@ -51,6 +55,8 @@ const rootReducer = combineReducers({
   manageCard: manageCardReducer,
   limitSetting: limitSettingReducer,
   onlinePayment: onlinePaymentReducer,
+  toaster: toasterReducer,
+  cardLinking: cardLinkingReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

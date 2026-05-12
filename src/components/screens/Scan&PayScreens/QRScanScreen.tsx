@@ -6,7 +6,8 @@ import gsap from 'gsap'
 import Image from 'next/image'
 import { routes } from '@/lib/routes'
 import { useBackRedirect } from '@/hooks/useBackRedirect'
-import Toaster from '@/components/ui/Toaster'
+import { useAppDispatch } from '@/store/redux/hooks'
+import { showToast } from '@/store/redux/slices/toasterSlice'
 import { parseQRData } from '@/lib/parse-qr'
 
 const SCANNER_SIZE = 240
@@ -14,6 +15,7 @@ const CORNER_SIZE = 45
 
 export default function QRScanScreen() {
   const router = useRouter()
+  const dispatch = useAppDispatch()
   useBackRedirect(routes.instacard)
 
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -56,11 +58,14 @@ export default function QRScanScreen() {
   }, [])
 
   const showQrError = useCallback((msg: string) => {
-    setQrError(msg)
-    if (qrErrorTimer.current) clearTimeout(qrErrorTimer.current)
-    qrErrorTimer.current = setTimeout(() => setQrError(null), 3000)
+    dispatch(showToast({
+      message: 'Invalid QR Code',
+      subtitle: msg,
+      tosterType: 'error',
+      duration: 3000
+    }))
     if ('vibrate' in navigator) navigator.vibrate([100, 50, 100])
-  }, [])
+  }, [dispatch])
 
   const stopCamera = useCallback(() => {
     if (streamRef.current) {
@@ -477,14 +482,7 @@ export default function QRScanScreen() {
       {/* ── QR Processing Overlay ── */}
 
 
-      {/* ── Invalid QR Toaster ── */}
-      <Toaster
-        visible={!!qrError}
-        message="Invalid QR Code"
-        subtitle={qrError ?? undefined}
-        onDismiss={() => { setQrError(null); hasScanned.current = false }}
-        duration={3000}
-      />
+      {/* ── QR Processing Overlay ── */}
     </div>
   )
 }

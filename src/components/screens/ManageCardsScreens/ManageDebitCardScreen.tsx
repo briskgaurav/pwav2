@@ -32,7 +32,7 @@ export default function ManageDebitCardScreen() {
           <CardMockup imageSrc={mockupImageSrc ?? '/img/debitmockup.png'} maskedNumber={maskedNumber} />
 
           <div className="flex gap-4 overflow-x-auto">
-            {getManageBtns('debit').map((btn, index) => (
+            {getManageBtns('DEBIT_CARD').map((btn, index) => (
               <ManageBtn href={btn.href} key={index} icon={btn.icon} title={btn.title} />
             ))}
           </div>

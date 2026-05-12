@@ -25,11 +25,11 @@ export const getManageBtns = (cardType: CardType): Array<{ icon: ManageBtnIcon; 
   ]
 
 
-  if (cardType === 'debit') {
+  if (cardType === 'DEBIT_CARD') {
     return baseBtns
   }
 
-  if (cardType === 'prepaid') {
+  if (cardType === 'PREPAID_CARD') {
     return [
       ...baseBtns,
       { icon: AddMoneyIcon, title: 'Add Money', href: routes.addMoney },
@@ -37,13 +37,13 @@ export const getManageBtns = (cardType: CardType): Array<{ icon: ManageBtnIcon; 
     ]
   }
 
-  if (cardType === 'credit') {
+  if (cardType === 'CREDIT_CARD') {
     return [
       { icon: StatementsIcon , title: 'View Statements', href: routes.emailStatements(cardType) },
       { icon: RepaymentIcon, title: 'Make Repayments', href: routes.makeRepayments },
     ]
   }
-  if (cardType === 'gift') {
+  if (cardType === 'GIFT_CARD') {
     return [
       ...baseBtns,
       { icon: StatementsIcon, title: 'View Statements', href: routes.emailStatements(cardType) },

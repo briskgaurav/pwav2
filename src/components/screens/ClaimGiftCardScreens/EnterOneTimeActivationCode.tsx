@@ -25,7 +25,7 @@ export default function EnterOneTimeActivationCode() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsVerifying(false);
-    router.push(routes.pinSetup('gift'));
+    router.push(routes.pinSetup('GIFT_CARD'));
   }
 
   return (

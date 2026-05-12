@@ -7,17 +7,17 @@ import type {
 } from '@/constants/cardData'
 
 const CARD_TYPE_TO_IMAGE: Record<CardType, CardImageId> = {
-  debit: 1,
-  credit: 2,
-  prepaid: 3,
-  gift: 4,
+  DEBIT_CARD: 1,
+  CREDIT_CARD: 2,
+  PREPAID_CARD: 3,
+  GIFT_CARD: 4,
 }
 
 const CARD_TYPE_NAMES: Record<CardType, string[]> = {
-  debit: ['FCMB Debit', 'GTB Debit', 'Access Debit', 'Zenith Debit', 'UBA Debit'],
-  credit: ['GTB Credit', 'FCMB Magic', 'Access Credit', 'Zenith Credit'],
-  prepaid: ['Prepaid Card', 'Travel Card', 'Student Card'],
-  gift: ['Gift Card', 'Reward Card', 'Shopping Card'],
+  DEBIT_CARD: ['FCMB Debit', 'GTB Debit', 'Access Debit', 'Zenith Debit', 'UBA Debit'],
+  CREDIT_CARD: ['GTB Credit', 'FCMB Magic', 'Access Credit', 'Zenith Credit'],
+  PREPAID_CARD: ['Prepaid Card', 'Travel Card', 'Student Card'],
+  GIFT_CARD: ['Gift Card', 'Reward Card', 'Shopping Card'],
 }
 
 let counter = 0
@@ -77,7 +77,7 @@ const cardWalletSlice = createSlice({
       action: PayloadAction<{ cardType: CardType; cardHolderName: string }>
     ) => {
       const { cardType, cardHolderName } = action.payload
-      const isGift = cardType === 'gift'
+      const isGift = cardType === 'GIFT_CARD'
       const cardForm: CardForm = isGift ? 'virtual' : state.pendingCardForm
       const imageId: CardImageId = cardForm === 'universal' ? 5 : CARD_TYPE_TO_IMAGE[cardType]
       const newCard: CardData = {

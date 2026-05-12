@@ -1,7 +1,6 @@
-export const CARD_TYPES = ['debit', 'credit', 'prepaid', 'gift'] as const
+export const PIN_LENGTH = 4;
 
-export type CardType = (typeof CARD_TYPES)[number]
+export const DEFAULT_PIN = '0000';
 
-export const PIN_LENGTH = 4
-
-export const DEFAULT_PIN = '0000'
+// CardType definition for export
+export type CardType = 'DEBIT_CARD' | 'CREDIT_CARD' | 'PREPAID_CARD' | 'GIFT_CARD';

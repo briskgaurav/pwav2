@@ -43,7 +43,7 @@ const MOCK_CARD: VirtualCardDetails = {
   pan: '5399 2301 0012 4578',
   expiry: '09/28',
   cvv: '847',
-  cardType: 'debit',
+  cardType: 'DEBIT_CARD',
   scheme: 'Visa',
   issuerBank: 'Sigma Bank',
   maskedNumber: '**** **** **** 4578',

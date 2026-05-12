@@ -7,22 +7,22 @@ export type CardConfig = {
 }
 
 export const CARD_CONFIG: Record<CardType, CardConfig> = {
-  debit: {
+  DEBIT_CARD: {
     label: 'Debit Card',
     image: '/img/frontside.png',
     mockupImage: '/img/debitmockup.png',
   },
-  credit: {
+  CREDIT_CARD: {
     label: 'Credit Card',
     image: '/img/creditcard.png',
     mockupImage: '/img/creditmockup.png',
   },
-  prepaid: {
+  PREPAID_CARD: {
     label: 'Pre-Paid Card',
     image: '/img/prepaid.png',
     mockupImage: '/img/prepaid.png',
   },
-  gift: {
+  GIFT_CARD: {
     label: 'Gift Card',
     image: '/img/gift.png',
     mockupImage: '/img/gift.png',

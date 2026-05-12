@@ -4,7 +4,7 @@ import FloatingBottomBarLayoutClient from '@/components/screens/InstacardScreens
 export default function CardDetailGiftPage() {
   return (
     <>
-      <CardDetailScreen cardType="gift" />
+      <CardDetailScreen cardType="GIFT_CARD" />
     </>
   )
 }

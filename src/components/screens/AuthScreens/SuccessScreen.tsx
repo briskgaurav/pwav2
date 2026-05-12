@@ -1,17 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { SheetContainer, Button, CardMockup } from '@/components/ui';
+import { useEffect } from 'react';
 import { notifyNavigation } from '@/lib/bridge';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 import { routes } from '@/lib/routes';
 import type { CardType } from '@/lib/types';
-import { useAppSelector } from '@/store/redux/hooks';
-import { useManagingCard } from '@/hooks/useManagingCard';
 import LayoutSheet from '../../ui/LayoutSheet';
 import ButtonComponent from '../../ui/ButtonComponent';
+import { getCardImage } from '@/utils/card-services';
+
 
 export type SuccessScreenProps = {
   /** Custom title (e.g. "Success!") */
@@ -22,28 +21,26 @@ export type SuccessScreenProps = {
   buttonText?: string;
   /** Custom button action; when set, card preview and default "Activate Now" are hidden */
   onButtonClick?: () => void;
-  /** Show card preview */
-  showCardPreview?: boolean;
+  hideLayerSheet?: boolean;
 };
 
 export default function SuccessScreen({
+
   title,
   description,
   buttonText,
   onButtonClick,
-  showCardPreview = true,
+  hideLayerSheet = false,
 }: SuccessScreenProps = {}) {
-
-  const isCustom = Boolean(onButtonClick);
-  const [isImageLoading, setIsImageLoading] = useState(true);
 
   useEffect(() => {
     notifyNavigation('success');
   }, []);
+
   const router = useRouter();
   const searchParams = useSearchParams();
-  const cardType = (searchParams.get('type') as CardType) || 'debit';
-  const { imageSrc, maskedNumber } = useManagingCard();
+  const cardType = (searchParams.get('type') as CardType);
+  const cardImageUrl = getCardImage(cardType ?? null);
   const displayTitle = title ?? 'Payment was Successful!';
   const displayDescription =
     description ??
@@ -52,50 +49,43 @@ export default function SuccessScreen({
   const handleButtonClick = onButtonClick ?? (() => router.push(routes.pinSetup(cardType)));
 
   return (
-    <LayoutSheet routeTitle="Success" needPadding={false}>
+    <LayoutSheet routeTitle="Success" needPadding={false} hideLayerSheet={hideLayerSheet}>
       {/* <Header title="Success" /> */}
 
-        <div className="flex-1 flex flex-col items-start justify-center p-6 py-10 gap-10 text-center">
-          {/* Success checkmark animation */}
-          <div className="w-full flex  relative flex-col items-center justify-start animate-scale-in">
-            <Image
-              src={'/img/success.png'}
-              alt="Success"
-              width={200}
-              height={200}
-              className="w-[120px] h-auto absolute top-[10%] left-1/2 -translate-x-1/2 -translate-y-1/2 object-contain"
-            />
-            <div className="w-full bg-white/60 backdrop-blur-xl rounded-2xl border-text-secondary/20 space-y-4 py-6 z-5 relative border p-4  text-center mt-4">
-              <p className="text-lg font-semibold text-text-primary">
-                {displayTitle}
-              </p>
-              <p className="text-sm text-text-secondary mt-2">
-                {displayDescription}
-              </p>
-            </div>
+      <div className="flex-1 flex flex-col items-start justify-start p-6 py-10 gap-10 text-center">
+        {/* Success checkmark animation */}
+        <div className="w-full flex  relative flex-col items-center justify-start animate-scale-in">
+          <Image
+            src={'/img/success.png'}
+            alt="Success"
+            width={200}
+            height={200}
+            className="w-[120px] h-auto absolute top-[10%] left-1/2 -translate-x-1/2 -translate-y-1/2 object-contain"
+          />
+          <div className="w-full bg-white/60 backdrop-blur-xl rounded-2xl border-text-secondary/20 space-y-4 py-6 z-5 relative border p-4  text-center mt-4">
+            <p className="text-lg font-semibold text-text-primary">
+              {displayTitle}
+            </p>
+            <p className="text-sm text-text-secondary mt-2">
+              {displayDescription}
+            </p>
           </div>
 
-          {/* Card preview - only for default card issuance flow */}
-          {!isCustom && showCardPreview && (
-            <div>
-              <p className="text-[15px] pl-4 text-text-primary w-full text-left leading-normal m-0">
-                Your Instacard is Ready for Activation.
-              </p>
-              <div>
 
-                <CardMockup
-                  imageSrc={imageSrc || '/img/cards/DebitCard.png'}
-                  maskedNumber={maskedNumber}
-                  isclickable={false}
-                  showActions={false}
-                  showNumber={false}
-
-                />
-              </div>
-            </div>
-          )}
         </div>
-        <ButtonComponent title={displayButtonText} onClick={handleButtonClick} />
+
+        <div className='space-y-4'>
+
+          <p className='text-sm text-text-secondary'>Your Instacard is Ready for Activation.</p>
+
+          <div className='overflow-hidden h-auto mt-auto mb-[30vh] w-full'>
+
+            <Image src={cardImageUrl || '/img/debitmockup.png'} alt='Success' className='h-full w-full object-contain' width={1000} height={1000} />
+
+          </div>
+        </div>
+      </div>
+      <ButtonComponent title={displayButtonText} onClick={handleButtonClick} />
 
     </LayoutSheet>
   );

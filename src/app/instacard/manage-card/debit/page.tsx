@@ -6,7 +6,7 @@ import FloatingBottomBarLayoutClient from '@/components/screens/InstacardScreens
 
 export default function ManageDebitPage() {
   return (
-    <ManageCardPageWrapper cardType="debit">
+    <ManageCardPageWrapper cardType="DEBIT_CARD">
       <ManageDebitCardScreen />
       <FloatingBottomBarLayoutClient hidescan={true} />
     </ManageCardPageWrapper>
