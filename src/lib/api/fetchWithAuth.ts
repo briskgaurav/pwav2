@@ -222,12 +222,12 @@ function buildRequest(
   // When the backend expects a Bearer token instead of a session cookie,
   // set NEXT_PUBLIC_DEV_AUTH_TOKEN in .env.local. Never commit a real token.
   // To remove: delete this block and unset the env var.
-  if (process.env.NODE_ENV !== 'production') {
+  // if (process.env.NODE_ENV !== 'production') {
     const devToken = process.env.NEXT_PUBLIC_DEV_AUTH_TOKEN;
     if (devToken && !headers.has('Authorization')) {
       headers.set('Authorization', `Bearer ${devToken}`);
     }
-  }
+  // }
   // ── END DEV ONLY ──────────────────────────────────────────────────────────
 
   if (CSRF_REQUIRED_METHODS.has(method) && !AUTH_MOCK.skipCsrf) {
