@@ -19,7 +19,7 @@ export interface AddMoneyFormProps {
     error?: string
 }
 
-export function AddMoneyForm({ 
+export function GiftCardMoneyPayment({ 
     amount,
     onAmountChange,
     onSelectRecommended,
@@ -27,7 +27,7 @@ export function AddMoneyForm({
     showKycTier = true,
     btnTitle = 'Add Money',
     error }: AddMoneyFormProps) {
-        
+
     const isButtonDisabled = !amount || amount.trim() === ''
     const {isDarkMode} = useAuth()
 
@@ -96,9 +96,9 @@ export function AddMoneyForm({
                     })}
                 </div>
 
-                {/* <Button fullWidth className='bg-primary text-white' onClick={onOpenModal} disabled={isButtonDisabled}>
+                <Button fullWidth className='bg-primary text-white' onClick={onOpenModal} disabled={isButtonDisabled}>
                     {btnTitle}
-                </Button> */}
+                </Button>
             </div>
         </div>
     )

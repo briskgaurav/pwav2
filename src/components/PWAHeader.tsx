@@ -12,7 +12,7 @@ import Image from 'next/image'
 export default function PWAHeader() {
     const router = useRouter()
     const pathname = usePathname()
-    const { title: contextTitle } = usePWAHeader()
+    const { onBack } = usePWAHeader()
     const dispatch = useAppDispatch()
     const handleOpenAccessDrawer = () => dispatch(openAccessDrawer())
 
@@ -45,6 +45,11 @@ export default function PWAHeader() {
     }, [currentTitle, displayedTitle])
 
     const handleGoBack = () => {
+        if (onBack) {
+            onBack()
+            return
+        }
+
         if (isIdentityVerificationRoute) {
             setShowExitPopup(true)
         } else if (pathname === '/instacard') {

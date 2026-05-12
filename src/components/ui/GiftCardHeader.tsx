@@ -7,7 +7,7 @@ export function GiftCardHeader() {
   const { imageSrc, maskedNumber } = useManagingCard();
   return (
     <>
-      <p className="text-text-primary text-sm pt-5 translate-y-5 ml-4">
+      <p className="text-text-primary text-sm pt-0 translate-y-5 ml-4">
         Your Instacard Gift Card is Ready for Activation.
       </p>
       <CardMockup imageSrc={imageSrc || '/img/gift.png'} maskedNumber={maskedNumber} isclickable={false} showActions={false} showNumber={true} />

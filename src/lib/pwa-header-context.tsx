@@ -12,17 +12,20 @@ import {
 type PWAHeaderState = {
   title: string
   exitIcon: boolean
+  onBack: (() => void) | null
 }
 
 type PWAHeaderContextValue = PWAHeaderState & {
   setTitle: (title: string) => void
   setExitIcon: (exitIcon: boolean) => void
+  setOnBack: (onBack: (() => void) | null) => void
   setHeader: (state: Partial<PWAHeaderState>) => void
 }
 
 const defaultState: PWAHeaderState = {
   title: 'Manage Cards',
   exitIcon: false,
+  onBack: null,
 }
 
 const PWAHeaderContext = createContext<PWAHeaderContextValue | null>(null)
@@ -38,6 +41,10 @@ export function PWAHeaderProvider({ children }: { children: ReactNode }) {
     setState((prev) => ({ ...prev, exitIcon }))
   }, [])
 
+  const setOnBack = useCallback((onBack: (() => void) | null) => {
+    setState((prev) => ({ ...prev, onBack }))
+  }, [])
+
   const setHeader = useCallback((partial: Partial<PWAHeaderState>) => {
     setState((prev) => ({ ...prev, ...partial }))
   }, [])
@@ -47,9 +54,10 @@ export function PWAHeaderProvider({ children }: { children: ReactNode }) {
       ...state,
       setTitle,
       setExitIcon,
+      setOnBack,
       setHeader,
     }),
-    [state, setTitle, setExitIcon, setHeader]
+    [state, setTitle, setExitIcon, setOnBack, setHeader]
   )
 
   return (
@@ -66,6 +74,7 @@ export function usePWAHeader() {
       ...defaultState,
       setTitle: () => {},
       setExitIcon: () => {},
+      setOnBack: () => {},
       setHeader: () => {},
     }
   }

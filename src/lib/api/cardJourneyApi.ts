@@ -39,6 +39,7 @@ export async function createCardRequest(
     headers: { 'Idempotency-Key': crypto.randomUUID() },
     json: payload,
   });
+  
 }
 
 // ─── Email OTP ─────────────────────────────────────────────────────────────
