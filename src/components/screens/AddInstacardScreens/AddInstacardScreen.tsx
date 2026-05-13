@@ -19,7 +19,9 @@ import { useCardJourney } from "@/hooks/useCardJourney";
 import VerifyBankOTP from "./userVerification/verifyBankOTP";
 
 export default function AddInstacardScreen() {
-  const { state } = useCardJourney();
+  //const { state } = useCardJourney();
+    const { state, reset } = useCardJourney();
+
   const [activateClicked, setActivateClicked] = useState(false);
 
   const renderStep = () => {
@@ -28,6 +30,11 @@ export default function AddInstacardScreen() {
         <SelectCardTypes />
       );
     }
+
+      const handleTemporaryReset = () => {
+    setActivateClicked(false);
+    reset();
+  };
 
     // const nextActionCode = state.nextAction.code;
     
@@ -107,13 +114,13 @@ export default function AddInstacardScreen() {
 
   return (
     <LayoutSheet routeTitle="Add Instacard" needPadding={false}>
-      {/* <button
+      <button
         type="button"
         onClick={handleTemporaryReset}
         className="fixed top-4 right-4 z-50 rounded-full bg-error px-3 py-2 text-xs font-medium text-white shadow-lg"
       >
         Reset
-      </button> */}
+      </button>
       {renderStep()}
     </LayoutSheet>
   );
