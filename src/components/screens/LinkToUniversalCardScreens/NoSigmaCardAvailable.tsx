@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import SigmaCardOptionsScreen from './SigmaCardOptionsScreen'
 import formatCardNumber from '@/lib/formated-card-number'
 import LayoutSheet from '@/components/ui/LayoutSheet'
-import { UniversalCard } from '@/lib/api/cards'
+import { UniversalCard, universalCardStableId } from '@/lib/api/cards'
 import CardPinAuth from '@/components/screens/AuthScreens/CardPinAuth'
 import UniversalLinkedSuccess from './UniversalLinkedSuccess'
 import { useAppSelector } from '@/store/redux/hooks'
@@ -100,12 +100,12 @@ export default function LinkCardScreen() {
             case 'SELECT_CARD':
                 return <SigmaCardOptionsScreen universalCards={universalCards} onNext={handleCardSelected} />
             case 'VERIFY_PIN':
-                const card = universalCards.find(c => c.cardId === selectedCardId)
+                const card = universalCards.find(c => universalCardStableId(c) === selectedCardId)
                 return (
                     <CardPinAuth 
                         title="Enter PIN for Universal Card"
                         cardImageSrc="/img/cards/Universal1.png"
-                        maskedNumber={card?.maskedCardNumber}
+                        maskedNumber={card?.ucPanMasked ?? card?.maskedCardNumber}
                         onVerified={handlePinVerified} 
                     />
                 )

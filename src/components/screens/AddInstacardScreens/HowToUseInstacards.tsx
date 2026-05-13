@@ -13,6 +13,8 @@ import { CARD_DATA } from '@/lib/api/HowToUseCardsData'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import { useCardJourney } from '@/hooks/useCardJourney'
 import { getCardImage } from '@/utils/card-services'
+import { useAppDispatch } from '@/store/redux/hooks'
+import { setManagingCardId } from '@/store/redux/slices/cardWalletSlice'
 
 interface howToUseProps {
     cardType: CardType | null
@@ -24,8 +26,10 @@ export default function HowToUseInstacards({
     const cardImageUrl = getCardImage(cardType ?? null);
     const config = CARD_DATA[cardType || 'CREDIT_CARD'];
     const router = useRouter()
+    const dispatch = useAppDispatch()
     const { state, reset } = useCardJourney();
     const maskedPan = state?.cardDetails?.vcPanMasked ?? '•••• •••• •••• ••••';
+    const vcCardId = state?.cardDetails?.cardId;
     const [expandedSection, setExpandedSection] =
         useState<string | null>(null)
 
@@ -114,7 +118,12 @@ export default function HowToUseInstacards({
                 {config.actions.map((action, index) => (
                     <div
                         key={index}
-                        onClick={() => router.push(action.route)}
+                        onClick={() => {
+                            if (vcCardId) {
+                                dispatch(setManagingCardId(vcCardId))
+                            }
+                            router.push(action.route)
+                        }}
                         className="w-full border  border-border rounded-xl p-4 flex flex-col justify-between gap-4"
                     >
                         <div className="flex items-center justify-between w-full">

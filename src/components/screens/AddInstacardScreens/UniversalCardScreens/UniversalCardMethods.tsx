@@ -2,54 +2,64 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { UserUniveralCardSteps } from '@/types/userVerificationSteps'
-import UcScanScreen from './UCScanScreen'
-import EnterUniversalCard from './EnterUniversalCard'
-import { initiateCardLink, selectUc } from '@/lib/api/cardLinkApi'
+import { initiateCardLink, provideUcPan } from '@/lib/api/cardLinkApi'
 import { setCardLinkingData, selectCardLinkingData } from '@/store/redux/slices/cardLinkingSlice'
-import { useCardJourney } from '@/hooks/useCardJourney'
+import { showToast } from '@/store/redux/slices/toasterSlice'
+import EnterUniversalCard from './EnterUniversalCard'
+import UcScanScreen from './UCScanScreen'
 
 export default function UniversalCardMethods({ handleNext }: { handleNext: (step: UserUniveralCardSteps) => void }) {
     const [UniversalCardMethod, setUniversalCardMethod] = useState('input-field')
     const [cardNumber, setCardNumber] = useState('')
+    const [submitting, setSubmitting] = useState(false)
     const dispatch = useDispatch()
     const cardLinkingData = useSelector(selectCardLinkingData)
-    const { call } = useCardJourney()
 
     useEffect(() => {
         const fetchLink = async () => {
             try {
-                // Using 'as any' because CardLinkStateResponse and CardRequestStateResponse 
-                // are structurally compatible for the fields we need (requestId, nextAction)
-                const response = await call(() => initiateCardLink() as any)
-                // console.log(response)
-                // dispatch(setCardLinkingData({ response }))
+                const response = await initiateCardLink()
+                dispatch(setCardLinkingData({ response }))
             } catch (error) {
                 console.error("Failed to initiate card link:", error)
             }
         }
         fetchLink()
-    }, [dispatch, call])
+    }, [dispatch])
 
     const handleMethodChange = (method: string) => {
         setUniversalCardMethod(method)
     }
 
     const handleContinue = async () => {
-        // try {
-        //     if (cardLinkingData.response?.requestId) {
-        //         console.log(cardLinkingData.response.requestId)
-        //         const response = await call(() => selectUc(
-        //             cardLinkingData.response.requestId,
-        //             cardNumber.replace(/\s+/g, '')
-        //         ) as any)
-        //         dispatch(setCardLinkingData({ response }))
+        if (submitting) return
+        setSubmitting(true)
 
-        //     }
-        // } catch (error) {
-        //     console.error("Failed to select UC:", error)
-        // }
-        // handleNext('registered_email_verification')
+        try {
+            if (!cardLinkingData.response?.requestId) {
+                throw new Error('No requestId available. Please try again.')
+            }
 
+            const response = await provideUcPan(
+                cardLinkingData.response.requestId,
+                cardNumber.replace(/\s+/g, '')
+            )
+
+            dispatch(setCardLinkingData({ response }))
+            handleNext('registered_email_verification')
+
+        } catch (err: any) {
+            console.error("Failed to select UC:", err)
+            const msg = err?.errorMessage || 'Could not process your request. Please try again.';
+            dispatch(showToast({
+                message: 'Something went wrong',
+                subtitle: msg,
+                duration: 3000,
+                tosterType: 'error',
+            }))
+        } finally {
+            setSubmitting(false)
+        }
     }
 
     return (
@@ -61,6 +71,7 @@ export default function UniversalCardMethods({ handleNext }: { handleNext: (step
                     setCardNumber={setCardNumber}
                     handleNext={handleNext}
                     handleMethodChange={handleMethodChange}
+                    isSubmitting={submitting}
                 />
             ) : (
                 <UcScanScreen handleNext={handleNext} />

@@ -7,19 +7,22 @@ import { SwipeIndicator } from './SwipeIndicator'
 import ActionDrawer from './ActionDrawer'
 import { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { Plus } from 'lucide-react'
 import { useAuth } from '@/lib/auth-context'
 import { routes } from '@/lib/routes'
 import { MOCK_HOST_CONTEXT } from '@/lib/api/__mocks__/hostContext'
+import { universalCardStableId } from '@/lib/api/cards'
 import LeftSideDrawer from '@/components/LeftSideDrawer'
 import { ProfileContent } from '@/components/screens/Drawers/ProfileContent'
 import FloatingBottomBarLayoutClient from './FloatingBottomBarLayoutClient'
 import { useAppDispatch, useAppSelector } from '@/store/redux/hooks'
-import { fetchAllCards, selectVirtualCards, selectUniversalCards, selectCardsStatus } from '@/store/redux/slices/cardDataWalletSlice'
+import { fetchAllCards, selectVirtualCards, selectUniversalCards } from '@/store/redux/slices/cardDataWalletSlice'
 
 
 export default function MainInstacardScreen() {
   const router = useRouter()
-  const [cardMode, setCardMode] = useState<'virtual' | 'universal'>('virtual')
+  const [cardMode, setCardMode] = useState<'virtual' | 'universal'>('universal')
   const userName = MOCK_HOST_CONTEXT.customerName
   const userEmail = MOCK_HOST_CONTEXT.recipientEmail
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all'])
@@ -33,13 +36,10 @@ export default function MainInstacardScreen() {
   const dispatch = useAppDispatch()
   const virtualCardsData = useAppSelector(selectVirtualCards)
   const universalCardsData = useAppSelector(selectUniversalCards)
-  const cardsStatus = useAppSelector(selectCardsStatus)
 
   useEffect(() => {
-    if (cardsStatus === 'idle') {
-      dispatch(fetchAllCards())
-    }
-  }, [cardsStatus, dispatch])
+    dispatch(fetchAllCards())
+  }, [dispatch])
 
   const apiCards = useMemo(() => {
     const sourceCards = cardMode === 'virtual' ? virtualCardsData : universalCardsData
@@ -60,14 +60,20 @@ export default function MainInstacardScreen() {
         imageId = 5
       }
 
+      const rowId =
+        cardMode === 'universal' ? universalCardStableId(c) : c.cardId
+
       return {
-        id: c.cardId,
+        id: rowId,
         imageId,
         name: `${cardType.replace('_', ' ')}`,
         cardHolder: userName,
-        cardNumber: c.maskedCardNumber,
+        cardNumber:
+          cardMode === 'universal'
+            ? (c.ucPanMasked ?? c.maskedCardNumber ?? '**** **** **** ****')
+            : ((c.maskedPan ?? c.maskedCardNumber) || '**** **** **** ****'),
         pin: '0000',
-        expiry: '12/28', // Dummy expiry
+        expiry: c.expiry || '12/28', // Dummy expiry
         balance: c.balance || 0,
         cardType,
         cardForm: cardMode,
@@ -78,6 +84,9 @@ export default function MainInstacardScreen() {
       } as CardData
     })
   }, [cardMode, virtualCardsData, universalCardsData, userName])
+
+
+
   /**
    * Handles switching between virtual and universal card modes.
    * Resets selection state when mode changes.

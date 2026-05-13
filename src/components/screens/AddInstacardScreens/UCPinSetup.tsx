@@ -21,6 +21,8 @@ export default function UCPinSetup({ onNext }: UCPinSetupProps) {
   const dispatch = useAppDispatch();
   const [pinValue, setPinValue] = useState<number | undefined>(undefined);
 
+  console.log(cardLinkingData.response?.requestId)
+
   const requestId = cardLinkingData.response?.requestId ?? '';
 
   const handleSetPin = (pin: number) => setPinValue(pin);
@@ -39,7 +41,7 @@ export default function UCPinSetup({ onNext }: UCPinSetupProps) {
     try {
       const response = await setupUcPin(requestId, pin);
       dispatch(setCardLinkingData({ response }));
-      
+
       dispatch(showToast({
         message: 'Success',
         subtitle: 'PIN setup successfully.',
@@ -49,7 +51,7 @@ export default function UCPinSetup({ onNext }: UCPinSetupProps) {
 
       // Move to the next step
       onNext('how_to_use_card');
-      
+
     } catch (err: any) {
       dispatch(showToast({
         message: 'PIN Setup Failed',

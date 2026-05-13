@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { getVirtualCards, getUniversalCards, VirtualCard, UniversalCard } from '@/lib/api/cards'
-import { MOCK_HOST_CONTEXT } from '@/lib/api/__mocks__/hostContext'
+import { fetchAllCardsData, VirtualCard, UniversalCard } from '@/lib/api/cards'
 
 interface CardDataWalletState {
   virtualCards: VirtualCard[]
@@ -19,20 +18,7 @@ const initialState: CardDataWalletState = {
 export const fetchAllCards = createAsyncThunk(
   'cardDataWallet/fetchAllCards',
   async () => {
-    const email = MOCK_HOST_CONTEXT.recipientEmail
-    const bvn = MOCK_HOST_CONTEXT.bvn
-    const nin = MOCK_HOST_CONTEXT.nin
-
-    // Fetch both simultaneously
-    const [virtualCards, universalCards] = await Promise.all([
-      getVirtualCards({ email, bvn, nin }),
-      getUniversalCards({ email, bvn, nin }),
-    ])
-
-    const virtualCardsWithPin = virtualCards.map(card => ({ ...card, defaultPin: '1234' }))
-    const universalCardsWithPin = universalCards.map(card => ({ ...card, defaultPin: '1234' }))
-
-    return { virtualCards: virtualCardsWithPin, universalCards: universalCardsWithPin }
+    return await fetchAllCardsData()
   }
 )
 

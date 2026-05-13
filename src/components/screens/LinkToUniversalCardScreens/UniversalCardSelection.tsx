@@ -8,10 +8,12 @@ import { routes } from "@/lib/routes";
 import { LinkLinkVirtualCardSteps } from "@/types/cardsLinkingSteps";
 import CardPinVerificationDrawer from "../AuthScreens/CardPinVerificationDrawer";
 import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
-import { fetchAllCards, selectCardsStatus, selectUniversalCards } from "@/store/redux/slices/cardDataWalletSlice";
+import { fetchAllCards, selectUniversalCards } from "@/store/redux/slices/cardDataWalletSlice";
 import { useEffect } from "react";
-import { initiateCardLink, verifyVcPin, verifyUcPin } from "@/lib/api/cardLinkApi";
+import { selectUc, verifyUcPin, getCardLinkErrorDetails } from "@/lib/api/cardLinkApi";
+import { universalCardStableId } from "@/lib/api/cards";
 import { setCardLinkingData, selectCardLinkingData } from "@/store/redux/slices/cardLinkingSlice";
+import { showToast } from "@/store/redux/slices/toasterSlice";
 
 interface Props {
     handleNext: (step: LinkLinkVirtualCardSteps) => void;
@@ -20,58 +22,93 @@ interface Props {
 export default function UniversalCardSelection({ handleNext }: Props) {
     const dispatch = useAppDispatch();
     const universalCards = useAppSelector(selectUniversalCards);
-    const cardsStatus = useAppSelector(selectCardsStatus);
+    const cardLinkingData = useAppSelector(selectCardLinkingData);
 
     useEffect(() => {
-        if (cardsStatus === 'idle') {
-            dispatch(fetchAllCards());
-        }
-    }, [cardsStatus, dispatch]);
+        dispatch(fetchAllCards());
+    }, [dispatch]);
 
     const [selectedCard, setSelectedCard] = useState<string | null>(null);
     const [consentChecked, setConsentChecked] = useState(false);
     const [pinDrawOpen, setPinDrawOpen] = useState(false);
+    const [selecting, setSelecting] = useState(false);
 
-
-    // Treat all fetched universal cards as unlinked for now
     const unlinkedUniversalCards = universalCards;
     const linkedUniversalCards: typeof universalCards = [];
-
     const isAvailableForLinking = unlinkedUniversalCards.length > 0;
-    const cardLinkingData = useAppSelector(selectCardLinkingData);
 
-    const handleNextClick = (e: React.MouseEvent) => {
+    const sessionRequestId = cardLinkingData.response?.requestId;
+
+    const handleNextClick = async (e: React.MouseEvent) => {
         e.preventDefault();
-        if (selectedCard && consentChecked) {
+        if (!selectedCard || !consentChecked || selecting) return;
+
+        const row = universalCards.find(c => universalCardStableId(c) === selectedCard);
+        if (!sessionRequestId || !row?.ucCardId) {
+            dispatch(showToast({
+                message: 'Something went wrong',
+                subtitle: 'Missing link session. Go back and try again.',
+                duration: 3000,
+                tosterType: 'error',
+            }));
+            return;
+        }
+
+        setSelecting(true);
+        try {
+            const res = await selectUc(sessionRequestId, row.ucCardId);
+            console.log("[UniversalCardSelection] selectUc response:", res);
+            dispatch(setCardLinkingData({ response: res }));
             setPinDrawOpen(true);
+        } catch (err: any) {
+            console.error("[UniversalCardSelection] Failed to select UC:", err);
+            dispatch(showToast({
+                message: 'Selection failed',
+                subtitle: err?.errorMessage || 'Could not select universal card. Please try again.',
+                duration: 3000,
+                tosterType: 'error',
+            }));
+        } finally {
+            setSelecting(false);
         }
     };
 
-    const HandleVerifyUCPin = (PIN: string) => {
-        const selectedCardObj = universalCards.find(c => c.cardId === selectedCard);
-        console.log(selectedCardObj)
+    const handleVerifyUcPin = (PIN: string) => {
+        const selectedCardObj = universalCards.find(c => universalCardStableId(c) === selectedCard);
         return selectedCardObj?.defaultPin === PIN;
-
-        // CHECK VERIFY UC PIN API!
-        // verifyUcPin
-    }
-
-
+    };
 
     const pinVerifySuccess = async (pin: string) => {
-        if (!selectedCard) return;
+        if (!selectedCard || !sessionRequestId) return;
+        const row = universalCards.find(c => universalCardStableId(c) === selectedCard);
         try {
-            // Using verifyUcPin with a mock requestId and passing vcCardId
-            const res = await verifyUcPin("mock-request-id", pin, selectedCard);
+            if (!row?.ucCardId) throw new Error("Missing ucCardId");
+            const res = await verifyUcPin(sessionRequestId, pin, undefined, row.ucCardId);
+            console.log("[UniversalCardSelection] verifyUcPin response:", res);
             dispatch(setCardLinkingData({ response: res }));
             setPinDrawOpen(false);
-            // handleNext("linking_success");
-        } catch (error) {
-            console.error("Failed to verify UC PIN:", error);
+            handleNext("linking_success");
+        } catch (err: unknown) {
+            console.error("[UniversalCardSelection] Failed to verify UC PIN:", err);
+            const { errorCode, errorMessage: linkErrMsg } =
+                getCardLinkErrorDetails(err)
+            if (errorCode === 'LINK_ALREADY_EXISTS') {
+                dispatch(showToast({
+                    message: 'Already linked',
+                    subtitle: linkErrMsg ?? 'This Virtual Card is already linked to that Universal Card.',
+                    duration: 5000,
+                    tosterType: 'error',
+                }));
+                setPinDrawOpen(false);
+                return
+            }
+            dispatch(showToast({
+                message: 'PIN verification failed',
+                subtitle: linkErrMsg || 'Incorrect PIN. Please try again.',
+                duration: 3000,
+                tosterType: 'error',
+            }));
         }
-
-        handleNext("linking_success");
-
     };
 
     return (
@@ -111,20 +148,23 @@ export default function UniversalCardSelection({ handleNext }: Props) {
                                         </p>
                                         {unlinkedUniversalCards.map((card) => (
                                             <button
-                                                key={card.cardId}
-                                                onClick={() => setSelectedCard(card.cardId)}
-                                                className={`w-full p-4 border rounded-2xl flex items-center gap-3 transition-all ${selectedCard === card.cardId
+                                                key={universalCardStableId(card)}
+                                                onClick={() => {
+                                                    console.log('[UniversalCardSelection] Tapped universal card:', card)
+                                                    setSelectedCard(universalCardStableId(card))
+                                                }}
+                                                className={`w-full p-4 border rounded-2xl flex items-center gap-3 transition-all ${selectedCard === universalCardStableId(card)
                                                     ? "border-text-primary/40 border-2"
                                                     : "border-text-primary/20"
                                                     }`}
                                             >
                                                 <div
-                                                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedCard === card.cardId
+                                                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedCard === universalCardStableId(card)
                                                         ? "border-orange bg-orange"
                                                         : "border-text-primary/40"
                                                         }`}
                                                 >
-                                                    {selectedCard === card.cardId && (
+                                                    {selectedCard === universalCardStableId(card) && (
                                                         <svg
                                                             className="w-3 h-3 text-white"
                                                             fill="currentColor"
@@ -139,7 +179,7 @@ export default function UniversalCardSelection({ handleNext }: Props) {
                                                     )}
                                                 </div>
                                                 <span className="text-sm text-text-primary">
-                                                    {card.maskedCardNumber} ( Universal Card )
+                                                    {card.ucPanMasked ?? card.maskedCardNumber} ( Universal Card )
                                                 </span>
                                             </button>
                                         ))}
@@ -155,14 +195,14 @@ export default function UniversalCardSelection({ handleNext }: Props) {
                                             </p>
                                             {linkedUniversalCards.map((card) => (
                                                 <button
-                                                    key={card.cardId}
+                                                    key={universalCardStableId(card)}
                                                     disabled
                                                     className="w-full p-4 border rounded-2xl flex items-center gap-3 transition-all border-text-primary/10 opacity-50"
                                                 >
                                                     <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center border-text-primary/20" />
                                                     <div className="flex flex-col items-start">
                                                         <span className="text-sm text-text-primary">
-                                                            {card.maskedCardNumber} ( Universal Card )
+                                                            {card.ucPanMasked ?? card.maskedCardNumber} ( Universal Card )
                                                         </span>
                                                         <span className="text-xs text-orange">
                                                             Already linked
@@ -191,10 +231,10 @@ export default function UniversalCardSelection({ handleNext }: Props) {
                 <Link
                     href="#"
                     onClick={handleNextClick}
-                    className={`bg-primary p-4 text-center text-[#fff] flex items-center justify-center rounded-full w-full ${!selectedCard || !consentChecked ? "opacity-50" : ""
+                    className={`bg-primary p-4 text-center text-[#fff] flex items-center justify-center rounded-full w-full ${!selectedCard || !consentChecked || selecting ? "opacity-50" : ""
                         }`}
                 >
-                    Next
+                    {selecting ? "Selecting..." : "Next"}
                 </Link>
                 <Link
                     href={routes.addUniversalCard}
@@ -210,7 +250,7 @@ export default function UniversalCardSelection({ handleNext }: Props) {
                 subtitle="Enter your PIN to continue"
                 showTitle={false}
                 onClose={() => setPinDrawOpen(false)}
-                verifyPin={HandleVerifyUCPin}
+                verifyPin={handleVerifyUcPin}
                 onVerified={pinVerifySuccess}
                 fieldLength={4}
             />

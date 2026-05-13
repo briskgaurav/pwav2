@@ -3,6 +3,7 @@ import {
   InitiateLinkRequest,
 } from "@/types/cardLinking";
 import { MOCK_HOST_CONTEXT } from "./__mocks__/hostContext";
+import { ApiError } from "./errors";
 import { fetchWithAuth } from "./fetchWithAuth";
 // import type { CardLinkStateResponse, InitiateLinkRequest } from '@/types/cardLinking';
 
@@ -75,6 +76,7 @@ export async function verifyUcPin(
   requestId: string,
   pin: string,
   vcCardId?: string,
+  ucCardId?: string,
 ): Promise<CardLinkStateResponse> {
   return fetchWithAuth<CardLinkStateResponse>(
     `/api/v1/card-link/${requestId}/verify-uc-pin`,
@@ -83,6 +85,7 @@ export async function verifyUcPin(
       json: {
         pin,
         ...(vcCardId ? { vcCardId } : {}),
+        ...(ucCardId ? { ucCardId } : {}),
       },
     },
   );
@@ -105,6 +108,33 @@ export async function provideUcPan(
       json: { ucPanFull },
     },
   );
+}
+
+// ─── Registered email OTP (shared /api/v1/card routes, card-link `requestId`) ─
+
+/**
+ * POST /api/v1/card/email-otp/verify — same route as issuance; body uses the
+ * active card-link session id (e.g. `LNK…`). Response updates to
+ * `UC_PIN_SETUP_REQUIRED` after email is verified.
+ */
+export async function verifyRegisteredEmailOtpForCardLink(
+  requestId: string,
+  otp: string,
+): Promise<CardLinkStateResponse> {
+  return fetchWithAuth<CardLinkStateResponse>("/api/v1/card/email-otp/verify", {
+    method: "POST",
+    json: { requestId, otp },
+  });
+}
+
+/** POST /api/v1/card/email-otp/retry — resend email OTP for the same session. */
+export async function retryRegisteredEmailOtpForCardLink(
+  requestId: string,
+): Promise<CardLinkStateResponse> {
+  return fetchWithAuth<CardLinkStateResponse>("/api/v1/card/email-otp/retry", {
+    method: "POST",
+    json: { requestId },
+  });
 }
 
 // ─── Set up new UC PIN ─────────────────────────────────────────────────────
@@ -153,4 +183,28 @@ export async function resumeCardLink(
       method: "POST",
     },
   );
+}
+
+/** Parsed from `ApiError.body` or plain error objects after card-link API failures. */
+export function getCardLinkErrorDetails(err: unknown): {
+  errorCode?: string;
+  errorMessage?: string;
+} {
+  if (err instanceof ApiError && err.body && typeof err.body === "object") {
+    const b = err.body as Record<string, unknown>;
+    return {
+      errorCode: typeof b.errorCode === "string" ? b.errorCode : undefined,
+      errorMessage:
+        typeof b.errorMessage === "string" ? b.errorMessage : undefined,
+    };
+  }
+  if (typeof err === "object" && err !== null) {
+    const e = err as { errorCode?: unknown; errorMessage?: unknown };
+    return {
+      errorCode: typeof e.errorCode === "string" ? e.errorCode : undefined,
+      errorMessage:
+        typeof e.errorMessage === "string" ? e.errorMessage : undefined,
+    };
+  }
+  return {};
 }

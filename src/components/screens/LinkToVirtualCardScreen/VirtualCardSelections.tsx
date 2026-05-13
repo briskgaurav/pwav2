@@ -8,10 +8,13 @@ import { routes } from "@/lib/routes";
 import { LinkLinkVirtualCardSteps } from "@/types/cardsLinkingSteps";
 import CardPinVerificationDrawer from "../AuthScreens/CardPinVerificationDrawer";
 import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
-import { fetchAllCards, selectVirtualCards, selectCardsStatus } from "@/store/redux/slices/cardDataWalletSlice";
+import { fetchAllCards, selectVirtualCards } from "@/store/redux/slices/cardDataWalletSlice";
 import { useEffect } from "react";
-import { initiateCardLink, verifyVcPin, verifyUcPin } from "@/lib/api/cardLinkApi";
+import { selectVc, verifyVcPin } from "@/lib/api/cardLinkApi";
 import { setCardLinkingData, selectCardLinkingData } from "@/store/redux/slices/cardLinkingSlice";
+import { showToast } from "@/store/redux/slices/toasterSlice";
+import { selectUniversalCards } from "@/store/redux/slices/cardDataWalletSlice";
+import { universalCardStableId, virtualCardMaskedDisplay } from "@/lib/api/cards";
 
 interface Props {
     handleNext: (step: LinkLinkVirtualCardSteps) => void;
@@ -20,58 +23,82 @@ interface Props {
 export default function VirtualCardSelections({ handleNext }: Props) {
     const dispatch = useAppDispatch();
     const virtualCards = useAppSelector(selectVirtualCards);
-    const cardsStatus = useAppSelector(selectCardsStatus);
+    const universalCards = useAppSelector(selectUniversalCards);
+    const cardLinkingData = useAppSelector(selectCardLinkingData);
+    const managingCardId = useAppSelector((s) => s.cardWallet.managingCardId);
 
     useEffect(() => {
-        if (cardsStatus === 'idle') {
-            dispatch(fetchAllCards());
-        }
-    }, [cardsStatus, dispatch]);
+        dispatch(fetchAllCards());
+    }, [dispatch]);
 
     const [selectedCard, setSelectedCard] = useState<string | null>(null);
     const [consentChecked, setConsentChecked] = useState(false);
     const [pinDrawOpen, setPinDrawOpen] = useState(false);
+    const [selecting, setSelecting] = useState(false);
 
-
-    // Treat all fetched virtual cards as unlinked for now
     const unlinkedVirtualCards = virtualCards;
     const linkedVirtualCards: typeof virtualCards = [];
-
     const isAvailableForLinking = unlinkedVirtualCards.length > 0;
-    const cardLinkingData = useAppSelector(selectCardLinkingData);
 
-    const handleNextClick = (e: React.MouseEvent) => {
+    const sessionRequestId =
+        cardLinkingData.response?.requestId ??
+        (managingCardId
+            ? universalCards.find((c) => universalCardStableId(c) === managingCardId)?.requestId
+            : undefined);
+
+    const handleNextClick = async (e: React.MouseEvent) => {
         e.preventDefault();
-        if (selectedCard && consentChecked) {
+        if (!selectedCard || !consentChecked || selecting) return;
+
+        if (!sessionRequestId) {
+            dispatch(showToast({
+                message: 'Something went wrong',
+                subtitle: 'Missing link session. Go back and try again.',
+                duration: 3000,
+                tosterType: 'error',
+            }));
+            return;
+        }
+
+        setSelecting(true);
+        try {
+            const res = await selectVc(sessionRequestId, selectedCard);
+            dispatch(setCardLinkingData({ response: res }));
             setPinDrawOpen(true);
+        } catch (err: any) {
+            console.error("Failed to select VC:", err);
+            dispatch(showToast({
+                message: 'Selection failed',
+                subtitle: err?.errorMessage || 'Could not select virtual card. Please try again.',
+                duration: 3000,
+                tosterType: 'error',
+            }));
+        } finally {
+            setSelecting(false);
         }
     };
 
-    const HandleVerifyVCPin = (PIN: string) => {
+    const handleVerifyVcPin = (PIN: string) => {
         const selectedCardObj = virtualCards.find(c => c.cardId === selectedCard);
-        console.log(selectedCardObj)
         return selectedCardObj?.defaultPin === PIN;
-
-        // CHECK VERIFY VC PIN API!
-        // verifyVcPin
-    }
-
-
+    };
 
     const pinVerifySuccess = async (pin: string) => {
-        if (!selectedCard) return;
+        if (!selectedCard || !sessionRequestId) return;
         try {
-            // Using verifyUcPin with a mock requestId and passing vcCardId
-            const res = await verifyUcPin("mock-request-id", pin, selectedCard);
+            const res = await verifyVcPin(sessionRequestId, pin, selectedCard);
             dispatch(setCardLinkingData({ response: res }));
             setPinDrawOpen(false);
-            // handleNext("linking_success");
-        } catch (error) {
-            console.error("Failed to verify UC PIN:", error);
+            handleNext("linking_success");
+        } catch (err: any) {
+            console.error("Failed to verify VC PIN:", err);
+            dispatch(showToast({
+                message: 'PIN verification failed',
+                subtitle: err?.errorMessage || 'Incorrect PIN. Please try again.',
+                duration: 3000,
+                tosterType: 'error',
+            }));
         }
-
-        handleNext("linking_success");
-
     };
 
     return (
@@ -139,7 +166,7 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                                                     )}
                                                 </div>
                                                 <span className="text-sm text-text-primary">
-                                                    {card.maskedCardNumber} ( Virtual Card )
+                                                    {virtualCardMaskedDisplay(card)} ( Virtual Card )
                                                 </span>
                                             </button>
                                         ))}
@@ -162,7 +189,7 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                                                     <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center border-text-primary/20" />
                                                     <div className="flex flex-col items-start">
                                                         <span className="text-sm text-text-primary">
-                                                            {card.maskedCardNumber} ( Virtual Card )
+                                                            {virtualCardMaskedDisplay(card)} ( Virtual Card )
                                                         </span>
                                                         <span className="text-xs text-orange">
                                                             Already linked
@@ -191,10 +218,10 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                 <Link
                     href="#"
                     onClick={handleNextClick}
-                    className={`bg-primary p-4 text-center text-[#fff] flex items-center justify-center rounded-full w-full ${!selectedCard || !consentChecked ? "opacity-50" : ""
+                    className={`bg-primary p-4 text-center text-[#fff] flex items-center justify-center rounded-full w-full ${!selectedCard || !consentChecked || selecting ? "opacity-50" : ""
                         }`}
                 >
-                    Next
+                    {selecting ? "Selecting..." : "Next"}
                 </Link>
                 <Link
                     href={routes.addInstacard}
@@ -210,7 +237,7 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                 subtitle="Enter your PIN to continue"
                 showTitle={false}
                 onClose={() => setPinDrawOpen(false)}
-                verifyPin={HandleVerifyVCPin}
+                verifyPin={handleVerifyVcPin}
                 onVerified={pinVerifySuccess}
                 fieldLength={4}
             />

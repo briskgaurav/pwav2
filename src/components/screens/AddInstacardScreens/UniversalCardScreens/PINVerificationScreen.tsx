@@ -1,15 +1,23 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CardMockup } from '@/components/ui'
-import { useAppSelector } from '@/store/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/store/redux/hooks'
 import { PIN_LENGTH } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/lib/auth-context'
 import { useManagingCard } from '@/hooks/useManagingCard'
-import LayoutSheet from '@/components/ui/LayoutSheet'
 import { routes } from '@/lib/routes'
+import {
+  verifyUcPin,
+  verifyVcPin,
+  getCardLinkErrorDetails,
+} from '@/lib/api/cardLinkApi'
+import { universalCardStableId, type UniversalCard } from '@/lib/api/cards'
+import { setCardLinkingData, selectCardLinkingData } from '@/store/redux/slices/cardLinkingSlice'
+import { selectUniversalCards } from '@/store/redux/slices/cardDataWalletSlice'
+import { showToast } from '@/store/redux/slices/toasterSlice'
 
 type CardPinAuthProps = {
   title?: string
@@ -19,6 +27,10 @@ type CardPinAuthProps = {
   handleNext?: (step: any) => void
   nextStep?: string
   cardType?: "Virtual" | "Universal"
+  /** When true, verifies PIN via POST /card-link/{requestId}/verify-uc-pin instead of local/global PIN */
+  verifyUcPinApi?: boolean
+  /** When true, verifies PIN via POST /card-link/{requestId}/verify-vc-pin (uses `cardLinkingData.response`) */
+  verifyVcPinApi?: boolean
 }
 
 function NativePINInput({
@@ -92,28 +104,146 @@ export default function PINVerificationScreen({
   handleNext,
   cardType,
   onVerified: onVerifiedProp,
-  nextStep = 'virtual_card_selection'
+  nextStep = 'virtual_card_selection',
+  verifyUcPinApi = false,
+  verifyVcPinApi = false,
 }: CardPinAuthProps) {
   const [pin, setPin] = useState('')
   const [error, setError] = useState('')
   const [resetKey, setResetKey] = useState(0)
+  const [isVerifying, setIsVerifying] = useState(false)
+  const apiPinVerifyLockRef = useRef(false)
   const { verifyPin: verifyCardPin, card: managingCard } = useManagingCard()
   const globalPin = useAppSelector((s) => s.card.pin)
+  const cardLinkingData = useAppSelector(selectCardLinkingData)
+  const managingCardId = useAppSelector((s) => s.cardWallet.managingCardId)
+  const universalCards = useAppSelector(selectUniversalCards)
+
+  const selectedUniversal = useMemo((): UniversalCard | undefined => {
+    if (!managingCardId) return undefined
+    return universalCards.find(
+      (c) => universalCardStableId(c) === managingCardId,
+    )
+  }, [managingCardId, universalCards])
+
+  const ucPinRequestId = useMemo(() => {
+    return (
+      selectedUniversal?.requestId ?? cardLinkingData.response?.requestId
+    )
+  }, [cardLinkingData.response?.requestId, selectedUniversal])
+  const dispatch = useAppDispatch()
   const router = useRouter()
   const { t } = useTranslation()
   const { language } = useAuth()
   const isRtl = language === 'ar'
 
 
-  const onVerified = () => {
+  const onVerified = useCallback(() => {
     if (onVerifiedProp) {
-      onVerifiedProp();
+      onVerifiedProp()
     } else if (handleNext) {
-      handleNext(nextStep as any);
+      handleNext(nextStep as any)
     }
-  };
+  }, [handleNext, nextStep, onVerifiedProp])
 
-  const handleContinue = useCallback(() => {
+  const handleContinue = useCallback(async () => {
+    if (verifyVcPinApi) {
+      if (apiPinVerifyLockRef.current) return
+      const requestId = cardLinkingData.response?.requestId
+      if (!requestId) {
+        dispatch(
+          showToast({
+            message: 'Something went wrong',
+            subtitle: 'Missing link session. Please go back and try again.',
+            duration: 3000,
+            tosterType: 'error',
+          }),
+        )
+        return
+      }
+      apiPinVerifyLockRef.current = true
+      setIsVerifying(true)
+      try {
+        const vcCardId =
+          cardLinkingData.response?.vcSummary?.vcCardId ??
+          (cardLinkingData.vcCardId || undefined)
+        const response = await verifyVcPin(requestId, pin, vcCardId)
+        dispatch(setCardLinkingData({ response }))
+        onVerified()
+      } catch (err: unknown) {
+        const { errorMessage: linkErrMsg } = getCardLinkErrorDetails(err)
+        const msg =
+          linkErrMsg ||
+          (err instanceof Error ? err.message : '') ||
+          t('cardPinAuth.incorrectPin')
+        setError(msg)
+        setPin('')
+        setResetKey((prev) => prev + 1)
+      } finally {
+        apiPinVerifyLockRef.current = false
+        setIsVerifying(false)
+      }
+      return
+    }
+
+    if (verifyUcPinApi) {
+      if (apiPinVerifyLockRef.current) return
+      const requestId = ucPinRequestId
+      if (!requestId) {
+        dispatch(
+          showToast({
+            message: 'Something went wrong',
+            subtitle: 'Missing link session. Open this flow from your Universal Card.',
+            duration: 3000,
+            tosterType: 'error',
+          }),
+        )
+        return
+      }
+      apiPinVerifyLockRef.current = true
+      setIsVerifying(true)
+      try {
+        const response = await verifyUcPin(
+          requestId,
+          pin,
+          cardLinkingData.vcCardId || undefined,
+          selectedUniversal?.ucCardId,
+        )
+        dispatch(setCardLinkingData({ response }))
+        onVerified()
+      } catch (err: unknown) {
+        const { errorCode, errorMessage: linkErrMsg } =
+          getCardLinkErrorDetails(err)
+        if (errorCode === 'LINK_ALREADY_EXISTS') {
+          dispatch(
+            showToast({
+              message: 'Already linked',
+              subtitle:
+                linkErrMsg ??
+                'This Virtual Card is already linked to that Universal Card.',
+              duration: 5000,
+              tosterType: 'error',
+            }),
+          )
+        }
+        const msg =
+          (typeof err === 'object' &&
+            err !== null &&
+            'errorMessage' in err &&
+            typeof (err as { errorMessage?: string }).errorMessage === 'string' &&
+            (err as { errorMessage: string }).errorMessage) ||
+          (err instanceof Error ? err.message : '') ||
+          t('cardPinAuth.incorrectPin')
+        setError(msg)
+        setPin('')
+        setResetKey((prev) => prev + 1)
+      } finally {
+        apiPinVerifyLockRef.current = false
+        setIsVerifying(false)
+      }
+      return
+    }
+
     const globalPinOk = pin === globalPin
     const isValid = managingCard ? verifyCardPin(pin) : globalPinOk
     if (isValid) {
@@ -123,14 +253,29 @@ export default function PINVerificationScreen({
       setPin('')
       setResetKey((prev) => prev + 1)
     }
-  }, [globalPin, managingCard, onVerified, pin, t, verifyCardPin])
+  }, [
+    cardLinkingData.response,
+    cardLinkingData.vcCardId,
+    dispatch,
+    globalPin,
+    managingCard,
+    onVerified,
+    pin,
+    selectedUniversal?.ucCardId,
+    t,
+    ucPinRequestId,
+    verifyCardPin,
+    verifyUcPinApi,
+    verifyVcPinApi,
+  ])
 
   const isComplete = pin.length === PIN_LENGTH
   useEffect(() => {
-    if (pin.length === PIN_LENGTH) {
-      handleContinue()
-    }
-  }, [pin, handleContinue])
+    if (pin.length !== PIN_LENGTH) return
+    if ((verifyUcPinApi || verifyVcPinApi) && apiPinVerifyLockRef.current) return
+    if (!verifyUcPinApi && !verifyVcPinApi && isVerifying) return
+    void handleContinue()
+  }, [pin, handleContinue, verifyUcPinApi, verifyVcPinApi, isVerifying])
 
 
 
@@ -177,7 +322,7 @@ export default function PINVerificationScreen({
             type="button"
             className="w-full py-3 rounded-[20px] bg-primary text-[#fff] font-medium text-base disabled:opacity-30 active:scale-[0.97] transition-transform"
             onClick={handleContinue}
-            disabled={!isComplete}
+            disabled={!isComplete || isVerifying}
           >
             {t('cardPinAuth.continue')}
           </button>
