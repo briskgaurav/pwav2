@@ -12,13 +12,6 @@ interface GiftCodeEntryScreenProps {
   type: 'recipient' | 'sender';
 }
 
-/**
- * Gift code entry screen — driven by:
- *   - `nextAction.code === 'ENTER_RECIPIENT_CODE'`
- *   - `nextAction.code === 'ENTER_SENDER_CODE'`
- *
- * Collects an 8-digit code and submits it.
- */
 export default function GiftCodeEntryScreen({ type }: GiftCodeEntryScreenProps) {
   const { state, call } = useCardJourney();
   const dispatch = useAppDispatch();

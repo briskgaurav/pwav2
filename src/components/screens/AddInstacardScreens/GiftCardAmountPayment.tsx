@@ -209,13 +209,6 @@ export default function GiftCardAmountPayment() {
           error={errors.amount}
         />
 
-        {/* <Button
-          className="bg-primary text-white rounded-full px-4 py-2 w-full h-14 mt-1"
-          onClick={handleSubmit}
-          disabled={submitting}
-        >
-          {submitting ? 'Submitting...' : 'Continue'}
-        </Button> */}
       </div>
 
       <GiftAddMoneyBottomSheet

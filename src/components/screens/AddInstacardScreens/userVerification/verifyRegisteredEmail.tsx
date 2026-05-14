@@ -7,14 +7,6 @@ import { useAppDispatch } from '@/store/redux/hooks';
 import { showToast } from '@/store/redux/slices/toasterSlice';
 import { ApiError } from '@/lib/api/errors';
 
-/**
- * Email OTP screen — driven by `nextAction.code === 'VERIFY_EMAIL_OTP'`.
- *
- * Reads `requestId` and `destinationMasked` from the Redux card-request
- * state. On successful verify the backend returns the next envelope
- * (typically `VERIFY_BANK_OTP_OR_SOFT_TOKEN`) and `useCardJourney.call()`
- * dispatches it — the parent router re-renders the correct screen automatically.
- */
 export default function VerifyRegisteredEmail() {
   const dispatch = useAppDispatch();
   const { state, call } = useCardJourney();
