@@ -46,7 +46,6 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
         saveToSession(imageData);
       }
     } catch (e) {
-      console.error('Failed to capture face image:', e);
     }
     
     setTimeout(() => {
@@ -64,7 +63,6 @@ export default function FaceScan({ getButtonText, handleContinue }: { getButtonT
       try {
         saveToSession(capturedImage);
       } catch (e) {
-        console.error('Failed to save captured image:', e);
       }
       
       setTimeout(() => {

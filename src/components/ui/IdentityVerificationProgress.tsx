@@ -11,14 +11,19 @@ export default function IdentityVerificationProgress() {
   // 1) Liveness Verification
   // 2) ID Verification
   // 3) Email Registration
+  // 4) KYC Status
   let activeIndex = 0
   if (pathname.includes('/identity-verification/id-verification')) activeIndex = 1
   else if (pathname.includes('/identity-verification/email-registration')) activeIndex = 2
-  else if (pathname.includes('/identity-verification/liveness-verification')) activeIndex = 0
   else if (pathname.includes('/identity-verification/kyc-status')) activeIndex = 3
+  else if (pathname.includes('/identity-verification/liveness-verification')) activeIndex = 0
 
   // Calculate progress width based on active step
-  const progressWidth = activeIndex === 0 ? 'w-1/3' : activeIndex === 1 ? 'w-2/3' : 'w-full'
+  const progressWidth =
+    activeIndex === 0 ? 'w-1/4'
+    : activeIndex === 1 ? 'w-2/4'
+    : activeIndex === 2 ? 'w-3/4'
+    : 'w-full'
 
   // Helper to get text color: green if completed, primary if current, secondary otherwise
   const getStepClass = (stepIndex: number) => {
