@@ -2,7 +2,7 @@
 
 import { CardMockup, Checkbox } from "@/components/ui";
 import { PlusIcon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { routes } from "@/lib/routes";
 import { LinkLinkVirtualCardSteps } from "@/types/cardsLinkingSteps";
@@ -32,22 +32,38 @@ export default function UniversalCardSelection({ handleNext }: Props) {
     const [consentChecked, setConsentChecked] = useState(false);
     const [pinDrawOpen, setPinDrawOpen] = useState(false);
     const [selecting, setSelecting] = useState(false);
+    const [pinVerifying, setPinVerifying] = useState(false);
 
     const unlinkedUniversalCards = universalCards;
     const linkedUniversalCards: typeof universalCards = [];
     const isAvailableForLinking = unlinkedUniversalCards.length > 0;
 
+    const [selectedUcCardId, setSelectedUcCardId] = useState<string | null>(null);
+    const pinFailedRef = useRef(false);
+
     const sessionRequestId = cardLinkingData.response?.requestId;
 
     const handleNextClick = async (e: React.MouseEvent) => {
         e.preventDefault();
-        if (!selectedCard || !consentChecked || selecting) return;
+        if (!selectedCard || !consentChecked || selecting) {
+            dispatch(showToast({
+                message: "Select a Universal Card and check the consent box to continue",
+                subtitle: !selectedCard
+                    ? "Please select a Universal Card"
+                    : !consentChecked
+                    ? "Please provide your consent"
+                    : "",
+                duration: 3000,
+                tosterType: "error"
+            }));
+            return;
+        }
 
         const row = universalCards.find(c => universalCardStableId(c) === selectedCard);
         if (!sessionRequestId || !row?.ucCardId) {
             dispatch(showToast({
                 message: 'Something went wrong',
-                subtitle: 'Missing link session. Go back and try again.',
+                subtitle: 'Missing link session or could not select virtual card. Go back and try again.',
                 duration: 3000,
                 tosterType: 'error',
             }));
@@ -60,6 +76,7 @@ export default function UniversalCardSelection({ handleNext }: Props) {
             console.log("[UniversalCardSelection] selectUc response:", res);
             dispatch(setCardLinkingData({ response: res }));
             setPinDrawOpen(true);
+            setSelectedUcCardId(row.ucCardId); // Store for PIN verification step
         } catch (err: any) {
             console.error("[UniversalCardSelection] Failed to select UC:", err);
             dispatch(showToast({
@@ -73,17 +90,32 @@ export default function UniversalCardSelection({ handleNext }: Props) {
         }
     };
 
-    const handleVerifyUcPin = (PIN: string) => {
-        const selectedCardObj = universalCards.find(c => universalCardStableId(c) === selectedCard);
-        return selectedCardObj?.defaultPin === PIN;
+    // Updated - run the API verifyUcPin and return boolean for CardPinVerificationDrawer
+    const handleVerifyUcPin = (PIN: string): boolean => {
+        // This will "optimistically" always return true
+        // Real verification and error handling is performed in pinVerifySuccess below
+        return true;
     };
 
+    // We need to make sure Drawer does NOT keep opening repeatedly after a failed PIN attempt,
+    // but lets the user try only when they explicitly try again.
+
+    // Once a PIN fails, close the drawer and let the toast tell the user;
+    // If they want to retry, they must click Next again.
     const pinVerifySuccess = async (pin: string) => {
-        if (!selectedCard || !sessionRequestId) return;
-        const row = universalCards.find(c => universalCardStableId(c) === selectedCard);
+        if (!selectedCard || !sessionRequestId || !selectedUcCardId) {
+            dispatch(showToast({
+                message: 'Something went wrong',
+                subtitle: 'No card or session selected',
+                duration: 3000,
+                tosterType: 'error'
+            }));
+            setPinDrawOpen(false);
+            return;
+        }
         try {
-            if (!row?.ucCardId) throw new Error("Missing ucCardId");
-            const res = await verifyUcPin(sessionRequestId, pin, undefined, row.ucCardId);
+            setPinVerifying(true);
+            const res = await verifyUcPin(sessionRequestId, pin, undefined, selectedUcCardId);
             console.log("[UniversalCardSelection] verifyUcPin response:", res);
             dispatch(setCardLinkingData({ response: res }));
             setPinDrawOpen(false);
@@ -91,7 +123,7 @@ export default function UniversalCardSelection({ handleNext }: Props) {
         } catch (err: unknown) {
             console.error("[UniversalCardSelection] Failed to verify UC PIN:", err);
             const { errorCode, errorMessage: linkErrMsg } =
-                getCardLinkErrorDetails(err)
+                getCardLinkErrorDetails(err);
             if (errorCode === 'LINK_ALREADY_EXISTS') {
                 dispatch(showToast({
                     message: 'Already linked',
@@ -100,7 +132,7 @@ export default function UniversalCardSelection({ handleNext }: Props) {
                     tosterType: 'error',
                 }));
                 setPinDrawOpen(false);
-                return
+                return;
             }
             dispatch(showToast({
                 message: 'PIN verification failed',
@@ -108,6 +140,10 @@ export default function UniversalCardSelection({ handleNext }: Props) {
                 duration: 3000,
                 tosterType: 'error',
             }));
+            // Don't reopen the drawer automatically, only close (user must try again themselves)
+            setPinDrawOpen(false);
+        } finally {
+            setPinVerifying(false);
         }
     };
 
@@ -140,7 +176,7 @@ export default function UniversalCardSelection({ handleNext }: Props) {
                             </p>
 
                             <div className="flex flex-col items-start justify-start w-full mt-4 space-y-3">
-                                {/* Unlinked Virtual Cards */}
+                                {/* Unlinked Universal Cards */}
                                 {unlinkedUniversalCards.length > 0 && (
                                     <>
                                         <p className="text-xs text-text-secondary font-medium">
@@ -150,8 +186,8 @@ export default function UniversalCardSelection({ handleNext }: Props) {
                                             <button
                                                 key={universalCardStableId(card)}
                                                 onClick={() => {
-                                                    console.log('[UniversalCardSelection] Tapped universal card:', card)
-                                                    setSelectedCard(universalCardStableId(card))
+                                                    setSelectedCard(universalCardStableId(card));
+                                                    setSelectedUcCardId(card.ucCardId ?? null);
                                                 }}
                                                 className={`w-full p-4 border rounded-2xl flex items-center gap-3 transition-all ${selectedCard === universalCardStableId(card)
                                                     ? "border-text-primary/40 border-2"

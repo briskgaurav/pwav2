@@ -2,19 +2,19 @@
 
 import { CardMockup, Checkbox } from "@/components/ui";
 import { PlusIcon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { routes } from "@/lib/routes";
 import { LinkLinkVirtualCardSteps } from "@/types/cardsLinkingSteps";
 import CardPinVerificationDrawer from "../AuthScreens/CardPinVerificationDrawer";
 import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
 import { fetchAllCards, selectVirtualCards } from "@/store/redux/slices/cardDataWalletSlice";
-import { useEffect } from "react";
 import { selectVc, verifyVcPin } from "@/lib/api/cardLinkApi";
 import { setCardLinkingData, selectCardLinkingData } from "@/store/redux/slices/cardLinkingSlice";
 import { showToast } from "@/store/redux/slices/toasterSlice";
 import { selectUniversalCards } from "@/store/redux/slices/cardDataWalletSlice";
 import { universalCardStableId, virtualCardMaskedDisplay } from "@/lib/api/cards";
+import { getCardLinkErrorDetails } from "@/lib/api/cardLinkApi";
 
 interface Props {
     handleNext: (step: LinkLinkVirtualCardSteps) => void;
@@ -35,6 +35,9 @@ export default function VirtualCardSelections({ handleNext }: Props) {
     const [consentChecked, setConsentChecked] = useState(false);
     const [pinDrawOpen, setPinDrawOpen] = useState(false);
     const [selecting, setSelecting] = useState(false);
+    const [pinVerifying, setPinVerifying] = useState(false);
+    const [selectedVcCardId, setSelectedVcCardId] = useState<string | null>(null);
+    const pinFailedRef = useRef(false);
 
     const unlinkedVirtualCards = virtualCards;
     const linkedVirtualCards: typeof virtualCards = [];
@@ -48,7 +51,19 @@ export default function VirtualCardSelections({ handleNext }: Props) {
 
     const handleNextClick = async (e: React.MouseEvent) => {
         e.preventDefault();
-        if (!selectedCard || !consentChecked || selecting) return;
+        if (!selectedCard || !consentChecked || selecting) {
+            dispatch(showToast({
+                message: "Select a Virtual Card and check the consent box to continue",
+                subtitle: !selectedCard
+                    ? "Please select a Virtual Card"
+                    : !consentChecked
+                    ? "Please provide your consent"
+                    : "",
+                duration: 3000,
+                tosterType: "error"
+            }));
+            return;
+        }
 
         if (!sessionRequestId) {
             dispatch(showToast({
@@ -65,6 +80,7 @@ export default function VirtualCardSelections({ handleNext }: Props) {
             const res = await selectVc(sessionRequestId, selectedCard);
             dispatch(setCardLinkingData({ response: res }));
             setPinDrawOpen(true);
+            setSelectedVcCardId(selectedCard); // Store for PIN verification step
         } catch (err: any) {
             console.error("Failed to select VC:", err);
             dispatch(showToast({
@@ -78,26 +94,52 @@ export default function VirtualCardSelections({ handleNext }: Props) {
         }
     };
 
-    const handleVerifyVcPin = (PIN: string) => {
-        const selectedCardObj = virtualCards.find(c => c.cardId === selectedCard);
-        return selectedCardObj?.defaultPin === PIN;
+    // Optimistically always return true. Real backend verification is in pinVerifySuccess.
+    const handleVerifyVcPin = (PIN: string): boolean => {
+        return true;
     };
 
+    // Once a PIN fails, close the drawer. If the user wants to retry, they must click Next again.
     const pinVerifySuccess = async (pin: string) => {
-        if (!selectedCard || !sessionRequestId) return;
+        if (!selectedCard || !sessionRequestId || !selectedVcCardId) {
+            dispatch(showToast({
+                message: 'Something went wrong',
+                subtitle: 'No card or session selected',
+                duration: 3000,
+                tosterType: 'error'
+            }));
+            setPinDrawOpen(false);
+            return;
+        }
         try {
-            const res = await verifyVcPin(sessionRequestId, pin, selectedCard);
+            setPinVerifying(true);
+            const res = await verifyVcPin(sessionRequestId, pin, selectedVcCardId);
             dispatch(setCardLinkingData({ response: res }));
             setPinDrawOpen(false);
             handleNext("linking_success");
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error("Failed to verify VC PIN:", err);
+            const { errorCode, errorMessage: linkErrMsg } =
+                getCardLinkErrorDetails?.(err) ?? {};
+            if (errorCode === 'LINK_ALREADY_EXISTS') {
+                dispatch(showToast({
+                    message: 'Already linked',
+                    subtitle: linkErrMsg ?? 'This Universal Card is already linked to that Virtual Card.',
+                    duration: 5000,
+                    tosterType: 'error',
+                }));
+                setPinDrawOpen(false);
+                return;
+            }
             dispatch(showToast({
                 message: 'PIN verification failed',
-                subtitle: err?.errorMessage || 'Incorrect PIN. Please try again.',
+                subtitle: linkErrMsg || 'Incorrect PIN. Please try again.',
                 duration: 3000,
                 tosterType: 'error',
             }));
+            setPinDrawOpen(false);
+        } finally {
+            setPinVerifying(false);
         }
     };
 
@@ -139,7 +181,10 @@ export default function VirtualCardSelections({ handleNext }: Props) {
                                         {unlinkedVirtualCards.map((card) => (
                                             <button
                                                 key={card.cardId}
-                                                onClick={() => setSelectedCard(card.cardId)}
+                                                onClick={() => {
+                                                    setSelectedCard(card.cardId);
+                                                    setSelectedVcCardId(card.cardId);
+                                                }}
                                                 className={`w-full p-4 border rounded-2xl flex items-center gap-3 transition-all ${selectedCard === card.cardId
                                                     ? "border-text-primary/40 border-2"
                                                     : "border-text-primary/20"

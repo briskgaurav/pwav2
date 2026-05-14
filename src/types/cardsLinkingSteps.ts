@@ -1,4 +1,5 @@
 export type LinkLinkVirtualCardSteps =
+  | 'initiating'
   | 'verify_vc_pin'
   | 'verify_uc_pin'
   | "virtual_card_selection"

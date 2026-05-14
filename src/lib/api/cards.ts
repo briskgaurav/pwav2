@@ -511,6 +511,11 @@ export interface UniversalCard {
   requestId: string;
   ucCardId: string;
   ucPanMasked: string;
+  /**
+   * Full primary account number when the list API supplies it (e.g. dev / host).
+   * Used for `provide-uc-pan` in wallet link flows — do not log or persist.
+   */
+  ucPan?: string;
   pinSet?: boolean;
   linkedVirtualCardCount?: number;
   linkedVirtualCards?: unknown[];
@@ -589,7 +594,14 @@ export async function fetchAllCardsData(): Promise<{ virtualCards: VirtualCard[]
   ]);
 
   const virtualCardsWithPin = virtualCardsResponse.cards.map(card => ({ ...card, defaultPin: '1234' }));
-  const universalCardsWithPin = universalCardsResponse.cards.map(card => ({ ...card, defaultPin: '1234' }));
+  const universalCardsWithPin = universalCardsResponse.cards.map((card) => {
+    const row = card as UniversalCard & { ucpan?: string }
+    return {
+      ...row,
+      defaultPin: '1234',
+      ucPan: row.ucPan ?? row.ucpan,
+    }
+  });
 
   return { virtualCards: virtualCardsWithPin, universalCards: universalCardsWithPin };
 }

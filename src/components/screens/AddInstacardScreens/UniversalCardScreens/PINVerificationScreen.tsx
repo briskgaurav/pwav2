@@ -128,7 +128,7 @@ export default function PINVerificationScreen({
 
   const ucPinRequestId = useMemo(() => {
     return (
-      selectedUniversal?.requestId ?? cardLinkingData.response?.requestId
+      cardLinkingData.response?.requestId ?? selectedUniversal?.requestId
     )
   }, [cardLinkingData.response?.requestId, selectedUniversal])
   const dispatch = useAppDispatch()
@@ -206,8 +206,8 @@ export default function PINVerificationScreen({
         const response = await verifyUcPin(
           requestId,
           pin,
-          cardLinkingData.vcCardId || undefined,
-          selectedUniversal?.ucCardId,
+          // cardLinkingData.vcCardId || undefined,
+          // selectedUniversal?.ucCardId,
         )
         dispatch(setCardLinkingData({ response }))
         onVerified()
