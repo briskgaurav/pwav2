@@ -11,14 +11,19 @@ import VCCardActivation from "./VCActivation";
 import PollingWaitScreen from "./PollingWaitScreen";
 import ResumeFeeScreen from "./ResumeFeeScreen";
 import GiftRecipientDetailsScreen from "./GiftRecipientDetailsScreen";
-import GiftCodeEntryScreen from "./GiftCodeEntryScreen";
-import ClosedScreen from "./ClosedScreen";
+import GiftCardAmountPayment from "./GiftCardAmountPayment";
+import GiftCardConsent from "./GiftCardConsent";
 import HowToUseInstacards from "./HowToUseInstacards";
 import { useCardJourney } from "@/hooks/useCardJourney";
 import VerifyBankOTP from "./userVerification/verifyBankOTP";
+import GCReadyToUsePage from "./GCReadyToUsePage";
+import ShareGiftCard from "./ShareGiftCard";
+import GiftCardOneTimeActivation from "./GiftCardOneTimeActivation";
+import SuccessScreenGC from "./ClosedScreen";
 
 export default function AddInstacardScreen() {
-  const { state } = useCardJourney();
+    const { state, reset } = useCardJourney();
+
   const [activateClicked, setActivateClicked] = useState(false);
 
   const renderStep = () => {
@@ -28,7 +33,20 @@ export default function AddInstacardScreen() {
       );
     }
 
-    switch (state.nextAction.code) {
+    // const nextActionCode = state.nextAction.code;
+    
+    const isGiftCodeAction =
+      state.nextAction.code === 'ENTER_RECIPIENT_CODE' ||
+      state.nextAction.code === 'ENTER_SENDER_CODE';
+
+    const nextActionCode =
+      state.cardType === 'GIFT_CARD' && isGiftCodeAction
+        ? 'GIFT_CARD_PAYMENT'
+        : isGiftCodeAction
+        ? 'SHOW_REQUEST_CLOSED'
+        : state.nextAction.code;
+
+    switch (nextActionCode) {
       case 'VERIFY_EMAIL_OTP':
         return <VerifyRegisteredEmail />;
       case 'VERIFY_BANK_OTP_OR_SOFT_TOKEN':
@@ -38,6 +56,10 @@ export default function AddInstacardScreen() {
       case 'CAPTURE_RECIPIENT_DETAILS':
         return <GiftRecipientDetailsScreen />;
       case 'CAPTURE_CONSENT':
+        if (state.cardType === 'GIFT_CARD') {
+          return <GiftCardConsent />;
+        }
+        return <CreditCardConsent />;
       case 'SHOW_ELIGIBILITY_RESULT':
         return <CreditCardConsent />;
 
@@ -70,12 +92,29 @@ export default function AddInstacardScreen() {
       case 'RESUME_FROM_FEE_COLLECTION':
       case 'SHOW_INSUFFICIENT_BALANCE':
         return <ResumeFeeScreen />;
-      case 'ENTER_RECIPIENT_CODE':
-        return <GiftCodeEntryScreen type="recipient" />;
-      case 'ENTER_SENDER_CODE':
-        return <GiftCodeEntryScreen type="sender" />;
+      case 'GIFT_CARD_PAYMENT':
+        return <GiftCardAmountPayment />;
+      case 'GIFT_CARD_READY_TO_USE':
+        return <GCReadyToUsePage />;
+      case 'GIFT_CARD_SHARE':
+        return <ShareGiftCard />;
+      case 'GIFT_CARD_ACTIVATION':
+        return <GiftCardOneTimeActivation />;
+
+
+
       case 'SHOW_REQUEST_CLOSED':
-        return <ClosedScreen />;
+          return (
+            <SuccessScreenGC
+              title="Gift card created successfully!"
+              description="We have successfully create gift card."
+              buttonText="Go to Home Screen"
+              onButtonClick={() => setActivateClicked(true)}
+              hideLayerSheet
+            />
+          );
+
+        //return <ClosedScreen />;
       default:
         return (
           <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-4">

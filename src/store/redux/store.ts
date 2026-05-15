@@ -32,7 +32,7 @@ const persistConfig = {
   key: 'root',
   storage,
   version: 2,
-  whitelist: ['cardWallet'],
+  whitelist: ['cardWallet', 'cardRequest'],
   migrate: (incomingState: unknown) => {
     if (incomingState && typeof incomingState === 'object') {
       const next = { ...(incomingState as Record<string, unknown>) }

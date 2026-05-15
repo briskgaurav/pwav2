@@ -3,12 +3,38 @@
 import { useState } from 'react';
 import { useCardJourney } from '@/hooks/useCardJourney';
 import { submitGiftRecipientDetails } from '@/lib/api/cardJourneyApi';
-import ButtonComponent from '@/components/ui/ButtonComponent';
 import { useAppDispatch } from '@/store/redux/hooks';
 import { showToast } from '@/store/redux/slices/toasterSlice';
+import { setGiftRecipientDetails } from '@/store/redux/slices/cardRequestSlice';
+import LayoutSheet from '@/components/ui/LayoutSheet';
+import { Button } from '@/components/ui';
+import { AddMoneyForm } from '@/components/ui/AddMoneyForm';
+import { GiftCardHeader } from '@/components/ui/GiftCardHeader';
+import { GiftRecipientDetails } from '@/components/ui/GiftRecipientDetails';
+
+interface ValidationErrors {
+  recipientName?: string;
+  recipientEmail?: string;
+  amount?: string;
+  giftMessage?: string;
+}
+
+const validateEmail = (email: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+const parseAmount = (amount: string): number => Number.parseFloat(amount.replace(/,/g, ''));
+
+const getErrorMessage = (error: unknown): string => {
+  if (error && typeof error === 'object' && 'errorMessage' in error) {
+    const message = (error as { errorMessage?: unknown }).errorMessage;
+    if (typeof message === 'string') return message;
+  }
+
+  if (error instanceof Error) return error.message;
+  return 'Please try again.';
+};
 
 /**
- * Gift card recipient details form — driven by
+ * Gift card recipient details form - driven by
  * `nextAction.code === 'CAPTURE_RECIPIENT_DETAILS'`.
  *
  * Collects: recipientName, recipientEmail, giftAmountMinor, giftMessage.
@@ -23,17 +49,64 @@ export default function GiftRecipientDetailsScreen() {
   const [giftAmount, setGiftAmount] = useState('');
   const [giftMessage, setGiftMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState<string[]>([]);
+  const [errors, setErrors] = useState<ValidationErrors>({});
 
   const validate = (): boolean => {
-    const errs: string[] = [];
-    if (!recipientName.trim()) errs.push('Recipient name is required');
-    if (!recipientEmail.trim() || !recipientEmail.includes('@')) errs.push('Valid email is required');
-    const amount = parseFloat(giftAmount);
-    if (isNaN(amount) || amount <= 0) errs.push('Amount must be greater than 0');
-    if (giftMessage.length > 500) errs.push('Message must be 500 characters or less');
+    const errs: ValidationErrors = {};
+
+    if (!recipientName.trim()) {
+      errs.recipientName = 'Recipient name is required';
+    } else if (recipientName.trim().length < 2) {
+      errs.recipientName = 'Recipient name must be at least 2 characters';
+    }
+
+    if (!recipientEmail.trim()) {
+      errs.recipientEmail = 'Recipient email is required';
+    } else if (!validateEmail(recipientEmail.trim())) {
+      errs.recipientEmail = 'Please enter a valid email address';
+    }
+
+    const amount = parseAmount(giftAmount);
+    if (!giftAmount.trim()) {
+      errs.amount = 'Amount is required';
+    } else if (Number.isNaN(amount) || amount <= 0) {
+      errs.amount = 'Please enter a valid amount greater than 0';
+    }
+
+    if (giftMessage.length > 500) {
+      errs.giftMessage = 'Message must be 500 characters or less';
+    }
+
     setErrors(errs);
-    return errs.length === 0;
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleRecipientNameChange = (value: string) => {
+    setRecipientName(value);
+    if (errors.recipientName) {
+      setErrors((prev) => ({ ...prev, recipientName: undefined }));
+    }
+  };
+
+  const handleRecipientEmailChange = (value: string) => {
+    setRecipientEmail(value);
+    if (errors.recipientEmail) {
+      setErrors((prev) => ({ ...prev, recipientEmail: undefined }));
+    }
+  };
+
+  const handleGiftAmountChange = (value: string) => {
+    setGiftAmount(value);
+    if (errors.amount) {
+      setErrors((prev) => ({ ...prev, amount: undefined }));
+    }
+  };
+
+  const handleGiftMessageChange = (value: string) => {
+    setGiftMessage(value);
+    if (errors.giftMessage) {
+      setErrors((prev) => ({ ...prev, giftMessage: undefined }));
+    }
   };
 
   const handleSubmit = async () => {
@@ -41,7 +114,15 @@ export default function GiftRecipientDetailsScreen() {
 
     setSubmitting(true);
     try {
-      const amountMinor = Math.round(parseFloat(giftAmount) * 100);
+      const amountMinor = Math.round(parseAmount(giftAmount) * 100);
+      dispatch(setGiftRecipientDetails({
+        recipientName: recipientName.trim(),
+        recipientEmail: recipientEmail.trim(),
+        giftAmount,
+        giftAmountMinor: amountMinor,
+        giftCurrency: 'NGN',
+        giftMessage: giftMessage.trim(),
+      }));
       await call(() =>
         submitGiftRecipientDetails(requestId, {
           recipientName: recipientName.trim(),
@@ -51,11 +132,10 @@ export default function GiftRecipientDetailsScreen() {
           giftMessage: giftMessage.trim() || undefined,
         }),
       );
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+    } catch (err) {
       dispatch(showToast({
         message: 'Could not save details',
-        subtitle: err?.errorMessage || 'Please try again.',
+        subtitle: getErrorMessage(err),
         duration: 3000,
         tosterType: 'error',
       }));
@@ -65,86 +145,44 @@ export default function GiftRecipientDetailsScreen() {
   };
 
   return (
-    <div className="flex-1 flex flex-col">
-      <div className="flex-1 overflow-auto p-6 py-10 space-y-5">
-        <h2 className="text-lg font-semibold text-text-primary">Gift Card Details</h2>
-        <p className="text-sm text-text-secondary">
-          Enter the recipient&apos;s details for the gift card.
-        </p>
+    <LayoutSheet routeTitle="Gift a Card" needPadding={false} hideLayerSheet ={true}>
+      <div className="flex-1 overflow-auto pb-10 gap-4 p-4 flex flex-col">
+        <GiftCardHeader />
 
-        <div className="space-y-4">
-          <div>
-            <label className="text-sm text-text-primary font-medium block mb-1">Recipient Name</label>
-            <input
-              type="text"
-              value={recipientName}
-              onChange={(e) => setRecipientName(e.target.value)}
-              placeholder="Jane Doe"
-              className="w-full border border-text-primary/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary"
-            />
-          </div>
+        <GiftRecipientDetails
+          recipientName={recipientName}
+          recipientEmail={recipientEmail}
+          recipientMessage={giftMessage}
+          onRecipientNameChange={handleRecipientNameChange}
+          onRecipientEmailChange={handleRecipientEmailChange}
+          onRecipientMessageChange={handleGiftMessageChange}
+          errors={errors}
+        />
 
-          <div>
-            <label className="text-sm text-text-primary font-medium block mb-1">Recipient Email</label>
-            <input
-              type="email"
-              value={recipientEmail}
-              onChange={(e) => setRecipientEmail(e.target.value)}
-              placeholder="jane@example.com"
-              className="w-full border border-text-primary/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary"
-            />
-          </div>
+        {errors.giftMessage && (
+          <p role="alert" className="text-red-500 text-xs -mt-3 ml-1">
+            {errors.giftMessage}
+          </p>
+        )}
 
-          <div>
-            <label className="text-sm text-text-primary font-medium block mb-1">Gift Amount (₦)</label>
-            <input
-              type="number"
-              value={giftAmount}
-              onChange={(e) => setGiftAmount(e.target.value)}
-              placeholder="500.00"
-              min="0"
-              step="0.01"
-              className="w-full border border-text-primary/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary"
-            />
-          </div>
+        <AddMoneyForm
+          showKycTier={false}
+          amount={giftAmount}
+          onAmountChange={handleGiftAmountChange}
+          onSelectRecommended={handleGiftAmountChange}
+          onOpenModal={handleSubmit}
+          btnTitle="Proceed to Add Money"
+          error={errors.amount}
+        />
 
-          <div>
-            <label className="text-sm text-text-primary font-medium block mb-1">
-              Message <span className="text-text-secondary">(optional, max 500 chars)</span>
-            </label>
-            <textarea
-              value={giftMessage}
-              onChange={(e) => setGiftMessage(e.target.value)}
-              placeholder="Happy birthday!"
-              maxLength={500}
-              rows={3}
-              className="w-full border border-text-primary/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary resize-none"
-            />
-            <p className="text-xs text-text-secondary text-right mt-1">{giftMessage.length}/500</p>
-          </div>
-
-          {errors.length > 0 && (
-            <div className="space-y-1">
-              {errors.map((err, i) => (
-                <p key={i} role="alert" className="text-sm text-red-600">{err}</p>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div
-        style={{
-          padding: '8px 16px 24px',
-          paddingBottom: 'calc(env(safe-area-inset-bottom, 24px) + 24px)',
-        }}
-      >
-        <ButtonComponent
-          title={submitting ? 'Submitting…' : 'Continue'}
+        <Button
+          className="bg-primary text-white rounded-full px-4 py-2 w-full h-14 mt-1"
           onClick={handleSubmit}
           disabled={submitting}
-        />
+        >
+          {submitting ? 'Submitting...' : 'Continue'}
+        </Button>
       </div>
-    </div>
+    </LayoutSheet>
   );
 }

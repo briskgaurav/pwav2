@@ -1,12 +1,23 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import type { CardRequestStateResponse } from '@/types/cardIssuance'
 
+export interface GiftRecipientDetailsDraft {
+  recipientName: string;
+  recipientEmail: string;
+  giftAmount: string;
+  giftAmountMinor: number;
+  giftCurrency: string;
+  giftMessage: string;
+}
+
 export interface CardRequestState {
   response: CardRequestStateResponse | null;
+  giftRecipientDetails: GiftRecipientDetailsDraft | null;
 }
 
 const initialState: CardRequestState = {
   response: null,
+  giftRecipientDetails: null,
 }
 
 const cardRequestSlice = createSlice({
@@ -21,16 +32,24 @@ const cardRequestSlice = createSlice({
     },
     clearCardRequestState: (state) => {
       state.response = null;
+      state.giftRecipientDetails = null;
+    },
+    setGiftRecipientDetails: (
+      state,
+      action: PayloadAction<GiftRecipientDetailsDraft>
+    ) => {
+      state.giftRecipientDetails = action.payload;
     },
   },
   selectors: {
     selectCardRequestResponse: (state) => state.response,
     selectNextActionCode: (state) => state.response?.nextAction?.code,
+    selectGiftRecipientDetails: (state) => state.giftRecipientDetails,
   },
 });
 
-export const { setCardRequestState, clearCardRequestState } = cardRequestSlice.actions
-export const { selectCardRequestResponse, selectNextActionCode } = cardRequestSlice.selectors
+export const { setCardRequestState, clearCardRequestState, setGiftRecipientDetails } = cardRequestSlice.actions
+export const { selectCardRequestResponse, selectNextActionCode, selectGiftRecipientDetails } = cardRequestSlice.selectors
 export default cardRequestSlice.reducer
 
 // ─── Backward-compatibility re-exports ─────────────────────────────────────
@@ -59,17 +78,17 @@ export const selectPinRequested = (_root: { cardRequest: CardRequestState }) =>
   null as number | null;
 
 /** @deprecated Stub — customer name from response not tracked separately */
-export const selectCustomerName = (root: { cardRequest: CardRequestState }) =>
+export const selectCustomerName = (_root: { cardRequest: CardRequestState }) =>
   null as string | null;
 
 /** @deprecated No-op action — slice no longer tracks these separately */
 export const setMaskedCardPAN = (_pan: string) => ({ type: 'cardRequest/noop' as const });
 export const setPinRequested = (_pin: number) => ({ type: 'cardRequest/noop' as const });
 export const setCustomerName = (_name: string) => ({ type: 'cardRequest/noop' as const });
-export const setCardRequest = (_payload: any) => ({ type: 'cardRequest/noop' as const });
-export const setEmailOtpVerified = (_payload: any) => ({ type: 'cardRequest/noop' as const });
-export const setBankOtpSent = (_payload: any) => ({ type: 'cardRequest/noop' as const });
-export const setBankOtpVerified = (_payload: any) => ({ type: 'cardRequest/noop' as const });
+export const setCardRequest = (_payload: unknown) => ({ type: 'cardRequest/noop' as const });
+export const setEmailOtpVerified = (_payload: unknown) => ({ type: 'cardRequest/noop' as const });
+export const setBankOtpSent = (_payload: unknown) => ({ type: 'cardRequest/noop' as const });
+export const setBankOtpVerified = (_payload: unknown) => ({ type: 'cardRequest/noop' as const });
 export const selectCardRequestBankOtpDestination = (_root: { cardRequest: CardRequestState }) =>
   null as string | null;
 export const selectCardRequestBankOtpChannel = (_root: { cardRequest: CardRequestState }) =>

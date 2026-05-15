@@ -19,8 +19,15 @@ export interface AddMoneyFormProps {
     error?: string
 }
 
-export function AddMoneyForm({ amount, onAmountChange, onSelectRecommended, onOpenModal, showKycTier = true, btnTitle = 'Add Money', error }: 
-    AddMoneyFormProps) {
+export function GiftCardMoneyPayment({ 
+    amount,
+    onAmountChange,
+    onSelectRecommended,
+    onOpenModal,
+    showKycTier = true,
+    btnTitle = 'Add Money',
+    error }: AddMoneyFormProps) {
+
     const isButtonDisabled = !amount || amount.trim() === ''
     const {isDarkMode} = useAuth()
 

@@ -13,6 +13,7 @@ import type { CardRequestStateResponse, ErrorResponse } from '@/types/cardIssuan
  * Since `fetchWithAuth` already parses JSON and throws `ApiError` on non-2xx,
  * `fn` should return the parsed body directly — not a raw `Response`.
  */
+
 export function useCardJourney() {
   const dispatch = useDispatch();
   const state = useSelector(selectCardRequestResponse);
