@@ -10,8 +10,8 @@
  * spread in each call site once the backend stops asking.
  */
 
-import { MOCK_HOST_CONTEXT } from './__mocks__/hostContext';
-import { fetchWithAuth } from './fetchWithAuth';
+import { MOCK_HOST_CONTEXT } from "./__mocks__/hostContext";
+import { fetchWithAuth } from "./fetchWithAuth";
 
 // ─── /card/request ─────────────────────────────────────────────────────────
 
@@ -49,29 +49,32 @@ export interface RequestCardResponse {
  * Initiate a new card request. Returns a `requestId` plus the registered
  * email and OTP status to drive the next verification step.
  */
-export async function requestCardStatus(input: RequestCardInput): Promise<RequestCardResponse> {
+export async function requestCardStatus(
+  input: RequestCardInput,
+): Promise<RequestCardResponse> {
   const payload: Required<RequestCardInput> = {
     ...MOCK_HOST_CONTEXT,
     ...input,
     accountNumber: input.accountNumber ?? MOCK_HOST_CONTEXT.accountNumber,
   };
 
-  return fetchWithAuth<RequestCardResponse>('/api/v1/card/request', {
-    method: 'POST',
+  return fetchWithAuth<RequestCardResponse>("/api/v1/card/request", {
+    method: "POST",
     json: payload,
   });
 }
 
-
-export async function requestCard(input: RequestCardInput): Promise<RequestCardResponse> {
+export async function requestCard(
+  input: RequestCardInput,
+): Promise<RequestCardResponse> {
   const payload: Required<RequestCardInput> = {
     ...MOCK_HOST_CONTEXT,
     ...input,
     accountNumber: input.accountNumber ?? MOCK_HOST_CONTEXT.accountNumber,
   };
 
-  return fetchWithAuth<RequestCardResponse>('/api/v1/card/request', {
-    method: 'POST',
+  return fetchWithAuth<RequestCardResponse>("/api/v1/card/request", {
+    method: "POST",
     json: payload,
   });
 }
@@ -107,7 +110,7 @@ export interface VerifyEmailOtpResponse {
   /** Already-masked destination, e.g. `"+91 *** *** 0414"` or `"t***@example.com"`. */
   bankOtpDestination: string;
   /** Which channel the bank used to deliver the OTP. */
-  bankOtpChannel: 'EMAIL' | 'PHONE';
+  bankOtpChannel: "EMAIL" | "PHONE";
   bankOtpStatus: string;
 }
 
@@ -138,17 +141,23 @@ export interface ResendEmailOtpInput {
  * Verify the OTP sent to the user's registered email.
  * Throws on `400` (invalid OTP) — caller can show "Invalid code" to the user.
  */
-export async function verifyEmailOtp(input: VerifyEmailOtpInput): Promise<VerifyEmailOtpResponse> {
-  return fetchWithAuth<VerifyEmailOtpResponse>('/api/v1/card/email-otp/verify', {
-    method: 'POST',
-    json: { ...MOCK_HOST_CONTEXT, ...input },
-  });
+export async function verifyEmailOtp(
+  input: VerifyEmailOtpInput,
+): Promise<VerifyEmailOtpResponse> {
+  return fetchWithAuth<VerifyEmailOtpResponse>(
+    "/api/v1/card/email-otp/verify",
+    {
+      method: "POST",
+      json: { ...MOCK_HOST_CONTEXT, ...input },
+    },
+  );
 }
 
-
-export async function resendEmailOtp(input: ResendEmailOtpInput): Promise<ResendEmailOtpResponse> {
-  return fetchWithAuth<ResendEmailOtpResponse>('/api/v1/card/email-otp/retry', {
-    method: 'POST',
+export async function resendEmailOtp(
+  input: ResendEmailOtpInput,
+): Promise<ResendEmailOtpResponse> {
+  return fetchWithAuth<ResendEmailOtpResponse>("/api/v1/card/email-otp/retry", {
+    method: "POST",
     json: { ...input },
   });
 }
@@ -208,7 +217,7 @@ export interface SendBankOtpResponse {
   bvn: string;
   nin: string;
   bankOtpDestination: string;
-  bankOtpChannel: 'EMAIL' | 'PHONE';
+  bankOtpChannel: "EMAIL" | "PHONE";
   otpStatus: string;
 }
 /**
@@ -236,30 +245,31 @@ export interface ResendBankOtpResponse {
   bankEmail: string;
   bankPhoneNumber: string;
   bankOtpDestination: string;
-  bankOtpChannel: 'EMAIL';
+  bankOtpChannel: "EMAIL";
   otpStatus: string;
 }
-
 
 /**
  * Trigger the bank to send an OTP to the customer. Called automatically
  * after `verifyEmailOtp` succeeds, and again on the bank-OTP screen
  * "Resend" action.
  */
-export async function sendBankOtp(input: SendBankOtpInput): Promise<SendBankOtpResponse> {
-  return fetchWithAuth<SendBankOtpResponse>('/api/v1/card/bank-otp/send', {
-    method: 'POST',
+export async function sendBankOtp(
+  input: SendBankOtpInput,
+): Promise<SendBankOtpResponse> {
+  return fetchWithAuth<SendBankOtpResponse>("/api/v1/card/bank-otp/send", {
+    method: "POST",
     json: { ...MOCK_HOST_CONTEXT, ...input },
   });
 }
-export async function resendBankOtp(input: ResendBankOtpInput): Promise<SendBankOtpResponse> {
-  return fetchWithAuth<ResendBankOtpResponse>('/api/v1/card/bank-otp/send', {
-    method: 'POST',
+export async function resendBankOtp(
+  input: ResendBankOtpInput,
+): Promise<SendBankOtpResponse> {
+  return fetchWithAuth<ResendBankOtpResponse>("/api/v1/card/bank-otp/send", {
+    method: "POST",
     json: { ...MOCK_HOST_CONTEXT, ...input },
   });
 }
-
-
 
 // ─── /card/bank-otp/verify ─────────────────────────────────────────────────
 
@@ -286,9 +296,11 @@ export interface VerifyBankOtpResponse {
  * Verify the OTP sent by the bank.
  * Throws on `400` (invalid OTP) — caller can show "Invalid code" to the user.
  */
-export async function verifyBankOtp(input: VerifyBankOtpInput): Promise<VerifyBankOtpResponse> {
-  return fetchWithAuth<VerifyBankOtpResponse>('/api/v1/card/bank-otp/verify', {
-    method: 'POST',
+export async function verifyBankOtp(
+  input: VerifyBankOtpInput,
+): Promise<VerifyBankOtpResponse> {
+  return fetchWithAuth<VerifyBankOtpResponse>("/api/v1/card/bank-otp/verify", {
+    method: "POST",
     json: { ...MOCK_HOST_CONTEXT, ...input },
   });
 }
@@ -326,16 +338,19 @@ export interface VerifySoftTokenResponse {
 export async function verifyBankSoftToken(
   input: VerifySoftTokenInput,
 ): Promise<VerifySoftTokenResponse> {
-  return fetchWithAuth<VerifySoftTokenResponse>('/api/v1/card/soft-token/verify', {
-    method: 'POST',
-    json: { ...MOCK_HOST_CONTEXT, ...input },
-  });
+  return fetchWithAuth<VerifySoftTokenResponse>(
+    "/api/v1/card/soft-token/verify",
+    {
+      method: "POST",
+      json: { ...MOCK_HOST_CONTEXT, ...input },
+    },
+  );
 }
 
 // ─── /card-issuance/credit/underwriting ────────────────────────────────────
 
 /** Card variant accepted by the credit-underwriting endpoint. */
-export type CreditCardTypeRequest = 'CREDIT_CARD';
+export type CreditCardTypeRequest = "CREDIT_CARD";
 
 /**
  * Card variants accepted by the consent orchestration endpoint.
@@ -346,13 +361,13 @@ export type CreditCardTypeRequest = 'CREDIT_CARD';
  * union so debit integrations can call the same endpoint when supported.
  */
 export type CardIssuanceTypeRequest =
-  | 'CREDIT_CARD'
-  | 'DEBIT_CARD'
-  | 'PREPAID_CARD'
-  | 'GIFT_CARD';
+  | "CREDIT_CARD"
+  | "DEBIT_CARD"
+  | "PREPAID_CARD"
+  | "GIFT_CARD";
 
 /** Decision returned by the credit-underwriting endpoint. */
-export type UnderwritingDecision = 'APPROVED' | 'REJECTED';
+export type UnderwritingDecision = "APPROVED" | "REJECTED";
 
 /** Input for `POST /api/v1/card-issuance/credit/underwriting`. */
 export interface CreditUnderwritingInput {
@@ -392,9 +407,9 @@ export async function creditUnderwriting(
   options: { signal?: AbortSignal } = {},
 ): Promise<CreditUnderwritingResponse> {
   return fetchWithAuth<CreditUnderwritingResponse>(
-    '/api/v1/card-issuance/credit/underwriting',
+    "/api/v1/card-issuance/credit/underwriting",
     {
-      method: 'POST',
+      method: "POST",
       json: { ...MOCK_HOST_CONTEXT, ...input },
       signal: options.signal,
     },
@@ -438,16 +453,155 @@ export interface SubmitConsentResponse {
 export async function submitConsent(
   input: SubmitConsentInput,
 ): Promise<SubmitConsentResponse> {
-  return fetchWithAuth<SubmitConsentResponse>('/api/v1/card-issuance/consent', {
-    method: 'POST',
+  return fetchWithAuth<SubmitConsentResponse>("/api/v1/card-issuance/consent", {
+    method: "POST",
     json: { ...MOCK_HOST_CONTEXT, ...input },
   });
 }
 
 //card activation
-export async function cardActivation(input: CardActivationInput): Promise<CardActivationResponse> {
-  return fetchWithAuth<CardActivationResponse>('/api/v1/card-issuance/virtual-card/pin', {
-    method: 'POST',
-    json: { ...MOCK_HOST_CONTEXT, ...input },
+export async function cardActivation(
+  input: CardActivationInput,
+): Promise<CardActivationResponse> {
+  return fetchWithAuth<CardActivationResponse>(
+    "/api/v1/card-issuance/virtual-card/pin",
+    {
+      method: "POST",
+      json: { ...MOCK_HOST_CONTEXT, ...input },
+    },
+  );
+}
+
+// ─── /cards/virtual-cards ──────────────────────────────────────────────────
+
+/** Response for `GET /api/v1/card-link/virtual-cards`. */
+export interface VirtualCardsResponse {
+  mobileAppUserId: string;
+  totalCards: number;
+  cards: VirtualCard[];
+}
+
+/** Virtual card row from GET /api/v1/card-link/virtual-cards */
+export interface VirtualCard {
+  requestId: string;
+  cardId: string;
+  cardType: string;
+  /** Wallet API masked PAN (primary) */
+  maskedPan?: string;
+  cardScheme?: string;
+  cardVariant?: string;
+  cardExpiryMmYy?: string;
+  pinSet?: boolean;
+  activatedAt?: string | null;
+  createdAt?: string;
+  /** Legacy / mock */
+  maskedCardNumber?: string;
+  balance?: number;
+  status?: string;
+  currency?: string;
+  defaultPin?: string;
+}
+
+export function virtualCardMaskedDisplay(card: VirtualCard): string {
+  return card.maskedPan ?? card.maskedCardNumber ?? "**** **** **** ****";
+}
+
+/** Universal card row from GET /api/v1/card-link/universal-cards */
+export interface UniversalCard {
+  requestId: string;
+  ucCardId: string;
+  ucPanMasked: string;
+  /**
+   * Full primary account number when the list API supplies it (e.g. dev / host).
+   * Used for `provide-uc-pan` in wallet link flows — do not log or persist.
+   */
+  ucPan?: string;
+  pinSet?: boolean;
+  linkedVirtualCardCount?: number;
+  linkedVirtualCards?: unknown[];
+  activatedAt?: string;
+  createdAt?: string;
+  /** Legacy / transitional mock rows only */
+  cardId?: string;
+  cardType?: string;
+  maskedCardNumber?: string;
+  balance?: number;
+  status?: string;
+  currency?: string;
+  defaultPin?: string;
+}
+
+/** Stable id for selection + Redux managingCardId (prefers `ucCardId`). */
+export function universalCardStableId(card: UniversalCard): string {
+  return card.ucCardId || card.cardId || "";
+}
+
+/** Input for `GET /api/cards/virtual-cards`. */
+export interface GetVirtualCardsInput {
+  email: string;
+  bvn: string;
+  nin: string;
+}
+
+/**
+ * Fetch all virtual cards associated with the user's identity.
+ */
+export async function getVirtualCards(
+  _input?: GetVirtualCardsInput,
+): Promise<VirtualCardsResponse> {
+  return fetchWithAuth<VirtualCardsResponse>("/api/v1/card-link/virtual-cards", {
+    method: "GET",
   });
+}
+
+/** Response for `GET /api/v1/card-link/universal-cards`. */
+export interface UniversalCardsResponse {
+  mobileAppUserId: string;
+  totalCards: number;
+  cards: UniversalCard[];
+}
+
+/** Input for `GET /api/v1/card-link/universal-cards`. */
+export interface GetUniversalCardsInput {
+  email: string;
+  bvn: string;
+  nin: string;
+}
+
+/**
+ * Fetch all universal cards associated with the user's identity.
+ */
+export async function getUniversalCards(
+  _input?: GetUniversalCardsInput,
+): Promise<UniversalCardsResponse> {
+  return fetchWithAuth<UniversalCardsResponse>("/api/v1/card-link/universal-cards", {
+    method: "GET",
+  });
+}
+
+/**
+ * Unified fetch for all cards (Virtual and Universal).
+ * Includes default PIN injection for the prototype.
+ */
+export async function fetchAllCardsData(): Promise<{ virtualCards: VirtualCard[], universalCards: UniversalCard[] }> {
+  const email = MOCK_HOST_CONTEXT.recipientEmail;
+  const bvn = MOCK_HOST_CONTEXT.bvn;
+  const nin = MOCK_HOST_CONTEXT.nin;
+
+  const [virtualCardsResponse, universalCardsResponse] = await Promise.all([
+    getVirtualCards({ email, bvn, nin }),
+    getUniversalCards({ email, bvn, nin }),
+  ]);
+
+  const virtualCardsWithPin = virtualCardsResponse.cards.map(card => ({ ...card, defaultPin: '1234' }));
+  const universalCardsWithPin = universalCardsResponse.cards.map((card) => {
+    const row = card as UniversalCard & { ucpan?: string }
+    return {
+      ...row,
+      defaultPin: '1234',
+      ucPan: row.ucPan ?? row.ucpan,
+    }
+  });
+
+  return { virtualCards: virtualCardsWithPin, universalCards: universalCardsWithPin };
 }

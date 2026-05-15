@@ -70,6 +70,8 @@ export function CardItem({ card, onPress }: CardItemProps) {
       className="relative w-[90vw] h-auto shadow-lg shadow-border [box-shadow:0_-4px_6px_-1px_rgba(0,0,0,0.1)] rounded-[5vw] overflow-hidden z-0! touch-none focus:outline-none! focus-visible:ring-0! focus-visible:ring-offset-0! focus-visible:ring-primary!"
       aria-label={`Card ${card.name}`}
     >
+
+      {/* <button onClick={() => {console.log('card', card)}} className='h-10 w-6 bg-red-500 absolute top-[2vw] right-[5vw]'></button> */}
       {hasError ? (
         <CardError name={card.name} />
       ) : (

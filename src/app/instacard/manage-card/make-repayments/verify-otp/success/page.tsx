@@ -12,7 +12,6 @@ export default function page() {
             buttonText="Back to Home"
             
             onButtonClick={() => {notifyUserCancelled() , router.push('/instacard')}}
-            showCardPreview={false}
         />
     )
 }

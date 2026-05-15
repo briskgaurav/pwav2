@@ -4,6 +4,7 @@ import { changeCardPin as changeCardPinAction } from '@/store/redux/slices/cardW
 import { CARD_IMAGE_PATHS, type CardImageId } from '@/constants/cardData'
 
 export function maskCardNumber(cardNumber: string): string {
+  if (!cardNumber) return '**** **** **** ****'
   const digits = cardNumber.replace(/\s/g, '')
   if (digits.length < 4) return cardNumber
   const last4 = digits.slice(-4)

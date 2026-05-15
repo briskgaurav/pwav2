@@ -1,31 +1,28 @@
 'use client'
-import { CardData } from '../../../constants/cardData'
+import { CardData, type CardType, type CardImageId } from '../../../constants/cardData'
 import { CardStack, CardStackRef } from './CardStack'
 import { CardFilterType, FilterBar, type SortByValue } from './FilterBar'
 import { GreetingBar } from './greeting-bar'
 import { SwipeIndicator } from './SwipeIndicator'
 import ActionDrawer from './ActionDrawer'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
-import { routes } from '@/lib/routes'
-import { useAppSelector, useAppDispatch } from '@/store/redux/hooks'
-import { setCardMode as setCardModeAction } from '@/store/redux/slices/cardModeSlice'
+import { MOCK_HOST_CONTEXT } from '@/lib/api/__mocks__/hostContext'
+import { universalCardStableId } from '@/lib/api/cards'
 import LeftSideDrawer from '@/components/LeftSideDrawer'
 import { ProfileContent } from '@/components/screens/Drawers/ProfileContent'
 import FloatingBottomBarLayoutClient from './FloatingBottomBarLayoutClient'
-import { selectFirstName } from '@/store/redux/slices/userSlice'
-
+import { useAppDispatch, useAppSelector } from '@/store/redux/hooks'
+import { fetchAllCards, selectVirtualCards, selectUniversalCards } from '@/store/redux/slices/cardDataWalletSlice'
 
 
 export default function MainInstacardScreen() {
   const router = useRouter()
-  const dispatch = useAppDispatch()
-  const allCards = useAppSelector((s) => s.cardWallet.cards)
-  const cardMode = useAppSelector((s) => s.cardMode.cardMode)
-  const userName = useAppSelector(selectFirstName)
-  const userEmail = useAppSelector((s) => s.user.email)
-  const setCardMode = (mode: 'virtual' | 'universal') => dispatch(setCardModeAction(mode))
+  const [cardMode, setCardMode] = useState<'virtual' | 'universal'>('universal')
+  const userName = MOCK_HOST_CONTEXT.customerName
+  const userEmail = MOCK_HOST_CONTEXT.recipientEmail
   const [cardFilters, setCardFilters] = useState<CardFilterType[]>(['all'])
   const [sortBy, setSortBy] = useState<SortByValue>('recent')
   const [currentCardIndex, setCurrentCardIndex] = useState(0)
@@ -33,6 +30,60 @@ export default function MainInstacardScreen() {
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null)
   const [leftDrawerVisible, setLeftDrawerVisible] = useState(false)
   const cardStackRef = useRef<CardStackRef>(null)
+
+  const dispatch = useAppDispatch()
+  const virtualCardsData = useAppSelector(selectVirtualCards)
+  const universalCardsData = useAppSelector(selectUniversalCards)
+
+  useEffect(() => {
+    dispatch(fetchAllCards())
+  }, [dispatch])
+
+  const apiCards = useMemo(() => {
+    const sourceCards = cardMode === 'virtual' ? virtualCardsData : universalCardsData
+
+    return sourceCards.map((c: any, index: number) => {
+      let cardType: CardType = 'DEBIT_CARD'
+      const rawType = (c.cardType || '').toUpperCase()
+      if (rawType.includes('CREDIT')) cardType = 'CREDIT_CARD'
+      else if (rawType.includes('PREPAID')) cardType = 'PREPAID_CARD'
+      else if (rawType.includes('GIFT')) cardType = 'GIFT_CARD'
+
+      let imageId: CardImageId = 1
+      if (cardType === 'CREDIT_CARD') imageId = 2
+      else if (cardType === 'PREPAID_CARD') imageId = 3
+      else if (cardType === 'GIFT_CARD') imageId = 4
+
+      if (cardMode === 'universal') {
+        imageId = 5
+      }
+
+      const rowId =
+        cardMode === 'universal' ? universalCardStableId(c) : c.cardId
+
+      return {
+        id: rowId,
+        imageId,
+        name: `${cardType.replace('_', ' ')}`,
+        cardHolder: userName,
+        cardNumber:
+          cardMode === 'universal'
+            ? (c.ucPanMasked ?? c.maskedCardNumber ?? '**** **** **** ****')
+            : ((c.maskedPan ?? c.maskedCardNumber) || '**** **** **** ****'),
+        pin: '0000',
+        expiry: c.expiry || '12/28', // Dummy expiry
+        balance: c.balance || 0,
+        cardType,
+        cardForm: cardMode,
+        recentlyUsed: index === 0,
+        mostUsed: index === 0,
+        issuedDate: new Date().toISOString().split('T')[0],
+        previousUsedCount: 0,
+      } as CardData
+    })
+  }, [cardMode, virtualCardsData, universalCardsData, userName])
+
+
 
   /**
    * Handles switching between virtual and universal card modes.
@@ -63,7 +114,7 @@ export default function MainInstacardScreen() {
    */
   const filteredCards = useMemo(() => {
     // First filter by card form (virtual/universal)
-    let cards = allCards.filter((card) => card.cardForm === cardMode)
+    let cards = apiCards.filter((card) => card.cardForm === cardMode)
 
     // Sort by selected option
     if (sortBy === 'recent') {
@@ -93,11 +144,12 @@ export default function MainInstacardScreen() {
       return cards
     }
 
-    return cards.filter((card) =>
-      cardFilters.includes(card.cardType as CardFilterType)
-    )
+    return cards.filter((card) => {
+      const filterValue = card.cardType.split('_')[0].toLowerCase() as CardFilterType
+      return cardFilters.includes(filterValue)
+    })
 
-  }, [allCards, cardFilters, cardMode, sortBy])
+  }, [apiCards, cardFilters, cardMode, sortBy])
 
   /**
    * Handles card press to open the card actions drawer

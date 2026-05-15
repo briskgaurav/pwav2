@@ -67,7 +67,7 @@ export const getCardActions = (cardMode: 'virtual' | 'universal' = 'virtual'): C
     {
       icon: PhoneIcon,
       text: isVirtual ? 'Link to a Universal Card' : 'Link to Virtual Card',
-      route: isVirtual ? routes.linkPhysicalCard : routes.linkVirtualCard,
+      route: isVirtual ? routes.linkPhysicalCard : `${routes.linkVirtualCard}?source=instacard`,
       faqData: isVirtual
         ? {
             heading: 'Link to a Universal Card',

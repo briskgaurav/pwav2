@@ -1,8 +1,7 @@
-import NoSigmaCardAvailable from '@/components/screens/LinkToUniversalCardScreens/NoSigmaCardAvailable'
-import React from 'react'
+import LinkUniversalCardScreen from '@/components/screens/LinkToUniversalCardScreens/LinkToUniversalScreen'
 
 export default function page() {
   return (
-    <NoSigmaCardAvailable />
+    <LinkUniversalCardScreen />
   )
 }

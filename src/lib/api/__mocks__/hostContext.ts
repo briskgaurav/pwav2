@@ -53,7 +53,7 @@ export interface HostContext {
 
 /** Mock host-supplied identity. Replace with real values via DevTools if testing edge cases. */
 export const MOCK_HOST_CONTEXT: HostContext = {
-  issuerBankCode: 'HDFC',
+  issuerBankCode: 'FCMB',
   country: 'IN',
   mobileAppUserId: 'USR_12130',
   customerId: 'CUST_12130',
@@ -61,7 +61,7 @@ export const MOCK_HOST_CONTEXT: HostContext = {
   bvn: '12345671130',
   nin: '98765432130',
   gender: 'MALE',
-  dob: '1990-01-16',
+  dob: '1990-01-20',
 
   accountNumber: '9987402179130',
   primaryAccountNumber: '631633482130',

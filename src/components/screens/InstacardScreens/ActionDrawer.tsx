@@ -154,7 +154,7 @@ export default function ActionDrawer({
             'card-details': routes.cardDetail(selectedCardType),
             'make-online-payments': routes.makeOnlinePayments,
             'link-physical':
-                cardMode === 'virtual' ? routes.linkPhysicalCard : routes.linkVirtualCard,
+                cardMode === 'virtual' ? routes.linkPhysicalCard : `${routes.linkVirtualCard}?source=instacard`,
             'add-gift': routes.claimGiftCard,
         }),
         [cardMode, selectedCardType]

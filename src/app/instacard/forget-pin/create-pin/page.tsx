@@ -31,7 +31,6 @@ export default function CreatePinPage() {
         description="Your card PIN has been successfully updated."
         buttonText="Back to Home"
         onButtonClick={handlePopupClose}
-        showCardPreview={false}
       />
     )
   }

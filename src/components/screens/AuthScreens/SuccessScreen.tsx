@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { notifyNavigation } from '@/lib/bridge';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
@@ -25,7 +25,6 @@ export type SuccessScreenProps = {
 };
 
 export default function SuccessScreen({
-
   title,
   description,
   buttonText,
@@ -48,10 +47,12 @@ export default function SuccessScreen({
   const displayButtonText = buttonText ?? 'Activate Now';
   const handleButtonClick = onButtonClick ?? (() => router.push(routes.pinSetup(cardType)));
 
-  return (
-    <LayoutSheet routeTitle="Success" needPadding={false} hideLayerSheet={hideLayerSheet}>
-      {/* <Header title="Success" /> */}
+  const [isImageLoading, setIsImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
 
+  return (
+
+    <>
       <div className="flex-1 flex flex-col items-start justify-start p-6 py-10 gap-10 text-center">
         {/* Success checkmark animation */}
         <div className="w-full flex  relative flex-col items-center justify-start animate-scale-in">
@@ -74,19 +75,35 @@ export default function SuccessScreen({
 
         </div>
 
-        <div className='space-y-4'>
+        <div className='space-y-4 w-full'>
 
           <p className='text-sm text-text-secondary'>Your Instacard is Ready for Activation.</p>
 
-          <div className='overflow-hidden h-auto mt-auto mb-[30vh] w-full'>
-
-            <Image src={cardImageUrl || '/img/debitmockup.png'} alt='Success' className='h-full w-full object-contain' width={1000} height={1000} />
+          <div className='overflow-hidden h-auto mt-auto mb-[30vh] w-full relative'>
+            {(isImageLoading || imageError) && (
+              <div className="w-full aspect-[1.58/1] rounded-2xl bg-gray-200 animate-pulse flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-gray-300 border-t-primary rounded-full animate-spin"></div>
+              </div>
+            )}
+            <Image
+              src={cardImageUrl || '/img/debitmockup.png'}
+              alt='Success'
+              className={`h-full w-full object-contain transition-opacity duration-300 ${isImageLoading || imageError ? 'opacity-0 absolute' : 'opacity-100'}`}
+              width={1000}
+              height={1000}
+              onLoad={() => setIsImageLoading(false)}
+              onError={() => {
+                setIsImageLoading(false);
+                setImageError(true);
+              }}
+            />
 
           </div>
         </div>
       </div>
       <ButtonComponent title={displayButtonText} onClick={handleButtonClick} />
 
-    </LayoutSheet>
+</>
+  
   );
 }
