@@ -2,16 +2,20 @@
 
 import { useMemo } from 'react'
 import Image from 'next/image'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import LayoutSheet from '@/components/ui/LayoutSheet'
 import ButtonComponent from '@/components/ui/ButtonComponent'
 import CopyButton from '@/components/ui/CopyButton'
 import { routes } from '@/lib/routes'
 import { ICONS } from '@/constants/icons'
 import { shareText } from '@/lib/fetchDataFromKotlin'
+import { useAppDispatch } from '@/store/redux/hooks'
+import { useCardJourney } from '@/hooks/useCardJourney'
+import { setCardRequestState } from '@/store/redux/slices/cardRequestSlice'
 
 export default function ShareGiftCard() {
-  const router = useRouter()
+  const dispatch = useAppDispatch()
+  const { state } = useCardJourney()
   const searchParams = useSearchParams()
 
   const recipientName = searchParams.get('name') || 'Gift Recipient'
@@ -53,17 +57,20 @@ export default function ShareGiftCard() {
   }
 
   const handleNext = () => {
-    const params = new URLSearchParams({
-      name: recipientName,
-      email: recipientEmail,
-      message: recipientMessage,
-      amount,
-    })
-    router.push(`${routes.giftCardActivationCode}?${params.toString()}`)
+    dispatch(setCardRequestState({
+      requestId: state?.requestId ?? `gift-${Date.now()}`,
+      cardType: 'GIFT_CARD',
+      currentState: 'ACTIVATION_PENDING',
+      nextAction: {
+        code: 'GIFT_CARD_ACTIVATION',
+        message: 'Enter activation code',
+      },
+      expiresAt: state?.expiresAt ?? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    }))
   }
 
   return (
-    <LayoutSheet routeTitle='Share Gift Card' needPadding={false}>
+    <LayoutSheet routeTitle='Share Gift Card' needPadding={false} hideLayerSheet={true}>
       <div className='flex-1 overflow-auto pb-10 gap-4 p-4 flex flex-col'>
         <div className='space-y-3'>
           <div className='rounded-3xl border border-border bg-white p-4 shadow-sm'>

@@ -14,6 +14,7 @@ import LayoutSheet from '@/components/ui/LayoutSheet';
 import { GiftCardHeader } from '@/components/ui/GiftCardHeader';
 import { GiftCardMoneyPayment } from '@/components/ui/GiftCardMoneyPayment';
 import { GiftAddMoneyBottomSheet } from '@/components/ui/GiftAddMoneyBottomSheet';
+import { Button } from '@/components/ui';
 
 interface ValidationErrors {
   recipientName?: string;
@@ -160,25 +161,28 @@ export default function GiftCardAmountPayment() {
       setSubmitting(false);
     }
 
-    const params = new URLSearchParams({
-      name: recipientName.trim(),
-      email: recipientEmail.trim(),
-      message: recipientMessage.trim(),
-      amount: giftAmount,
-    });
-    router.replace(`${routes.giftACardReadyToUse}?${params.toString()}`);
+    dispatch(setCardRequestState({
+      requestId,
+      cardType: 'GIFT_CARD',
+      currentState: 'CARD_ISSUED',
+      nextAction: {
+        code: 'GIFT_CARD_READY_TO_USE',
+        message: 'Review gift card details before sharing',
+      },
+      expiresAt: state?.expiresAt ?? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    }));
   };
 
   return (
-    <LayoutSheet routeTitle="Gift a Card" needPadding={false} hideLayerSheet>
+    <LayoutSheet routeTitle="Gift a Card" needPadding={false} hideLayerSheet = {true}>
       <div className="flex-1 overflow-auto pb-10 gap-4 p-4 flex flex-col">
-        <GiftCardHeader />
+        {/* <GiftCardHeader /> */}
 
         {savedRecipientDetails && (
           <div className="border border-border rounded-2xl px-4 py-4 space-y-2">
             <p className="text-text-primary text-sm font-medium">Recipient Details</p>
             <div className="space-y-1 text-sm text-text-secondary">
-              <p>Name: <span className="text-text-primary">{savedRecipientDetails.recipientName}</span></p>
+              <p>Name : <span className="text-text-primary">{savedRecipientDetails.recipientName}</span></p>
               <p>Email: <span className="text-text-primary">{savedRecipientDetails.recipientEmail}</span></p>
               <p>
                 Amount:{' '}
@@ -199,7 +203,7 @@ export default function GiftCardAmountPayment() {
           </p>
         )}
 
-        <GiftCardMoneyPayment
+        {/* <GiftCardMoneyPayment
           showKycTier={false}
           amount={giftAmount}
           onAmountChange={handleGiftAmountChange}
@@ -207,8 +211,27 @@ export default function GiftCardAmountPayment() {
           onOpenModal={handlePaymentProcess}
           btnTitle="Proceed to Add Money"
           error={errors.amount}
-        />
+        /> */}
 
+      <div className="mt-auto pb-24">
+        <Button
+          fullWidth
+          className='bg-primary text-white'
+          onClick={handlePaymentProcess}
+          disabled={false}
+        >
+          Proceed to Add Money
+        </Button>
+      </div>
+
+        {/* <Button
+          className="bg-primary text-white rounded-full px-4 py-2 w-full h-14 mt-1"
+          onClick={handleSubmit}
+          disabled={submitting}
+        >
+          {submitting ? 'Submitting...' : 'Continue'}
+        </Button> */}
+        
       </div>
 
       <GiftAddMoneyBottomSheet

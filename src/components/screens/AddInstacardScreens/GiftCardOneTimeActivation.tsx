@@ -43,7 +43,7 @@ export default function GiftCardOneTimeActivation() {
     }
 
     return (
-        <LayoutSheet routeTitle='One Time Activation Code' needPadding={false}>
+        <LayoutSheet routeTitle='One Time Activation Code' needPadding={false} hideLayerSheet={true}>
             <div className="flex-1 overflow-auto pb-10 p-4 space-y-2">
                 <CardMockup isclickable={false} imageSrc={imageSrc ?? '/img/gift.png'} maskedNumber={maskedNumber} />
                 <p className='text-text-primary text-lg ml-1 mt-4'>One time Activation Code</p>

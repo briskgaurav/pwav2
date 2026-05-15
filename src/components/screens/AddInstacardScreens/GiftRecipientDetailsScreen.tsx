@@ -145,7 +145,7 @@ export default function GiftRecipientDetailsScreen() {
   };
 
   return (
-    <LayoutSheet routeTitle="Gift a Card" needPadding={false} hideLayerSheet>
+    <LayoutSheet routeTitle="Gift a Card" needPadding={false} hideLayerSheet ={true}>
       <div className="flex-1 overflow-auto pb-10 gap-4 p-4 flex flex-col">
         <GiftCardHeader />
 

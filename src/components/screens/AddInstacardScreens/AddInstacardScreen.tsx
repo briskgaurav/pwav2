@@ -13,13 +13,15 @@ import ResumeFeeScreen from "./ResumeFeeScreen";
 import GiftRecipientDetailsScreen from "./GiftRecipientDetailsScreen";
 import GiftCardAmountPayment from "./GiftCardAmountPayment";
 import GiftCardConsent from "./GiftCardConsent";
-import ClosedScreen from "./ClosedScreen";
 import HowToUseInstacards from "./HowToUseInstacards";
 import { useCardJourney } from "@/hooks/useCardJourney";
 import VerifyBankOTP from "./userVerification/verifyBankOTP";
+import GCReadyToUsePage from "./GCReadyToUsePage";
+import ShareGiftCard from "./ShareGiftCard";
+import GiftCardOneTimeActivation from "./GiftCardOneTimeActivation";
+import SuccessScreenGC from "./ClosedScreen";
 
 export default function AddInstacardScreen() {
-  //const { state } = useCardJourney();
     const { state, reset } = useCardJourney();
 
   const [activateClicked, setActivateClicked] = useState(false);
@@ -30,11 +32,6 @@ export default function AddInstacardScreen() {
         <SelectCardTypes />
       );
     }
-
-      const handleTemporaryReset = () => {
-    setActivateClicked(false);
-    reset();
-  };
 
     // const nextActionCode = state.nextAction.code;
     
@@ -97,9 +94,27 @@ export default function AddInstacardScreen() {
         return <ResumeFeeScreen />;
       case 'GIFT_CARD_PAYMENT':
         return <GiftCardAmountPayment />;
+      case 'GIFT_CARD_READY_TO_USE':
+        return <GCReadyToUsePage />;
+      case 'GIFT_CARD_SHARE':
+        return <ShareGiftCard />;
+      case 'GIFT_CARD_ACTIVATION':
+        return <GiftCardOneTimeActivation />;
+
+
 
       case 'SHOW_REQUEST_CLOSED':
-        return <ClosedScreen />;
+          return (
+            <SuccessScreenGC
+              title="Gift card created successfully!"
+              description="We have successfully create gift card."
+              buttonText="Go to Home Screen"
+              onButtonClick={() => setActivateClicked(true)}
+              hideLayerSheet
+            />
+          );
+
+        //return <ClosedScreen />;
       default:
         return (
           <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-4">

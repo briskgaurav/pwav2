@@ -5,6 +5,7 @@ import { useAppSelector } from '@/store/redux/hooks'
 
 export default function Balance() {
     const accountNumber = useAppSelector((s) => s.user.accountNumber)
+    const balance = useAppSelector((s) => s.user.balance)
     const [showBalance, setShowBalance] = useState(false)
 
     return (
@@ -18,7 +19,7 @@ export default function Balance() {
                 <div className='flex items-center justify-start gap-2'>
                     <p className='text-text-primary flex items-center gap-2 font-medium'>
                         <span className='line-through mr-2'>N</span>
-                        <span className='inline-block min-w-[52px]'>{showBalance ? '2,500' : '********'}</span>
+                        <span className='inline-block min-w-[52px]'>{showBalance ? balance.toLocaleString() : '********'}</span>
                     </p>
                     <EyeButton isVisible={showBalance} onToggle={setShowBalance} size="md" />
                 </div>

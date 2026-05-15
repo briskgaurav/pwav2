@@ -15,6 +15,7 @@ export interface UserProfile {
   gender: string
   state: string
   city: string
+  balance: number
 }
 
 type UserState = UserProfile & {
@@ -100,6 +101,7 @@ function buildUserProfileFromVerifiedStorage(): UserProfile {
     gender,
     state: stateOfOrigin,
     city: lga,
+    balance: 2500, // Mock balance
   }
 }
 
@@ -134,6 +136,7 @@ const userSlice = createSlice({
         gender: action.payload.gender ?? state.gender,
         state: action.payload.state ?? state.state,
         city: action.payload.city ?? state.city,
+        balance: action.payload.balance ?? state.balance,
       }
       return { ...updated, ...deriveFields(updated) }
     },
@@ -147,6 +150,7 @@ const userSlice = createSlice({
     selectMaskedMobile: (state) => state.maskedMobile,
     selectMaskedBvn: (state) => state.maskedBvn,
     selectMaskedDob: (state) => state.maskedDob,
+    selectBalance: (state) => state.balance,
     selectUserProfile: (state) => state,
   },
 })
@@ -160,6 +164,7 @@ export const {
   selectMaskedMobile,
   selectMaskedBvn,
   selectMaskedDob,
+  selectBalance,
   selectUserProfile,
 } = userSlice.selectors
 export default userSlice.reducer
